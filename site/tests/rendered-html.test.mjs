@@ -62,6 +62,11 @@ for (const [pathname, language, title] of [
     assert.match(html, /CONTINUE BOUNDED|CONTINUER BORNÉ/i);
     assert.match(renderedText, /35[.,]8%/);
     assert.match(renderedText, /20\/20/);
+    assert.match(html, /id=["']operations["']/i);
+    assert.match(html, /Production is a reversible operating state|La production est un état réversible/i);
+    assert.match(html, /LIVE · BOUNDED|ACTIF · BORNÉ/i);
+    assert.match(html, /ROLLBACK IN FIVE PROVABLE STEPS|ROLLBACK EN CINQ ÉTAPES PROUVABLES/i);
+    assert.match(renderedText, /1 September 2026|1 septembre 2026/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

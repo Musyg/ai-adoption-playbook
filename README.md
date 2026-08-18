@@ -9,8 +9,9 @@
 The bilingual visual edition turns the method into an interactive path: distinguish
 copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
 range; turn it into a preregistered pilot protocol; enter the observed evidence; then
-make a bounded gate decision before orienting controls by risk and autonomy. The
-Markdown guides remain the operational source of truth.
+make a bounded gate decision and generate a reversible operating card with monitoring,
+suspension, rollback, and dated reassessment. The Markdown guides remain the operational
+source of truth.
 
 **New:** compare the complete synthetic cases for an
 [independent copilot](examples/en/independent-client-follow-up.md), a

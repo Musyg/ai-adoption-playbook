@@ -37,6 +37,11 @@ const pilotSpecs: Record<IntegrationId, { horizon: number; frozen: number; live:
   agent: { horizon: 30, frozen: 40, live: 20, valueFloor: 35 },
   agency: { horizon: 60, frozen: 60, live: 12, valueFloor: 60 },
 };
+const operationSpecs: Record<IntegrationId, { reviewDate: string; reviewDays: number; containment: string }> = {
+  copilot: { reviewDate: "2026-09-17", reviewDays: 30, containment: "4 h" },
+  agent: { reviewDate: "2026-09-01", reviewDays: 14, containment: "60 min" },
+  agency: { reviewDate: "2026-08-25", reviewDays: 7, containment: "15 min" },
+};
 
 const copy = {
   en: {
@@ -78,7 +83,7 @@ const copy = {
     pilotPlannerEyebrow: "FROM SCENARIO TO PROTOCOL",
     pilotPlannerTitle: "A range is not a plan. Make the next decision capable of failing cleanly.",
     pilotPlannerText: "The calibrator exposes the assumptions. This protocol now fixes the order, practical sample, evidence, and decision before the system touches live work.",
-    pilotRoadmap: ["Scenario calibrated", "Pilot preregistered", "Evidence observed", "Scope decision"],
+    pilotRoadmap: ["Scenario calibrated", "Pilot preregistered", "Evidence observed", "Scope decision", "Operate + reassess"],
     pilotPlanLabels: { horizon: "Minimum horizon", frozen: "Frozen evaluation set", live: "Bounded live cases", collection: "Live collection at this volume", days: "days", weeks: "weeks", cases: "cases" },
     pilotPlanSteps: [["01", "Freeze the decision", "Write the owner, workflow boundary, baseline, eligibility rule, allowed effects, thresholds, and stop authority."], ["02", "Evaluate offline", "Run frozen real cases, critical segments, abstentions, adversarial inputs, tool failures, and duplicate events before live use."], ["03", "Run in shadow", "Observe the complete workflow with no external effect. Compare accepted outcomes, not model activity, against the manual baseline."], ["04", "Operate within bounds", "Release only the selected level. Keep human approval, guardian veto, least privilege, logging, and rollback wherever the level requires them."], ["05", "Make the gate decision", "Judge value, quality, safety, and eligibility separately. Continue the same scope, rework and rerun, or stop and roll back."],],
     pilotThresholdTitle: "PRE-REGISTER THESE GATES",
@@ -111,6 +116,34 @@ const copy = {
     evidenceRule: "Decision hierarchy: critical safety → evaluability → value and quality → bounded continuation. Eligibility changes the economics; it never disappears from the denominator.",
     evidenceCopy: "Copy the gate decision",
     evidenceCopied: "Gate decision copied",
+    operationsEyebrow: "OPERATE WITHOUT LOSING THE BOUNDARY",
+    operationsTitle: "Production is a reversible operating state—not the end of evaluation.",
+    operationsText: "Translate the gate decision into named ownership, monitoring windows, hard suspension triggers, a rehearsable rollback, and a dated reassessment. A model, tool, permission, policy, or data change reopens the evidence question.",
+    operationStates: {
+      continue: { label: "LIVE · BOUNDED", text: "The same measured workflow may operate under the proven permissions and fallback. No adjacent task or new autonomy is included." },
+      rework: { label: "PILOT FROZEN", text: "Live expansion is blocked. Keep the safe process while the failed value or quality gate is corrected and rerun." },
+      unknown: { label: "RELEASE BLOCKED", text: "Production is not authorized because the decision sample or effect evidence is incomplete." },
+      stop: { label: "SUSPENDED", text: "Live operation is stopped. Rollback and incident handling take priority over further evaluation." },
+    },
+    operationOwnersTitle: "OPERATING CONTRACT",
+    operationFields: { owner: "Workflow owner", incident: "Reachable incident owner", review: "Next formal reassessment" },
+    operationDefaults: { owner: "Workflow owner", incident: "Incident owner" },
+    operationMetrics: { review: "Formal review cadence", containment: "Target time to contain", scope: "Authorized scope" },
+    operationDays: "days",
+    operationSameScope: "Same proven workflow only",
+    operationMonitoringTitle: "THE FOUR WINDOWS TO WATCH",
+    operationMonitoring: [["QUALITY", "Every accepted output, correction, rejection, abstention, and exception by segment."], ["EFFECTS", "Every tool call, approval, destination, external effect, read-back, duplicate, and rollback result."], ["DRIFT + CHANGE", "Model, prompt, retrieval source, policy, permission, supplier, data mix, latency, and cost changes."], ["BUSINESS", "Observed eligibility, human active time, throughput, queue, rework, displaced bottlenecks, and shipped outcome."]],
+    operationStopTitle: "SUSPEND IMMEDIATELY WHEN",
+    operationStops: ["Any critical, unauthorized, irreversible, misdirected, or untraceable effect occurs.", "Required approval, guardian veto, identity boundary, write limit, or fallback is unavailable.", "The operating version differs from the evaluated model, prompt, tools, sources, permissions, or policy.", "Accepted quality falls below its gate in two consecutive windows—or one protected segment crosses a critical floor.", "Cost, latency, queue, or human workload exceeds the written operational limit."],
+    operationRollbackTitle: "ROLLBACK IN FIVE PROVABLE STEPS",
+    operationRollback: [["01", "Contain", "Stop intake and revoke or disable write-capable execution."], ["02", "Route safely", "Send pending and new cases to the tested manual fallback."], ["03", "Preserve", "Freeze logs, versions, approvals, tool receipts, destinations, and timestamps."], ["04", "Reconcile", "Read back external state, identify every effect, repair what is safely reversible, and escalate the rest."], ["05", "Re-authorize", "Resume only after the owner records cause, corrective action, rerun evidence, and a new gate decision."]],
+    operationChangeRuleTitle: "CHANGE CONTROL",
+    operationChangeRule: "Configuration changes are new evidence claims. Cosmetic changes may use a regression check; model, data, retrieval, tool, permission, policy, or workflow changes require the affected frozen tests and gate to be rerun before release.",
+    operationRetireTitle: "REVIEW ALSO MEANS RETIRE",
+    operationRetire: "At the review date, compare against the current manual baseline—not the original demo. Continue, narrow, replace, or retire. Preserve export, deletion, supplier exit, access revocation, and the manual process.",
+    operationCopy: "Copy the operating card",
+    operationCopied: "Operating card copied",
+    operationRunbook: "Open the incident runbook",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -266,7 +299,7 @@ const copy = {
     pilotPlannerEyebrow: "DU SCÉNARIO AU PROTOCOLE",
     pilotPlannerTitle: "Une fourchette n’est pas un plan. La prochaine décision doit pouvoir échouer proprement.",
     pilotPlannerText: "Le calibrateur rend les hypothèses visibles. Ce protocole fixe maintenant l’ordre, l’échantillon pratique, les preuves et la décision avant que le système ne touche au travail réel.",
-    pilotRoadmap: ["Scénario calibré", "Pilote préenregistré", "Preuves observées", "Décision de périmètre"],
+    pilotRoadmap: ["Scénario calibré", "Pilote préenregistré", "Preuves observées", "Décision de périmètre", "Exploiter + réévaluer"],
     pilotPlanLabels: { horizon: "Horizon minimal", frozen: "Jeu d’évaluation figé", live: "Cas réels bornés", collection: "Collecte réelle à ce volume", days: "jours", weeks: "semaines", cases: "cas" },
     pilotPlanSteps: [["01", "Figer la décision", "Écrire responsable, périmètre du workflow, baseline, règle d’éligibilité, effets permis, seuils et autorité d’arrêt."], ["02", "Évaluer hors ligne", "Passer cas réels figés, segments critiques, abstentions, attaques, pannes d’outils et événements dupliqués avant tout usage réel."], ["03", "Observer en shadow", "Exécuter le workflow complet sans effet externe. Comparer les résultats acceptés — pas l’activité du modèle — à la baseline manuelle."], ["04", "Opérer dans les limites", "Ne libérer que le niveau choisi. Maintenir validation humaine, veto du gardien, moindre privilège, journal et rollback lorsque le niveau l’exige."], ["05", "Prendre la décision de gate", "Juger séparément valeur, qualité, sécurité et éligibilité. Continuer le même périmètre, corriger et rejouer, ou arrêter et revenir en arrière."],],
     pilotThresholdTitle: "PRÉENREGISTRER CES GATES",
@@ -299,6 +332,34 @@ const copy = {
     evidenceRule: "Hiérarchie de décision : sécurité critique → évaluabilité → valeur et qualité → continuation bornée. L’éligibilité modifie l’économie ; elle ne disparaît jamais du dénominateur.",
     evidenceCopy: "Copier la décision de gate",
     evidenceCopied: "Décision de gate copiée",
+    operationsEyebrow: "EXPLOITER SANS PERDRE LA FRONTIÈRE",
+    operationsTitle: "La production est un état réversible d’exploitation — pas la fin de l’évaluation.",
+    operationsText: "Transformez la décision de gate en responsabilités nommées, fenêtres de surveillance, déclencheurs d’arrêt fermes, rollback répétable et réévaluation datée. Tout changement de modèle, outil, permission, règle ou donnée rouvre la question de la preuve.",
+    operationStates: {
+      continue: { label: "ACTIF · BORNÉ", text: "Le même workflow mesuré peut fonctionner avec les permissions et le fallback prouvés. Aucune tâche voisine ni autonomie nouvelle n’est incluse." },
+      rework: { label: "PILOTE GELÉ", text: "L’extension réelle est bloquée. Conserver le processus sûr pendant la correction et le rejeu de la gate de valeur ou de qualité en échec." },
+      unknown: { label: "MISE EN SERVICE BLOQUÉE", text: "La production n’est pas autorisée car l’échantillon de décision ou les preuves d’effets sont incomplets." },
+      stop: { label: "SUSPENDU", text: "L’exploitation réelle est arrêtée. Le rollback et le traitement de l’incident passent avant toute nouvelle évaluation." },
+    },
+    operationOwnersTitle: "CONTRAT D’EXPLOITATION",
+    operationFields: { owner: "Responsable du workflow", incident: "Responsable d’incident joignable", review: "Prochaine réévaluation formelle" },
+    operationDefaults: { owner: "Responsable du workflow", incident: "Responsable d’incident" },
+    operationMetrics: { review: "Cadence de revue formelle", containment: "Objectif de délai de confinement", scope: "Périmètre autorisé" },
+    operationDays: "jours",
+    operationSameScope: "Uniquement le workflow prouvé",
+    operationMonitoringTitle: "LES QUATRE FENÊTRES À SURVEILLER",
+    operationMonitoring: [["QUALITÉ", "Chaque sortie acceptée, correction, rejet, abstention et exception, ventilés par segment."], ["EFFETS", "Chaque appel d’outil, validation, destination, effet externe, relecture d’état, doublon et résultat de rollback."], ["DÉRIVE + CHANGEMENT", "Évolutions du modèle, prompt, source RAG, règle, permission, fournisseur, mix de données, latence et coût."], ["MÉTIER", "Éligibilité observée, temps humain actif, débit, file, reprises, goulots déplacés et résultat réellement livré."]],
+    operationStopTitle: "SUSPENDRE IMMÉDIATEMENT SI",
+    operationStops: ["Un effet critique, non autorisé, irréversible, mal dirigé ou non traçable se produit.", "La validation requise, le veto du gardien, la frontière d’identité, la limite d’écriture ou le fallback est indisponible.", "La version exploitée diffère du modèle, prompt, outils, sources, permissions ou règles évalués.", "La qualité acceptée passe sous sa gate pendant deux fenêtres consécutives — ou un segment protégé franchit un plancher critique.", "Le coût, la latence, la file ou la charge humaine dépasse la limite opérationnelle écrite."],
+    operationRollbackTitle: "ROLLBACK EN CINQ ÉTAPES PROUVABLES",
+    operationRollback: [["01", "Contenir", "Arrêter l’entrée et révoquer ou désactiver l’exécution capable d’écrire."], ["02", "Router en sécurité", "Envoyer les cas en attente et nouveaux vers le fallback manuel testé."], ["03", "Préserver", "Figer journaux, versions, validations, reçus d’outils, destinations et horodatages."], ["04", "Réconcilier", "Relire l’état externe, identifier chaque effet, réparer ce qui est réversible sans risque et escalader le reste."], ["05", "Réautoriser", "Ne reprendre qu’après consignation de la cause, correction, preuves rejouées et nouvelle décision de gate."],],
+    operationChangeRuleTitle: "GESTION DU CHANGEMENT",
+    operationChangeRule: "Une modification de configuration est une nouvelle affirmation de preuve. Un changement cosmétique peut utiliser une régression ; modèle, données, RAG, outil, permission, règle ou workflow exigent de rejouer les tests figés affectés et la gate avant remise en service.",
+    operationRetireTitle: "RÉÉVALUER SIGNIFIE AUSSI RETIRER",
+    operationRetire: "À la date de revue, comparez au processus manuel actuel — pas à la démonstration d’origine. Continuez, réduisez, remplacez ou retirez. Préservez export, suppression, sortie fournisseur, révocation des accès et processus manuel.",
+    operationCopy: "Copier la fiche d’exploitation",
+    operationCopied: "Fiche d’exploitation copiée",
+    operationRunbook: "Ouvrir le runbook d’incident",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -460,6 +521,10 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [traceCompleteness, setTraceCompleteness] = useState(100);
   const [observedEligibility, setObservedEligibility] = useState(65);
   const [evidenceCopied, setEvidenceCopied] = useState(false);
+  const [operationOwner, setOperationOwner] = useState(t.operationDefaults.owner);
+  const [incidentOwner, setIncidentOwner] = useState(t.operationDefaults.incident);
+  const [reviewDate, setReviewDate] = useState(operationSpecs.agent.reviewDate);
+  const [operationCopied, setOperationCopied] = useState(false);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
@@ -510,9 +575,15 @@ export function Playbook({ locale }: { locale: Locale }) {
     { code: "E", label: t.evidenceMatrix.eligibility, observed: `${observedEligibility}% / ${eligibleShare}%`, status: "signal" },
   ];
   const evidenceDecisionCopy = t.evidenceDecisions[evidenceDecision];
+  const operationSpec = operationSpecs[calibrationLevel];
+  const operationState = t.operationStates[evidenceDecision];
+  const reviewDateLabel = new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${reviewDate}T12:00:00Z`));
   const evidenceMemo = locale === "en"
     ? [`AI PILOT GATE DECISION`, `Level: ${pilotLevelLabel}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} bounded live cases`, `Value: ${observedTimeReduction}% human active-time reduction · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${observedEligibility}% observed · ${eligibleShare}% assumed`, `Whole-workload reduction: ${formatNumber(observedWholeReduction)}% · ${formatNumber(observedFreedHours)} human hours/month`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
     : [`DÉCISION DE GATE DU PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas réels bornés`, `Valeur : ${observedTimeReduction} % de temps humain actif en moins · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${observedEligibility} % observés · ${eligibleShare} % supposés`, `Réduction sur toute la charge : ${formatNumber(observedWholeReduction)} % · ${formatNumber(observedFreedHours)} heures humaines/mois`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
+  const operationCard = locale === "en"
+    ? [`BOUNDED AI OPERATING CARD`, `Level: ${pilotLevelLabel}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationSpec.containment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
+    : [`FICHE D’EXPLOITATION IA BORNÉE`, `Niveau : ${pilotLevelLabel}`, `État d’exploitation : ${operationState.label}`, `Responsable du workflow : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationSpec.containment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Rollback : contenir → router en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
   const copyPilotBrief = async () => {
     try {
       await navigator.clipboard.writeText(pilotBrief);
@@ -527,6 +598,14 @@ export function Playbook({ locale }: { locale: Locale }) {
       setEvidenceCopied(true);
     } catch {
       setEvidenceCopied(false);
+    }
+  };
+  const copyOperationCard = async () => {
+    try {
+      await navigator.clipboard.writeText(operationCard);
+      setOperationCopied(true);
+    } catch {
+      setOperationCopied(false);
     }
   };
 
@@ -576,7 +655,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
-              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
+              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
               <div className="calibrator-inputs">
                 <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
                 <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
@@ -661,6 +740,31 @@ export function Playbook({ locale }: { locale: Locale }) {
             </output>
           </div>
           <div className="evidence-footer"><p>{t.evidenceRule}</p><button className="button primary" onClick={() => void copyEvidenceMemo()} type="button">{evidenceCopied ? t.evidenceCopied : t.evidenceCopy}</button></div>
+        </section>
+
+        <section className="operations section-light" id="operations" aria-labelledby="operations-title">
+          <div className="section-heading"><p className="eyebrow">{t.operationsEyebrow}</p><h2 id="operations-title">{t.operationsTitle}</h2><p>{t.operationsText}</p></div>
+          <ol className="pilot-roadmap operations-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 4} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
+          <div className="operation-contract">
+            <output className="operation-state" data-state={evidenceDecision} aria-live="polite"><span>{locale === "en" ? "CURRENT OPERATING STATE" : "ÉTAT D’EXPLOITATION ACTUEL"}</span><strong>{operationState.label}</strong><p>{operationState.text}</p><small>{evidenceDecisionCopy.label} → {pilotLevelLabel}</small></output>
+            <fieldset className="operation-owners"><legend>{t.operationOwnersTitle}</legend>
+              <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); }} type="text" value={operationOwner} /></label>
+              <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); }} type="text" value={incidentOwner} /></label>
+              <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} min="2026-08-19" onChange={(event) => { if (event.target.value) setReviewDate(event.target.value); setOperationCopied(false); }} type="date" value={reviewDate} /></label>
+            </fieldset>
+          </div>
+          <div className="operation-metrics">
+            <p><span>{t.operationMetrics.review}</span><strong>{operationSpec.reviewDays}</strong><small>{t.operationDays} · {reviewDateLabel}</small></p>
+            <p><span>{t.operationMetrics.containment}</span><strong>{operationSpec.containment}</strong><small>{locale === "en" ? "planning target, rehearse it" : "objectif à tester par exercice"}</small></p>
+            <p><span>{t.operationMetrics.scope}</span><strong>1</strong><small>{t.operationSameScope}</small></p>
+          </div>
+          <div className="operation-monitoring"><p className="eyebrow">{t.operationMonitoringTitle}</p><div>{t.operationMonitoring.map(([title, text], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div>
+          <div className="operation-response">
+            <article className="operation-stops"><p className="eyebrow">{t.operationStopTitle}</p><ol>{t.operationStops.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></li>)}</ol></article>
+            <article className="operation-rollback"><p className="eyebrow">{t.operationRollbackTitle}</p><ol>{t.operationRollback.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol></article>
+          </div>
+          <div className="operation-rules"><article><span>{t.operationChangeRuleTitle}</span><p>{t.operationChangeRule}</p></article><article><span>{t.operationRetireTitle}</span><p>{t.operationRetire}</p></article></div>
+          <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/incident-runbook.fr.md`}>{t.operationRunbook} ↗</a></div></div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">

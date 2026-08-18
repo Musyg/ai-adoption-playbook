@@ -9,8 +9,9 @@
 L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
 copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
 convertir en protocole de pilote préenregistré ; saisir les preuves observées ; puis
-prendre une décision de gate bornée avant d’orienter les contrôles selon le risque et
-l’autonomie. Les guides Markdown restent la source opérationnelle de référence.
+prendre une décision de gate bornée et générer une fiche d’exploitation réversible avec
+surveillance, suspension, rollback et réévaluation datée. Les guides Markdown restent
+la source opérationnelle de référence.
 
 **Nouveau :** comparez les cas synthétiques complets d’un
 [copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
