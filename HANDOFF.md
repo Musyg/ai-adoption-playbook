@@ -9,12 +9,12 @@ There is no unfinished implementation hidden behind this handoff.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `54c7c326d83a47ce4ea3a541a46be0a493e52bd0`
+- Reference implementation commit: `2389ac797e3076abb79703dde9e3c97a44293da5`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `2c5fa827aeb1855ea141aea3cef8a7d523342b56`
+- Publishing-mirror commit: `331785f41b3df95d4cc67ab9a78e19bc9d631d2e`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +26,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `14`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_1dde23a03b308191b8e2776c1fa21d8e`
-- Source commit used by Sites: `2c5fa827aeb1855ea141aea3cef8a7d523342b56`
-- Archive content hash: `sha256:1bd44e16c5cb7b6fcf59a5abd3cb83590d0e6e1dc342f1ca83c7247ae57e690d`
-- Deployment ID: `appgdep_6a84dc5d19a88191b88bdc0a7945adea`
+- Current Sites version: `15`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_9e323752c874819185126f8fa27233b1`
+- Source commit used by Sites: `331785f41b3df95d4cc67ab9a78e19bc9d631d2e`
+- Archive content hash: `sha256:a764a2e8b22c821df0d6036ac59dcb12a6729db2d85822a9f451c607e26b2e68`
+- Deployment ID: `appgdep_6a84ebb29a348191a10c6f086fa6f55f`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -55,9 +55,13 @@ horizontal rail. The primary hero action now starts at the integration-level
 distinction instead of jumping past the new workflow.
 
 The worked material includes an independent-professional copilot, a bounded
-business agent, an orchestrated-agency analogy, and a TPE customer-request case.
-The numerical ranges are planning envelopes and the cases are synthetic; neither
-is presented as a universal forecast or field proof.
+business agent, an orchestrated-agency analogy, a TPE customer-request case, and
+an SME/PME A2 business agent for B2B quotes. The SME case makes its low, central,
+and high assumptions calculable; separates eligible-work gains from the global
+denominator; distinguishes survey, empirical-copilot, and provider-case evidence;
+and keeps all prices behind explicit approval. The numerical ranges are planning
+envelopes and the cases are synthetic; neither is presented as a universal
+forecast or field proof.
 
 ## Decision and evidence rules
 
@@ -89,9 +93,13 @@ mirror where applicable:
 - Gate-decision unit tests: 4/4 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 6/6 passed.
-- Browser audit: 1440 × 900 and 390 × 844.
+- Repository validation: 43 Markdown files and register contract passed.
+- Browser audit: 1440 × 900 and 390 × 844, including the new SME case.
 - Browser structure: no duplicate IDs, no unnamed visible controls, and no page
   overflow at either audited viewport.
+- New SME rendered assertions cover the A2 level, 60.8–129.2 hour envelope,
+  76-to-27-minute observation, 163/238 correction denominator, approximately
+  45% portfolio ceiling, 0% autonomous completion, and evidence-class boundary.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -125,20 +133,20 @@ hash from another session.
   reference data. Review them before presenting a later release as current.
 - Markdown operating tracks currently exist in French only. The English web
   experience does not mean every underlying guide has an English file.
-- The roadmap still lacks worked examples for PME, nonprofit/foundation, and
+- The roadmap still lacks worked examples for nonprofit/foundation and
   public-sector tracks, plus the planned machine-readable control crosswalk.
 
 ## First authorized next step
 
 The implementation is complete. The next session should first open Sites version
-14 while signed in and collect one bounded list of editorial or visual defects.
+15 while signed in and collect one bounded list of editorial or visual defects.
 Do not change access mode, architecture, claims, or deploy another version without
 a new user request.
 
 If the reference version is accepted without defects, resume roadmap `0.2` with
-one missing worked case at a time. The recommended first content task is the PME
-case, followed by nonprofit/foundation and public sector. Keep every case
-synthetic, source-labelled, denominator-aware, and explicit about transfer limits.
+one missing worked case at a time. The recommended next content task is the
+nonprofit/foundation case, followed by public sector. Keep every case synthetic,
+source-labelled, denominator-aware, and explicit about transfer limits.
 
 ## Resume checklist
 
