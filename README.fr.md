@@ -11,6 +11,8 @@ choisit sa structure, on ne révèle que le niveau de détail utile, puis on ori
 les contrôles selon le risque et l’autonomie. Les guides Markdown restent la
 source opérationnelle de référence.
 
+**Nouveau :** suivez le [cas synthétique TPE complet](examples/fr/tpe-demandes-clients.md), de la baseline et des seuils préenregistrés jusqu’à la décision conditionnelle de rester en mode copilote.
+
 > État : fondation publique, photographie au **18 août 2026**.
 
 ## Pourquoi ce dépôt existe

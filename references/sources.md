@@ -35,6 +35,10 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [Commission européenne — questions-réponses sur la culture IA](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers) — état post-Omnibus de l’article 4 et supervision 2026.
 - [Commission européenne — clauses contractuelles types pour l’achat public de systèmes IA](https://public-buyers-community.ec.europa.eu/communities/procurement-ai/resources/updated-eu-ai-model-contractual-clauses) — modèles à adapter au contexte juridique et au marché.
 
+## Cas publiés et preuves de terrain
+
+- [Support client assisté par IA dans une petite structure](tpe-customer-support-cases.md) — cas RIS, études de terrain QJE/NBER, cas industriel maritime et limites de transfert vers le scénario TPE.
+
 ## Règle de citation du dépôt
 
 Pour toute affirmation susceptible de changer :

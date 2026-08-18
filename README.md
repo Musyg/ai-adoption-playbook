@@ -11,6 +11,8 @@ your organization, reveal only the next useful level of detail, and orient the
 controls by risk and autonomy. The Markdown guides remain the operational source
 of truth.
 
+**New:** follow the complete [synthetic micro-business case](examples/en/tpe-customer-requests.md), from baseline and pre-registered thresholds to a conditional copilot decision.
+
 > Status: public foundation, snapshot **2026-08-18**. The operational edition is currently written in French; English translations are tracked in the roadmap.
 
 ## Why this repository exists

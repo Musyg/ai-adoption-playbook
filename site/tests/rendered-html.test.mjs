@@ -27,6 +27,9 @@ for (const [pathname, language, title] of [
     const html = await response.text();
     assert.match(html, new RegExp(title, "i"));
     assert.match(html, /Evidence before autonomy|La preuve avant l’autonomie/i);
+    assert.match(html, /Atelier Horizon/);
+    assert.match(html, /8 min 35/);
+    assert.match(html, /Continue conditionally|Continuer sous conditions/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

@@ -8,6 +8,8 @@ Petite équipe où les mêmes personnes cumulent métier, gestion, informatique 
 
 Un processus partagé amélioré par IA, avec un propriétaire, des règles communes, une procédure manuelle et une capacité d’incident.
 
+Voir le [cas synthétique complet : de la boîte mail au copilote validé](../../examples/fr/tpe-demandes-clients.md).
+
 ## Semaine 1 — Visibilité
 
 - nommer un responsable IA et un propriétaire métier ;
