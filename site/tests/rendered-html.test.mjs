@@ -57,6 +57,11 @@ for (const [pathname, language, title] of [
     assert.match(html, /Pilot preregistered|Pilote préenregistré/i);
     assert.match(renderedText, /≥ 35%/);
     assert.match(html, /REWORK \+ RERUN|CORRIGER \+ REJOUER/i);
+    assert.match(html, /id=["']evidence-gate["']/i);
+    assert.match(html, /GATE LEDGER|REGISTRE DES GATES/i);
+    assert.match(html, /CONTINUE BOUNDED|CONTINUER BORNÉ/i);
+    assert.match(renderedText, /35[.,]8%/);
+    assert.match(renderedText, /20\/20/);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

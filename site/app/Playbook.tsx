@@ -2,9 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { decideEvidence } from "./evidence-decision.mjs";
+
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type IntegrationId = "copilot" | "agent" | "agency";
+type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
+type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
 type Phase = { label: string; title: string; text: string };
 type Audience = {
   id: AudienceId;
@@ -85,6 +89,28 @@ const copy = {
     pilotPlanCopy: "Copy the pilot brief",
     pilotPlanCopied: "Pilot brief copied",
     pilotPlanTemplate: "Open the evaluation-plan template",
+    evidenceEyebrow: "FROM PILOT TO GATE DECISION",
+    evidenceTitle: "Enter observed evidence. The weakest critical gate decides what happens next.",
+    evidenceText: "A strong average cannot cancel a critical incident, and missing traces are not a negative result: they make the pilot non-evaluable. The output authorizes one next action, never an automatic increase in autonomy.",
+    evidenceInputsTitle: "OBSERVED PILOT RESULTS",
+    evidenceInputs: { cases: "Bounded live cases observed", time: "Human active-time reduction", quality: "Outputs accepted after defined review", critical: "Critical or unauthorized effects", trace: "Complete effect and approval trace", eligibility: "Observed share eligible" },
+    evidenceUnits: { cases: "cases", percent: "%", events: "events" },
+    evidenceMatrixTitle: "GATE LEDGER",
+    evidenceMatrix: { sample: "Decision sample", value: "Value on accepted cases", quality: "Accepted quality", safety: "Critical safety", trace: "Effect evidence", eligibility: "Eligibility · economic signal" },
+    evidenceStatuses: { pass: "PASS", fail: "FAIL", incomplete: "INCOMPLETE", signal: "SIGNAL" },
+    evidenceDecisions: {
+      continue: { label: "CONTINUE BOUNDED", text: "All decision and critical gates pass. Continue only the same workflow, permissions, and fallback; set a dated review. Autonomy does not increase." },
+      rework: { label: "REWORK + RERUN", text: "The pilot is evaluable, but value or accepted quality misses its preregistered floor. Fix the cause and rerun the same gate before expanding anything." },
+      unknown: { label: "NO DECISION YET", text: "The live sample or effect trace is incomplete. Collect the missing evidence under the current boundary; do not count this as a failure or a success." },
+      stop: { label: "STOP + ROLLBACK", text: "A critical or unauthorized effect occurred. Stop live operation, return to the safe process, contain the incident, and preserve the complete evidence." },
+    },
+    evidenceObserved: "Observed whole-workload reduction",
+    evidencePlanned: "Planning envelope",
+    evidenceFreed: "Human hours measured / month",
+    evidenceEligibilityWarning: "Observed eligibility is more than 10 points below the assumption. The technical result may pass, but the economic case must be recalibrated.",
+    evidenceRule: "Decision hierarchy: critical safety → evaluability → value and quality → bounded continuation. Eligibility changes the economics; it never disappears from the denominator.",
+    evidenceCopy: "Copy the gate decision",
+    evidenceCopied: "Gate decision copied",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -251,6 +277,28 @@ const copy = {
     pilotPlanCopy: "Copier le brief de pilote",
     pilotPlanCopied: "Brief de pilote copié",
     pilotPlanTemplate: "Ouvrir le modèle de plan d’évaluation",
+    evidenceEyebrow: "DU PILOTE À LA DÉCISION DE GATE",
+    evidenceTitle: "Saisissez les preuves observées. La gate critique la plus faible décide de la suite.",
+    evidenceText: "Une bonne moyenne n’annule pas un incident critique, et des traces manquantes ne constituent pas un résultat négatif : elles rendent le pilote non évaluable. La sortie autorise une seule prochaine action, jamais une hausse automatique de l’autonomie.",
+    evidenceInputsTitle: "RÉSULTATS OBSERVÉS DU PILOTE",
+    evidenceInputs: { cases: "Cas réels bornés observés", time: "Réduction du temps humain actif", quality: "Sorties acceptées après la revue définie", critical: "Effets critiques ou non autorisés", trace: "Trace complète des effets et validations", eligibility: "Part observée réellement éligible" },
+    evidenceUnits: { cases: "cas", percent: "%", events: "événements" },
+    evidenceMatrixTitle: "REGISTRE DES GATES",
+    evidenceMatrix: { sample: "Échantillon de décision", value: "Valeur sur les cas acceptés", quality: "Qualité acceptée", safety: "Sécurité critique", trace: "Preuve des effets", eligibility: "Éligibilité · signal économique" },
+    evidenceStatuses: { pass: "PASSE", fail: "ÉCHEC", incomplete: "INCOMPLET", signal: "SIGNAL" },
+    evidenceDecisions: {
+      continue: { label: "CONTINUER BORNÉ", text: "Toutes les gates de décision et critiques passent. Conserver uniquement le même workflow, les mêmes permissions et le fallback ; fixer une revue datée. L’autonomie n’augmente pas." },
+      rework: { label: "CORRIGER + REJOUER", text: "Le pilote est évaluable, mais la valeur ou la qualité acceptée manque son plancher préenregistré. Corriger la cause et rejouer la même gate avant toute extension." },
+      unknown: { label: "PAS ENCORE DE DÉCISION", text: "L’échantillon réel ou la trace des effets est incomplet. Recueillir les preuves manquantes dans le périmètre actuel ; ne compter cela ni comme un échec ni comme une réussite." },
+      stop: { label: "ARRÊTER + ROLLBACK", text: "Un effet critique ou non autorisé s’est produit. Arrêter l’exploitation réelle, revenir au processus sûr, contenir l’incident et préserver toutes les preuves." },
+    },
+    evidenceObserved: "Réduction observée sur toute la charge",
+    evidencePlanned: "Enveloppe de planification",
+    evidenceFreed: "Heures humaines mesurées / mois",
+    evidenceEligibilityWarning: "L’éligibilité observée est inférieure de plus de 10 points à l’hypothèse. Le résultat technique peut passer, mais le dossier économique doit être recalibré.",
+    evidenceRule: "Hiérarchie de décision : sécurité critique → évaluabilité → valeur et qualité → continuation bornée. L’éligibilité modifie l’économie ; elle ne disparaît jamais du dénominateur.",
+    evidenceCopy: "Copier la décision de gate",
+    evidenceCopied: "Décision de gate copiée",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -405,6 +453,13 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [eligibleShare, setEligibleShare] = useState(70);
   const [setupHours, setSetupHours] = useState(40);
   const [pilotPlanCopied, setPilotPlanCopied] = useState(false);
+  const [observedCases, setObservedCases] = useState(20);
+  const [observedTimeReduction, setObservedTimeReduction] = useState(55);
+  const [observedQuality, setObservedQuality] = useState(93);
+  const [criticalEffects, setCriticalEffects] = useState(0);
+  const [traceCompleteness, setTraceCompleteness] = useState(100);
+  const [observedEligibility, setObservedEligibility] = useState(65);
+  const [evidenceCopied, setEvidenceCopied] = useState(false);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
@@ -437,12 +492,41 @@ export function Playbook({ locale }: { locale: Locale }) {
   const pilotBrief = locale === "en"
     ? [`AI PILOT BRIEF`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
     : [`BRIEF DE PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+  const samplePass = observedCases >= pilotSpec.live;
+  const valuePass = observedTimeReduction >= pilotSpec.valueFloor;
+  const qualityPass = observedQuality >= 90;
+  const safetyPass = criticalEffects === 0;
+  const tracePass = traceCompleteness === 100;
+  const observedWholeReduction = observedEligibility * observedTimeReduction / 100;
+  const observedFreedHours = monthlyCases * caseMinutes / 60 * observedWholeReduction / 100;
+  const eligibilityWarning = observedEligibility < eligibleShare - 10;
+  const evidenceDecision: EvidenceDecision = decideEvidence({ samplePass, valuePass, qualityPass, safetyPass, tracePass });
+  const evidenceRows: Array<{ code: string; label: string; observed: string; status: EvidenceStatus }> = [
+    { code: "N", label: t.evidenceMatrix.sample, observed: `${observedCases}/${pilotSpec.live}`, status: samplePass ? "pass" : "incomplete" },
+    { code: "V", label: t.evidenceMatrix.value, observed: `${observedTimeReduction}% / ≥ ${pilotSpec.valueFloor}%`, status: valuePass ? "pass" : "fail" },
+    { code: "Q", label: t.evidenceMatrix.quality, observed: `${observedQuality}% / ≥ 90%`, status: qualityPass ? "pass" : "fail" },
+    { code: "S", label: t.evidenceMatrix.safety, observed: `${criticalEffects} / 0`, status: safetyPass ? "pass" : "fail" },
+    { code: "T", label: t.evidenceMatrix.trace, observed: `${traceCompleteness}% / 100%`, status: tracePass ? "pass" : "incomplete" },
+    { code: "E", label: t.evidenceMatrix.eligibility, observed: `${observedEligibility}% / ${eligibleShare}%`, status: "signal" },
+  ];
+  const evidenceDecisionCopy = t.evidenceDecisions[evidenceDecision];
+  const evidenceMemo = locale === "en"
+    ? [`AI PILOT GATE DECISION`, `Level: ${pilotLevelLabel}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} bounded live cases`, `Value: ${observedTimeReduction}% human active-time reduction · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${observedEligibility}% observed · ${eligibleShare}% assumed`, `Whole-workload reduction: ${formatNumber(observedWholeReduction)}% · ${formatNumber(observedFreedHours)} human hours/month`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
+    : [`DÉCISION DE GATE DU PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas réels bornés`, `Valeur : ${observedTimeReduction} % de temps humain actif en moins · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${observedEligibility} % observés · ${eligibleShare} % supposés`, `Réduction sur toute la charge : ${formatNumber(observedWholeReduction)} % · ${formatNumber(observedFreedHours)} heures humaines/mois`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
   const copyPilotBrief = async () => {
     try {
       await navigator.clipboard.writeText(pilotBrief);
       setPilotPlanCopied(true);
     } catch {
       setPilotPlanCopied(false);
+    }
+  };
+  const copyEvidenceMemo = async () => {
+    try {
+      await navigator.clipboard.writeText(evidenceMemo);
+      setEvidenceCopied(true);
+    } catch {
+      setEvidenceCopied(false);
     }
   };
 
@@ -547,6 +631,36 @@ export function Playbook({ locale }: { locale: Locale }) {
             <p>{t.pilotPlanCaveat}</p>
             <div><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/evaluation-plan.fr.md`}>{t.pilotPlanTemplate} ↗</a></div>
           </div>
+        </section>
+
+        <section className="evidence-gate section-blue" id="evidence-gate" aria-labelledby="evidence-gate-title">
+          <div className="section-heading"><p className="eyebrow">{t.evidenceEyebrow}</p><h2 id="evidence-gate-title">{t.evidenceTitle}</h2><p>{t.evidenceText}</p></div>
+          <ol className="pilot-roadmap evidence-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 2} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
+          <div className="evidence-shell">
+            <div className="evidence-controls">
+              <p className="eyebrow">{t.evidenceInputsTitle}</p>
+              <h3>{pilotLevelLabel}</h3>
+              <div>
+                <label><span>{t.evidenceInputs.cases}</span><div><input aria-label={t.evidenceInputs.cases} max="2000" min="0" onChange={(event) => setObservedCases(Math.min(2000, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedCases} /><small>{t.evidenceUnits.cases}</small></div></label>
+                <label><span>{t.evidenceInputs.time}</span><div><input aria-label={t.evidenceInputs.time} max="100" min="0" onChange={(event) => setObservedTimeReduction(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedTimeReduction} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.quality}</span><div><input aria-label={t.evidenceInputs.quality} max="100" min="0" onChange={(event) => setObservedQuality(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedQuality} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.critical}</span><div><input aria-label={t.evidenceInputs.critical} max="99" min="0" onChange={(event) => setCriticalEffects(Math.min(99, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={criticalEffects} /><small>{t.evidenceUnits.events}</small></div></label>
+                <label><span>{t.evidenceInputs.trace}</span><div><input aria-label={t.evidenceInputs.trace} max="100" min="0" onChange={(event) => setTraceCompleteness(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={traceCompleteness} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.eligibility}</span><div><input aria-label={t.evidenceInputs.eligibility} max="100" min="0" onChange={(event) => setObservedEligibility(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedEligibility} /><small>{t.evidenceUnits.percent}</small></div></label>
+              </div>
+            </div>
+            <output className="evidence-result" data-decision={evidenceDecision} aria-live="polite">
+              <div className="evidence-verdict"><span>{locale === "en" ? "AUTHORIZED NEXT ACTION" : "PROCHAINE ACTION AUTORISÉE"}</span><strong>{evidenceDecisionCopy.label}</strong><p>{evidenceDecisionCopy.text}</p></div>
+              <div className="evidence-impact">
+                <p><span>{t.evidenceObserved}</span><strong>{formatNumber(observedWholeReduction)}%</strong></p>
+                <p><span>{t.evidencePlanned}</span><strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong></p>
+                <p><span>{t.evidenceFreed}</span><strong>{formatNumber(observedFreedHours)} h</strong></p>
+              </div>
+              <div className="evidence-ledger"><p className="eyebrow">{t.evidenceMatrixTitle}</p><ol>{evidenceRows.map((row) => <li data-status={row.status} key={row.code}><span>{row.code}</span><p><strong>{row.label}</strong><small>{row.observed}</small></p><em>{t.evidenceStatuses[row.status]}</em></li>)}</ol></div>
+              {eligibilityWarning && <p className="evidence-warning">{t.evidenceEligibilityWarning}</p>}
+            </output>
+          </div>
+          <div className="evidence-footer"><p>{t.evidenceRule}</p><button className="button primary" onClick={() => void copyEvidenceMemo()} type="button">{evidenceCopied ? t.evidenceCopied : t.evidenceCopy}</button></div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
