@@ -1,0 +1,26 @@
+name: Source-backed correction
+description: Report an incorrect, outdated or ambiguous statement.
+title: "[Correction]: "
+labels: [documentation]
+body:
+  - type: textarea
+    id: statement
+    attributes:
+      label: Statement and location
+      description: Quote the shortest necessary excerpt and link the file.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Primary source
+      description: Link the authoritative source and state its publication or update date.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed correction
+      description: Distinguish binding requirements, guidance and project recommendations.
+    validations:
+      required: true

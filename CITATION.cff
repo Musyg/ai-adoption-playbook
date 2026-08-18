@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this playbook, please cite the repository and the version you consulted."
+title: "AI Adoption Playbook"
+type: software
+authors:
+  - name: Musyg
+repository-code: "https://github.com/Musyg/ai-adoption-playbook"
+url: "https://github.com/Musyg/ai-adoption-playbook"
+license: MIT
+version: 0.1.0
+date-released: 2026-08-18

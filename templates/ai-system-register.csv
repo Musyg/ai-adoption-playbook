@@ -1,0 +1,2 @@
+system_id,name,status,owner,business_process,purpose,provider,model_or_version,data_classes,affected_people,risk_level,autonomy_level,human_approval,jurisdictions,last_review,next_review,decision_link
+AI-001,Example assistant,proposed,Process owner,Customer support,Draft replies,Example provider,Example model,Public data,Customers,R1,A1,required,CH,2026-08-18,2026-11-18,docs/example-decision
