@@ -31,6 +31,16 @@ for (const [pathname, language, title] of [
     assert.match(html, /Atelier Horizon/);
     assert.match(html, /8 min 35/);
     assert.match(html, /Continue conditionally|Continuer sous conditions/i);
+    assert.match(html, /id=["']sme-case["']/i);
+    assert.match(html, /Noroît Mécanique SA/);
+    assert.match(html, /76 → 27 min/);
+    assert.match(renderedText, /60[.,]8 h/);
+    assert.match(renderedText, /129[.,]2 h/);
+    assert.match(html, /163\/238/);
+    assert.match(html, /about −45%|environ −45 %/i);
+    assert.match(html, /autonomous completion at A2|traitement autonome au niveau A2/i);
+    assert.match(html, /Three evidence classes|Trois classes de preuves/i);
+    assert.match(html, /sme-b2b-quote-business-agent|pme-agent-metier-devis-b2b/i);
     assert.match(html, /Camille Rey/);
     assert.match(html, /44 to 34 minutes|44 à 34 minutes/i);
     assert.match(html, /4\/14/);

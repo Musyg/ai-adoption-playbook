@@ -200,6 +200,24 @@ const copy = {
     caseDecision: "The useful decision is not “AI works.”",
     caseDecisionText: "It is: keep the measured copilot for 60 more days, review errors weekly, rerun the frozen set after every change, and consider automation only for a stable and reversible subset.",
     caseCta: "Read the complete evidence file",
+    smeEyebrow: "WORKED EXAMPLE 02 · SME · B2B QUOTES · A2",
+    smeTitle: "A quote becomes a governed case—not a faster paragraph.",
+    smeText: "This fictional 42-person industrial SME tests a business agent on one catalogue-quote workflow. The low and high bounds stay visible, excluded requests remain in the denominator, and every price still requires approval.",
+    smeBadge: "42 people · 160 requests/month · 90-day pilot · fictional",
+    smeProblem: "Noroît Mécanique SA receives quote requests by email with PDFs and spreadsheets. The agent qualifies the request, checks the authorized customer, catalogue, pricing matrix, and lead time, prepares and verifies the quote, then—only after explicit approval—writes to the ERP and CRM and sends to the displayed recipient.",
+    smeWorkflow: [["01", "Qualify", "Known customer, catalogue product, complete units"], ["02", "Extract", "References, quantities, recipient, requested date"], ["03", "Ground", "CRM, catalogue, discount matrix, ERP lead time"], ["04", "Calculate", "Deterministic price and margin rules"], ["05", "Verify", "Facts, conflicts, policy, intended effects"], ["06", "Approve", "One person sees price, sources, and destination"], ["07", "Execute", "ERP quote, CRM log, email, and read-back"]],
+    smeRangeTitle: "One formula. Three honest planning cases.",
+    smeRangeText: "160 requests × eligible share × 76 baseline minutes × reduction on eligible work. Capacity is not revenue.",
+    smeRange: [["LOW", "60.8 h", "60% eligible · −50%"], ["CENTRAL", "97.3 h", "75% eligible · −64%"], ["HIGH", "129.2 h", "85% eligible · −75%"]],
+    smeMetrics: [["76 → 27 min", "median human time on accepted eligible quotes"], ["×2.81", "theoretical accepted throughput per human hour"], ["163/238", "ready to approve without correction"], ["≈ −45%", "portfolio ceiling after the denominator"], ["0%", "autonomous completion at A2"]],
+    smeDenominatorTitle: "The spectacular −64% becomes about −45% across the intake.",
+    smeDenominatorText: "Of 316 live requests, 238 pass initial eligibility, 220 are ultimately accepted, 18 stop safely, and 78 never enter the agent workflow. The 163/238 figure means ready to approve—not autonomous. Every quote still has a human gate.",
+    smeEvidenceTitle: "Three evidence classes that must not be mixed",
+    smeEvidence: [["SME SURVEY", "31% / 29%", "OECD: 31% report GenAI use, but only 29% of users report use in core activities. The survey does not measure the size of the gain.", "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html"], ["EMPIRICAL COPILOT", "+15%", "QJE: average increase in resolved support chats per hour across 5,172 workers. Useful lower anchor; not an A2 quote agent.", "https://academic.oup.com/qje/article/140/2/889/7990658"], ["PROVIDER CASE", "−80 to −95%", "AWS/Grupo Elfa reports these quote-processing reductions. Useful high anchor; large-scale customer claim, not independent SME proof.", "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/"]],
+    smeSourceNote: "These sources make the envelope plausible; they do not validate Noroît’s synthetic result. The local frozen set, live ledger, errors, approvals, full cost, and downstream outcome decide the gate.",
+    smeDecision: "Keep A2. Do not turn a good approval workflow into an A3 claim.",
+    smeDecisionText: "The observed case is near the central range: 89.8 hours of monthly capacity, about CHF 4,500 net of recurring cost, and a simple setup payback near 3.5 months. Custom parts, exceptional discounts, contracts, and every final price remain human.",
+    smeCta: "Open the complete SME evidence case",
     soloEyebrow: "COPILOT CASE · INDEPENDENT PROFESSIONAL · A1",
     soloTitle: "Fourteen days to test one useful boundary.",
     soloText: "A small pilot should answer a small decision. Follow an independent consultant from meeting notes to a reviewed follow-up—without connecting email, calendar, or client systems.",
@@ -432,6 +450,24 @@ const copy = {
     caseDecision: "La décision utile n’est pas « l’IA fonctionne ».",
     caseDecisionText: "Elle est : conserver le copilote mesuré pendant 60 jours, revoir les erreurs chaque semaine, répéter le jeu gelé après chaque changement et n’envisager l’automatisation que pour un sous-ensemble stable et réversible.",
     caseCta: "Lire le dossier de preuves complet",
+    smeEyebrow: "CAS COMPLET 02 · PME · DEVIS B2B · A2",
+    smeTitle: "Le devis devient un dossier gouverné, pas un paragraphe plus rapide.",
+    smeText: "Cette PME industrielle fictive de 42 personnes teste un agent métier sur un seul workflow de devis catalogue. Les bornes basse et haute restent visibles, les demandes exclues restent au dénominateur et chaque prix exige toujours une approbation.",
+    smeBadge: "42 personnes · 160 demandes/mois · pilote 90 jours · fictif",
+    smeProblem: "Noroît Mécanique SA reçoit ses demandes de devis par courriel, avec PDF et tableaux. L’agent qualifie la demande, contrôle client autorisé, catalogue, matrice de prix et délai, prépare et vérifie le devis puis — uniquement après approbation explicite — écrit dans l’ERP et le CRM et envoie au destinataire affiché.",
+    smeWorkflow: [["01", "Qualifier", "Client connu, produit catalogue, unités complètes"], ["02", "Extraire", "Références, quantités, destinataire, date demandée"], ["03", "Ancrer", "CRM, catalogue, matrice de remise, délai ERP"], ["04", "Calculer", "Règles déterministes de prix et de marge"], ["05", "Vérifier", "Faits, conflits, règles et effets prévus"], ["06", "Approuver", "Une personne voit prix, sources et destination"], ["07", "Exécuter", "Devis ERP, journal CRM, courriel et relecture"]],
+    smeRangeTitle: "Une formule. Trois scénarios de planification honnêtes.",
+    smeRangeText: "160 demandes × part éligible × 76 minutes initiales × réduction sur l’éligible. La capacité n’est pas du revenu.",
+    smeRange: [["BAS", "60,8 h", "60 % éligible · −50 %"], ["CENTRAL", "97,3 h", "75 % éligible · −64 %"], ["HAUT", "129,2 h", "85 % éligible · −75 %"]],
+    smeMetrics: [["76 → 27 min", "temps humain médian des devis éligibles acceptés"], ["×2,81", "débit accepté théorique par heure humaine"], ["163/238", "prêts à approuver sans correction"], ["≈ −45 %", "plafond portefeuille après dénominateur"], ["0 %", "traitement autonome au niveau A2"]],
+    smeDenominatorTitle: "Le spectaculaire −64 % devient environ −45 % sur les demandes reçues.",
+    smeDenominatorText: "Sur 316 demandes live, 238 passent l’éligibilité initiale, 220 sont finalement acceptées, 18 s’arrêtent proprement et 78 n’entrent jamais dans le workflow agentique. Le 163/238 signifie prêt à approuver, pas autonome. Chaque devis garde sa gate humaine.",
+    smeEvidenceTitle: "Trois classes de preuves à ne jamais mélanger",
+    smeEvidence: [["ENQUÊTE PME", "31 % / 29 %", "OCDE : 31 % déclarent utiliser l’IA générative, mais 29 % seulement des utilisatrices l’emploient dans les activités cœur. L’enquête ne mesure pas l’ampleur du gain.", "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html"], ["COPILOTE EMPIRIQUE", "+15 %", "QJE : hausse moyenne des conversations de support résolues par heure sur 5 172 personnes. Repère bas utile ; ce n’est pas un agent de devis A2.", "https://academic.oup.com/qje/article/140/2/889/7990658"], ["CAS FOURNISSEUR", "−80 à −95 %", "AWS/Grupo Elfa déclare ces réductions de traitement des devis. Repère haut utile ; cas client à grande échelle, pas preuve PME indépendante.", "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/"]],
+    smeSourceNote: "Ces sources rendent l’enveloppe plausible ; elles ne valident pas le résultat synthétique de Noroît. Le jeu gelé local, le journal live, les erreurs, approbations, coûts complets et résultats aval décident de la gate.",
+    smeDecision: "Conserver A2. Ne pas transformer un bon workflow d’approbation en revendication A3.",
+    smeDecisionText: "Le cas observé se place près du central : 89,8 heures de capacité mensuelle, environ 4 500 CHF nets des coûts récurrents et un retour simple de la mise en place proche de 3,5 mois. Pièces sur plan, remises exceptionnelles, contrats et prix final restent humains.",
+    smeCta: "Ouvrir le cas PME complet et ses preuves",
     soloEyebrow: "CAS COPILOTE · INDÉPENDANT · A1",
     soloTitle: "Quatorze jours pour tester une seule frontière utile.",
     soloText: "Un petit pilote doit éclairer une petite décision. Suivez une consultante indépendante, des notes de rendez-vous au suivi relu, sans connecter messagerie, calendrier ou systèmes clients.",
@@ -902,6 +938,17 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="case-overview"><article><span>{t.caseBadge}</span><h3>Atelier Horizon</h3><p>{t.caseProblem}</p></article><div className="case-metrics">{t.caseMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div></div>
           <ol className="case-timeline">{t.caseTimeline.map(([label, title, text]) => <li key={label}><span>{label}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="case-decision"><div><p className="eyebrow">GATE 03 · DECISION</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`}>{t.caseCta} ↗</a></div>
+        </section>
+
+        <section className="sme-case section-light" id="sme-case" aria-labelledby="sme-case-title">
+          <div className="section-heading"><p className="eyebrow">{t.smeEyebrow}</p><h2 id="sme-case-title">{t.smeTitle}</h2><p>{t.smeText}</p></div>
+          <div className="sme-lead"><article><span>{t.smeBadge}</span><h3>Noroît Mécanique SA</h3><p>{t.smeProblem}</p></article><div className="sme-mark"><strong>A2</strong><span>{locale === "en" ? "FULL WORKFLOW · HUMAN GATE" : "WORKFLOW COMPLET · GATE HUMAINE"}</span></div></div>
+          <ol className="sme-workflow" aria-label={locale === "en" ? "B2B quote workflow" : "Workflow du devis B2B"}>{t.smeWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <div className="sme-range"><div className="sme-range-copy"><p className="eyebrow">{locale === "en" ? "LOW / CENTRAL / HIGH" : "BAS / CENTRAL / HAUT"}</p><h3>{t.smeRangeTitle}</h3><p>{t.smeRangeText}</p></div><ol>{t.smeRange.map(([label, value, assumptions], index) => <li className={`sme-range-bar sme-range-${index + 1}`} key={label}><span>{label}</span><div><i aria-hidden="true" /></div><strong>{value}</strong><small>{assumptions}</small></li>)}</ol></div>
+          <div className="sme-metrics">{t.smeMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
+          <aside className="sme-denominator"><div><span>316</span><small>{locale === "en" ? "ALL REQUESTS" : "TOUTES DEMANDES"}</small></div><div><span>238</span><small>{locale === "en" ? "INITIALLY ELIGIBLE" : "ÉLIGIBLES INITIALES"}</small></div><div><span>220</span><small>{locale === "en" ? "ACCEPTED QUOTES" : "DEVIS ACCEPTÉS"}</small></div><article><strong>{t.smeDenominatorTitle}</strong><p>{t.smeDenominatorText}</p></article></aside>
+          <div className="sme-evidence"><h3>{t.smeEvidenceTitle}</h3><div>{t.smeEvidence.map(([kind, value, text, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{text}</p><b aria-hidden="true">↗</b></a>)}</div><p>{t.smeSourceNote}</p></div>
+          <div className="sme-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "LEVEL DECISION" : "DÉCISION DE NIVEAU"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
         </section>
 
         <section className="solo-case section-light" aria-labelledby="solo-title">

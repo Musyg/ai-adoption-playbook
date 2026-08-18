@@ -17,11 +17,12 @@ opérationnelle de référence.
 **Nouveau :** comparez les cas synthétiques complets d’un
 [copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
 [boîte partagée de TPE](examples/fr/tpe-demandes-clients.md), d’un
+[agent métier de devis B2B pour PME](examples/fr/pme-agent-metier-devis-b2b.md), d’un
 [agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
 
-> État : fondation publique, photographie au **18 août 2026**.
+> État : fondation publique, photographie au **19 août 2026**.
 
 ## Pourquoi ce dépôt existe
 

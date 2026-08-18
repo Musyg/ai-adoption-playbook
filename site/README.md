@@ -13,7 +13,7 @@ npm run dev
 
 Run `npm run lint`, `npm run build`, and `npm test` before publishing.
 
-English is served at `/`; French is served at `/fr/`. Both versions include two
-visual worked cases linked to complete bilingual evidence files under
-`examples/`: a 14-day independent-professional pilot and a 30-day
-micro-business pilot.
+English is served at `/`; French is served at `/fr/`. Both versions include
+five visual worked cases linked to complete bilingual evidence files under
+`examples/`: an independent copilot, a micro-business inbox, an SME B2B quote
+agent, an independent A2 business agent, and an orchestrated-agency analogy.

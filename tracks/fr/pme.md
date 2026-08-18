@@ -8,6 +8,12 @@ Organisation avec plusieurs services, systèmes métier, fournisseurs et niveaux
 
 Un portefeuille priorisé, un socle commun et un premier pilote gouverné, plutôt qu’une collection d’outils isolés.
 
+Le cas synthétique
+[Agent métier A2 pour les devis B2B](../../examples/fr/pme-agent-metier-devis-b2b.md)
+montre comment appliquer ce parcours à une PME industrielle : fourchette
+basse/centrale/haute, dénominateur global, coût complet, jeu gelé, pilote live et
+décision explicite de ne pas confondre A2 avec A3.
+
 ## Jours 1–30 — Gouverner et découvrir
 
 ### Gouvernance légère
