@@ -28,6 +28,11 @@ const calibrationSpecs: Record<IntegrationId, { low: number; high: number; setup
   agent: { low: 0.5, high: 0.75, setup: 40 },
   agency: { low: 0.8, high: 0.92, setup: 120 },
 };
+const pilotSpecs: Record<IntegrationId, { horizon: number; frozen: number; live: number; valueFloor: number }> = {
+  copilot: { horizon: 14, frozen: 20, live: 14, valueFloor: 15 },
+  agent: { horizon: 30, frozen: 40, live: 20, valueFloor: 35 },
+  agency: { horizon: 60, frozen: 60, live: 12, valueFloor: 60 },
+};
 
 const copy = {
   en: {
@@ -66,6 +71,20 @@ const copy = {
     calibratorCaution: "The calculation assumes accepted quality, no new bottleneck, and stable eligibility. It excludes model cost, supervision drift, incidents, demand elasticity, revenue, and the time of people outside the measured workflow. Replace every assumption with observed data during the pilot.",
     calibratorPreset: "Suggested setup effort",
     calibratorMonths: "months",
+    pilotPlannerEyebrow: "FROM SCENARIO TO PROTOCOL",
+    pilotPlannerTitle: "A range is not a plan. Make the next decision capable of failing cleanly.",
+    pilotPlannerText: "The calibrator exposes the assumptions. This protocol now fixes the order, practical sample, evidence, and decision before the system touches live work.",
+    pilotRoadmap: ["Scenario calibrated", "Pilot preregistered", "Evidence observed", "Scope decision"],
+    pilotPlanLabels: { horizon: "Minimum horizon", frozen: "Frozen evaluation set", live: "Bounded live cases", collection: "Live collection at this volume", days: "days", weeks: "weeks", cases: "cases" },
+    pilotPlanSteps: [["01", "Freeze the decision", "Write the owner, workflow boundary, baseline, eligibility rule, allowed effects, thresholds, and stop authority."], ["02", "Evaluate offline", "Run frozen real cases, critical segments, abstentions, adversarial inputs, tool failures, and duplicate events before live use."], ["03", "Run in shadow", "Observe the complete workflow with no external effect. Compare accepted outcomes, not model activity, against the manual baseline."], ["04", "Operate within bounds", "Release only the selected level. Keep human approval, guardian veto, least privilege, logging, and rollback wherever the level requires them."], ["05", "Make the gate decision", "Judge value, quality, safety, and eligibility separately. Continue the same scope, rework and rerun, or stop and roll back."],],
+    pilotThresholdTitle: "PRE-REGISTER THESE GATES",
+    pilotThresholds: { value: "Human active-time reduction on accepted cases", quality: "At least 90% of outputs accepted after the defined review; set the major-correction budget before launch", safety: "Zero critical error, unauthorized effect, data boundary breach, price, contract, or irreversible commitment", trace: "100% of approvals, tool calls, external effects, exceptions, and rollback evidence recorded", eligibility: "Report observed eligibility over every request—not only the cases the system accepted" },
+    pilotDecisionTitle: "ONE DATE · THREE POSSIBLE DECISIONS",
+    pilotDecisions: [["CONTINUE BOUNDED", "All critical gates pass. Keep the same workflow and permissions; set the next review."], ["REWORK + RERUN", "Value exists but quality, eligibility, or reliability misses. Fix the cause without increasing autonomy."], ["STOP + ROLLBACK", "A critical gate fails or no useful value appears. Return to the safe process and preserve the evidence."]],
+    pilotPlanCaveat: "These are practical planning floors, not statistical power calculations. Extend the sample for rare failures, low volume, high variance, affected groups, or higher-stakes decisions. Calendar time never substitutes for enough eligible cases.",
+    pilotPlanCopy: "Copy the pilot brief",
+    pilotPlanCopied: "Pilot brief copied",
+    pilotPlanTemplate: "Open the evaluation-plan template",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -218,6 +237,20 @@ const copy = {
     calibratorCaution: "Le calcul suppose une qualité acceptée, aucun nouveau goulot et une éligibilité stable. Il exclut coût modèle, dérive de supervision, incidents, élasticité de la demande, revenu et temps des personnes hors workflow mesuré. Remplacez chaque hypothèse par une observation pendant le pilote.",
     calibratorPreset: "Effort suggéré",
     calibratorMonths: "mois",
+    pilotPlannerEyebrow: "DU SCÉNARIO AU PROTOCOLE",
+    pilotPlannerTitle: "Une fourchette n’est pas un plan. La prochaine décision doit pouvoir échouer proprement.",
+    pilotPlannerText: "Le calibrateur rend les hypothèses visibles. Ce protocole fixe maintenant l’ordre, l’échantillon pratique, les preuves et la décision avant que le système ne touche au travail réel.",
+    pilotRoadmap: ["Scénario calibré", "Pilote préenregistré", "Preuves observées", "Décision de périmètre"],
+    pilotPlanLabels: { horizon: "Horizon minimal", frozen: "Jeu d’évaluation figé", live: "Cas réels bornés", collection: "Collecte réelle à ce volume", days: "jours", weeks: "semaines", cases: "cas" },
+    pilotPlanSteps: [["01", "Figer la décision", "Écrire responsable, périmètre du workflow, baseline, règle d’éligibilité, effets permis, seuils et autorité d’arrêt."], ["02", "Évaluer hors ligne", "Passer cas réels figés, segments critiques, abstentions, attaques, pannes d’outils et événements dupliqués avant tout usage réel."], ["03", "Observer en shadow", "Exécuter le workflow complet sans effet externe. Comparer les résultats acceptés — pas l’activité du modèle — à la baseline manuelle."], ["04", "Opérer dans les limites", "Ne libérer que le niveau choisi. Maintenir validation humaine, veto du gardien, moindre privilège, journal et rollback lorsque le niveau l’exige."], ["05", "Prendre la décision de gate", "Juger séparément valeur, qualité, sécurité et éligibilité. Continuer le même périmètre, corriger et rejouer, ou arrêter et revenir en arrière."],],
+    pilotThresholdTitle: "PRÉENREGISTRER CES GATES",
+    pilotThresholds: { value: "Réduction du temps humain actif sur les cas acceptés", quality: "Au moins 90 % des sorties acceptées après la revue définie ; fixer le budget de corrections majeures avant le lancement", safety: "Zéro erreur critique, effet non autorisé, rupture de frontière de données, prix, contrat ou engagement irréversible", trace: "100 % des validations, appels d’outils, effets externes, exceptions et preuves de rollback journalisés", eligibility: "Publier l’éligibilité observée sur toutes les demandes — pas seulement les cas acceptés par le système" },
+    pilotDecisionTitle: "UNE DATE · TROIS DÉCISIONS POSSIBLES",
+    pilotDecisions: [["CONTINUER BORNÉ", "Toutes les gates critiques passent. Conserver le même workflow et les mêmes permissions ; fixer la prochaine revue."], ["CORRIGER + REJOUER", "La valeur existe mais qualité, éligibilité ou fiabilité manquent le seuil. Corriger la cause sans augmenter l’autonomie."], ["ARRÊTER + ROLLBACK", "Une gate critique échoue ou aucune valeur utile n’apparaît. Revenir au processus sûr et conserver les preuves."]],
+    pilotPlanCaveat: "Ces volumes sont des planchers pratiques de planification, pas des calculs de puissance statistique. Étendez l’échantillon pour les erreurs rares, les faibles volumes, la forte variance, les groupes affectés ou les décisions à enjeu supérieur. Le temps calendaire ne remplace jamais assez de cas éligibles.",
+    pilotPlanCopy: "Copier le brief de pilote",
+    pilotPlanCopied: "Brief de pilote copié",
+    pilotPlanTemplate: "Ouvrir le modèle de plan d’évaluation",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -371,6 +404,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [monthlyCases, setMonthlyCases] = useState(40);
   const [eligibleShare, setEligibleShare] = useState(70);
   const [setupHours, setSetupHours] = useState(40);
+  const [pilotPlanCopied, setPilotPlanCopied] = useState(false);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
@@ -397,6 +431,20 @@ export function Playbook({ locale }: { locale: Locale }) {
     };
   }, [calibrationLevel, caseMinutes, monthlyCases, eligibleShare, setupHours]);
   const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
+  const pilotSpec = pilotSpecs[calibrationLevel];
+  const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
+  const pilotCollectionWeeks = pilotSpec.live / Math.max(calibration.eligibleCases, 0.01) * 4.35;
+  const pilotBrief = locale === "en"
+    ? [`AI PILOT BRIEF`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
+    : [`BRIEF DE PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+  const copyPilotBrief = async () => {
+    try {
+      await navigator.clipboard.writeText(pilotBrief);
+      setPilotPlanCopied(true);
+    } catch {
+      setPilotPlanCopied(false);
+    }
+  };
 
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
 
@@ -466,6 +514,39 @@ export function Playbook({ locale }: { locale: Locale }) {
             </output>
           </div>
           <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
+        </section>
+
+        <section className="pilot-planner section-light" id="pilot-plan" aria-labelledby="pilot-plan-title">
+          <div className="section-heading"><p className="eyebrow">{t.pilotPlannerEyebrow}</p><h2 id="pilot-plan-title">{t.pilotPlannerTitle}</h2><p>{t.pilotPlannerText}</p></div>
+          <ol className="pilot-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 1} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
+          <div className="pilot-specs" aria-live="polite">
+            <p><span>{t.pilotPlanLabels.horizon}</span><strong>{pilotSpec.horizon}</strong><small>{t.pilotPlanLabels.days}</small></p>
+            <p><span>{t.pilotPlanLabels.frozen}</span><strong>{pilotSpec.frozen}</strong><small>{t.pilotPlanLabels.cases}</small></p>
+            <p><span>{t.pilotPlanLabels.live}</span><strong>{pilotSpec.live}</strong><small>{t.pilotPlanLabels.cases}</small></p>
+            <p><span>{t.pilotPlanLabels.collection}</span><strong>≈ {formatNumber(pilotCollectionWeeks)}</strong><small>{t.pilotPlanLabels.weeks}</small></p>
+          </div>
+          <div className="pilot-protocol">
+            <ol className="pilot-steps">{t.pilotPlanSteps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
+            <aside className="pilot-gates">
+              <p className="eyebrow">{t.pilotThresholdTitle}</p>
+              <h3>{pilotLevelLabel}</h3>
+              <ol>
+                <li><span>V</span><p><strong>≥ {pilotSpec.valueFloor}%</strong>{t.pilotThresholds.value}</p></li>
+                <li><span>Q</span><p>{t.pilotThresholds.quality}</p></li>
+                <li><span>S</span><p>{t.pilotThresholds.safety}</p></li>
+                <li><span>T</span><p>{t.pilotThresholds.trace}</p></li>
+                <li><span>E</span><p>{t.pilotThresholds.eligibility}</p></li>
+              </ol>
+            </aside>
+          </div>
+          <div className="pilot-decision-board">
+            <p className="eyebrow">{t.pilotDecisionTitle}</p>
+            <div>{t.pilotDecisions.map(([decision, text], index) => <article data-decision={index} key={decision}><span>0{index + 1}</span><h3>{decision}</h3><p>{text}</p></article>)}</div>
+          </div>
+          <div className="pilot-plan-footer">
+            <p>{t.pilotPlanCaveat}</p>
+            <div><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/evaluation-plan.fr.md`}>{t.pilotPlanTemplate} ↗</a></div>
+          </div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">

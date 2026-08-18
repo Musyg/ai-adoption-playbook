@@ -6,15 +6,17 @@
 
 [![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](site/)
 
-L’édition visuelle bilingue transforme la méthode en parcours interactif : on
-choisit sa structure, on ne révèle que le niveau de détail utile, puis on oriente
-les contrôles selon le risque et l’autonomie. Les guides Markdown restent la
-source opérationnelle de référence.
+L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
+copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
+convertir en protocole de pilote préenregistré ; puis orienter les contrôles selon le
+risque et l’autonomie. Les guides Markdown restent la source opérationnelle de référence.
 
-**Nouveau :** suivez deux cas synthétiques complets : le
-[suivi client d’un indépendant sur 14 jours](examples/fr/independant-suivi-client.md)
-et le [traitement des demandes d’une TPE](examples/fr/tpe-demandes-clients.md),
-de la baseline jusqu’à une décision de gate conditionnelle.
+**Nouveau :** comparez les cas synthétiques complets d’un
+[copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
+[boîte partagée de TPE](examples/fr/tpe-demandes-clients.md), d’un
+[agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
+[agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
+de la baseline jusqu’à une décision explicite de périmètre.
 
 > État : fondation publique, photographie au **18 août 2026**.
 

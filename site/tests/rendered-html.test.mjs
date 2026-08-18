@@ -53,6 +53,10 @@ for (const [pathname, language, title] of [
     assert.match(renderedText, /14–21 h/);
     assert.match(renderedText, /35–52[.,]5%/);
     assert.match(renderedText, /×2–4/);
+    assert.match(html, /A range is not a plan|Une fourchette n’est pas un plan/i);
+    assert.match(html, /Pilot preregistered|Pilote préenregistré/i);
+    assert.match(renderedText, /≥ 35%/);
+    assert.match(html, /REWORK \+ RERUN|CORRIGER \+ REJOUER/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

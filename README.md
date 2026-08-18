@@ -6,15 +6,17 @@
 
 [![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](site/)
 
-The bilingual visual edition turns the method into an interactive path: choose
-your organization, reveal only the next useful level of detail, and orient the
-controls by risk and autonomy. The Markdown guides remain the operational source
-of truth.
+The bilingual visual edition turns the method into an interactive path: distinguish
+copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
+range; turn it into a preregistered pilot protocol; then orient controls by risk and
+autonomy. The Markdown guides remain the operational source of truth.
 
-**New:** follow two complete synthetic cases: a
-[14-day independent client-follow-up pilot](examples/en/independent-client-follow-up.md)
-and a [micro-business customer-request pilot](examples/en/tpe-customer-requests.md),
-from baseline and pre-registered thresholds to a conditional gate decision.
+**New:** compare the complete synthetic cases for an
+[independent copilot](examples/en/independent-client-follow-up.md), a
+[micro-business shared inbox](examples/en/tpe-customer-requests.md), a
+[bounded business agent](examples/en/independent-business-agent-follow-up.md), and an
+[orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
+from baseline and pre-registered thresholds to an explicit scope decision.
 
 > Status: public foundation, snapshot **2026-08-18**. The operational edition is currently written in French; English translations are tracked in the roadmap.
 

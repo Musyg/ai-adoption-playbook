@@ -97,7 +97,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .section-dark { background: var(--dark); color: var(--dark-text); }
 .section-light { background: var(--paper); color: var(--ink); }
 .section-blue { background: var(--blue); color: #071018; }
-.integration-guide, .calibrator, .paths, .method, .worked-case, .solo-case, .agent-case, .agency-case, .controls, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
+.integration-guide, .calibrator, .pilot-planner, .paths, .method, .worked-case, .solo-case, .agent-case, .agency-case, .controls, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
 .section-heading { display: grid; gap: 24px 48px; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); margin-bottom: 48px; }
 .section-heading .eyebrow { grid-column: 1 / -1; }
 h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1.02; margin: 0; }
@@ -182,6 +182,50 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .calibrator-note { align-items: start; background: rgb(255 255 255 / 30%); border-left: 4px solid #071018; display: grid; gap: 20px 36px; grid-template-columns: .55fr 1.45fr; margin-top: 16px; padding: 24px 28px; }
 .calibrator-note strong { color: #071018; font: 700 12px/1.4 "Courier New", monospace; letter-spacing: .08em; }
 .calibrator-note p { color: #123448; font-size: 13px; line-height: 1.55; margin: 0; }
+
+.pilot-roadmap { display: grid; grid-template-columns: repeat(4, 1fr); list-style: none; margin: 0 0 16px; padding: 0; }
+.pilot-roadmap li { align-items: center; border: 1px solid var(--line); border-right: 0; display: flex; gap: 12px; min-height: 64px; padding: 13px 16px; }
+.pilot-roadmap li:last-child { border-right: 1px solid var(--line); }
+.pilot-roadmap li[data-current="true"] { background: var(--blue); border-color: var(--blue); }
+.pilot-roadmap span { color: var(--blue-deep); font: 700 11px "Courier New", monospace; }
+.pilot-roadmap strong { font-size: 12px; line-height: 1.3; }
+.pilot-specs { background: var(--dark); color: var(--dark-text); display: grid; grid-template-columns: repeat(4, 1fr); }
+.pilot-specs p { border-right: 1px solid var(--dark-line); display: grid; grid-template-columns: 1fr auto; margin: 0; min-height: 142px; padding: 20px; }
+.pilot-specs p:last-child { border-right: 0; }
+.pilot-specs span { color: var(--dark-muted); font-size: 11px; line-height: 1.4; }
+.pilot-specs strong { align-self: end; color: var(--blue); font: 700 clamp(34px, 4vw, 52px)/.9 "Courier New", monospace; grid-column: 1 / -1; letter-spacing: -.06em; }
+.pilot-specs small { align-self: end; color: var(--dark-muted); font-size: 10px; }
+
+.pilot-protocol { display: grid; gap: 16px; grid-template-columns: 1.15fr .85fr; margin-top: 16px; }
+.pilot-steps { border: 1px solid var(--line); list-style: none; margin: 0; padding: 0 28px; }
+.pilot-steps li { border-bottom: 1px solid var(--line); display: grid; gap: 18px; grid-template-columns: 42px 1fr; padding: 20px 0; }
+.pilot-steps li:last-child { border-bottom: 0; }
+.pilot-steps > li > span { color: var(--blue-deep); font: 700 12px "Courier New", monospace; }
+.pilot-steps strong { font-size: 15px; }
+.pilot-steps p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 6px 0 0; }
+.pilot-gates { background: var(--blue); color: #071018; padding: 28px; }
+.pilot-gates .eyebrow { color: #083b61; font-size: 10px; }
+.pilot-gates > h3 { font-size: clamp(26px, 3vw, 38px); letter-spacing: -.04em; line-height: 1; margin: 0 0 26px; }
+.pilot-gates ol { list-style: none; margin: 0; padding: 0; }
+.pilot-gates li { border-top: 1px solid rgb(7 16 24 / 24%); display: grid; gap: 13px; grid-template-columns: 28px 1fr; padding: 14px 0; }
+.pilot-gates li > span { border: 1px solid rgb(7 16 24 / 45%); font: 700 11px/25px "Courier New", monospace; height: 27px; text-align: center; width: 27px; }
+.pilot-gates li p { font-size: 12px; line-height: 1.45; margin: 0; }
+.pilot-gates li p strong { display: block; font: 700 22px "Courier New", monospace; margin-bottom: 4px; }
+
+.pilot-decision-board { background: var(--dark); color: var(--dark-text); margin-top: 16px; padding: 28px; }
+.pilot-decision-board > .eyebrow { color: var(--blue); font-size: 10px; }
+.pilot-decision-board > div { display: grid; grid-template-columns: repeat(3, 1fr); }
+.pilot-decision-board article { border: 1px solid var(--dark-line); border-right: 0; min-height: 190px; padding: 20px; }
+.pilot-decision-board article:last-child { border-right: 1px solid var(--dark-line); }
+.pilot-decision-board article > span { color: var(--blue); font: 700 11px "Courier New", monospace; }
+.pilot-decision-board h3 { font-size: 16px; margin: 46px 0 10px; }
+.pilot-decision-board p { color: var(--dark-muted); font-size: 12px; line-height: 1.5; margin: 0; }
+.pilot-decision-board article[data-decision="2"] h3 { color: #ffad9f; }
+.pilot-plan-footer { align-items: center; border: 1px solid var(--line); display: grid; gap: 28px; grid-template-columns: 1fr auto; margin-top: 16px; padding: 24px 28px; }
+.pilot-plan-footer > p { color: var(--muted); font-size: 12px; line-height: 1.55; margin: 0; }
+.pilot-plan-footer > div { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.pilot-plan-footer button { border: 0; cursor: pointer; font-family: inherit; }
+.pilot-plan-footer .secondary { color: var(--ink); }
 
 .path-grid { border-bottom: 1px solid var(--dark-line); border-top: 1px solid var(--dark-line); display: grid; grid-template-columns: repeat(5, 1fr); }
 .path-card {
@@ -528,6 +572,9 @@ footer a { color: var(--blue); }
   .measurement-block { grid-template-columns: 1fr; }
   .measurement-block ol { grid-template-columns: repeat(5, 1fr); }
   .calibrator-shell { grid-template-columns: 1fr; }
+  .pilot-protocol { grid-template-columns: 1fr; }
+  .pilot-plan-footer { align-items: start; grid-template-columns: 1fr; }
+  .pilot-plan-footer > div { justify-content: flex-start; }
 }
 
 @media (max-width: 680px) {
@@ -540,7 +587,7 @@ footer a { color: var(--blue); }
   .stat-strip { grid-template-columns: 1fr; padding: 0 20px; }
   .stat-strip p, .stat-strip p:last-child { border-left: 0; border-right: 0; border-top: 1px solid var(--line); }
   .stat-strip p:first-child { border-top: 0; }
-  .integration-guide, .calibrator, .paths, .method, .worked-case, .solo-case, .agent-case, .agency-case, .controls, .toolkit, .ladder-section { padding: 72px 20px; }
+  .integration-guide, .calibrator, .pilot-planner, .paths, .method, .worked-case, .solo-case, .agent-case, .agency-case, .controls, .toolkit, .ladder-section { padding: 72px 20px; }
   .section-heading, .source-note { grid-template-columns: 1fr; }
   .path-grid { grid-template-columns: 1fr; }
   .path-card { border-top: 1px solid var(--dark-line); min-height: 200px; }
@@ -612,6 +659,16 @@ footer a { color: var(--blue); }
   .calibrator-result-grid { grid-template-columns: 1fr; }
   .calibrator-result-grid p, .calibrator-result-grid p:nth-child(2n) { border-right: 1px solid var(--dark-line); min-height: 120px; }
   .calibrator-note { grid-template-columns: 1fr; }
+  .pilot-roadmap, .pilot-specs, .pilot-decision-board > div { grid-template-columns: 1fr; }
+  .pilot-roadmap li, .pilot-roadmap li:last-child { border-bottom: 0; border-right: 1px solid var(--line); }
+  .pilot-roadmap li:last-child { border-bottom: 1px solid var(--line); }
+  .pilot-specs p, .pilot-specs p:last-child { border-bottom: 1px solid var(--dark-line); border-right: 0; min-height: 118px; }
+  .pilot-specs p:last-child { border-bottom: 0; }
+  .pilot-steps { padding: 0 20px; }
+  .pilot-decision-board article, .pilot-decision-board article:last-child { border-bottom: 0; border-right: 1px solid var(--dark-line); min-height: 170px; }
+  .pilot-decision-board article:last-child { border-bottom: 1px solid var(--dark-line); }
+  .pilot-plan-footer > div { align-items: stretch; flex-direction: column; }
+  .pilot-plan-footer .button { text-align: center; }
   .tool-grid { grid-template-columns: 1fr; }
   .tool-grid a, .tool-grid a:nth-child(3n), .tool-grid a:last-child { border-bottom: 0; border-right: 1px solid var(--dark-line); }
   .tool-grid a:last-child { border-bottom: 1px solid var(--dark-line); }
