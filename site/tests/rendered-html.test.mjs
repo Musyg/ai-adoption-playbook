@@ -67,6 +67,10 @@ for (const [pathname, language, title] of [
     assert.match(html, /LIVE · BOUNDED|ACTIF · BORNÉ/i);
     assert.match(html, /ROLLBACK IN FIVE PROVABLE STEPS|ROLLBACK EN CINQ ÉTAPES PROUVABLES/i);
     assert.match(renderedText, /1 September 2026|1 septembre 2026/i);
+    assert.match(html, /id=["']decision-dossier["']/i);
+    assert.match(html, /DRAFT DOSSIER|DOSSIER BROUILLON/i);
+    assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
+    assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

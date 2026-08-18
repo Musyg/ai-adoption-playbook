@@ -9,6 +9,7 @@ type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type IntegrationId = "copilot" | "agent" | "agency";
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
+type DossierStatus = "ready" | "recorded" | "incomplete";
 type Phase = { label: string; title: string; text: string };
 type Audience = {
   id: AudienceId;
@@ -144,6 +145,22 @@ const copy = {
     operationCopy: "Copy the operating card",
     operationCopied: "Operating card copied",
     operationRunbook: "Open the incident runbook",
+    dossierEyebrow: "HAND OFF THE DECISION · NOT THE DEMO",
+    dossierTitle: "Package the whole chain of evidence into one reviewable decision dossier.",
+    dossierText: "A future owner should be able to reconstruct the assumptions, protocol, observed result, authorized scope, and rollback without relying on memory or a slide deck.",
+    dossierArtifacts: [["01", "Calibrated scenario", "Volume, manual baseline, eligible share, planning range, and setup assumption."], ["02", "Preregistered protocol", "Level, horizon, frozen set, bounded live sample, thresholds, and possible decisions."], ["03", "Gate decision", "Observed value, quality, safety, trace, eligibility, denominator, and authorized next action."], ["04", "Operating card", "Named owners, scope, monitoring, suspension triggers, rollback, change rule, and review date."]],
+    dossierStatuses: { ready: "READY", recorded: "RECORDED", incomplete: "TO COMPLETE" },
+    dossierReady: "REVIEWABLE DOSSIER",
+    dossierDraft: "DRAFT DOSSIER",
+    dossierMissing: "items still missing",
+    dossierEvidenceMissing: "Complete decision sample or effect trace",
+    dossierHandoffTitle: "ATTACH OR REFERENCE THESE SIX RECORDS",
+    dossierHandoff: ["Signed mandate, scope, affected people, and current manual baseline with denominator.", "Exact system inventory: model, prompts, retrieval sources, tools, permissions, policies, suppliers, and versions.", "Frozen evaluation-set identifier or hash, segments, adversarial cases, thresholds, and reproducible results.", "Live-case ledger with eligibility, approvals, corrections, tool calls, destinations, external effects, read-backs, and rollbacks.", "Signed gate decision separating value, quality, safety, evaluability, economics, and authorized scope.", "Named operating and incident owners, contact route, fallback proof, rollback rehearsal, next review, and retirement path."],
+    dossierBoundaryTitle: "KEEP THE DOSSIER SHAREABLE",
+    dossierBoundary: "The exported Markdown contains the decision summary, not raw client data or secrets. Link to access-controlled evidence by stable identifier or hash, and record who can retrieve it. A file path that only one person understands is not a handoff.",
+    dossierCopy: "Copy the complete dossier",
+    dossierCopied: "Complete dossier copied",
+    dossierDownload: "Download Markdown dossier",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -360,6 +377,22 @@ const copy = {
     operationCopy: "Copier la fiche d’exploitation",
     operationCopied: "Fiche d’exploitation copiée",
     operationRunbook: "Ouvrir le runbook d’incident",
+    dossierEyebrow: "TRANSMETTRE LA DÉCISION · PAS LA DÉMO",
+    dossierTitle: "Rassemblez toute la chaîne de preuves dans un dossier de décision révisable.",
+    dossierText: "Un futur responsable doit pouvoir reconstruire hypothèses, protocole, résultat observé, périmètre autorisé et rollback sans dépendre d’une mémoire orale ou d’un diaporama.",
+    dossierArtifacts: [["01", "Scénario calibré", "Volume, baseline manuelle, part éligible, fourchette de planification et hypothèse de mise en place."], ["02", "Protocole préenregistré", "Niveau, horizon, jeu figé, échantillon réel borné, seuils et décisions possibles."], ["03", "Décision de gate", "Valeur, qualité, sécurité, trace, éligibilité et dénominateur observés, puis prochaine action autorisée."], ["04", "Fiche d’exploitation", "Responsables nommés, périmètre, surveillance, arrêts, rollback, gestion du changement et date de revue."]],
+    dossierStatuses: { ready: "PRÊT", recorded: "CONSIGNÉ", incomplete: "À COMPLÉTER" },
+    dossierReady: "DOSSIER RÉVISABLE",
+    dossierDraft: "DOSSIER BROUILLON",
+    dossierMissing: "éléments encore manquants",
+    dossierEvidenceMissing: "Compléter l’échantillon de décision ou la trace des effets",
+    dossierHandoffTitle: "JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS",
+    dossierHandoff: ["Mandat signé, périmètre, personnes affectées et baseline manuelle actuelle avec dénominateur.", "Inventaire exact du système : modèle, prompts, sources RAG, outils, permissions, règles, fournisseurs et versions.", "Identifiant ou hash du jeu d’évaluation figé, segments, cas adversariaux, seuils et résultats reproductibles.", "Registre des cas réels avec éligibilité, validations, corrections, appels d’outils, destinations, effets externes, relectures et rollbacks.", "Décision de gate signée séparant valeur, qualité, sécurité, évaluabilité, économie et périmètre autorisé.", "Responsables d’exploitation et d’incident nommés, contact, preuve du fallback, exercice de rollback, prochaine revue et voie de retrait."],
+    dossierBoundaryTitle: "GARDER LE DOSSIER PARTAGEABLE",
+    dossierBoundary: "Le Markdown exporté contient la synthèse de décision, pas les données clients brutes ni les secrets. Référencez les preuves sous contrôle d’accès par identifiant stable ou hash, et indiquez qui peut les retrouver. Un chemin de fichier compris par une seule personne n’est pas une transmission.",
+    dossierCopy: "Copier le dossier complet",
+    dossierCopied: "Dossier complet copié",
+    dossierDownload: "Télécharger le dossier Markdown",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -525,6 +558,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [incidentOwner, setIncidentOwner] = useState(t.operationDefaults.incident);
   const [reviewDate, setReviewDate] = useState(operationSpecs.agent.reviewDate);
   const [operationCopied, setOperationCopied] = useState(false);
+  const [dossierCopied, setDossierCopied] = useState(false);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
@@ -584,6 +618,47 @@ export function Playbook({ locale }: { locale: Locale }) {
   const operationCard = locale === "en"
     ? [`BOUNDED AI OPERATING CARD`, `Level: ${pilotLevelLabel}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationSpec.containment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
     : [`FICHE D’EXPLOITATION IA BORNÉE`, `Niveau : ${pilotLevelLabel}`, `État d’exploitation : ${operationState.label}`, `Responsable du workflow : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationSpec.containment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Rollback : contenir → router en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
+  const operationOwnerReady = operationOwner.trim().length > 0 && operationOwner.trim() !== t.operationDefaults.owner;
+  const incidentOwnerReady = incidentOwner.trim().length > 0 && incidentOwner.trim() !== t.operationDefaults.incident;
+  const evidenceRecordReady = evidenceDecision !== "unknown";
+  const dossierMissingItems = [
+    ...(!evidenceRecordReady ? [t.dossierEvidenceMissing] : []),
+    ...(!operationOwnerReady ? [t.operationFields.owner] : []),
+    ...(!incidentOwnerReady ? [t.operationFields.incident] : []),
+  ];
+  const dossierReady = dossierMissingItems.length === 0;
+  const dossierArtifactStatuses: DossierStatus[] = ["ready", "ready", evidenceRecordReady ? "recorded" : "incomplete", operationOwnerReady && incidentOwnerReady ? "ready" : "incomplete"];
+  const dossierMarkdown = [
+    `# ${locale === "en" ? "AI Adoption Decision Dossier" : "Dossier de décision d’adoption IA"}`,
+    ``,
+    `**${locale === "en" ? "Status" : "État"}:** ${dossierReady ? t.dossierReady : t.dossierDraft}`,
+    `**${locale === "en" ? "Playbook snapshot" : "Photographie du playbook"}:** 2026-08-18`,
+    ...(dossierMissingItems.length ? [`**${locale === "en" ? "Missing" : "Manquant"}:** ${dossierMissingItems.join(" · ")}`] : []),
+    ``,
+    `## 1. ${t.dossierArtifacts[0][1]}`,
+    ``,
+    pilotBrief,
+    ``,
+    `## 2. ${t.dossierArtifacts[1][1]}`,
+    ``,
+    `${locale === "en" ? "Preregistered level and gate protocol" : "Niveau et protocole de gate préenregistrés"}: ${pilotLevelLabel} · ${pilotSpec.horizon} ${t.pilotPlanLabels.days} · ${pilotSpec.frozen} ${t.pilotPlanLabels.cases} ${locale === "en" ? "frozen" : "figés"} · ${pilotSpec.live} ${locale === "en" ? "bounded live" : "réels bornés"}.`,
+    ``,
+    `## 3. ${t.dossierArtifacts[2][1]}`,
+    ``,
+    evidenceMemo,
+    ``,
+    `## 4. ${t.dossierArtifacts[3][1]}`,
+    ``,
+    operationCard,
+    ``,
+    `## ${t.dossierHandoffTitle}`,
+    ``,
+    ...t.dossierHandoff.map((item) => `- [ ] ${item}`),
+    ``,
+    `## ${t.dossierBoundaryTitle}`,
+    ``,
+    t.dossierBoundary,
+  ].join("\n");
   const copyPilotBrief = async () => {
     try {
       await navigator.clipboard.writeText(pilotBrief);
@@ -607,6 +682,23 @@ export function Playbook({ locale }: { locale: Locale }) {
     } catch {
       setOperationCopied(false);
     }
+  };
+  const copyDossier = async () => {
+    try {
+      await navigator.clipboard.writeText(dossierMarkdown);
+      setDossierCopied(true);
+    } catch {
+      setDossierCopied(false);
+    }
+  };
+  const downloadDossier = () => {
+    const blob = new Blob([dossierMarkdown], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `ai-adoption-decision-${calibrationLevel}.md`;
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
@@ -655,7 +747,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
-              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
+              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); setDossierCopied(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
               <div className="calibrator-inputs">
                 <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
                 <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
@@ -748,9 +840,9 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="operation-contract">
             <output className="operation-state" data-state={evidenceDecision} aria-live="polite"><span>{locale === "en" ? "CURRENT OPERATING STATE" : "ÉTAT D’EXPLOITATION ACTUEL"}</span><strong>{operationState.label}</strong><p>{operationState.text}</p><small>{evidenceDecisionCopy.label} → {pilotLevelLabel}</small></output>
             <fieldset className="operation-owners"><legend>{t.operationOwnersTitle}</legend>
-              <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); }} type="text" value={operationOwner} /></label>
-              <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); }} type="text" value={incidentOwner} /></label>
-              <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} min="2026-08-19" onChange={(event) => { if (event.target.value) setReviewDate(event.target.value); setOperationCopied(false); }} type="date" value={reviewDate} /></label>
+              <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} type="text" value={operationOwner} /></label>
+              <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} type="text" value={incidentOwner} /></label>
+              <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} min="2026-08-19" onChange={(event) => { if (event.target.value) setReviewDate(event.target.value); setOperationCopied(false); setDossierCopied(false); }} type="date" value={reviewDate} /></label>
             </fieldset>
           </div>
           <div className="operation-metrics">
@@ -765,6 +857,18 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <div className="operation-rules"><article><span>{t.operationChangeRuleTitle}</span><p>{t.operationChangeRule}</p></article><article><span>{t.operationRetireTitle}</span><p>{t.operationRetire}</p></article></div>
           <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/incident-runbook.fr.md`}>{t.operationRunbook} ↗</a></div></div>
+        </section>
+
+        <section className="decision-dossier section-dark" id="decision-dossier" aria-labelledby="decision-dossier-title">
+          <div className="section-heading"><p className="eyebrow">{t.dossierEyebrow}</p><h2 id="decision-dossier-title">{t.dossierTitle}</h2><p>{t.dossierText}</p></div>
+          <div className="dossier-status" data-ready={dossierReady}><div><span>{locale === "en" ? "CURRENT PACKAGE STATE" : "ÉTAT ACTUEL DU DOSSIER"}</span><strong>{dossierReady ? t.dossierReady : t.dossierDraft}</strong></div><p><strong>{dossierMissingItems.length}</strong><span>{t.dossierMissing}</span></p></div>
+          <div className="dossier-artifacts">{t.dossierArtifacts.map(([number, title, text], index) => <article data-status={dossierArtifactStatuses[index]} key={number}><div><span>{number}</span><em>{t.dossierStatuses[dossierArtifactStatuses[index]]}</em></div><h3>{title}</h3><p>{text}</p></article>)}</div>
+          {dossierMissingItems.length > 0 && <aside className="dossier-missing"><span>{locale === "en" ? "COMPLETE BEFORE HANDOFF" : "À COMPLÉTER AVANT TRANSMISSION"}</span><ul>{dossierMissingItems.map((item) => <li key={item}>{item}</li>)}</ul></aside>}
+          <div className="dossier-handoff">
+            <article><p className="eyebrow">{t.dossierHandoffTitle}</p><ol>{t.dossierHandoff.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></li>)}</ol></article>
+            <aside><span>{t.dossierBoundaryTitle}</span><p>{t.dossierBoundary}</p><div><strong>4</strong><small>{locale === "en" ? "decision artifacts in the export" : "artefacts de décision dans l’export"}</small></div></aside>
+          </div>
+          <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
