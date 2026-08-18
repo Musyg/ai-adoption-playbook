@@ -9,12 +9,12 @@ There is no unfinished implementation hidden behind this handoff.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `2389ac797e3076abb79703dde9e3c97a44293da5`
+- Reference implementation commit: `41b4fccb3487cf5bcef26c5b07a93947ed9f22e9`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `331785f41b3df95d4cc67ab9a78e19bc9d631d2e`
+- Publishing-mirror commit: `5036074ab41ff37381e4f75e2f95f830f2d69e9d`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +26,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `15`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_9e323752c874819185126f8fa27233b1`
-- Source commit used by Sites: `331785f41b3df95d4cc67ab9a78e19bc9d631d2e`
-- Archive content hash: `sha256:a764a2e8b22c821df0d6036ac59dcb12a6729db2d85822a9f451c607e26b2e68`
-- Deployment ID: `appgdep_6a84ebb29a348191a10c6f086fa6f55f`
+- Current Sites version: `16`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_0dbe0351b78c8191b792f4645c87c96c`
+- Source commit used by Sites: `5036074ab41ff37381e4f75e2f95f830f2d69e9d`
+- Archive content hash: `sha256:a68858e8d3977686669e0b6fba18bb39c1d6233c91d5e38eef3320f6b27adaa0`
+- Deployment ID: `appgdep_6a84efc53e648191a30a7e7a10117030`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -55,13 +55,15 @@ horizontal rail. The primary hero action now starts at the integration-level
 distinction instead of jumping past the new workflow.
 
 The worked material includes an independent-professional copilot, a bounded
-business agent, an orchestrated-agency analogy, a TPE customer-request case, and
-an SME/PME A2 business agent for B2B quotes. The SME case makes its low, central,
-and high assumptions calculable; separates eligible-work gains from the global
-denominator; distinguishes survey, empirical-copilot, and provider-case evidence;
-and keeps all prices behind explicit approval. The numerical ranges are planning
-envelopes and the cases are synthetic; neither is presented as a universal
-forecast or field proof.
+business agent, an orchestrated-agency analogy, a TPE customer-request case, an
+SME/PME A2 business agent for B2B quotes, and a foundation A2 agent for grant
+dossier administration. The new Fondation Lien Local case keeps telephone and
+paper channels open, separates administrative transport from funding judgment,
+uses a full 120-application denominator, and makes access, dignity, equity, and
+recourse four mission vetoes. Its low, central, and high ranges are calculable;
+all funding decisions remain human. The numerical ranges are planning envelopes
+and the cases are synthetic; none is presented as a universal forecast or field
+proof.
 
 ## Decision and evidence rules
 
@@ -93,13 +95,17 @@ mirror where applicable:
 - Gate-decision unit tests: 4/4 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 6/6 passed.
-- Repository validation: 43 Markdown files and register contract passed.
-- Browser audit: 1440 × 900 and 390 × 844, including the new SME case.
-- Browser structure: no duplicate IDs, no unnamed visible controls, and no page
-  overflow at either audited viewport.
+- Repository validation: 46 Markdown files and register contract passed.
+- Previous browser audit: 1440 × 900 and 390 × 844, through the SME case.
+- That earlier browser audit found no duplicate IDs, unnamed visible controls,
+  or page overflow at either audited viewport.
 - New SME rendered assertions cover the A2 level, 60.8–129.2 hour envelope,
   76-to-27-minute observation, 163/238 correction denominator, approximately
   45% portfolio ceiling, 0% autonomous completion, and evidence-class boundary.
+- New foundation rendered assertions cover the A2 boundary, 23.8–53.8 hour
+  envelope, 96-to-39-minute observation, 58/86 correction denominator,
+  approximately 39% portfolio ceiling, 100% human funding decisions, four
+  mission vetoes, and the sector-evidence boundary.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -133,20 +139,23 @@ hash from another session.
   reference data. Review them before presenting a later release as current.
 - Markdown operating tracks currently exist in French only. The English web
   experience does not mean every underlying guide has an English file.
-- The roadmap still lacks worked examples for nonprofit/foundation and
-  public-sector tracks, plus the planned machine-readable control crosswalk.
+- No new browser-control audit was run for the foundation section. The exact
+  canonical and publishing-mirror sources matched byte for byte, and both passed
+  lint, production build, and bilingual rendered-HTML tests.
+- The roadmap still lacks the public-sector worked example and the planned
+  machine-readable control crosswalk.
 
 ## First authorized next step
 
 The implementation is complete. The next session should first open Sites version
-15 while signed in and collect one bounded list of editorial or visual defects.
+16 while signed in and collect one bounded list of editorial or visual defects.
 Do not change access mode, architecture, claims, or deploy another version without
 a new user request.
 
 If the reference version is accepted without defects, resume roadmap `0.2` with
-one missing worked case at a time. The recommended next content task is the
-nonprofit/foundation case, followed by public sector. Keep every case synthetic,
-source-labelled, denominator-aware, and explicit about transfer limits.
+the public-sector worked case. Keep it synthetic, source-labelled,
+denominator-aware, explicit about transfer limits, and strict about mandate,
+appeal, recordkeeping, procurement, and equality of access.
 
 ## Resume checklist
 
