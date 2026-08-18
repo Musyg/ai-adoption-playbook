@@ -50,10 +50,33 @@ button, summary { font: inherit; }
   text-decoration: none;
 }
 .brand span { background: var(--blue); height: 4px; width: 52px; }
-nav { align-items: center; display: flex; gap: 24px; }
-nav a { color: var(--muted); font: 700 11px/1 "Courier New", monospace; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
-nav a:hover { color: var(--ink); }
+.site-nav { align-items: center; display: flex; gap: 24px; }
+.site-nav a { color: var(--muted); font: 700 11px/1 "Courier New", monospace; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.site-nav a:hover { color: var(--ink); }
 .lang { border: 1px solid var(--line); border-radius: 999px; padding: 9px 11px; }
+
+.journey-nav {
+  background: var(--dark);
+  border-bottom: 1px solid var(--dark-line);
+  color: var(--dark-text);
+  display: grid;
+  grid-template-columns: minmax(170px, .9fr) repeat(5, minmax(130px, 1fr));
+  margin: 0 auto;
+  max-width: 1280px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  position: sticky;
+  scrollbar-color: var(--blue) var(--dark);
+  scrollbar-width: thin;
+  scroll-snap-type: inline proximity;
+  top: 0;
+  z-index: 12;
+}
+.journey-nav > strong { align-items: center; color: var(--dark-muted); display: flex; font: 700 10px/1.25 "Courier New", monospace; letter-spacing: .12em; padding: 0 24px; text-transform: uppercase; }
+.journey-nav a { align-items: center; border-left: 1px solid var(--dark-line); display: flex; gap: 10px; min-height: 60px; padding: 13px 18px; scroll-snap-align: start; text-decoration: none; white-space: nowrap; }
+.journey-nav a:hover { background: #182027; }
+.journey-nav a span { color: var(--blue); font: 700 11px/1 "Courier New", monospace; }
+.journey-nav a b { color: var(--dark-text); font-size: 13px; }
 
 .hero {
   display: grid;
@@ -98,6 +121,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .section-light { background: var(--paper); color: var(--ink); }
 .section-blue { background: var(--blue); color: #071018; }
 .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .paths, .method, .worked-case, .solo-case, .agent-case, .agency-case, .controls, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
+main section[id] { scroll-margin-top: 72px; }
 .section-heading { display: grid; gap: 24px 48px; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); margin-bottom: 48px; }
 .section-heading .eyebrow { grid-column: 1 / -1; }
 h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1.02; margin: 0; }
@@ -670,8 +694,8 @@ footer a { color: var(--blue); }
 }
 
 @media (max-width: 980px) {
-  nav { gap: 14px; }
-  nav a:nth-child(-n+5) { display: none; }
+  .site-nav { gap: 14px; }
+  .site-nav a:nth-child(-n+5) { display: none; }
   .hero { grid-template-columns: 1fr; padding-top: 72px; }
   .hero-rule { max-width: 560px; }
   .path-grid { grid-template-columns: repeat(2, 1fr); }
@@ -741,7 +765,10 @@ footer a { color: var(--blue); }
   .site-header { align-items: flex-start; padding: 20px; }
   .brand { font-size: 11px; gap: 10px; }
   .brand span { width: 30px; }
-  nav a:not(.lang) { display: none; }
+  .site-nav a:not(.lang) { display: none; }
+  .journey-nav { grid-template-columns: repeat(5, minmax(142px, 1fr)); max-width: none; }
+  .journey-nav > strong { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
+  .journey-nav a { min-height: 56px; padding: 11px 16px; }
   .hero { gap: 52px; padding: 64px 20px; }
   h1 { font-size: 48px; }
   .stat-strip { grid-template-columns: 1fr; padding: 0 20px; }
@@ -871,7 +898,7 @@ footer a { color: var(--blue); }
 }
 
 @media print {
-  .site-header, .hero-actions, .control-explorer, footer { display: none; }
+  .site-header, .journey-nav, .hero-actions, .control-explorer, footer { display: none; }
   .section-dark { background: white; color: black; }
   .path-card { color: black; min-height: auto; }
   details { break-inside: avoid; }

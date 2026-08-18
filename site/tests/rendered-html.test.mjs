@@ -71,8 +71,12 @@ for (const [pathname, language, title] of [
     assert.match(html, /DRAFT DOSSIER|DOSSIER BROUILLON/i);
     assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
     assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
+    assert.match(html, /Guided decision path|Parcours de décision guidé/i);
+    assert.match(html, /href=["']#calibrator["']/i);
+    assert.match(html, /href=["']#pilot-plan["']/i);
+    assert.match(html, /href=["']#decision-dossier["']/i);
     assert.match(html, /og\.png/i);
-    assert.match(html, /href=["']#paths["']/i);
+    assert.match(html, /href=["']#integration-levels["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });
 }

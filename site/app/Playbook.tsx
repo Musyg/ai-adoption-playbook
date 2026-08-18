@@ -562,6 +562,10 @@ export function Playbook({ locale }: { locale: Locale }) {
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
+  const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
+  const journeySteps = locale === "en"
+    ? [["calibrator", "Calibrate"], ["pilot-plan", "Pilot"], ["evidence-gate", "Decide"], ["operations", "Operate"], ["decision-dossier", "Hand off"]]
+    : [["calibrator", "Calibrer"], ["pilot-plan", "Piloter"], ["evidence-gate", "Décider"], ["operations", "Exploiter"], ["decision-dossier", "Transmettre"]];
   const calibration = useMemo(() => {
     const spec = calibrationSpecs[calibrationLevel];
     const eligibleCases = monthlyCases * eligibleShare / 100;
@@ -708,14 +712,19 @@ export function Playbook({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">{locale === "en" ? "Skip to content" : "Aller au contenu"}</a>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="AI Adoption Playbook"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
-        <nav aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
+        <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
           <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#method">{t.nav[2]}</a><a href="#case">{t.nav[3]}</a><a href="#controls">{t.nav[4]}</a><a href="#toolkit">{t.nav[5]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
       </header>
 
+      <nav className="journey-nav" aria-label={locale === "en" ? "Guided decision path" : "Parcours de décision guidé"}>
+        <strong>{journeyLabel}</strong>
+        {journeySteps.map(([id, label], index) => <a href={`#${id}`} key={id}><span>0{index + 1}</span><b>{label}</b></a>)}
+      </nav>
+
       <main id="main">
         <section className="hero" id="top">
-          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#paths">{t.start}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
+          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#integration-levels">{t.start}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
           <aside className="hero-rule" aria-label={t.rule}><p className="rule-label">{t.rule}</p><ol>{t.gates.map(([condition, decision], index) => <li key={condition}><span>0{index + 1}</span><strong>{condition}</strong><em>{decision}</em></li>)}</ol></aside>
         </section>
 
