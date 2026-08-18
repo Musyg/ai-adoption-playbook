@@ -30,6 +30,10 @@ for (const [pathname, language, title] of [
     assert.match(html, /Atelier Horizon/);
     assert.match(html, /8 min 35/);
     assert.match(html, /Continue conditionally|Continuer sous conditions/i);
+    assert.match(html, /Camille Rey/);
+    assert.match(html, /44 to 34 minutes|44 à 34 minutes/i);
+    assert.match(html, /4\/14/);
+    assert.match(html, /Extend the draft-only copilot|Prolonger 30 jours/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

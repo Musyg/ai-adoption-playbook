@@ -38,6 +38,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 ## Cas publiés et preuves de terrain
 
 - [Support client assisté par IA dans une petite structure](tpe-customer-support-cases.md) — cas RIS, études de terrain QJE/NBER, cas industriel maritime et limites de transfert vers le scénario TPE.
+- [Travail intellectuel d’un indépendant assisté par IA](independent-knowledge-work-cases.md) — expériences sur le conseil et l’écriture professionnelle, enquête OCDE sur les PME et limites de transfert vers le pilote individuel.
 
 ## Règle de citation du dépôt
 

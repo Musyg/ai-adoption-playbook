@@ -11,7 +11,10 @@ choisit sa structure, on ne révèle que le niveau de détail utile, puis on ori
 les contrôles selon le risque et l’autonomie. Les guides Markdown restent la
 source opérationnelle de référence.
 
-**Nouveau :** suivez le [cas synthétique TPE complet](examples/fr/tpe-demandes-clients.md), de la baseline et des seuils préenregistrés jusqu’à la décision conditionnelle de rester en mode copilote.
+**Nouveau :** suivez deux cas synthétiques complets : le
+[suivi client d’un indépendant sur 14 jours](examples/fr/independant-suivi-client.md)
+et le [traitement des demandes d’une TPE](examples/fr/tpe-demandes-clients.md),
+de la baseline jusqu’à une décision de gate conditionnelle.
 
 > État : fondation publique, photographie au **18 août 2026**.
 

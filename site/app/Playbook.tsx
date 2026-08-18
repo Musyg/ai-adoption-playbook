@@ -26,7 +26,7 @@ const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => 
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
-    nav: ["Paths", "Method", "Worked case", "Control level", "Toolkit"],
+    nav: ["Paths", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
@@ -73,6 +73,22 @@ const copy = {
     caseDecision: "The useful decision is not “AI works.”",
     caseDecisionText: "It is: keep the measured copilot for 60 more days, review errors weekly, rerun the frozen set after every change, and consider automation only for a stable and reversible subset.",
     caseCta: "Read the complete evidence file",
+    soloEyebrow: "WORKED EXAMPLE 02 · INDEPENDENT PROFESSIONAL",
+    soloTitle: "Fourteen days to test one useful boundary.",
+    soloText: "A small pilot should answer a small decision. Follow an independent consultant from meeting notes to a reviewed follow-up—without connecting email, calendar, or client systems.",
+    soloBadge: "1 person · 14 days · R2/A1",
+    soloProblem: "Camille Rey spends a median 44 minutes turning meeting notes into a summary, action list, and follow-up email. The pilot tests a structured first draft while prices, commitments, recipients, and sending remain exclusively human.",
+    soloRules: ["No meeting recording", "No mailbox connection", "No price or commitment", "Human chooses and sends"],
+    soloMetrics: [["−23%", "median preparation time"], ["12/14", "ready within 24 hours"], ["4/14", "major rework"], ["0", "invented commitments"]],
+    soloPhases: [
+      ["DAYS 01–02", "Measure", "Confirm 22 historical follow-ups, the manual fallback, data rules, and an eight-hour setup cap."],
+      ["DAYS 03–07", "Freeze", "Tune on 12 authorized cases, then decide on 12 separate cases against thresholds written in advance."],
+      ["DAYS 08–10", "Shadow", "Generate five drafts but reveal them only after the real follow-up has been written manually."],
+      ["DAYS 11–14", "Copilot", "Review nine live drafts against notes. Add commercial content, choose the recipient, and send manually."],
+    ],
+    soloDecision: "Extend the draft-only copilot for 30 days.",
+    soloDecisionText: "The median falls from 44 to 34 minutes and all critical gates pass, but 29% of drafts still need major rework. No automatic sending, full proposal generation, or system connection is justified.",
+    soloCta: "Open the 14-day evidence file",
     ladderEyebrow: "TECHNICAL PROGRESSION",
     ladderTitle: "Complexity is earned, not assumed.",
     ladderText: "Move one level at a time. Stop when a simpler system meets the need.",
@@ -97,7 +113,7 @@ const copy = {
   },
   fr: {
     meta: "GUIDE DE TERRAIN · AOÛT 2026",
-    nav: ["Parcours", "Méthode", "Cas complet", "Contrôles", "Boîte à outils"],
+    nav: ["Parcours", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
@@ -144,6 +160,22 @@ const copy = {
     caseDecision: "La décision utile n’est pas « l’IA fonctionne ».",
     caseDecisionText: "Elle est : conserver le copilote mesuré pendant 60 jours, revoir les erreurs chaque semaine, répéter le jeu gelé après chaque changement et n’envisager l’automatisation que pour un sous-ensemble stable et réversible.",
     caseCta: "Lire le dossier de preuves complet",
+    soloEyebrow: "CAS COMPLET 02 · INDÉPENDANT",
+    soloTitle: "Quatorze jours pour tester une seule frontière utile.",
+    soloText: "Un petit pilote doit éclairer une petite décision. Suivez une consultante indépendante, des notes de rendez-vous au suivi relu, sans connecter messagerie, calendrier ou systèmes clients.",
+    soloBadge: "1 personne · 14 jours · R2/A1",
+    soloProblem: "Camille Rey consacre une médiane de 44 minutes à transformer ses notes en compte rendu, actions et courriel de suivi. Le pilote teste un premier brouillon structuré ; prix, engagements, destinataires et envoi restent exclusivement humains.",
+    soloRules: ["Aucun enregistrement", "Aucune connexion mail", "Aucun prix ni engagement", "L’humain choisit et envoie"],
+    soloMetrics: [["−23 %", "temps médian de préparation"], ["12/14", "prêts en moins de 24 h"], ["4/14", "reprises majeures"], ["0", "engagement inventé"]],
+    soloPhases: [
+      ["JOURS 01–02", "Mesurer", "Confirmer 22 suivis historiques, le fallback manuel, les règles de données et un plafond de huit heures de préparation."],
+      ["JOURS 03–07", "Geler", "Régler sur 12 cas autorisés, puis décider sur 12 cas distincts avec des seuils écrits à l’avance."],
+      ["JOURS 08–10", "Shadow", "Produire cinq brouillons, révélés seulement après la rédaction manuelle du véritable suivi."],
+      ["JOURS 11–14", "Copilote", "Relire neuf brouillons avec les notes. Ajouter le commercial, choisir le destinataire et envoyer manuellement."],
+    ],
+    soloDecision: "Prolonger 30 jours le copilote de brouillon.",
+    soloDecisionText: "La médiane passe de 44 à 34 minutes et les gates critiques passent, mais 29 % des brouillons exigent encore une reprise majeure. Aucun envoi automatique, proposition complète ou raccordement système n’est justifié.",
+    soloCta: "Ouvrir le dossier de preuves sur 14 jours",
     ladderEyebrow: "PROGRESSION TECHNIQUE",
     ladderTitle: "La complexité se mérite, elle ne se présume pas.",
     ladderText: "Montez d’un niveau à la fois. Arrêtez-vous dès qu’un système plus simple répond au besoin.",
@@ -244,6 +276,17 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="case-overview"><article><span>{t.caseBadge}</span><h3>Atelier Horizon</h3><p>{t.caseProblem}</p></article><div className="case-metrics">{t.caseMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div></div>
           <ol className="case-timeline">{t.caseTimeline.map(([label, title, text]) => <li key={label}><span>{label}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="case-decision"><div><p className="eyebrow">GATE 03 · DECISION</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`}>{t.caseCta} ↗</a></div>
+        </section>
+
+        <section className="solo-case section-light" aria-labelledby="solo-title">
+          <div className="section-heading"><p className="eyebrow">{t.soloEyebrow}</p><h2 id="solo-title">{t.soloTitle}</h2><p>{t.soloText}</p></div>
+          <div className="solo-board">
+            <div className="solo-clock"><span>{locale === "en" ? "PILOT" : "PILOTE"}</span><strong>14</strong><em>{locale === "en" ? "DAYS" : "JOURS"}</em><small>{t.soloBadge}</small></div>
+            <article className="solo-brief"><p className="eyebrow">CAMILLE REY · CLIENT FOLLOW-UP</p><h3>{locale === "en" ? "Notes in. Reviewed follow-up out." : "Des notes au suivi relu."}</h3><p>{t.soloProblem}</p><ul>{t.soloRules.map((rule) => <li key={rule}>{rule}</li>)}</ul></article>
+            <div className="solo-metrics">{t.soloMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
+          </div>
+          <ol className="solo-phases">{t.soloPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <div className="solo-decision"><div><p className="eyebrow">GATE 02 · {locale === "en" ? "BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
         </section>
 
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>

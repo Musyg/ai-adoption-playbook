@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Cas synthétique indépendant : suivi client en 14 jours, avec coûts de mise en
+  place, jeu gelé, limites de données et décision de prolongation.
 - Premier cas synthétique complet : traitement des demandes clients d’une TPE,
   de la baseline à la décision de gate, en français et en anglais.
 

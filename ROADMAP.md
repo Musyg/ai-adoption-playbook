@@ -6,8 +6,8 @@
 - Add worked, synthetic examples for each track.
 - Add a machine-readable control crosswalk with source and version fields.
 
-Progress: the bilingual TPE worked example is complete; examples for the four
-other tracks remain planned for 0.2.
+Progress: the bilingual independent-professional and TPE worked examples are
+complete; examples for the three other tracks remain planned for 0.2.
 
 ## 0.3
 
