@@ -4,6 +4,11 @@
 
 La valeur ne se réduit pas à un gain financier. Les bénéficiaires, donateurs, bénévoles, partenaires et populations vulnérables peuvent subir des effets différents. La mission, la confiance et l’équité font partie de la baseline.
 
+Le [cas synthétique Fondation Lien Local](../../examples/fr/association-agent-dossiers-subventions.md)
+montre comment borner un agent métier A2 à l’administration de dossiers de
+subvention : les canaux hors ligne restent ouverts, les preuves sont segmentées
+par langue et canal, et 100 % des décisions de financement restent humaines.
+
 ## Jours 1–15 — Mandat aligné sur la mission
 
 - nommer un responsable métier et un garant de la mission ;

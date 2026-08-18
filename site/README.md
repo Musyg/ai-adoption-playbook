@@ -14,6 +14,7 @@ npm run dev
 Run `npm run lint`, `npm run build`, and `npm test` before publishing.
 
 English is served at `/`; French is served at `/fr/`. Both versions include
-five visual worked cases linked to complete bilingual evidence files under
+six visual worked cases linked to complete bilingual evidence files under
 `examples/`: an independent copilot, a micro-business inbox, an SME B2B quote
-agent, an independent A2 business agent, and an orchestrated-agency analogy.
+agent, a foundation grant-dossier administrative agent, an independent A2
+business agent, and an orchestrated-agency analogy.

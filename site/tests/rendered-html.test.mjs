@@ -41,6 +41,17 @@ for (const [pathname, language, title] of [
     assert.match(html, /autonomous completion at A2|traitement autonome au niveau A2/i);
     assert.match(html, /Three evidence classes|Trois classes de preuves/i);
     assert.match(html, /sme-b2b-quote-business-agent|pme-agent-metier-devis-b2b/i);
+    assert.match(html, /id=["']mission-case["']/i);
+    assert.match(html, /Fondation Lien Local/);
+    assert.match(html, /96 → 39 min/);
+    assert.match(renderedText, /23[.,]8 h/);
+    assert.match(renderedText, /53[.,]8 h/);
+    assert.match(html, /58\/86/);
+    assert.match(html, /≈ −39%|≈ −39 %/i);
+    assert.match(html, /funding decisions made by people|décisions de financement prises par des personnes/i);
+    assert.match(html, /mission gate has four vetoes|gate mission possède quatre vetos/i);
+    assert.match(renderedText, /1% yes|1 % oui/i);
+    assert.match(html, /nonprofit-grant-dossier-business-agent|association-agent-dossiers-subventions/i);
     assert.match(html, /Camille Rey/);
     assert.match(html, /44 to 34 minutes|44 à 34 minutes/i);
     assert.match(html, /4\/14/);
