@@ -20,7 +20,7 @@ type Audience = {
 };
 
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
-const caseRevision = "13ce09fa23251fd3b89076983d90714d87d8aaea";
+const caseRevision = "8e9b2c3ef2109cbbe537c3dbe9011b6599526b01";
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
 
 const copy = {
