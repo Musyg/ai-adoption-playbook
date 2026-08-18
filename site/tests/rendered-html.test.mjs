@@ -25,6 +25,7 @@ for (const [pathname, language, title] of [
     assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
     const html = await response.text();
+    const renderedText = html.replaceAll("<!-- -->", "");
     assert.match(html, new RegExp(title, "i"));
     assert.match(html, /Evidence before autonomy|La preuve avant l’autonomie/i);
     assert.match(html, /Atelier Horizon/);
@@ -48,6 +49,10 @@ for (const [pathname, language, title] of [
     assert.match(html, /8\/17/);
     assert.match(html, /A4 remains unproven|A4 reste non démontré/i);
     assert.match(html, /Talos\/Hermes analogy|Analogie Talos\/Hermes/i);
+    assert.match(html, /Calibrate before you promise|Calibrez avant de promettre/i);
+    assert.match(renderedText, /14–21 h/);
+    assert.match(renderedText, /35–52[.,]5%/);
+    assert.match(renderedText, /×2–4/);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

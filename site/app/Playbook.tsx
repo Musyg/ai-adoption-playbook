@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
+type IntegrationId = "copilot" | "agent" | "agency";
 type Phase = { label: string; title: string; text: string };
 type Audience = {
   id: AudienceId;
@@ -22,6 +23,11 @@ type Audience = {
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
 const caseRevision = "8e9b2c3ef2109cbbe537c3dbe9011b6599526b01";
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
+const calibrationSpecs: Record<IntegrationId, { low: number; high: number; setup: number }> = {
+  copilot: { low: 0.2, high: 0.4, setup: 8 },
+  agent: { low: 0.5, high: 0.75, setup: 40 },
+  agency: { low: 0.8, high: 0.92, setup: 120 },
+};
 
 const copy = {
   en: {
@@ -48,6 +54,18 @@ const copy = {
     rangeNote: "These are evidence-informed planning bands, not promises or statistical confidence intervals. The high range applies only to eligible, digital, stable workflows. Integration can produce no gain—or a temporary loss—during setup.",
     evidenceLead: "FIELD EVIDENCE AND COUNTER-EVIDENCE",
     evidenceLinks: [["Linde · 24h → 2h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94% containment", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · SEC filing", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2.5%", "https://scale.com/blog/rli"]],
+    calibratorEyebrow: "CALIBRATE BEFORE YOU PROMISE",
+    calibratorTitle: "Turn the ranges into a testable scenario for your own workflow.",
+    calibratorText: "Choose the integration level, then expose volume, manual time, eligible share, and setup effort. The result is a planning envelope—not a forecast.",
+    calibratorLevel: "Integration level",
+    calibratorLevels: [{ id: "copilot", label: "Copilot · A0–A1", note: "One assisted step" }, { id: "agent", label: "Business agent · A2–A3", note: "One bounded workflow" }, { id: "agency", label: "Orchestrated agency · A3", note: "Specialists under one policy" }],
+    calibratorInputs: { minutes: "Manual minutes per case", cases: "Cases per month", eligible: "Share genuinely eligible", setup: "One-off setup effort" },
+    calibratorUnits: { minutes: "min", cases: "cases", eligible: "%", setup: "hours" },
+    calibratorResults: { eligible: "Eligible workload today", freed: "Human hours freed / month", remaining: "Human hours remaining on eligible cases", total: "Reduction across the whole workload", throughput: "Theoretical accepted throughput", payback: "Setup absorbed after" },
+    calibratorReading: "READ THIS RESULT CORRECTLY",
+    calibratorCaution: "The calculation assumes accepted quality, no new bottleneck, and stable eligibility. It excludes model cost, supervision drift, incidents, demand elasticity, revenue, and the time of people outside the measured workflow. Replace every assumption with observed data during the pilot.",
+    calibratorPreset: "Suggested setup effort",
+    calibratorMonths: "months",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -188,6 +206,18 @@ const copy = {
     rangeNote: "Ces valeurs sont des fourchettes de planification synthétisées à partir de cas publiés, pas des promesses ni des intervalles de confiance. La borne haute ne vaut que pour des workflows éligibles, numériques, stables et bornés. L’intégration peut produire zéro gain — ou une perte temporaire — pendant la mise en place.",
     evidenceLead: "PREUVES DE TERRAIN ET CONTRE-PREUVES",
     evidenceLinks: [["Linde · 24 h → 2 h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94 % de traitement autonome", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · dépôt SEC", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2,5 %", "https://scale.com/blog/rli"]],
+    calibratorEyebrow: "CALIBREZ AVANT DE PROMETTRE",
+    calibratorTitle: "Transformez les fourchettes en scénario testable pour votre propre workflow.",
+    calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible et effort de mise en place. Le résultat est une enveloppe de planification, pas une prévision.",
+    calibratorLevel: "Niveau d’intégration",
+    calibratorLevels: [{ id: "copilot", label: "Copilote · A0–A1", note: "Une étape assistée" }, { id: "agent", label: "Agent métier · A2–A3", note: "Un workflow borné" }, { id: "agency", label: "Agence orchestrée · A3", note: "Spécialistes sous une politique" }],
+    calibratorInputs: { minutes: "Minutes manuelles par dossier", cases: "Dossiers par mois", eligible: "Part réellement éligible", setup: "Effort initial de mise en place" },
+    calibratorUnits: { minutes: "min", cases: "dossiers", eligible: "%", setup: "heures" },
+    calibratorResults: { eligible: "Charge éligible actuelle", freed: "Heures humaines libérées / mois", remaining: "Heures humaines restantes sur les cas éligibles", total: "Réduction sur toute la charge", throughput: "Débit accepté théorique", payback: "Mise en place absorbée après" },
+    calibratorReading: "LIRE CE RÉSULTAT CORRECTEMENT",
+    calibratorCaution: "Le calcul suppose une qualité acceptée, aucun nouveau goulot et une éligibilité stable. Il exclut coût modèle, dérive de supervision, incidents, élasticité de la demande, revenu et temps des personnes hors workflow mesuré. Remplacez chaque hypothèse par une observation pendant le pilote.",
+    calibratorPreset: "Effort suggéré",
+    calibratorMonths: "mois",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -336,9 +366,37 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
   const [risk, setRisk] = useState(1);
   const [autonomy, setAutonomy] = useState(1);
+  const [calibrationLevel, setCalibrationLevel] = useState<IntegrationId>("agent");
+  const [caseMinutes, setCaseMinutes] = useState(60);
+  const [monthlyCases, setMonthlyCases] = useState(40);
+  const [eligibleShare, setEligibleShare] = useState(70);
+  const [setupHours, setSetupHours] = useState(40);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
+  const calibration = useMemo(() => {
+    const spec = calibrationSpecs[calibrationLevel];
+    const eligibleCases = monthlyCases * eligibleShare / 100;
+    const eligibleHours = eligibleCases * caseMinutes / 60;
+    const freedLow = eligibleHours * spec.low;
+    const freedHigh = eligibleHours * spec.high;
+    return {
+      spec,
+      eligibleCases,
+      eligibleHours,
+      freedLow,
+      freedHigh,
+      remainingLow: eligibleHours * (1 - spec.high),
+      remainingHigh: eligibleHours * (1 - spec.low),
+      totalLow: eligibleShare * spec.low,
+      totalHigh: eligibleShare * spec.high,
+      throughputLow: 1 / (1 - spec.low),
+      throughputHigh: 1 / (1 - spec.high),
+      paybackLow: setupHours / Math.max(freedHigh, 0.01),
+      paybackHigh: setupHours / Math.max(freedLow, 0.01),
+    };
+  }, [calibrationLevel, caseMinutes, monthlyCases, eligibleShare, setupHours]);
+  const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
 
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
 
@@ -380,6 +438,34 @@ export function Playbook({ locale }: { locale: Locale }) {
             <ol>{t.measurements.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
           </div>
           <aside className="range-note"><p>{t.rangeNote}</p><div><span>{t.evidenceLead}</span>{t.evidenceLinks.map(([label, url]) => <a href={url} key={url}>{label} ↗</a>)}</div></aside>
+        </section>
+
+        <section className="calibrator section-blue" id="calibrator" aria-labelledby="calibrator-title">
+          <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
+          <div className="calibrator-shell">
+            <div className="calibrator-controls">
+              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
+              <div className="calibrator-inputs">
+                <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
+                <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
+                <label><span>{t.calibratorInputs.eligible}</span><div><input aria-label={t.calibratorInputs.eligible} max="100" min="1" onChange={(event) => setEligibleShare(Math.min(100, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={eligibleShare} /><small>{t.calibratorUnits.eligible}</small></div></label>
+                <label><span>{t.calibratorInputs.setup}</span><div><input aria-label={t.calibratorInputs.setup} max="2000" min="0" onChange={(event) => setSetupHours(Math.min(2000, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={setupHours} /><small>{t.calibratorUnits.setup}</small></div><em>{t.calibratorPreset}: {calibration.spec.setup} h</em></label>
+              </div>
+            </div>
+            <output className="calibrator-results" aria-live="polite">
+              <div className="calibrator-result-head"><span>{t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label}</span><strong>{formatNumber(calibration.spec.low * 100, 0)}–{formatNumber(calibration.spec.high * 100, 0)}%</strong><small>{locale === "en" ? "planning range on eligible work" : "fourchette sur la charge éligible"}</small></div>
+              <div className="calibrator-result-grid">
+                <p><span>{t.calibratorResults.eligible}</span><strong>{formatNumber(calibration.eligibleHours)} h</strong><small>{formatNumber(calibration.eligibleCases)} {t.calibratorUnits.cases}</small></p>
+                <p><span>{t.calibratorResults.freed}</span><strong>{formatNumber(calibration.freedLow)}–{formatNumber(calibration.freedHigh)} h</strong></p>
+                <p><span>{t.calibratorResults.remaining}</span><strong>{formatNumber(calibration.remainingLow)}–{formatNumber(calibration.remainingHigh)} h</strong></p>
+                <p><span>{t.calibratorResults.total}</span><strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong></p>
+                <p><span>{t.calibratorResults.throughput}</span><strong>×{formatNumber(calibration.throughputLow)}–{formatNumber(calibration.throughputHigh)}</strong></p>
+                <p><span>{t.calibratorResults.payback}</span><strong>{formatNumber(calibration.paybackLow)}–{formatNumber(calibration.paybackHigh)} {t.calibratorMonths}</strong></p>
+              </div>
+              <p className="calibrator-equation">{eligibleShare}% × {formatNumber(calibration.spec.low * 100, 0)}–{formatNumber(calibration.spec.high * 100, 0)}% = <strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong> {locale === "en" ? "across the whole measured workload" : "sur toute la charge mesurée"}</p>
+            </output>
+          </div>
+          <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
