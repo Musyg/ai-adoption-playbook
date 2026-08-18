@@ -122,6 +122,26 @@ const copy = {
     agentDecision: "Keep A2 for 60 days. Do not claim A3 yet.",
     agentDecisionText: "The gain is large because the system now carries the workflow—not because the model merely writes faster. Autonomous sending remains blocked until 50 additional eligible cases show zero critical errors, stable exceptions, no more than 10% major correction, and a verified rollback.",
     agentCta: "Read the complete A2 evidence file",
+    agencyEyebrow: "WORKED EXAMPLE 04 · ORCHESTRATED AGENCY · INDEPENDENT · A3",
+    agencyTitle: "A multi-agent agency turns one standard diagnostic into a governed production line.",
+    agencyText: "This is where orchestration becomes useful: the work contains distinct research, analysis, quality, and execution roles that can run in parallel. The scope remains one eligible service—not the whole business.",
+    agencyBadge: "1 owner · 60 days · 60 frozen + 12 live cases · fictional",
+    agencyProblem: "Camille delivers a standardized operational diagnostic for existing small-business clients. After the client interview, the agency qualifies the case, retrieves authorized evidence, scores the process, produces the report and action plan, challenges its own conclusions, then performs low-risk CRM, task, delivery, and scheduling actions inside a pre-approved service policy.",
+    agencyOrchestrator: "Assigns work, enforces the case policy, resolves dependencies, stops on disagreement, and accepts no specialist’s self-reported success without effect evidence.",
+    agencySpecialists: [["01", "Intake", "Identity, eligibility, minimization"], ["02", "Evidence", "Authorized sources and traceable citations"], ["03", "Analyst", "Diagnosis, scoring, and uncertainty"], ["04", "Delivery", "Report, actions, and client-ready structure"], ["05", "Guardian", "Facts, contradictions, risk, and permissions"], ["06", "Executor", "Delivery, CRM, tasks, and scheduling"]],
+    agencyFoundationLabel: "SHARED CONTROL PLANE",
+    agencyFoundation: ["Versioned case state", "Least-privilege identities", "Event and effect ledger", "Frozen evaluations", "Cost and concurrency limits", "Manual fallback + kill switch"],
+    agencyCompareTitle: "Active human time for the same accepted diagnostic",
+    agencyCompare: [["Manual", "7h 40", "Reference"], ["A1 · Copilot", "5h 50", "−24%"], ["A2 · Single agent", "2h 35", "−66%"], ["A3 · Orchestrated agency", "58 min", "−87%"]],
+    agencyMetrics: [["×7.9", "accepted diagnostics per owner-hour"], ["9/12", "accepted without major rework"], ["8/12", "eligible cases completed straight through"], ["4/12", "stopped and escalated before effect"], ["5h 20", "median internal cycle vs 18h"], ["0", "unauthorized commitments or writes"]],
+    agencyEligibilityTitle: "The denominator stays visible",
+    agencyEligibilityText: "Only 12 of 17 live requests enter the A3 population. Five are excluded before execution: two new prices, one contract change, one HR dataset, and one contradictory client identity. The 8/12 straight-through result is therefore 8/17 across all requests—not 67% of the whole business.",
+    agencyPhases: [["DAYS 01–10", "Decompose the service", "Separate roles, inputs, outputs, permissions, failure boundaries, effect evidence, and the situations that must remain human."], ["DAYS 11–25", "Freeze the comparison", "Run 60 cases through manual, copilot, single-agent, and orchestrated conditions; measure accepted output, not agent activity."], ["DAYS 26–40", "Shadow the agency", "Run specialists in parallel without live effects. Inject disagreement, stale memory, tool outages, duplicated events, and poisoned source content."], ["DAYS 41–60", "Operate bounded A3", "Allow only catalogued low-risk effects on eligible cases. Guardian veto, cost limits, rollback, and human escalation remain active."]],
+    agencyDecision: "A3 passes for one standard service. A4 remains unproven.",
+    agencyDecisionText: "The agency may continue for the defined diagnostic and its catalogued effects. It may not choose new services, prices, contracts, clients, data classes, or permissions. Broad multi-system autonomy requires a separate mandate, an independent audit, and evidence across several workflows.",
+    agencyTalosNote: "Talos/Hermes analogy, not a Talos/Hermes result",
+    agencyTalosText: "The architecture mirrors an orchestrator, specialists, shared state, tools, a guardian, and observability. The numbers belong only to this synthetic case; the public Talos repository does not yet publish a reproducible productivity benchmark.",
+    agencyCta: "Read the complete A3 evidence file",
     ladderEyebrow: "TECHNICAL PROGRESSION",
     ladderTitle: "Complexity is earned, not assumed.",
     ladderText: "Move one level at a time. Stop when a simpler system meets the need.",
@@ -242,6 +262,26 @@ const copy = {
     agentDecision: "Conserver A2 pendant 60 jours. Ne pas revendiquer A3.",
     agentDecisionText: "Le gain devient important parce que le système transporte désormais le workflow, pas parce que le modèle écrit simplement plus vite. L’envoi autonome reste bloqué jusqu’à 50 cas éligibles supplémentaires, zéro erreur critique, des exceptions stables, au plus 10 % de reprises majeures et un rollback vérifié.",
     agentCta: "Lire le dossier de preuves A2 complet",
+    agencyEyebrow: "CAS COMPLET 04 · AGENCE ORCHESTRÉE · INDÉPENDANT · A3",
+    agencyTitle: "Une agence multi-agents transforme un diagnostic standard en chaîne de production gouvernée.",
+    agencyText: "L’orchestration devient utile lorsque le travail contient des rôles distincts de recherche, d’analyse, de qualité et d’exécution qui peuvent avancer en parallèle. Le périmètre reste un service éligible, pas toute l’entreprise.",
+    agencyBadge: "1 responsable · 60 jours · 60 cas gelés + 12 live · fictif",
+    agencyProblem: "Camille réalise un diagnostic opérationnel standardisé pour des petites entreprises déjà clientes. Après l’entretien, l’agence qualifie le dossier, collecte les preuves autorisées, note le processus, produit rapport et plan d’action, conteste ses propres conclusions puis exécute les opérations CRM, tâches, livraison et planification à faible risque prévues par la politique du service.",
+    agencyOrchestrator: "Distribue le travail, impose la politique du dossier, résout les dépendances, s’arrête en cas de désaccord et n’accepte jamais le succès déclaré d’un spécialiste sans preuve de l’effet.",
+    agencySpecialists: [["01", "Admission", "Identité, éligibilité, minimisation"], ["02", "Preuves", "Sources autorisées et citations traçables"], ["03", "Analyste", "Diagnostic, score et incertitude"], ["04", "Livraison", "Rapport, actions et structure client"], ["05", "Gardien", "Faits, contradictions, risque et permissions"], ["06", "Exécuteur", "Livraison, CRM, tâches et planification"]],
+    agencyFoundationLabel: "PLAN DE CONTRÔLE PARTAGÉ",
+    agencyFoundation: ["État du dossier versionné", "Identités au moindre privilège", "Journal des événements et effets", "Évaluations gelées", "Limites de coût et concurrence", "Fallback manuel + coupe-circuit"],
+    agencyCompareTitle: "Temps humain actif pour le même diagnostic accepté",
+    agencyCompare: [["Manuel", "7 h 40", "Référence"], ["A1 · Copilote", "5 h 50", "−24 %"], ["A2 · Agent unique", "2 h 35", "−66 %"], ["A3 · Agence orchestrée", "58 min", "−87 %"]],
+    agencyMetrics: [["×7,9", "diagnostics acceptés par heure du responsable"], ["9/12", "acceptés sans reprise majeure"], ["8/12", "cas éligibles terminés de bout en bout"], ["4/12", "arrêtés et escaladés avant effet"], ["5 h 20", "cycle interne médian contre 18 h"], ["0", "engagement ou écrit non autorisé"]],
+    agencyEligibilityTitle: "Le dénominateur reste visible",
+    agencyEligibilityText: "Seules 12 des 17 demandes live entrent dans la population A3. Cinq sont exclues avant exécution : deux nouveaux prix, une modification contractuelle, un jeu de données RH et une identité client contradictoire. Le résultat de 8/12 de bout en bout représente donc 8/17 de toutes les demandes, pas 67 % de toute l’activité.",
+    agencyPhases: [["JOURS 01–10", "Décomposer le service", "Séparer rôles, entrées, sorties, permissions, frontières de panne, preuves des effets et situations qui doivent rester humaines."], ["JOURS 11–25", "Geler la comparaison", "Faire passer 60 cas par les conditions manuel, copilote, agent unique et agence orchestrée ; mesurer la sortie acceptée, pas l’activité des agents."], ["JOURS 26–40", "Observer l’agence", "Exécuter les spécialistes en parallèle sans effet réel. Injecter désaccord, mémoire périmée, panne d’outil, événement dupliqué et source empoisonnée."], ["JOURS 41–60", "Exploiter A3 borné", "N’autoriser que les effets catalogués à faible risque sur les cas éligibles. Veto du gardien, limites de coût, rollback et escalade humaine restent actifs."]],
+    agencyDecision: "A3 passe pour un service standard. A4 reste non démontré.",
+    agencyDecisionText: "L’agence peut continuer pour le diagnostic défini et ses effets catalogués. Elle ne peut choisir de nouveaux services, prix, contrats, clients, classes de données ou permissions. L’autonomie large multi-systèmes exige un mandat distinct, un audit indépendant et des preuves sur plusieurs workflows.",
+    agencyTalosNote: "Analogie Talos/Hermes, pas résultat Talos/Hermes",
+    agencyTalosText: "L’architecture reprend orchestrateur, spécialistes, état partagé, outils, gardien et observabilité. Les chiffres appartiennent uniquement à ce cas synthétique ; le dépôt public Talos ne publie pas encore de benchmark de productivité reproductible.",
+    agencyCta: "Lire le dossier de preuves A3 complet",
     ladderEyebrow: "PROGRESSION TECHNIQUE",
     ladderTitle: "La complexité se mérite, elle ne se présume pas.",
     ladderText: "Montez d’un niveau à la fois. Arrêtez-vous dès qu’un système plus simple répond au besoin.",
@@ -387,6 +427,22 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agent-comparison"><h3>{t.agentCompareTitle}</h3><div>{t.agentCompare.map(([level, value, text]) => <article key={level}><span>{level}</span><strong>{value}</strong><p>{text}</p></article>)}</div></div>
           <ol className="agent-phases">{t.agentPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
+        </section>
+
+        <section className="agency-case section-light" id="agency-case" aria-labelledby="agency-case-title">
+          <div className="section-heading"><p className="eyebrow">{t.agencyEyebrow}</p><h2 id="agency-case-title">{t.agencyTitle}</h2><p>{t.agencyText}</p></div>
+          <div className="agency-lead"><article><span>{t.agencyBadge}</span><h3>{locale === "en" ? "Camille Rey · Standard diagnostic" : "Camille Rey · Diagnostic standard"}</h3><p>{t.agencyProblem}</p></article><div className="agency-mark"><strong>A3</strong><span>{locale === "en" ? "BOUNDED AUTONOMY" : "AUTONOMIE BORNÉE"}</span></div></div>
+          <div className="agency-system">
+            <article className="agency-orchestrator"><span>{locale === "en" ? "ORCHESTRATOR" : "ORCHESTRATEUR"}</span><h3>{locale === "en" ? "One policy. Six specialists." : "Une politique. Six spécialistes."}</h3><p>{t.agencyOrchestrator}</p></article>
+            <ol className="agency-specialists">{t.agencySpecialists.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
+            <div className="agency-foundation"><span>{t.agencyFoundationLabel}</span><ul>{t.agencyFoundation.map((item) => <li key={item}>{item}</li>)}</ul></div>
+          </div>
+          <div className="agency-benchmark"><div><p className="eyebrow">{locale === "en" ? "LIKE-FOR-LIKE BENCHMARK" : "COMPARAISON À TRAVAIL IDENTIQUE"}</p><h3>{t.agencyCompareTitle}</h3></div><ol>{t.agencyCompare.map(([level, time, gain], index) => <li className={`agency-bar bar-${index + 1}`} key={level}><span>{level}</span><div><i aria-hidden="true" /></div><strong>{time}</strong><small>{gain}</small></li>)}</ol></div>
+          <div className="agency-metrics">{t.agencyMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
+          <aside className="agency-eligibility"><strong>{t.agencyEligibilityTitle}</strong><p>{t.agencyEligibilityText}</p></aside>
+          <ol className="agency-phases">{t.agencyPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <aside className="agency-talos"><strong>{t.agencyTalosNote}</strong><p>{t.agencyTalosText}</p><a href="https://github.com/Musyg/talos">Talos ↗</a></aside>
+          <div className="agency-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
         </section>
 
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>

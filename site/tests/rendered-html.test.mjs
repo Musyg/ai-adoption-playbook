@@ -42,6 +42,12 @@ for (const [pathname, language, title] of [
     assert.match(html, /13\/20/);
     assert.match(html, /Keep A2 for 60 days|Conserver A2 pendant 60 jours/i);
     assert.match(html, /Do not claim A3|Ne pas revendiquer A3/i);
+    assert.match(html, /Camille Rey · Standard diagnostic|Camille Rey · Diagnostic standard/i);
+    assert.match(html, /7h 40|7 h 40/);
+    assert.match(html, /×7[.,]9/);
+    assert.match(html, /8\/17/);
+    assert.match(html, /A4 remains unproven|A4 reste non démontré/i);
+    assert.match(html, /Talos\/Hermes analogy|Analogie Talos\/Hermes/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);

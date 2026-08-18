@@ -41,6 +41,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [Travail intellectuel d’un indépendant assisté par IA](independent-knowledge-work-cases.md) — expériences sur le conseil et l’écriture professionnelle, enquête OCDE sur les PME et limites de transfert vers le pilote individuel.
 - [Copilote, agent métier et agence orchestrée](agentic-integration-levels.md) — définitions opérationnelles, fourchettes basse/haute, cas de terrain, contre-preuves et protocole de mesure pour une agence multi-agents.
 - [Du copilote à l’agent métier A2](../examples/fr/independant-agent-metier-suivi.md) — cas synthétique comparatif, workflow connecté, permissions, tests d’idempotence, résultats et gate vers A3.
+- [Agence orchestrée A3 pour un diagnostic standard](../examples/fr/independant-agence-orchestree-diagnostic.md) — benchmark manuel/A1/A2/A3, rôles spécialisés, contrôle partagé, dénominateur complet et frontière explicite avec A4 et Talos/Hermes.
 
 ## Règle de citation du dépôt
 

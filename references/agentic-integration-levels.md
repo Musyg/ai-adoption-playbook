@@ -12,6 +12,12 @@ Le cas synthétique
 applique cette distinction au même indépendant, au même workflow et à la même
 baseline afin de rendre la comparaison falsifiable.
 
+Le cas
+[Agence orchestrée A3 pour un diagnostic standard](../examples/fr/independant-agence-orchestree-diagnostic.md)
+étend la méthode à un benchmark manuel/A1/A2/A3, garde les demandes non éligibles
+dans le dénominateur global et sépare la ressemblance d’architecture avec
+Talos/Hermes de toute revendication de performance.
+
 ## Trois niveaux d’intégration
 
 | Niveau | Travail réellement déplacé | Rôle humain dominant | Fourchette de planification |
