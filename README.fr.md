@@ -2,7 +2,14 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modèles](templates/) · [Sources](references/sources.md)
+[Édition visuelle](site/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modèles](templates/) · [Sources](references/sources.md)
+
+[![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](site/)
+
+L’édition visuelle bilingue transforme la méthode en parcours interactif : on
+choisit sa structure, on ne révèle que le niveau de détail utile, puis on oriente
+les contrôles selon le risque et l’autonomie. Les guides Markdown restent la
+source opérationnelle de référence.
 
 > État : fondation publique, photographie au **18 août 2026**.
 

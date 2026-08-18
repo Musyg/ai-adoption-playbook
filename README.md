@@ -2,7 +2,14 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [Templates](templates/) · [Sources](references/sources.md)
+[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [Templates](templates/) · [Sources](references/sources.md)
+
+[![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](site/)
+
+The bilingual visual edition turns the method into an interactive path: choose
+your organization, reveal only the next useful level of detail, and orient the
+controls by risk and autonomy. The Markdown guides remain the operational source
+of truth.
 
 > Status: public foundation, snapshot **2026-08-18**. The operational edition is currently written in French; English translations are tracked in the roadmap.
 

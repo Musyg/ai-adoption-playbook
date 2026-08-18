@@ -47,6 +47,15 @@ EXPECTED_REGISTER_COLUMNS = (
     "next_review",
     "decision_link",
 )
+IGNORED_PARTS = {
+    ".git",
+    ".next",
+    ".vinext",
+    ".wrangler",
+    "dist",
+    "node_modules",
+    "work",
+}
 
 
 def check_required_files(errors: list[str]) -> None:
@@ -57,7 +66,7 @@ def check_required_files(errors: list[str]) -> None:
 
 def check_markdown(errors: list[str]) -> None:
     for path in sorted(ROOT.rglob("*.md")):
-        if ".git" in path.parts:
+        if any(part in IGNORED_PARTS for part in path.parts):
             continue
         text = path.read_text(encoding="utf-8")
         if not text.endswith("\n"):
@@ -108,7 +117,11 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    markdown_count = sum(1 for _ in ROOT.rglob("*.md"))
+    markdown_count = sum(
+        1
+        for path in ROOT.rglob("*.md")
+        if not any(part in IGNORED_PARTS for part in path.parts)
+    )
     print(f"Validation passed: {markdown_count} Markdown files and register contract OK.")
     return 0
 
