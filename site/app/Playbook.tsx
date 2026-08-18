@@ -26,7 +26,7 @@ const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => 
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
-    nav: ["Paths", "Method", "Worked cases", "Control level", "Toolkit"],
+    nav: ["Integration levels", "Paths", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
@@ -34,6 +34,20 @@ const copy = {
     rule: "THE RELEASE RULE",
     gates: [["No owner or baseline", "No project"], ["No acceptance thresholds", "No pilot"], ["No separate evidence", "No production"]],
     stats: [["5", "organization paths"], ["8", "ordered steps"], ["3", "non-negotiable gates"]],
+    integrationEyebrow: "NAME THE SYSTEM BEFORE QUOTING THE GAIN",
+    integrationTitle: "Copilot, business agent, and orchestrated agency are not the same integration.",
+    integrationText: "They move different amounts of work, require different permissions, and must be measured with different outcomes. A percentage without its level is misleading.",
+    integrationLabels: { system: "What the system does", human: "Human role", planning: "Planning band", flow: "Eligible cases completed end to end" },
+    integrationLevels: [
+      { code: "A0–A1", title: "Copilot", system: "Researches, extracts, or drafts one step. The person starts the task, carries the context, checks the answer, and performs every external action.", human: "Operator at every cycle", planning: "20–40% less active time · ×1.25–1.7 accepted throughput", flow: "0% without human completion" },
+      { code: "A2–A3", title: "Business agent", system: "Receives a bounded case, uses approved tools and memory, follows the workflow, completes eligible cases, and escalates exceptions.", human: "Approver and exception owner", planning: "50–75% less active time · ×2–4 accepted throughput", flow: "50–85% planning range" },
+      { code: "A3–A4", title: "Orchestrated agency", system: "An orchestrator delegates to specialist agents for research, execution, quality control, and cross-system coordination under shared controls.", human: "Governor of goals, limits, and exceptions", planning: "80–92% less active time · ×5–12 on a clean bounded workflow", flow: "80–94% on narrow eligible requests" },
+    ],
+    measurementTitle: "Five numbers that must stay separate",
+    measurements: [["01", "Cycle time", "Elapsed time from request to result."], ["02", "Human active time", "Minutes actually spent by a person."], ["03", "Accepted throughput", "Outputs accepted per owner-hour."], ["04", "Straight-through rate", "Eligible cases completed without intervention."], ["05", "Shipped outcome", "A real downstream result—not model activity."]],
+    rangeNote: "These are evidence-informed planning bands, not promises or statistical confidence intervals. The high range applies only to eligible, digital, stable workflows. Integration can produce no gain—or a temporary loss—during setup.",
+    evidenceLead: "FIELD EVIDENCE AND COUNTER-EVIDENCE",
+    evidenceLinks: [["Linde · 24h → 2h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94% containment", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · SEC filing", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2.5%", "https://scale.com/blog/rli"]],
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -73,13 +87,15 @@ const copy = {
     caseDecision: "The useful decision is not “AI works.”",
     caseDecisionText: "It is: keep the measured copilot for 60 more days, review errors weekly, rerun the frozen set after every change, and consider automation only for a stable and reversible subset.",
     caseCta: "Read the complete evidence file",
-    soloEyebrow: "WORKED EXAMPLE 02 · INDEPENDENT PROFESSIONAL",
+    soloEyebrow: "COPILOT CASE · INDEPENDENT PROFESSIONAL · A1",
     soloTitle: "Fourteen days to test one useful boundary.",
     soloText: "A small pilot should answer a small decision. Follow an independent consultant from meeting notes to a reviewed follow-up—without connecting email, calendar, or client systems.",
-    soloBadge: "1 person · 14 days · R2/A1",
+    soloBadge: "COPILOT · 1 person · 14 days · R2/A1",
     soloProblem: "Camille Rey spends a median 44 minutes turning meeting notes into a summary, action list, and follow-up email. The pilot tests a structured first draft while prices, commitments, recipients, and sending remain exclusively human.",
     soloRules: ["No meeting recording", "No mailbox connection", "No price or commitment", "Human chooses and sends"],
     soloMetrics: [["−23%", "median preparation time"], ["12/14", "ready within 24 hours"], ["4/14", "major rework"], ["0", "invented commitments"]],
+    soloClarifierTitle: "Why only −23%? Because this is not a business agent.",
+    soloClarifier: "The system drafts one step. It has no mailbox, calendar, CRM, memory, tool execution, or authority to complete the follow-up. This result must never be used as a benchmark for an A2–A4 implementation.",
     soloPhases: [
       ["DAYS 01–02", "Measure", "Confirm 22 historical follow-ups, the manual fallback, data rules, and an eight-hour setup cap."],
       ["DAYS 03–07", "Freeze", "Tune on 12 authorized cases, then decide on 12 separate cases against thresholds written in advance."],
@@ -92,7 +108,7 @@ const copy = {
     ladderEyebrow: "TECHNICAL PROGRESSION",
     ladderTitle: "Complexity is earned, not assumed.",
     ladderText: "Move one level at a time. Stop when a simpler system meets the need.",
-    ladder: ["Documented manual process", "Deterministic rule", "Conventional automation", "Single model call", "Controlled retrieval", "Tool workflow with approval", "Bounded agent"],
+    ladder: ["Documented manual process", "Deterministic rule", "Conventional automation", "Single model call", "Controlled retrieval", "Tool workflow with approval", "Bounded business agent", "Multi-agent orchestration", "Supervised multi-system agency"],
     riskEyebrow: "QUICK CONTROL ORIENTATION",
     riskTitle: "See how impact and autonomy change the control level.",
     riskText: "This is internal triage, not a legal classification.",
@@ -113,7 +129,7 @@ const copy = {
   },
   fr: {
     meta: "GUIDE DE TERRAIN · AOÛT 2026",
-    nav: ["Parcours", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
+    nav: ["Niveaux d’intégration", "Parcours", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
@@ -121,6 +137,20 @@ const copy = {
     rule: "LA RÈGLE DE PASSAGE",
     gates: [["Sans responsable ni baseline", "Pas de projet"], ["Sans seuils d’acceptation", "Pas de pilote"], ["Sans preuves séparées", "Pas de production"]],
     stats: [["5", "parcours par structure"], ["8", "étapes ordonnées"], ["3", "gates non négociables"]],
+    integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
+    integrationTitle: "Copilote, agent métier et agence orchestrée ne sont pas la même intégration.",
+    integrationText: "Ils déplacent des volumes de travail différents, exigent des permissions différentes et se mesurent par des résultats différents. Un pourcentage sans son niveau induit en erreur.",
+    integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Fourchette de planification", flow: "Cas éligibles traités de bout en bout" },
+    integrationLevels: [
+      { code: "A0–A1", title: "Copilote", system: "Recherche, extrait ou rédige une étape. La personne déclenche, apporte le contexte, contrôle la réponse et réalise chaque action externe.", human: "Opérateur à chaque cycle", planning: "20–40 % de temps actif en moins · débit accepté ×1,25–1,7", flow: "0 % sans finalisation humaine" },
+      { code: "A2–A3", title: "Agent métier", system: "Reçoit un dossier borné, utilise outils et mémoire autorisés, suit le workflow, termine les cas éligibles et escalade les exceptions.", human: "Validateur et responsable des exceptions", planning: "50–75 % de temps actif en moins · débit accepté ×2–4", flow: "Fourchette de planification 50–85 %" },
+      { code: "A3–A4", title: "Agence orchestrée", system: "Un orchestrateur délègue recherche, exécution, contrôle qualité et coordination inter-systèmes à des agents spécialisés sous des règles communes.", human: "Gouverne objectifs, limites et exceptions", planning: "80–92 % de temps actif en moins · ×5–12 sur un workflow propre et borné", flow: "80–94 % sur des demandes étroites et éligibles" },
+    ],
+    measurementTitle: "Cinq chiffres à ne jamais mélanger",
+    measurements: [["01", "Temps de cycle", "Délai écoulé entre demande et résultat."], ["02", "Temps humain actif", "Minutes réellement consacrées par une personne."], ["03", "Débit accepté", "Sorties acceptées par heure du responsable."], ["04", "Taux de bout en bout", "Cas éligibles terminés sans intervention."], ["05", "Résultat livré", "Effet réel en aval, pas l’activité du modèle."]],
+    rangeNote: "Ces valeurs sont des fourchettes de planification synthétisées à partir de cas publiés, pas des promesses ni des intervalles de confiance. La borne haute ne vaut que pour des workflows éligibles, numériques, stables et bornés. L’intégration peut produire zéro gain — ou une perte temporaire — pendant la mise en place.",
+    evidenceLead: "PREUVES DE TERRAIN ET CONTRE-PREUVES",
+    evidenceLinks: [["Linde · 24 h → 2 h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94 % de traitement autonome", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · dépôt SEC", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2,5 %", "https://scale.com/blog/rli"]],
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -160,13 +190,15 @@ const copy = {
     caseDecision: "La décision utile n’est pas « l’IA fonctionne ».",
     caseDecisionText: "Elle est : conserver le copilote mesuré pendant 60 jours, revoir les erreurs chaque semaine, répéter le jeu gelé après chaque changement et n’envisager l’automatisation que pour un sous-ensemble stable et réversible.",
     caseCta: "Lire le dossier de preuves complet",
-    soloEyebrow: "CAS COMPLET 02 · INDÉPENDANT",
+    soloEyebrow: "CAS COPILOTE · INDÉPENDANT · A1",
     soloTitle: "Quatorze jours pour tester une seule frontière utile.",
     soloText: "Un petit pilote doit éclairer une petite décision. Suivez une consultante indépendante, des notes de rendez-vous au suivi relu, sans connecter messagerie, calendrier ou systèmes clients.",
-    soloBadge: "1 personne · 14 jours · R2/A1",
+    soloBadge: "COPILOTE · 1 personne · 14 jours · R2/A1",
     soloProblem: "Camille Rey consacre une médiane de 44 minutes à transformer ses notes en compte rendu, actions et courriel de suivi. Le pilote teste un premier brouillon structuré ; prix, engagements, destinataires et envoi restent exclusivement humains.",
     soloRules: ["Aucun enregistrement", "Aucune connexion mail", "Aucun prix ni engagement", "L’humain choisit et envoie"],
     soloMetrics: [["−23 %", "temps médian de préparation"], ["12/14", "prêts en moins de 24 h"], ["4/14", "reprises majeures"], ["0", "engagement inventé"]],
+    soloClarifierTitle: "Pourquoi seulement −23 % ? Parce que ce n’est pas un agent métier.",
+    soloClarifier: "Le système rédige une seule étape. Il ne dispose ni de messagerie, ni de calendrier, ni de CRM, ni de mémoire, ni d’outils d’exécution, ni du pouvoir de terminer le suivi. Ce résultat ne doit jamais servir de référence pour une intégration A2–A4.",
     soloPhases: [
       ["JOURS 01–02", "Mesurer", "Confirmer 22 suivis historiques, le fallback manuel, les règles de données et un plafond de huit heures de préparation."],
       ["JOURS 03–07", "Geler", "Régler sur 12 cas autorisés, puis décider sur 12 cas distincts avec des seuils écrits à l’avance."],
@@ -179,7 +211,7 @@ const copy = {
     ladderEyebrow: "PROGRESSION TECHNIQUE",
     ladderTitle: "La complexité se mérite, elle ne se présume pas.",
     ladderText: "Montez d’un niveau à la fois. Arrêtez-vous dès qu’un système plus simple répond au besoin.",
-    ladder: ["Processus manuel documenté", "Règle déterministe", "Automatisation classique", "Appel de modèle unique", "Recherche contrôlée", "Workflow avec approbation", "Agent borné"],
+    ladder: ["Processus manuel documenté", "Règle déterministe", "Automatisation classique", "Appel de modèle unique", "Recherche contrôlée", "Workflow avec approbation", "Agent métier borné", "Orchestration multi-agents", "Agence multi-systèmes supervisée"],
     riskEyebrow: "ORIENTATION RAPIDE DES CONTRÔLES",
     riskTitle: "Voyez comment l’impact et l’autonomie modifient le niveau de contrôle.",
     riskText: "Il s’agit d’un triage interne, pas d’une qualification juridique.",
@@ -242,7 +274,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="AI Adoption Playbook"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
-          <a href="#paths">{t.nav[0]}</a><a href="#method">{t.nav[1]}</a><a href="#case">{t.nav[2]}</a><a href="#controls">{t.nav[3]}</a><a href="#toolkit">{t.nav[4]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
+          <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#method">{t.nav[2]}</a><a href="#case">{t.nav[3]}</a><a href="#controls">{t.nav[4]}</a><a href="#toolkit">{t.nav[5]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
       </header>
 
@@ -253,6 +285,28 @@ export function Playbook({ locale }: { locale: Locale }) {
         </section>
 
         <section className="stat-strip" aria-label={locale === "en" ? "Playbook summary" : "Résumé du playbook"}>{t.stats.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</section>
+
+        <section className="integration-guide section-light" id="integration-levels" aria-labelledby="integration-title">
+          <div className="section-heading"><p className="eyebrow">{t.integrationEyebrow}</p><h2 id="integration-title">{t.integrationTitle}</h2><p>{t.integrationText}</p></div>
+          <div className="integration-grid">
+            {t.integrationLevels.map((level, index) => <article className={`integration-card level-${index + 1}`} key={level.title}>
+              <div className="integration-card-head"><span>0{index + 1}</span><small>{level.code}</small></div>
+              <h3>{level.title}</h3>
+              <div className="integration-band" aria-hidden="true"><span /></div>
+              <dl>
+                <div><dt>{t.integrationLabels.system}</dt><dd>{level.system}</dd></div>
+                <div><dt>{t.integrationLabels.human}</dt><dd>{level.human}</dd></div>
+                <div className="integration-gain"><dt>{t.integrationLabels.planning}</dt><dd>{level.planning}</dd></div>
+                <div><dt>{t.integrationLabels.flow}</dt><dd>{level.flow}</dd></div>
+              </dl>
+            </article>)}
+          </div>
+          <div className="measurement-block">
+            <div><p className="eyebrow">{locale === "en" ? "MEASUREMENT KEY" : "CLÉ DE LECTURE"}</p><h3>{t.measurementTitle}</h3></div>
+            <ol>{t.measurements.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          </div>
+          <aside className="range-note"><p>{t.rangeNote}</p><div><span>{t.evidenceLead}</span>{t.evidenceLinks.map(([label, url]) => <a href={url} key={url}>{label} ↗</a>)}</div></aside>
+        </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
           <div className="section-heading"><p className="eyebrow">{t.pathsEyebrow}</p><h2 id="paths-title">{t.pathsTitle}</h2><p>{t.pathsText}</p></div>
@@ -285,6 +339,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <article className="solo-brief"><p className="eyebrow">CAMILLE REY · CLIENT FOLLOW-UP</p><h3>{locale === "en" ? "Notes in. Reviewed follow-up out." : "Des notes au suivi relu."}</h3><p>{t.soloProblem}</p><ul>{t.soloRules.map((rule) => <li key={rule}>{rule}</li>)}</ul></article>
             <div className="solo-metrics">{t.soloMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
           </div>
+          <aside className="case-level-note"><strong>{t.soloClarifierTitle}</strong><p>{t.soloClarifier}</p></aside>
           <ol className="solo-phases">{t.soloPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="solo-decision"><div><p className="eyebrow">GATE 02 · {locale === "en" ? "BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
         </section>

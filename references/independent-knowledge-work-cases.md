@@ -31,6 +31,18 @@ Les sources conduisent à six choix prudents :
 6. refuser toute conclusion de revenu, retour annuel, emploi ou rareté des
    incidents à partir de 14 cas.
 
+## Ce que le gain de 23 % ne mesure pas
+
+Le scénario Camille Rey évalue explicitement un **copilote A1** : une seule
+étape de rédaction, sans messagerie, calendrier, CRM, mémoire persistante,
+outils d’exécution ni action autonome. La personne reste opératrice à chaque
+cycle. Son gain synthétique de 23 % ne constitue donc ni une borne basse ni une
+moyenne pour un agent métier A2/A3 ou une agence orchestrée A3/A4.
+
+Les définitions, fourchettes et contre-preuves applicables à ces systèmes sont
+séparées dans la note
+[Copilote, agent métier et agence orchestrée](agentic-integration-levels.md).
+
 ## Statut des chiffres
 
 Camille Rey, ses clients, les 22 dossiers de baseline, les 24 cas d’évaluation,

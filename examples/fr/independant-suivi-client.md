@@ -4,6 +4,10 @@
 > sont synthétiques. Le scénario illustre une manière prudente de conduire un
 > pilote ; il ne prouve pas la performance d’un outil ou d’un métier.
 
+> **Niveau mesuré : copilote A1.** Le système rédige une étape sans outil
+> connecté ni action autonome. Le gain observé ici ne doit pas être comparé à
+> celui d’un agent métier ou d’une agence orchestrée.
+
 ## 1. Situation initiale
 
 **Camille Rey** est consultante indépendante en organisation. Elle accompagne

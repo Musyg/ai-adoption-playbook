@@ -4,6 +4,10 @@
 > synthetic. The scenario illustrates a cautious pilot; it does not prove the
 > performance of a tool or profession.
 
+> **Measured level: A1 copilot.** The system drafts one step without connected
+> tools or autonomous action. Its observed gain must not be used as a benchmark
+> for a business agent or an orchestrated agency.
+
 ## 1. Starting point
 
 **Camille Rey** is an independent operations consultant supporting six small
