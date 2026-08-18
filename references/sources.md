@@ -40,6 +40,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [Support client assisté par IA dans une petite structure](tpe-customer-support-cases.md) — cas RIS, études de terrain QJE/NBER, cas industriel maritime et limites de transfert vers le scénario TPE.
 - [Travail intellectuel d’un indépendant assisté par IA](independent-knowledge-work-cases.md) — expériences sur le conseil et l’écriture professionnelle, enquête OCDE sur les PME et limites de transfert vers le pilote individuel.
 - [Copilote, agent métier et agence orchestrée](agentic-integration-levels.md) — définitions opérationnelles, fourchettes basse/haute, cas de terrain, contre-preuves et protocole de mesure pour une agence multi-agents.
+- [Du copilote à l’agent métier A2](../examples/fr/independant-agent-metier-suivi.md) — cas synthétique comparatif, workflow connecté, permissions, tests d’idempotence, résultats et gate vers A3.
 
 ## Règle de citation du dépôt
 

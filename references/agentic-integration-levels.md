@@ -7,6 +7,11 @@ rédaction avec celui d’un système qui prend en charge un workflow métier. C
 systèmes n’exécutent pas la même quantité de travail et leurs indicateurs ne sont
 donc pas interchangeables.
 
+Le cas synthétique
+[Du copilote à l’agent métier A2](../examples/fr/independant-agent-metier-suivi.md)
+applique cette distinction au même indépendant, au même workflow et à la même
+baseline afin de rendre la comparaison falsifiable.
+
 ## Trois niveaux d’intégration
 
 | Niveau | Travail réellement déplacé | Rôle humain dominant | Fourchette de planification |

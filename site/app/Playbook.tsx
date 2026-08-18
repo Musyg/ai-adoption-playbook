@@ -105,6 +105,23 @@ const copy = {
     soloDecision: "Extend the draft-only copilot for 30 days.",
     soloDecisionText: "The median falls from 44 to 34 minutes and all critical gates pass, but 29% of drafts still need major rework. No automatic sending, full proposal generation, or system connection is justified.",
     soloCta: "Open the 14-day evidence file",
+    agentEyebrow: "WORKED EXAMPLE 03 · BUSINESS AGENT · INDEPENDENT · A2",
+    agentTitle: "The same follow-up becomes a complete, approval-gated workflow.",
+    agentText: "Phase 2 keeps the same professional, baseline, and outcome. What changes is the system: approved tools, persistent case state, quality control, execution after approval, and explicit exception handling.",
+    agentBadge: "1 person · 30 days · R2/A2 · fictional case",
+    agentProblem: "After the A1 copilot pilot, Camille tests a business agent on 20 eligible follow-ups. It reads authorized CRM context, prepares the summary and actions, checks facts and policy, then—only after one explicit approval—updates the CRM, creates tasks, and sends the reviewed email.",
+    agentWorkflow: [["01", "Capture", "Structured notes and eligibility check"], ["02", "Context", "Read-only CRM and client rules"], ["03", "Compose", "Summary, actions, and follow-up"], ["04", "Verify", "Facts, dates, policy, and conflicts"], ["05", "Approve", "One informed human decision"], ["06", "Execute", "Email, CRM, tasks, and audit log"]],
+    agentDoesTitle: "THE AGENT OWNS",
+    agentDoes: ["Case state and tool sequence", "Fact and policy checks", "Draft, CRM entry, and task preparation", "Execution after approval", "Complete action and error log"],
+    humanDoesTitle: "THE PERSON OWNS",
+    humanDoes: ["Eligibility and purpose", "Price, scope, and commitments", "The approval or refusal", "Ambiguous and sensitive exceptions", "Weekly error and value review"],
+    agentMetrics: [["44 → 14 min", "median human active time · −68%"], ["×3.1", "accepted follow-ups per owner-hour"], ["13/20", "ready to approve without correction"], ["3/20", "correctly escalated"], ["0", "unapproved external actions"]],
+    agentCompareTitle: "Same work. Three different claims.",
+    agentCompare: [["A1 · Copilot", "44 → 34 min", "Drafts one step; the person carries and completes the workflow."], ["A2 · Business agent", "44 → 14 min", "Runs the full bounded workflow and executes only after approval."], ["A3 · Candidate", "Not claimed", "Autonomous low-risk sending requires 50 more cases and a new gate."]],
+    agentPhases: [["DAYS 01–05", "Connect safely", "Use separate identity, least privilege, read-only CRM first, idempotent writes, a kill switch, and a tested manual fallback."], ["DAYS 06–12", "Replay frozen cases", "Run 40 representative cases, including conflicts, missing context, price requests, prompt injection, duplicate actions, and unavailable tools."], ["DAYS 13–20", "Run in shadow", "Compare the complete proposed workflow with the real manual follow-up; no email or write reaches a live system."], ["DAYS 21–30", "Operate at A2", "Camille reviews one evidence packet, approves or refuses, and the agent executes the authorized actions while logging every effect."]],
+    agentDecision: "Keep A2 for 60 days. Do not claim A3 yet.",
+    agentDecisionText: "The gain is large because the system now carries the workflow—not because the model merely writes faster. Autonomous sending remains blocked until 50 additional eligible cases show zero critical errors, stable exceptions, no more than 10% major correction, and a verified rollback.",
+    agentCta: "Read the complete A2 evidence file",
     ladderEyebrow: "TECHNICAL PROGRESSION",
     ladderTitle: "Complexity is earned, not assumed.",
     ladderText: "Move one level at a time. Stop when a simpler system meets the need.",
@@ -208,6 +225,23 @@ const copy = {
     soloDecision: "Prolonger 30 jours le copilote de brouillon.",
     soloDecisionText: "La médiane passe de 44 à 34 minutes et les gates critiques passent, mais 29 % des brouillons exigent encore une reprise majeure. Aucun envoi automatique, proposition complète ou raccordement système n’est justifié.",
     soloCta: "Ouvrir le dossier de preuves sur 14 jours",
+    agentEyebrow: "CAS COMPLET 03 · AGENT MÉTIER · INDÉPENDANT · A2",
+    agentTitle: "Le même suivi devient un workflow complet soumis à approbation.",
+    agentText: "La phase 2 conserve la même professionnelle, la même baseline et le même résultat attendu. Ce qui change, c’est le système : outils autorisés, état persistant du dossier, contrôle qualité, exécution après approbation et traitement explicite des exceptions.",
+    agentBadge: "1 personne · 30 jours · R2/A2 · cas fictif",
+    agentProblem: "Après le pilote copilote A1, Camille teste un agent métier sur 20 suivis éligibles. Il lit le contexte CRM autorisé, prépare le compte rendu et les actions, vérifie faits et règles puis — uniquement après une approbation explicite — met à jour le CRM, crée les tâches et envoie le courriel relu.",
+    agentWorkflow: [["01", "Capturer", "Notes structurées et test d’éligibilité"], ["02", "Contextualiser", "CRM en lecture et règles client"], ["03", "Composer", "Compte rendu, actions et suivi"], ["04", "Vérifier", "Faits, dates, règles et conflits"], ["05", "Approuver", "Une décision humaine informée"], ["06", "Exécuter", "Courriel, CRM, tâches et journal d’audit"]],
+    agentDoesTitle: "L’AGENT PREND EN CHARGE",
+    agentDoes: ["État du dossier et séquence des outils", "Contrôles des faits et des règles", "Brouillon, fiche CRM et préparation des tâches", "Exécution après approbation", "Journal complet des actions et erreurs"],
+    humanDoesTitle: "LA PERSONNE GARDE",
+    humanDoes: ["Éligibilité et finalité", "Prix, périmètre et engagements", "Approbation ou refus", "Exceptions ambiguës ou sensibles", "Revue hebdomadaire des erreurs et de la valeur"],
+    agentMetrics: [["44 → 14 min", "temps humain actif médian · −68 %"], ["×3,1", "suivis acceptés par heure du responsable"], ["13/20", "prêts à approuver sans correction"], ["3/20", "correctement escaladés"], ["0", "action externe sans approbation"]],
+    agentCompareTitle: "Même travail. Trois affirmations différentes.",
+    agentCompare: [["A1 · Copilote", "44 → 34 min", "Rédige une étape ; la personne transporte et termine le workflow."], ["A2 · Agent métier", "44 → 14 min", "Exécute le workflow borné complet, uniquement après approbation."], ["A3 · Candidat", "Non revendiqué", "L’envoi autonome à faible risque exige 50 cas supplémentaires et une nouvelle gate."]],
+    agentPhases: [["JOURS 01–05", "Connecter sans ouvrir", "Identité séparée, moindre privilège, CRM d’abord en lecture, écritures idempotentes, coupe-circuit et fallback manuel testé."], ["JOURS 06–12", "Rejouer les cas gelés", "Exécuter 40 cas représentatifs avec conflits, contexte manquant, demandes de prix, prompt injection, actions dupliquées et outils indisponibles."], ["JOURS 13–20", "Travailler en shadow", "Comparer le workflow complet proposé au véritable suivi manuel ; aucun courriel ni écrit n’atteint un système réel."], ["JOURS 21–30", "Exploiter en A2", "Camille examine un dossier de preuves, approuve ou refuse, puis l’agent exécute les actions autorisées et journalise chaque effet."]],
+    agentDecision: "Conserver A2 pendant 60 jours. Ne pas revendiquer A3.",
+    agentDecisionText: "Le gain devient important parce que le système transporte désormais le workflow, pas parce que le modèle écrit simplement plus vite. L’envoi autonome reste bloqué jusqu’à 50 cas éligibles supplémentaires, zéro erreur critique, des exceptions stables, au plus 10 % de reprises majeures et un rollback vérifié.",
+    agentCta: "Lire le dossier de preuves A2 complet",
     ladderEyebrow: "PROGRESSION TECHNIQUE",
     ladderTitle: "La complexité se mérite, elle ne se présume pas.",
     ladderText: "Montez d’un niveau à la fois. Arrêtez-vous dès qu’un système plus simple répond au besoin.",
@@ -342,6 +376,17 @@ export function Playbook({ locale }: { locale: Locale }) {
           <aside className="case-level-note"><strong>{t.soloClarifierTitle}</strong><p>{t.soloClarifier}</p></aside>
           <ol className="solo-phases">{t.soloPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="solo-decision"><div><p className="eyebrow">GATE 02 · {locale === "en" ? "BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
+        </section>
+
+        <section className="agent-case section-dark" id="agent-case" aria-labelledby="agent-case-title">
+          <div className="section-heading"><p className="eyebrow">{t.agentEyebrow}</p><h2 id="agent-case-title">{t.agentTitle}</h2><p>{t.agentText}</p></div>
+          <div className="agent-case-lead"><article><span>{t.agentBadge}</span><h3>Camille Rey · Phase 2</h3><p>{t.agentProblem}</p></article><div className="agent-mark"><strong>A2</strong><span>{locale === "en" ? "ACTION AFTER APPROVAL" : "ACTION APRÈS APPROBATION"}</span></div></div>
+          <ol className="agent-flow" aria-label={locale === "en" ? "Business-agent workflow" : "Workflow de l’agent métier"}>{t.agentWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <div className="agent-ownership"><article><p>{t.agentDoesTitle}</p><ul>{t.agentDoes.map((item) => <li key={item}>{item}</li>)}</ul></article><article><p>{t.humanDoesTitle}</p><ul>{t.humanDoes.map((item) => <li key={item}>{item}</li>)}</ul></article></div>
+          <div className="agent-metrics">{t.agentMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
+          <div className="agent-comparison"><h3>{t.agentCompareTitle}</h3><div>{t.agentCompare.map(([level, value, text]) => <article key={level}><span>{level}</span><strong>{value}</strong><p>{text}</p></article>)}</div></div>
+          <ol className="agent-phases">{t.agentPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
         </section>
 
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>

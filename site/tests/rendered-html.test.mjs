@@ -37,6 +37,11 @@ for (const [pathname, language, title] of [
     assert.match(html, /Copilot, business agent|Copilote, agent métier/i);
     assert.match(html, /Why only|Pourquoi seulement/i);
     assert.match(html, /×5–12/);
+    assert.match(html, /Camille Rey · Phase 2/);
+    assert.match(html, /44 → 14 min/);
+    assert.match(html, /13\/20/);
+    assert.match(html, /Keep A2 for 60 days|Conserver A2 pendant 60 jours/i);
+    assert.match(html, /Do not claim A3|Ne pas revendiquer A3/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#paths["']/i);
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
