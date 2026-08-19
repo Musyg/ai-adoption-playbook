@@ -445,11 +445,13 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .field-pilot-checklist input { accent-color: var(--blue); height: 16px; margin: 1px 0 0; width: 16px; }
 .field-pilot-checklist span { color: var(--dark-muted); font-size: 11px; line-height: 1.45; }
 .field-pilot-checklist input:checked + span { color: var(--dark-text); }
-.field-pilot-footer { align-items: center; background: rgb(255 255 255 / 38%); border: 1px solid rgb(7 16 24 / 30%); border-top: 0; display: grid; gap: 28px; grid-template-columns: 1fr auto; padding: 24px 28px; }
+.field-pilot-footer { align-items: start; background: var(--surface); border: 1px solid var(--line); border-top: 0; display: grid; gap: 28px; grid-template-columns: minmax(250px, .65fr) minmax(0, 1.35fr); padding: 24px 28px; }
 .field-pilot-footer strong { color: #123448; font-size: 12px; line-height: 1.5; }
 .field-pilot-footer p { color: #123448; font-size: 11px; margin: 8px 0 0; }
-.field-pilot-footer > div:last-child { display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; }
-.field-pilot-footer button { border: 0; cursor: pointer; font-family: inherit; }
+.field-pilot-footer > div:last-child { display: grid; gap: 9px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field-pilot-footer button { border: 1px solid transparent; cursor: pointer; font-family: inherit; }
+.field-pilot-footer .button { min-width: 0; text-align: center; width: 100%; }
+.field-pilot-footer .primary { border-color: var(--ink); }
 .field-pilot-footer .secondary { border-color: rgb(7 16 24 / 38%); color: #071018; font-size: 12px; }
 
 .path-grid { border-bottom: 1px solid var(--dark-line); border-top: 1px solid var(--dark-line); display: grid; grid-template-columns: repeat(5, 1fr); }
@@ -1226,7 +1228,7 @@ footer a { color: var(--blue); }
   .field-pilot-flow li:nth-child(n+3) { border-top: 1px solid var(--dark-line); }
   .field-pilot-shell { grid-template-columns: 1fr; }
   .field-pilot-footer { align-items: start; grid-template-columns: 1fr; }
-  .field-pilot-footer > div:last-child { justify-content: flex-start; }
+  .field-pilot-footer > div:last-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crosswalk-shell { grid-template-columns: 1fr; }
   .crosswalk-reading { position: static; }
   .crosswalk-footer { align-items: start; grid-template-columns: 1fr; }
@@ -1438,7 +1440,7 @@ footer a { color: var(--blue); }
   .field-pilot-selects, .field-pilot-fields { grid-template-columns: 1fr; }
   .field-pilot-wide { grid-column: auto; }
   .field-pilot-form, .field-pilot-review { padding: 20px; }
-  .field-pilot-footer > div:last-child { align-items: stretch; flex-direction: column; }
+  .field-pilot-footer > div:last-child { grid-template-columns: 1fr; }
   .field-pilot-footer .button { text-align: center; }
   .tool-grid { grid-template-columns: 1fr; }
   .tool-grid a, .tool-grid a:nth-child(3n), .tool-grid a:last-child { border-bottom: 0; border-right: 1px solid var(--dark-line); }
