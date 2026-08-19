@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 
 import { Playbook } from "../app/Playbook";
 import "../app/globals.css";
@@ -11,13 +11,19 @@ const locale = localPath === "/fr" || localPath.startsWith("/fr/") ? "fr" : "en"
 const root = document.getElementById("root");
 
 document.documentElement.lang = locale;
-document.title = locale === "fr" ? "Playbook d’adoption de l’IA" : "AI Adoption Playbook";
+document.title = locale === "fr"
+  ? "Playbook d’adoption de l’IA : pilotes, agents et gouvernance"
+  : "AI Adoption Playbook: pilots, agents and governance";
 
 if (!root) {
   throw new Error("Missing #root mount point");
 }
 
-createRoot(root).render(<Playbook locale={locale} />);
+if (root.dataset.prerendered === "true") {
+  hydrateRoot(root, <Playbook locale={locale} />);
+} else {
+  createRoot(root).render(<Playbook locale={locale} />);
+}
 
 function scrollToCurrentHash() {
   const rawId = window.location.hash.slice(1);

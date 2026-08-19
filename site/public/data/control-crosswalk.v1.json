@@ -22,7 +22,7 @@
   "sources": [
     {
       "source_id": "AAP-PROCESS-02",
-      "title": "AI Adoption Playbook — universal process and gates",
+      "title": "AI Adoption Playbook: universal process and gates",
       "publisher": "Musyg",
       "version": "0.3 draft · 2026.08",
       "status": "internal_method",
@@ -61,7 +61,7 @@
     },
     {
       "source_id": "ISO-IEC-42001-2023",
-      "title": "Information technology — Artificial intelligence — Management system",
+      "title": "Information technology: Artificial intelligence: Management system",
       "publisher": "ISO/IEC",
       "version": "ISO/IEC 42001:2023 · Edition 1",
       "status": "published_standard",
@@ -74,7 +74,7 @@
     },
     {
       "source_id": "ISO-IEC-23894-2023",
-      "title": "Information technology — Artificial intelligence — Guidance on risk management",
+      "title": "Information technology: Artificial intelligence: Guidance on risk management",
       "publisher": "ISO/IEC",
       "version": "ISO/IEC 23894:2023 · Edition 1",
       "status": "published_standard",
@@ -87,7 +87,7 @@
     },
     {
       "source_id": "ISO-IEC-5338-2023",
-      "title": "Information technology — Artificial intelligence — AI system life cycle processes",
+      "title": "Information technology: Artificial intelligence: AI system life cycle processes",
       "publisher": "ISO/IEC",
       "version": "ISO/IEC 5338:2023 · Edition 1",
       "status": "published_standard",

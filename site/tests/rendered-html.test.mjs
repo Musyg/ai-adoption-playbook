@@ -115,7 +115,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /NIST-AI-100-1/);
     assert.match(html, /href=["']\/data\/control-crosswalk\.v1\.json["']/i);
     assert.match(html, /href=["']\/data\/control-crosswalk\.schema\.json["']/i);
-    assert.match(html, /not clause-level equivalence|pas une équivalence article par article/i);
+    assert.match(html, /does not claim clause-level equivalence|ne constitue ni une équivalence article par article/i);
     assert.match(html, /href=["']#calibrator["']/i);
     assert.match(html, /href=["']#pilot-plan["']/i);
     assert.match(html, /href=["']#decision-dossier["']/i);
