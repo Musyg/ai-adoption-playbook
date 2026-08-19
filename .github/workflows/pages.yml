@@ -1,18 +1,14 @@
-name: Deploy visual playbook to GitHub Pages
+name: Validate visual playbook
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
   build:
@@ -33,24 +29,9 @@ jobs:
       - name: Build the server-rendered site
         working-directory: site
         run: npm run build
-      - name: Build static GitHub Pages artifact
+      - name: Build static export
         working-directory: site
         run: npm run build:pages
       - name: Test rendered and exported pages
         working-directory: site
         run: node --test tests/*.test.mjs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: site/pages-dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

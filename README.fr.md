@@ -2,9 +2,9 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Édition interactive](https://musyg.github.io/ai-adoption-playbook/fr/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
+[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
 
-[![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/fr/)
+![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
 L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
 copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
@@ -24,20 +24,7 @@ opérationnelle de référence.
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
 
-> État : fondation publique, photographie au **19 août 2026**.
-
-## Guides pratiques sur les agents IA
-
-Commencez par la question que vous devez résoudre. Chaque guide apporte une
-réponse directe, une comparaison, un exemple réaliste et les sources qui bornent
-la conclusion.
-
-- [Copilote IA ou agent métier : quelle différence ?](https://musyg.github.io/ai-adoption-playbook/fr/copilote-ou-agent-metier/)
-- [Quel ROI attendre réellement d’un agent IA métier ?](https://musyg.github.io/ai-adoption-playbook/fr/roi-agent-metier/)
-- [Comment piloter un agent IA métier ?](https://musyg.github.io/ai-adoption-playbook/fr/piloter-agent-metier/)
-- [Comment gouverner un agent IA métier ?](https://musyg.github.io/ai-adoption-playbook/fr/gouvernance-agents-ia/)
-- [Quand une agence IA orchestrée devient-elle utile ?](https://musyg.github.io/ai-adoption-playbook/fr/agence-ia-orchestree/)
-- [Exemple réaliste d’agent IA métier pour une PME](https://musyg.github.io/ai-adoption-playbook/fr/cas-agent-ia-pme/)
+> État : dépôt de travail privé, photographie au **19 août 2026**. Aucun hébergement public ni URL de site ne sont déclarés pour le moment.
 
 **Extensions 0.3 :** [santé](sectors/fr/healthcare.md),
 [éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et

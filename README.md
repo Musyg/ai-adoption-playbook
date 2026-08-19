@@ -2,9 +2,9 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Interactive edition](https://musyg.github.io/ai-adoption-playbook/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
+[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
-[![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/)
+![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
 The bilingual visual edition turns the method into an interactive path: distinguish
 copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
@@ -24,19 +24,7 @@ of truth.
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
 
-> Status: public foundation, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual edition are available in English and French.
-
-## Practical AI agent guides
-
-Start with the question you need to answer. Each guide provides a direct answer,
-a comparison, a realistic example, and the sources that limit the claim.
-
-- [AI copilot or business agent: what is the difference?](https://musyg.github.io/ai-adoption-playbook/copilot-vs-business-agent/)
-- [What ROI can a business AI agent realistically deliver?](https://musyg.github.io/ai-adoption-playbook/business-agent-roi/)
-- [How do you pilot a business AI agent?](https://musyg.github.io/ai-adoption-playbook/business-agent-pilot/)
-- [How should a business AI agent be governed?](https://musyg.github.io/ai-adoption-playbook/ai-agent-governance/)
-- [When does an orchestrated AI agency make sense?](https://musyg.github.io/ai-adoption-playbook/orchestrated-ai-agency/)
-- [A realistic business AI agent example for an SME](https://musyg.github.io/ai-adoption-playbook/business-agent-small-business-case/)
+> Status: private working repository, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared yet.
 
 **0.3 sector overlays:** [healthcare](sectors/en/healthcare.md),
 [education](sectors/en/education.md), [finance](sectors/en/finance.md), and
