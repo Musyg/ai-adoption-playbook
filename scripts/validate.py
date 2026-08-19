@@ -158,6 +158,12 @@ GATES = {"G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"}
 PRIORITIES = {"baseline", "strengthened", "critical"}
 
 
+def is_ignored_repo_path(path: Path) -> bool:
+    """Return whether a path is inside an ignored repository directory."""
+    relative_path = path.relative_to(ROOT)
+    return any(part in IGNORED_PARTS for part in relative_path.parts)
+
+
 def check_required_files(errors: list[str]) -> None:
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
@@ -184,9 +190,13 @@ def check_translation_parity(errors: list[str]) -> None:
 
 
 def check_markdown(errors: list[str]) -> None:
-    for path in sorted(ROOT.rglob("*.md")):
-        if any(part in IGNORED_PARTS for part in path.parts):
-            continue
+    markdown_paths = [
+        path for path in sorted(ROOT.rglob("*.md")) if not is_ignored_repo_path(path)
+    ]
+    if not markdown_paths:
+        errors.append("no Markdown files discovered outside ignored paths")
+        return
+    for path in markdown_paths:
         text = path.read_text(encoding="utf-8")
         if not text.endswith("\n"):
             errors.append(f"missing final newline: {path.relative_to(ROOT)}")
@@ -234,7 +244,7 @@ def check_hosting_neutrality(errors: list[str]) -> None:
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file() or path.suffix.lower() not in text_suffixes:
             continue
-        if any(part in IGNORED_PARTS for part in path.parts):
+        if is_ignored_repo_path(path):
             continue
         text = path.read_text(encoding="utf-8")
         for origin in FORBIDDEN_HOSTING_ORIGINS:
@@ -498,7 +508,7 @@ def main() -> int:
     markdown_count = sum(
         1
         for path in ROOT.rglob("*.md")
-        if not any(part in IGNORED_PARTS for part in path.parts)
+        if not is_ignored_repo_path(path)
     )
     print(
         f"Validation passed: {markdown_count} Markdown files, "

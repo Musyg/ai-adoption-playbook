@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- No unreleased change.
+- Updated the supported toolchain to TypeScript 6.0.3, ESLint 9.39.5,
+  `typescript-eslint` 8.67.0, `globals` 17.11.0, and the latest compatible
+  Node 22 type definitions.
+- Prevented unsupported major dependency proposals until their peer ecosystems
+  support them.
+- Corrected repository-relative ignore handling so CI validates the full
+  Markdown inventory instead of silently reporting zero files.
 
 ## 0.2.0, 2026-08-19
 
