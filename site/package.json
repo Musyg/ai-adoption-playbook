@@ -8,11 +8,10 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "export:pages": "node scripts/export-github-pages.mjs",
-    "build:pages": "vinext build && node scripts/export-github-pages.mjs",
+    "build:pages": "vite build --config vite.pages.config.ts && node scripts/finalize-github-pages.mjs",
     "start": "vinext start",
-    "test": "vinext build && node scripts/export-github-pages.mjs && node --test tests/*.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "test": "vinext build && vite build --config vite.pages.config.ts && node scripts/finalize-github-pages.mjs && node --test tests/*.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern pages-dist"
   },
   "dependencies": {
     "react": "19.2.6",
