@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const metadataBase = new URL(`${protocol}://${host}`);
   const image = new URL("/og.png", metadataBase).toString();
   const description =
-    "Evidence-gated AI adoption for independent work, organizations, nonprofits, and public services.";
+    "A practical playbook to choose the right AI integration, run a real pilot, measure gains, and govern business agents safely.";
 
   return {
     metadataBase,
@@ -25,13 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     openGraph: {
       title: "AI Adoption Playbook",
-      description: "Evidence before autonomy — a visual path from idea to governed production.",
+      description: "Choose the right AI integration, test it on real work, measure the result, and govern the move to production.",
       images: [
         {
           url: image,
           width: 1732,
           height: 912,
-          alt: "AI Adoption Playbook — Evidence before autonomy.",
+          alt: "AI Adoption Playbook: evidence before autonomy.",
         },
       ],
       type: "website",
@@ -41,6 +41,17 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "AI Adoption Playbook",
       description,
       images: [image],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
     icons: { icon: "/favicon.svg" },
   };

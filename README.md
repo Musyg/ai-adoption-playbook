@@ -4,7 +4,7 @@
 
 [Interactive edition](https://musyg.github.io/ai-adoption-playbook/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
-[![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/)
+[![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/)
 
 The bilingual visual edition turns the method into an interactive path: distinguish
 copilot, business-agent, and orchestrated-agency integration; calibrate a realistic

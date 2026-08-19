@@ -1,4 +1,4 @@
-# AI Adoption Playbook — visual site
+# AI Adoption Playbook: visual site
 
 The bilingual site turns the repository’s adoption method into an interactive,
 audience-specific path. It preserves the Musyg portfolio identity and keeps the
