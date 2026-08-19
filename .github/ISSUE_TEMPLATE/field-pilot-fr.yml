@@ -1,0 +1,89 @@
+name: Proposer un pilote terrain
+description: Ouvrir une entrée publique non identifiante avant toute collecte ou transmission de preuve.
+title: "[Pilote terrain] : "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Coordination publique uniquement — aucune preuve brute
+
+        Cette issue sert à coordonner un pilote possible. Ce n’est **pas** un rapport terrain et elle ne valide pas le playbook.
+
+        N’incluez aucun nom de client ou d’organisation, aucune donnée personnelle, aucun secret, contrat, prompt brut, log, capture, contenu privilégié ou détail de sécurité exploitable.
+
+  - type: input
+    id: alias
+    attributes:
+      label: Alias non identifiant
+      description: Utilisez un nom de projet neutre qui ne permet pas d’identifier une personne, un client ou une organisation.
+      placeholder: Atelier Nord
+    validations:
+      required: true
+
+  - type: dropdown
+    id: organization
+    attributes:
+      label: Parcours de l’organisation
+      options:
+        - Indépendant
+        - TPE
+        - PME
+        - Association ou fondation
+        - Service public
+    validations:
+      required: true
+
+  - type: dropdown
+    id: integration
+    attributes:
+      label: Niveau d’intégration visé
+      options:
+        - Copilote A0–A1
+        - Agent métier A2–A3
+        - Agence orchestrée A3–A4
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sector
+    attributes:
+      label: Extension sectorielle
+      options:
+        - Général ou transverse
+        - Santé
+        - Éducation
+        - Finance
+        - Infrastructure critique
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Un workflow borné
+      description: Décrivez l’entrée, le résultat accepté, la décision humaine et le travail exclu sans identifier l’organisation.
+      placeholder: D’une demande entrante générique à un brouillon révisé ; l’envoi et les décisions contractuelles restent humains.
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Décision que le pilote doit éclairer
+      description: Indiquez la décision concrète de poursuivre, retravailler ou arrêter que ce pilote doit soutenir.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safeguards
+    attributes:
+      label: Confirmation de la frontière publique
+      options:
+        - label: Je n’ai inclus aucune identité, donnée personnelle, information confidentielle, secret, preuve brute ou détail de sécurité exploitable.
+          required: true
+        - label: Je comprends que cette issue contient des métadonnées de coordination, et non une preuve, une approbation ou un résultat terrain publié.
+          required: true
+        - label: Je conserverai les preuves brutes dans un système privé autorisé et ne soumettrai qu’un rapport anonymisé ayant fait l’objet d’une revue séparée si sa publication est appropriée.
+          required: true

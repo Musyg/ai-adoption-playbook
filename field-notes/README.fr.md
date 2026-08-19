@@ -6,10 +6,10 @@ Commencez par le [protocole de pilote terrain](../docs/field-pilot-protocol.fr.m
 Son assistant web crée uniquement un brouillon local ; les preuves brutes ne
 doivent jamais être transmises dans une issue publique.
 
-Utilisez l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml)
+Utilisez l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml)
 uniquement pour coordonner un pilote non identifiant. Après la revue privée des
 preuves, un rapport nettoyé peut utiliser le
-[modèle de pull request terrain](../.github/PULL_REQUEST_TEMPLATE/field-report.md).
+[modèle de pull request terrain](../.github/PULL_REQUEST_TEMPLATE/field-report.fr.md).
 GitHub ne reçoit jamais prompts bruts, logs, captures, contenu client, données
 personnelles, secrets ou autres preuves brutes.
 

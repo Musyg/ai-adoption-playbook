@@ -1,0 +1,26 @@
+name: Correction sourcée
+description: Signaler une affirmation incorrecte, obsolète ou ambiguë.
+title: "[Correction] : "
+labels: [documentation]
+body:
+  - type: textarea
+    id: statement
+    attributes:
+      label: Affirmation et emplacement
+      description: Citez uniquement le passage nécessaire et indiquez le fichier.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source primaire
+      description: Liez la source faisant autorité et indiquez sa date de publication ou de mise à jour.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Correction proposée
+      description: Distinguez les obligations, les recommandations et les choix propres au projet.
+    validations:
+      required: true

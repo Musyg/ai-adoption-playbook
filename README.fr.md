@@ -36,7 +36,7 @@ vetoes et gates sectoriels sans remplacer le processus universel.
 brouillon local, conserver le dénominateur complet et demander une revue
 indépendante avant toute admission d’un résultat anonymisé dans le registre.
 Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez
-l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
+l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml).
 
 ## Pourquoi ce dépôt existe
 
@@ -132,4 +132,4 @@ Le [registre des sources](references/sources.md) précise les liens primaires, l
 
 ## Contribution et licence
 
-Les corrections ciblées, retours de terrain et modèles réutilisables sont bienvenus. Voir [CONTRIBUTING.md](CONTRIBUTING.md). Le dépôt est publié sous [licence MIT](LICENSE).
+Les corrections ciblées, retours de terrain et modèles réutilisables sont bienvenus. Voir [CONTRIBUTING.fr.md](CONTRIBUTING.fr.md). Le dépôt est publié sous [licence MIT](LICENSE).

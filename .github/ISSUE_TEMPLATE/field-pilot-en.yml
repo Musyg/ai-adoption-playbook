@@ -1,4 +1,4 @@
-name: Propose a field pilot / Proposer un pilote terrain
+name: Propose a field pilot
 description: Open a public, non-identifying intake before collecting or sharing any evidence.
 title: "[Field pilot]: "
 labels: [documentation]
@@ -10,61 +10,59 @@ body:
 
         This issue coordinates a possible pilot. It is **not** a field report and cannot validate the playbook.
 
-        Cette issue sert uniquement à coordonner un pilote possible. Ce n’est **pas** un rapport terrain et elle ne valide pas le playbook.
-
         Do not include client or organization names, personal data, secrets, contracts, raw prompts, logs, screenshots, privileged material, or exploitable security details.
 
   - type: input
     id: alias
     attributes:
-      label: Non-identifying alias / Alias non identifiant
+      label: Non-identifying alias
       description: Use a neutral project name that cannot identify a person, client, or organization.
-      placeholder: Workshop North / Atelier Nord
+      placeholder: Workshop North
     validations:
       required: true
 
   - type: dropdown
     id: organization
     attributes:
-      label: Organization path / Parcours
+      label: Organization path
       options:
-        - Independent professional / Indépendant
-        - Micro-business / TPE
-        - SME / PME
-        - Nonprofit or foundation / Association ou fondation
-        - Public service / Service public
+        - Independent professional
+        - Micro-business
+        - SME
+        - Nonprofit or foundation
+        - Public service
     validations:
       required: true
 
   - type: dropdown
     id: integration
     attributes:
-      label: Intended integration level / Niveau d’intégration visé
+      label: Intended integration level
       options:
-        - Copilot A0–A1 / Copilote A0–A1
-        - Business agent A2–A3 / Agent métier A2–A3
-        - Orchestrated agency A3–A4 / Agence orchestrée A3–A4
-        - Not decided / Non décidé
+        - Copilot A0–A1
+        - Business agent A2–A3
+        - Orchestrated agency A3–A4
+        - Not decided
     validations:
       required: true
 
   - type: dropdown
     id: sector
     attributes:
-      label: Sector overlay / Extension sectorielle
+      label: Sector overlay
       options:
-        - General or cross-sector / Général ou transverse
-        - Healthcare / Santé
-        - Education / Éducation
+        - General or cross-sector
+        - Healthcare
+        - Education
         - Finance
-        - Critical infrastructure / Infrastructure critique
+        - Critical infrastructure
     validations:
       required: true
 
   - type: textarea
     id: workflow
     attributes:
-      label: One bounded workflow / Un workflow borné
+      label: One bounded workflow
       description: Describe the input, accepted outcome, human decision, and excluded work without identifying the organization.
       placeholder: From a generic inbound request to a reviewed draft; sending and contractual decisions remain human.
     validations:
@@ -73,7 +71,7 @@ body:
   - type: textarea
     id: question
     attributes:
-      label: Decision the pilot should inform / Décision à éclairer
+      label: Decision the pilot should inform
       description: State the concrete continue, rework, or stop decision this pilot should support.
     validations:
       required: true
@@ -81,7 +79,7 @@ body:
   - type: checkboxes
     id: safeguards
     attributes:
-      label: Public-boundary confirmation / Confirmation de la frontière publique
+      label: Public-boundary confirmation
       options:
         - label: I included no identity, personal data, confidential material, secret, raw evidence, or exploitable security detail.
           required: true

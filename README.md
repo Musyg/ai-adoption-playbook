@@ -35,7 +35,7 @@ vetoes and evidence gates without replacing the universal process.
 to prepare a local draft, preserve the full denominator, and request independent
 review before any anonymized result can enter the public registry. To coordinate
 a genuine pilot without publishing raw evidence, open the
-[public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
+[public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml).
 
 ## Why this repository exists
 
