@@ -2,14 +2,21 @@ name: Validate playbook
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
   repository-integrity:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -18,8 +25,8 @@ jobs:
       - name: Check structure, local links and register schema
         run: python scripts/validate.py
 
-  visual-site:
-    runs-on: ubuntu-latest
+  application:
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: site
@@ -31,6 +38,9 @@ jobs:
           cache: npm
           cache-dependency-path: site/package-lock.json
       - run: npm ci
+      - run: npm audit --audit-level=moderate
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: google-chrome --version
+      - run: npm run test:browser

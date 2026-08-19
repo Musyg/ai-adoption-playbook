@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-adoption-playbook.gimu84.chatgpt.site/data/control-crosswalk.schema.json",
+  "$id": "urn:musyg:ai-adoption-playbook:control-crosswalk-schema:1.0.0",
   "title": "AI Adoption Playbook control crosswalk",
   "type": "object",
   "additionalProperties": false,

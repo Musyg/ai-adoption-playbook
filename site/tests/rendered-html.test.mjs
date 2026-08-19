@@ -5,11 +5,12 @@ async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
-
+  const request = new Request(`http://localhost${pathname}`, {
+    headers: { accept: "text/html" },
+  });
+  if (typeof worker === "function") return worker(request);
   return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
-    }),
+    request,
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -119,7 +120,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /href=["']#calibrator["']/i);
     assert.match(html, /href=["']#pilot-plan["']/i);
     assert.match(html, /href=["']#decision-dossier["']/i);
-    assert.match(html, /og\.png/i);
+    assert.doesNotMatch(html, /property=["']og:image["']|name=["']twitter:image["']/i);
     assert.match(html, /href=["']#integration-levels["']/i);
     assert.match(html, /id=["']sectors["']/i);
     assert.match(html, /Healthcare|Santé/);

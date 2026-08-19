@@ -936,7 +936,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .solo-phases { display: grid; grid-template-columns: repeat(4, 1fr); list-style: none; margin: 40px 0 0; padding: 0; }
 .solo-phases li { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); border-top: 1px solid var(--line); min-height: 280px; padding: 24px; }
 .solo-phases li:last-child { border-right: 1px solid var(--line); }
-.solo-phases > li > span { color: var(--blue); font: 700 38px/1 "Courier New", monospace; }
+.solo-phases > li > span { color: var(--blue-deep); font: 700 38px/1 "Courier New", monospace; }
 .solo-phases small { color: var(--blue-deep); display: block; font: 700 11px "Courier New", monospace; letter-spacing: .08em; margin: 34px 0 12px; }
 .solo-phases strong { display: block; font-size: 21px; }
 .solo-phases p { color: var(--muted); font-size: 14px; line-height: 1.55; margin: 14px 0 0; }
@@ -1057,7 +1057,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .agency-phases { display: grid; grid-template-columns: repeat(4, 1fr); list-style: none; margin: 42px 0 0; padding: 0; }
 .agency-phases li { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); border-top: 1px solid var(--line); min-height: 310px; padding: 24px; }
 .agency-phases li:last-child { border-right: 1px solid var(--line); }
-.agency-phases > li > span { color: var(--blue); font: 700 36px/1 "Courier New", monospace; }
+.agency-phases > li > span { color: var(--blue-deep); font: 700 36px/1 "Courier New", monospace; }
 .agency-phases small { color: var(--blue-deep); display: block; font: 700 10px "Courier New", monospace; letter-spacing: .08em; margin: 34px 0 12px; }
 .agency-phases strong { display: block; font-size: 20px; }
 .agency-phases p { color: var(--muted); font-size: 13px; line-height: 1.55; margin: 14px 0 0; }
@@ -1189,6 +1189,7 @@ footer a { color: var(--blue); }
 .case-decision, .sme-decision, .mission-decision, .agent-decision, .agency-decision { background: #151b21; border-left: 4px solid var(--blue); color: var(--dark-text); }
 .case-decision .eyebrow, .sme-decision .eyebrow, .mission-decision .eyebrow, .agent-decision .eyebrow, .agency-decision .eyebrow { color: var(--blue); }
 .case-decision p:not(.eyebrow), .sme-decision p:not(.eyebrow), .mission-decision p:not(.eyebrow), .agent-decision p:not(.eyebrow), .agency-decision p:not(.eyebrow) { color: var(--dark-muted); }
+:is(.sme-range, .public-decision, .evidence-result) .eyebrow { color: var(--blue); }
 .mission-mark, .agent-mark, .agency-orchestrator, .crosswalk-reading { background: #151b21; border-left: 4px solid var(--blue); color: var(--dark-text); }
 .mission-mark span, .agent-mark span, .agency-orchestrator p, .crosswalk-reading li p { color: var(--dark-muted); }
 .solo-clock { background: var(--surface); border-left: 4px solid var(--blue-deep); color: var(--ink); }
