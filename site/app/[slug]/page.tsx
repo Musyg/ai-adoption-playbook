@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GeoArticlePage } from "../GeoArticlePage";
 import { geoArticlePath, geoArticles, getAlternateArticle, getGeoArticle } from "../geo-content";
-
-const canonicalBase = "https://musyg.github.io/ai-adoption-playbook";
+import { siteUrlFor } from "../site-url";
 
 export function generateStaticParams() {
   return geoArticles.filter((article) => article.locale === "en").map((article) => ({ slug: article.slug }));
@@ -14,21 +13,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = getGeoArticle("en", slug);
   if (!article) return {};
   const alternate = getAlternateArticle(article);
-  const canonical = `${canonicalBase}${geoArticlePath(article)}`;
+  const canonical = siteUrlFor(geoArticlePath(article));
+  const alternateUrl = alternate ? siteUrlFor(geoArticlePath(alternate)) : siteUrlFor("/fr/");
 
   return {
     title: { absolute: article.title },
     description: article.description,
     authors: [{ name: "Musyg", url: "https://github.com/Musyg" }],
-    alternates: {
-      canonical,
-      languages: {
-        en: canonical,
-        fr: alternate ? `${canonicalBase}${geoArticlePath(alternate)}` : `${canonicalBase}/fr/`,
-        "x-default": canonical,
-      },
-    },
-    openGraph: { title: article.title, description: article.description, url: canonical, type: "article", locale: "en_US", alternateLocale: "fr_FR", images: [] },
+    ...(canonical && alternateUrl ? { alternates: { canonical, languages: { en: canonical, fr: alternateUrl, "x-default": canonical } } } : {}),
+    openGraph: { title: article.title, description: article.description, ...(canonical ? { url: canonical } : {}), type: "article", locale: "en_US", alternateLocale: "fr_FR", images: [] },
     twitter: { card: "summary", title: article.title, description: article.description, images: [] },
   };
 }

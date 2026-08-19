@@ -3,10 +3,34 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outputRoot = path.join(siteRoot, "pages-dist");
-const basePath = "/ai-adoption-playbook";
-const canonicalBase = "https://musyg.github.io/ai-adoption-playbook";
+const outputRoot = path.join(siteRoot, "static-dist");
+const configuredBasePath = process.env.STATIC_BASE_PATH?.trim() || "/";
+const basePath = configuredBasePath === "/"
+  ? ""
+  : `/${configuredBasePath.replace(/^\/+|\/+$/g, "")}`;
+const siteUrl = resolveSiteUrl(process.env.PUBLIC_SITE_URL);
 const geoArticles = JSON.parse(await readFile(path.join(siteRoot, "app", "geo-pages.json"), "utf8"));
+
+function resolveSiteUrl(value) {
+  const candidate = value?.trim();
+  if (!candidate) return undefined;
+
+  let parsed;
+  try {
+    parsed = new URL(candidate);
+  } catch {
+    throw new Error("PUBLIC_SITE_URL must be an absolute HTTP or HTTPS URL.");
+  }
+  if (!["http:", "https:"].includes(parsed.protocol) || parsed.search || parsed.hash) {
+    throw new Error("PUBLIC_SITE_URL must be an HTTP or HTTPS URL without a query or fragment.");
+  }
+  return parsed.toString().replace(/\/$/, "");
+}
+
+function absoluteUrl(pathname) {
+  if (!siteUrl) return undefined;
+  return `${siteUrl}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
+}
 
 await Promise.all([
   access(path.join(outputRoot, "index.html")),
@@ -20,12 +44,17 @@ await Promise.all([
 const workerUrl = new URL("../dist/server/index.js", import.meta.url);
 workerUrl.searchParams.set("prerender", `${process.pid}-${Date.now()}`);
 const { default: worker } = await import(workerUrl.href);
+const handleRequest = typeof worker === "function"
+  ? worker
+  : (request) => worker.fetch(
+      request,
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
 
 async function render(pathname) {
-  const response = await worker.fetch(
+  const response = await handleRequest(
     new Request(`http://localhost${pathname}`, { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
   );
 
   if (!response.ok) {
@@ -40,8 +69,11 @@ async function render(pathname) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, "")
     .replace(/<(?:meta|link)\b[^>]*>/gi, "")
     .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, "")
-    .replace(/href="\/(?!\/)/g, `href="${basePath}/`)
     .trim();
+
+  if (basePath) {
+    rendered = rendered.replace(/(href|src)="\/(?!\/)/g, `$1="${basePath}/`);
+  }
 
   if (pathname.startsWith("/fr") && rendered.startsWith('<div lang="fr">') && rendered.endsWith("</div>")) {
     rendered = rendered.slice('<div lang="fr">'.length, -"</div>".length);
@@ -64,14 +96,40 @@ function injectRenderedBody(shell, rendered, label) {
   return hydrated;
 }
 
-for (const [pathname, relativePath, locale] of [
-  ["/", "index.html", "en"],
-  ["/fr", path.join("fr", "index.html"), "fr"],
+function hostedMetadata(locale, pathname, alternatePathname, includeImage) {
+  if (!siteUrl) return "";
+  const canonical = absoluteUrl(pathname);
+  const alternate = absoluteUrl(alternatePathname);
+  const englishUrl = locale === "en" ? canonical : alternate;
+  const frenchUrl = locale === "fr" ? canonical : alternate;
+  const imageTags = includeImage
+    ? `\n    <meta property="og:image" content="${absoluteUrl("/og.png")}" />\n    <meta name="twitter:image" content="${absoluteUrl("/og.png")}" />`
+    : "";
+
+  return `
+    <link rel="canonical" href="${canonical}" />
+    <link rel="alternate" hreflang="en" href="${englishUrl}" />
+    <link rel="alternate" hreflang="fr" href="${frenchUrl}" />
+    <link rel="alternate" hreflang="x-default" href="${englishUrl}" />
+    <link rel="sitemap" type="application/xml" href="${absoluteUrl("/sitemap.xml")}" />
+    <meta property="og:url" content="${canonical}" />${imageTags}`;
+}
+
+function applyHostingMetadata(shell, locale, pathname, alternatePathname, includeImage = false) {
+  if (!siteUrl) return shell;
+  return shell
+    .replace('<meta name="robots" content="noindex, nofollow" />', '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />')
+    .replace("  </head>", `${hostedMetadata(locale, pathname, alternatePathname, includeImage)}\n  </head>`);
+}
+
+for (const [pathname, relativePath, locale, alternatePathname] of [
+  ["/", "index.html", "en", "/fr/"],
+  ["/fr", path.join("fr", "index.html"), "fr", "/"],
 ]) {
   const outputPath = path.join(outputRoot, relativePath);
   const rendered = await render(pathname);
   const hydrated = injectRenderedBody(shells[locale], rendered, relativePath);
-  await writeFile(outputPath, hydrated, "utf8");
+  await writeFile(outputPath, applyHostingMetadata(hydrated, locale, pathname === "/fr" ? "/fr/" : "/", alternatePathname, true), "utf8");
 }
 
 function escapeHtml(value) {
@@ -88,67 +146,43 @@ function alternateFor(article) {
 
 function articleJsonLd(article) {
   const alternate = alternateFor(article);
-  const canonical = `${canonicalBase}${articlePath(article)}`;
-  const home = article.locale === "fr" ? `${canonicalBase}/fr/` : `${canonicalBase}/`;
+  const canonical = absoluteUrl(articlePath(article));
   return JSON.stringify({
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Article",
-        "@id": `${canonical}#article`,
-        headline: article.title,
-        description: article.description,
-        url: canonical,
-        mainEntityOfPage: canonical,
-        inLanguage: article.locale,
-        dateModified: "2026-08-19",
-        isAccessibleForFree: true,
-        author: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
-        publisher: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
-        isPartOf: { "@id": `${canonicalBase}/#website` },
-        citation: article.sources.map((source) => source.url),
-        translationOfWork: alternate ? { "@id": `${canonicalBase}${articlePath(alternate)}#article` } : undefined,
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "AI Adoption Playbook", item: home },
-          { "@type": "ListItem", position: 2, name: article.title, item: canonical },
-        ],
-      },
-    ],
+    "@type": "Article",
+    ...(canonical ? { "@id": `${canonical}#article`, url: canonical, mainEntityOfPage: canonical } : {}),
+    headline: article.title,
+    description: article.description,
+    inLanguage: article.locale,
+    dateModified: "2026-08-19",
+    isAccessibleForFree: true,
+    author: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
+    publisher: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
+    citation: article.sources.map((source) => source.url),
+    ...(canonical && alternate ? { translationOfWork: { "@id": `${absoluteUrl(articlePath(alternate))}#article` } } : {}),
   }).replaceAll("<", "\\u003c");
 }
 
 function articleShell(article) {
   const alternate = alternateFor(article);
-  const canonical = `${canonicalBase}${articlePath(article)}`;
-  const enUrl = article.locale === "en" ? canonical : `${canonicalBase}${articlePath(alternate)}`;
-  const frUrl = article.locale === "fr" ? canonical : `${canonicalBase}${articlePath(alternate)}`;
   const title = escapeHtml(article.title);
   const description = escapeHtml(article.description);
   const locale = article.locale === "fr" ? "fr_FR" : "en_US";
   const alternateLocale = article.locale === "fr" ? "en_US" : "fr_FR";
 
-  return shells[article.locale]
+  const shell = shells[article.locale]
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${description}" />`)
-    .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />`)
-    .replace(/<link rel="alternate" hreflang="en" href="[^"]*" \/>/, `<link rel="alternate" hreflang="en" href="${enUrl}" />`)
-    .replace(/<link rel="alternate" hreflang="fr" href="[^"]*" \/>/, `<link rel="alternate" hreflang="fr" href="${frUrl}" />`)
-    .replace(/<link rel="alternate" hreflang="x-default" href="[^"]*" \/>/, `<link rel="alternate" hreflang="x-default" href="${enUrl}" />`)
     .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`)
     .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${description}" />`)
-    .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${canonical}" />`)
     .replace(/<meta property="og:locale" content="[^"]*" \/>/, `<meta property="og:locale" content="${locale}" />`)
     .replace(/<meta property="og:locale:alternate" content="[^"]*" \/>/, `<meta property="og:locale:alternate" content="${alternateLocale}" />`)
-    .replace(/\s*<meta property="og:image" content="[^"]*" \/>/, "")
     .replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />')
-    .replace('<meta name="twitter:card" content="summary_large_image" />', '<meta name="twitter:card" content="summary" />')
     .replace(/<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`)
     .replace(/<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${description}" />`)
-    .replace(/\s*<meta name="twitter:image" content="[^"]*" \/>/, "")
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${articleJsonLd(article)}</script>`)
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
+
+  return applyHostingMetadata(shell, article.locale, articlePath(article), articlePath(alternate));
 }
 
 for (const article of geoArticles) {
@@ -163,31 +197,33 @@ for (const article of geoArticles) {
   await writeFile(outputPath, hydrated, "utf8");
 }
 
-const sitemapEntries = [
-  { locale: "en", path: "/", alternatePath: "/fr/" },
-  { locale: "fr", path: "/fr/", alternatePath: "/" },
-  ...geoArticles.map((article) => ({
-    locale: article.locale,
-    path: articlePath(article),
-    alternatePath: articlePath(alternateFor(article)),
-  })),
-];
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+if (siteUrl) {
+  const sitemapEntries = [
+    { locale: "en", path: "/", alternatePath: "/fr/" },
+    { locale: "fr", path: "/fr/", alternatePath: "/" },
+    ...geoArticles.map((article) => ({
+      locale: article.locale,
+      path: articlePath(article),
+      alternatePath: articlePath(alternateFor(article)),
+    })),
+  ];
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${sitemapEntries.map((entry) => {
   const enPath = entry.locale === "en" ? entry.path : entry.alternatePath;
   const frPath = entry.locale === "fr" ? entry.path : entry.alternatePath;
   return `  <url>
-    <loc>${canonicalBase}${entry.path}</loc>
+    <loc>${absoluteUrl(entry.path)}</loc>
     <lastmod>2026-08-19</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="${canonicalBase}${enPath}" />
-    <xhtml:link rel="alternate" hreflang="fr" href="${canonicalBase}${frPath}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${canonicalBase}${enPath}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${absoluteUrl(enPath)}" />
+    <xhtml:link rel="alternate" hreflang="fr" href="${absoluteUrl(frPath)}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(enPath)}" />
   </url>`;
 }).join("\n")}
 </urlset>
 `;
-await writeFile(path.join(outputRoot, "sitemap.xml"), sitemap, "utf8");
+  await writeFile(path.join(outputRoot, "sitemap.xml"), sitemap, "utf8");
+}
 
-await writeFile(path.join(outputRoot, ".nojekyll"), "", "utf8");
-console.log(`Prerendered GitHub Pages build ready: ${geoArticles.length + 2} routes in ${outputRoot}`);
+const mode = siteUrl ? `host-ready metadata for ${siteUrl}` : "neutral noindex metadata";
+console.log(`Prerendered static build ready: ${geoArticles.length + 2} routes in ${outputRoot} (${mode}).`);

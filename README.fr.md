@@ -24,7 +24,7 @@ opérationnelle de référence.
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
 
-> État : dépôt de travail privé, photographie au **19 août 2026**. Aucun hébergement public ni URL de site ne sont déclarés pour le moment.
+> État : version **0.2.0**, dépôt privé, photographie au **19 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
 **Extensions 0.3 :** [santé](sectors/fr/healthcare.md),
 [éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et
@@ -35,8 +35,8 @@ vetoes et gates sectoriels sans remplacer le processus universel.
 [protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
 brouillon local, conserver le dénominateur complet et demander une revue
 indépendante avant toute admission d’un résultat anonymisé dans le registre.
-Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez
-l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml).
+Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez le
+[formulaire de prise en charge du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml).
 
 ## Pourquoi ce dépôt existe
 
@@ -113,7 +113,26 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 - des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
 - un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;
-- une validation automatisée du dépôt, sans dépendance externe.
+- une validation automatisée du dépôt, sans dépendance externe ;
+- des contrôles automatisés de TypeScript, des dépendances, de l’accessibilité,
+  de l’export statique et du rendu navigateur.
+
+## Validation du dépôt
+
+Depuis `site/`, installez les dépendances verrouillées et lancez la vérification
+complète :
+
+```bash
+npm ci
+npm run verify
+python ../scripts/validate.py
+```
+
+L’export statique reste neutre vis-à-vis de l’hébergeur et utilise `noindex` par
+défaut. Il ne produit ni origine canonique ni sitemap tant que
+`PUBLIC_SITE_URL` n’est pas défini pour un hébergeur explicitement approuvé.
+`STATIC_BASE_PATH` permet ensuite de servir l’application sous un sous-chemin.
+Aucun de ces réglages n’est configuré dans ce dépôt privé.
 
 ## Périmètre et limites
 

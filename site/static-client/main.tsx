@@ -5,10 +5,13 @@ import { Playbook } from "../app/Playbook";
 import { getGeoArticle } from "../app/geo-content";
 import "../app/globals.css";
 
-const basePath = "/ai-adoption-playbook";
-const localPath = window.location.pathname.startsWith(`${basePath}/`)
-  ? window.location.pathname.slice(basePath.length)
-  : window.location.pathname;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const pathname = window.location.pathname;
+const localPath = basePath && pathname === basePath
+  ? "/"
+  : basePath && pathname.startsWith(`${basePath}/`)
+    ? pathname.slice(basePath.length)
+    : pathname;
 const locale = localPath === "/fr" || localPath.startsWith("/fr/") ? "fr" : "en";
 const pathParts = localPath.split("/").filter(Boolean);
 const articleSlug = locale === "fr" ? pathParts[1] : pathParts[0];

@@ -24,7 +24,7 @@ of truth.
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
 
-> Status: private working repository, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared yet.
+> Status: version **0.2.0**, private repository, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
 **0.3 sector overlays:** [healthcare](sectors/en/healthcare.md),
 [education](sectors/en/education.md), [finance](sectors/en/finance.md), and
@@ -35,7 +35,7 @@ vetoes and evidence gates without replacing the universal process.
 to prepare a local draft, preserve the full denominator, and request independent
 review before any anonymized result can enter the public registry. To coordinate
 a genuine pilot without publishing raw evidence, open the
-[public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml).
+[pilot intake form](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml).
 
 ## Why this repository exists
 
@@ -103,7 +103,24 @@ Start at the lowest level that can solve the problem and only move upward when e
 - copy-ready registers, accessibility and fundamental-rights assessments, forms, and runbooks;
 - a versioned JSON crosswalk connecting controls, applicability, evidence, gates, and sources;
 - a dated register of primary sources;
-- dependency-free repository validation in CI.
+- dependency-free repository validation in CI;
+- automated TypeScript, dependency, accessibility, static-export, and browser checks.
+
+## Repository validation
+
+From `site/`, install the locked dependencies and run the complete verification:
+
+```bash
+npm ci
+npm run verify
+python ../scripts/validate.py
+```
+
+The default static export is provider neutral and deliberately uses `noindex`.
+It emits no canonical origin or sitemap until `PUBLIC_SITE_URL` is configured for
+an explicitly approved host. `STATIC_BASE_PATH` can be set when that host serves
+the application below its root path. Neither setting is configured in this
+private repository.
 
 ## Quick start
 

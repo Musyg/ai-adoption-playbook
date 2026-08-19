@@ -81,7 +81,8 @@ REQUIRED_FILES = (
     ".github/ISSUE_TEMPLATE/field-pilot-fr.yml",
     ".github/PULL_REQUEST_TEMPLATE/field-report.md",
     ".github/PULL_REQUEST_TEMPLATE/field-report.fr.md",
-    ".github/workflows/pages.yml",
+    ".github/workflows/validate.yml",
+    ".github/dependabot.yml",
 )
 TRANSLATION_PAIRS = (
     ("CONTRIBUTING.md", "CONTRIBUTING.fr.md"),
@@ -139,11 +140,15 @@ IGNORED_PARTS = {
     ".git",
     ".next",
     ".vinext",
-    ".wrangler",
     "dist",
     "node_modules",
+    "static-dist",
     "work",
 }
+FORBIDDEN_HOSTING_ORIGINS = (
+    "musyg" + ".github.io/ai-adoption-playbook",
+    "ai-adoption-playbook.gimu84." + "chatgpt.site",
+)
 CONTROL_ID = re.compile(r"^AAP-[A-Z]{3}-[0-9]{3}$")
 EVIDENCE_ID = re.compile(r"^EV-[A-Z0-9-]+$")
 ORGANIZATION_TYPES = {"independent", "tpe", "pme", "nonprofit", "public"}
@@ -207,6 +212,34 @@ def check_markdown(errors: list[str]) -> None:
                     errors.append(
                         f"broken local link: {path.relative_to(ROOT)}:{line_number} -> {target}"
                     )
+
+
+def check_hosting_neutrality(errors: list[str]) -> None:
+    forbidden_workflow = ROOT / ".github" / "workflows" / "pages.yml"
+    if forbidden_workflow.exists():
+        errors.append("provider-specific Pages workflow must not be present")
+
+    text_suffixes = {
+        ".html",
+        ".js",
+        ".json",
+        ".jsx",
+        ".md",
+        ".mjs",
+        ".ts",
+        ".tsx",
+        ".yml",
+        ".yaml",
+    }
+    for path in sorted(ROOT.rglob("*")):
+        if not path.is_file() or path.suffix.lower() not in text_suffixes:
+            continue
+        if any(part in IGNORED_PARTS for part in path.parts):
+            continue
+        text = path.read_text(encoding="utf-8")
+        for origin in FORBIDDEN_HOSTING_ORIGINS:
+            if origin in text:
+                errors.append(f"provider-specific hosting origin: {path.relative_to(ROOT)}")
 
 
 def check_register(errors: list[str]) -> None:
@@ -453,6 +486,7 @@ def main() -> int:
     check_required_files(errors)
     check_translation_parity(errors)
     check_markdown(errors)
+    check_hosting_neutrality(errors)
     check_register(errors)
     check_field_notes(errors)
     check_crosswalk(errors)

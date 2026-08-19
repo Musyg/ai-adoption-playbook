@@ -1,5 +1,19 @@
 # Roadmap
 
+## Repository release readiness, technical snapshot 0.2.0
+
+- [x] Correct TypeScript and dependency vulnerabilities.
+- [x] Correct automated accessibility findings.
+- [x] Remove provider-specific hosting configuration and origins.
+- [x] Consolidate validation workflows and add dependency update configuration.
+- [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
+- [x] Update version, changelog, operational documentation, and handoff.
+- [ ] Change repository visibility or select a host.
+
+The final item is intentionally outside this release preparation. The repository
+remains private, has no declared website URL, and must be reviewed before any
+separate publication decision.
+
 ## 0.2
 
 - [x] Complete English translation of the operating guides and organization tracks.
