@@ -11,7 +11,7 @@ remains intentionally open until a real submission passes review.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `main`
-- Reference implementation commit: `4f42eb2640f6ec7480cc0d17d6b9624e11217b97`
+- Reference implementation commit: `0c02c61b9cd126969e0cfd1a8bcdcc236ec6ec52`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - GitHub Pages client entry: `site/pages-client/`
@@ -32,9 +32,9 @@ be refreshed.
 - Canonical public URL: <https://musyg.github.io/ai-adoption-playbook/>
 - Canonical French route: <https://musyg.github.io/ai-adoption-playbook/fr/>
 - Pages source: GitHub Actions workflow from `main`
-- Verified workflow run: <https://github.com/Musyg/ai-adoption-playbook/actions/runs/32258123723>
+- Verified workflow run: <https://github.com/Musyg/ai-adoption-playbook/actions/runs/32260561614>
 - Deployment result: successful, public, HTTPS enforced
-- Merge path: PRs `#1` through `#10`
+- Merge path: PRs `#1` through `#12`
 - Authenticated Sites fallback: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
 - Current Sites version: `21`
@@ -139,6 +139,18 @@ publishes both route relationships. The opening sequence also includes a short,
 plain-language explanation of who the guide serves and which decision it helps
 make. The visible site and primary README contain no em dash characters.
 
+The first GEO content cluster adds six focused questions in both English and
+French, for 12 independently shareable article routes. It covers integration
+choice, realistic ROI, pilot design, agent governance, orchestrated agencies,
+and a worked SME quote-agent example. Every article opens with a direct answer,
+then provides three takeaways, a comparison table, a bounded example, three
+identified sources, related guides, a locale switch, and a return to the full
+playbook. The home routes link to all six local guides, so discovery does not
+depend on the sitemap alone. Detail routes use their own canonical, language,
+Open Graph, Twitter, `Article`, and `BreadcrumbList` metadata. They deliberately
+omit the generic home-page social image because no route-specific image exists.
+The generated sitemap now contains all 14 public URLs.
+
 ## Decision and evidence rules
 
 - A productivity percentage applies only to eligible work, not automatically to
@@ -171,7 +183,8 @@ The following checks passed on the canonical source and in GitHub Actions:
 - Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - GitHub Pages artifact tests: 3/3 passed.
-- Combined Node test run: 12/12 passed.
+- GEO content and route tests: 3/3 passed across all 12 article routes.
+- Combined Node test run: 15/15 passed.
 - Repository validation: 93 Markdown files, 31 EN/FR pairs, AI register,
   field-feedback registry, and control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
@@ -230,6 +243,12 @@ The following checks passed on the canonical source and in GitHub Actions:
   English route, French route, and sitemap. Both HTML documents contained the
   pre-render marker, locale-correct discovery metadata, structured data, and the
   plain-language summary, with no `localhost` URL or em dash character.
+- Public HTTP checks on deployment run `32260561614` returned `200` for the
+  French home route, the paired French and English integration guides, the
+  French ROI guide, and the 14-URL sitemap. The home route exposed the new
+  internal links. Each checked article contained its direct answer, canonical,
+  language alternates, pre-rendered body, and `Article` structured data, with no
+  inherited social image, development URL, or em dash character.
 
 From `site/`, use a supported Node.js runtime and run:
 
@@ -253,6 +272,11 @@ hash from another session.
   The release therefore makes no crawler-specific `robots.txt` claim. Discovery
   relies on the public HTML, index/follow metadata, canonical language links, and
   the project sitemap.
+- Publishing focused pages makes them eligible for discovery but does not prove
+  indexation, ranking, or citation by an answer engine. The sitemap has not been
+  submitted through an authenticated Google Search Console or Bing Webmaster
+  Tools property, and no external citation or referral baseline has been
+  collected yet.
 - The Sites fallback remains authentication-protected. Its shared server layout
   serializes `lang="en"`; a synchronous bootstrap and the client correct the
   French route at runtime. The GitHub Pages French shell starts with `lang="fr"`.
@@ -269,14 +293,17 @@ hash from another session.
 
 ## First authorized next step
 
-The public GitHub Pages site contains the field-pilot assistant, protocol, and
-non-identifying intake route. The next step is operational rather than another
-content expansion: recruit one genuine pilot,
-complete the local draft, and review consent, provenance, redaction, limitations,
-and transferability against the publication contract. Admit it to
-`field-notes/index.json` only if it passes. If no real submission exists, keep
-the registry empty. Do not invent a field report, change access mode, or broaden
-legal claims.
+For discovery, verify the GitHub Pages property in Google Search Console and
+Bing Webmaster Tools, submit `sitemap.xml`, request inspection of the English
+and French integration guides, and record index coverage plus referral queries
+for four weeks. This requires the site owner's authenticated accounts and must
+not be reported as complete before those external systems confirm it.
+
+For product evidence, recruit one genuine pilot, complete the local draft, and
+review consent, provenance, redaction, limitations, and transferability against
+the publication contract. Admit it to `field-notes/index.json` only if it passes.
+If no real submission exists, keep the registry empty. Do not invent a field
+report, change access mode, or broaden legal claims.
 
 ## Resume checklist
 
