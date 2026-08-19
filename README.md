@@ -2,7 +2,7 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
+[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
 [![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](site/)
 
@@ -24,7 +24,7 @@ of truth.
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
 
-> Status: public foundation, snapshot **2026-08-19**. The operational edition is currently written in French; English translations are tracked in the roadmap.
+> Status: public foundation, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual edition are available in English and French.
 
 ## Why this repository exists
 
@@ -42,11 +42,11 @@ It scales across five contexts without pretending their controls should be ident
 
 Open the matching implementation track:
 
-- [Independent professional](tracks/fr/independent.md)
-- [Micro-business / TPE](tracks/fr/tpe.md)
-- [SME / PME](tracks/fr/pme.md)
-- [Nonprofit or foundation](tracks/fr/nonprofit-foundation.md)
-- [Public service](tracks/fr/public-sector.md)
+- [Independent professional](tracks/en/independent.md)
+- [Micro-business / TPE](tracks/en/tpe.md)
+- [SME / PME](tracks/en/pme.md)
+- [Nonprofit or foundation](tracks/en/nonprofit-foundation.md)
+- [Public service](tracks/en/public-sector.md)
 
 ## The operating loop
 
@@ -95,9 +95,9 @@ Start at the lowest level that can solve the problem and only move upward when e
 
 ## Quick start
 
-1. Read the [universal process](docs/universal-process.fr.md).
-2. Select one organizational [track](tracks/fr/).
-3. Copy the [mandate](templates/mandate.fr.md) and [use-case card](templates/use-case-card.fr.md).
+1. Read the [universal process](docs/universal-process.md).
+2. Select one organizational [track](tracks/en/).
+3. Copy the [mandate](templates/mandate.md) and [use-case card](templates/use-case-card.md).
 4. Record every current or proposed system in the [AI register](templates/ai-system-register.csv).
 5. Do not build until the first gate is satisfied.
 

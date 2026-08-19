@@ -2,16 +2,15 @@
 
 ## 0.2
 
-- Complete English translation of the operating guides and organization tracks.
-- Add worked, synthetic examples for each track.
+- [x] Complete English translation of the operating guides and organization tracks.
+- [x] Add worked, synthetic examples for each track.
 - [x] Add a machine-readable control crosswalk with source and version fields.
 
-Progress: bilingual worked examples now cover every organization track:
-independent professional, TPE, SME/PME, nonprofit/foundation, and public sector.
-The versioned JSON control crosswalk now maps stable control and evidence IDs to
-organization, risk, autonomy, conditions, lifecycle phases, gates, sources, and
-implementation files. The complete English operating-guide translation remains
-planned for 0.2.
+Progress: **0.2 complete.** Bilingual operating guides, templates, organization
+tracks, and worked examples now cover independent professionals, TPEs, SMEs/PMEs,
+nonprofits/foundations, and public services. The versioned JSON control crosswalk
+maps stable control and evidence IDs to organization, risk, autonomy, conditions,
+lifecycle phases, gates, sources, and implementation files.
 
 ## 0.3
 

@@ -121,6 +121,19 @@ for (const [pathname, language, title] of [
     assert.match(html, /href=["']#decision-dossier["']/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#integration-levels["']/i);
+    if (language === "en") {
+      assert.match(html, /templates\/mandate\.md/);
+      assert.match(html, /templates\/evaluation-plan\.md/);
+      assert.match(html, /templates\/incident-runbook\.md/);
+      assert.match(html, /tracks\/en\/independent\.md/);
+      assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
+      assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
+    } else {
+      assert.match(html, /templates\/mandate\.fr\.md/);
+      assert.match(html, /templates\/evaluation-plan\.fr\.md/);
+      assert.match(html, /templates\/incident-runbook\.fr\.md/);
+      assert.match(html, /tracks\/fr\/independent\.md/);
+    }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });
 }

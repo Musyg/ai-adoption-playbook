@@ -18,20 +18,62 @@ REQUIRED_FILES = (
     "README.md",
     "README.fr.md",
     "LICENSE",
+    "docs/evaluations-and-gates.md",
+    "docs/legal-switzerland-eu.md",
+    "docs/maturity-model.md",
+    "docs/risk-autonomy.md",
+    "docs/security.md",
+    "docs/universal-process.md",
     "docs/universal-process.fr.md",
+    "tracks/en/README.md",
+    "tracks/en/independent.md",
+    "tracks/en/tpe.md",
+    "tracks/en/pme.md",
+    "tracks/en/nonprofit-foundation.md",
+    "tracks/en/public-sector.md",
     "tracks/fr/independent.md",
     "tracks/fr/tpe.md",
     "tracks/fr/pme.md",
     "tracks/fr/nonprofit-foundation.md",
     "tracks/fr/public-sector.md",
     "templates/mandate.fr.md",
+    "templates/mandate.md",
     "templates/use-case-card.fr.md",
+    "templates/use-case-card.md",
     "templates/evaluation-plan.fr.md",
+    "templates/evaluation-plan.md",
     "templates/incident-runbook.fr.md",
+    "templates/incident-runbook.md",
+    "templates/pilot-decision.md",
+    "templates/risk-assessment.md",
+    "templates/training-plan.md",
+    "templates/vendor-assessment.md",
     "references/sources.md",
     "controls/README.md",
     "site/public/data/control-crosswalk.schema.json",
     "site/public/data/control-crosswalk.v1.json",
+)
+TRANSLATION_PAIRS = (
+    ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),
+    ("docs/legal-switzerland-eu.md", "docs/legal-switzerland-eu.fr.md"),
+    ("docs/maturity-model.md", "docs/maturity-model.fr.md"),
+    ("docs/risk-autonomy.md", "docs/risk-autonomy.fr.md"),
+    ("docs/security.md", "docs/security.fr.md"),
+    ("docs/universal-process.md", "docs/universal-process.fr.md"),
+    ("templates/evaluation-plan.md", "templates/evaluation-plan.fr.md"),
+    ("templates/incident-runbook.md", "templates/incident-runbook.fr.md"),
+    ("templates/mandate.md", "templates/mandate.fr.md"),
+    ("templates/pilot-decision.md", "templates/pilot-decision.fr.md"),
+    ("templates/risk-assessment.md", "templates/risk-assessment.fr.md"),
+    ("templates/training-plan.md", "templates/training-plan.fr.md"),
+    ("templates/use-case-card.md", "templates/use-case-card.fr.md"),
+    ("templates/vendor-assessment.md", "templates/vendor-assessment.fr.md"),
+    ("tracks/en/README.md", "tracks/fr/README.md"),
+    ("tracks/en/independent.md", "tracks/fr/independent.md"),
+    ("tracks/en/tpe.md", "tracks/fr/tpe.md"),
+    ("tracks/en/pme.md", "tracks/fr/pme.md"),
+    ("tracks/en/nonprofit-foundation.md", "tracks/fr/nonprofit-foundation.md"),
+    ("tracks/en/public-sector.md", "tracks/fr/public-sector.md"),
 )
 EXPECTED_REGISTER_COLUMNS = (
     "system_id",
@@ -74,6 +116,25 @@ def check_required_files(errors: list[str]) -> None:
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
             errors.append(f"missing required file: {relative}")
+
+
+def check_translation_parity(errors: list[str]) -> None:
+    for english_relative, french_relative in TRANSLATION_PAIRS:
+        english_path = ROOT / english_relative
+        french_path = ROOT / french_relative
+        if not english_path.is_file() or not french_path.is_file():
+            errors.append(
+                f"incomplete translation pair: {english_relative} <-> {french_relative}"
+            )
+            continue
+        english_text = english_path.read_text(encoding="utf-8")
+        french_text = french_path.read_text(encoding="utf-8")
+        if not english_text.startswith("# ") or not french_text.startswith("# "):
+            errors.append(
+                f"translation pair must start with an H1: {english_relative} <-> {french_relative}"
+            )
+        if ".fr.md" in english_text:
+            errors.append(f"English file links to a French Markdown file: {english_relative}")
 
 
 def check_markdown(errors: list[str]) -> None:
@@ -312,6 +373,7 @@ def check_crosswalk(errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     check_required_files(errors)
+    check_translation_parity(errors)
     check_markdown(errors)
     check_register(errors)
     check_crosswalk(errors)
@@ -326,8 +388,9 @@ def main() -> int:
         if not any(part in IGNORED_PARTS for part in path.parts)
     )
     print(
-        f"Validation passed: {markdown_count} Markdown files, AI register, "
-        "and control crosswalk contracts OK."
+        f"Validation passed: {markdown_count} Markdown files, "
+        f"{len(TRANSLATION_PAIRS)} EN/FR pairs, AI register, and control "
+        "crosswalk contracts OK."
     )
     return 0
 
