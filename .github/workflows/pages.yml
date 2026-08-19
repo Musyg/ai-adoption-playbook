@@ -26,6 +26,9 @@ jobs:
       - name: Lint
         working-directory: site
         run: npm run lint
+      - name: Typecheck
+        working-directory: site
+        run: npm run typecheck
       - name: Build the server-rendered site
         working-directory: site
         run: npm run build

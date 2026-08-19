@@ -848,8 +848,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [traceCompleteness, setTraceCompleteness] = useState(100);
   const [observedEligibility, setObservedEligibility] = useState(65);
   const [evidenceCopied, setEvidenceCopied] = useState(false);
-  const [operationOwner, setOperationOwner] = useState(t.operationDefaults.owner);
-  const [incidentOwner, setIncidentOwner] = useState(t.operationDefaults.incident);
+  const [operationOwner, setOperationOwner] = useState<string>(t.operationDefaults.owner);
+  const [incidentOwner, setIncidentOwner] = useState<string>(t.operationDefaults.incident);
   const [reviewDate, setReviewDate] = useState(operationSpecs.agent.reviewDate);
   const [operationCopied, setOperationCopied] = useState(false);
   const [dossierCopied, setDossierCopied] = useState(false);
