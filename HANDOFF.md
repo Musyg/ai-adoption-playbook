@@ -10,12 +10,12 @@ remains intentionally open until a real submission passes review.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `c5f8b778b670eb09175b9181b9c3bf5787e08742`
+- Reference implementation commit: `dd159a336f600a3cd9aa725aa419f5b400558f96`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `c31aa6d4ca33b791e76e5700a7d51412ef0ccfe2`
+- Publishing-mirror commit: `85a80a08f4350402025cc5d856d60672e2a289eb`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -27,11 +27,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `20`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_1703df69d1b0819198e6429bfc38c2b0`
-- Source commit used by Sites: `c31aa6d4ca33b791e76e5700a7d51412ef0ccfe2`
-- Archive content hash: `sha256:b1653b5f3396acafe384591fbf2c2853c4d0e754489351a259f643da62d599e9`
-- Deployment ID: `appgdep_6a8578a6d750819197b98d96751a5a7e`
+- Current Sites version: `21`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_ca11992f83608191bf2b7e42168b6fcc`
+- Source commit used by Sites: `85a80a08f4350402025cc5d856d60672e2a289eb`
+- Archive content hash: `sha256:35850e44a041dfa4af6f9bb0928fff5c9ba64cd06cc24482dde9faee4c8dafc5`
+- Deployment ID: `appgdep_6a85865b511481918fc9e663f99aada4`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -51,10 +51,11 @@ The web experience is bilingual and follows one explicit decision chain:
 6. resolve organization, impact, and autonomy to a versioned control set;
 7. export a reviewable Markdown decision dossier.
 
-The sticky decision rail exposes the five operational stages: Calibrate, Pilot,
-Decide, Operate, and Hand off. On small screens it becomes a keyboard-accessible
-horizontal rail. The primary hero action now starts at the integration-level
-distinction instead of jumping past the new workflow.
+The sticky decision rail exposes six operational stages: Calibrate, Pilot,
+Decide, Operate, Hand off, and Field test. On small screens it becomes a
+keyboard-accessible horizontal rail. The primary hero action starts at the
+integration-level distinction, while a second action opens the field-pilot
+assistant directly.
 
 The worked material includes an independent-professional copilot, a bounded
 business agent, an orchestrated-agency analogy, a TPE customer-request case, an
@@ -96,6 +97,15 @@ unreviewed submissions cannot be presented as field evidence. Repository links
 from the deployed site target the real canonical branch rather than an absent
 `main` branch.
 
+The new bilingual field-pilot assistant frames an organization, integration
+level, sector, non-identifying alias, exact workflow, version, observation
+period, and transfer limits. It reuses the evidence gate only after the user
+explicitly confirms that demonstration values were replaced with observations,
+checks six publication safeguards, and downloads a local Markdown draft. The
+site sends none of these inputs to a server, and the export always remains a
+draft pending independent review and a separate admission decision. The paired
+Markdown protocol makes the same boundary available outside the web interface.
+
 ## Decision and evidence rules
 
 - A productivity percentage applies only to eligible work, not automatically to
@@ -129,7 +139,7 @@ mirror where applicable:
 - Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 9/9 passed.
-- Repository validation: 88 Markdown files, 29 EN/FR pairs, AI register,
+- Repository validation: 90 Markdown files, 30 EN/FR pairs, AI register,
   field-feedback registry, and control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
   nine source records.
@@ -155,6 +165,9 @@ mirror where applicable:
   exposes their French counterparts.
 - New sector assertions cover the four bilingual overlays, their explicit
   non-transferable-veto boundary, and the three new assessment/report tools.
+- New field-pilot assertions cover the local-only boundary, demonstration-value
+  confirmation, publication review, draft export, and locale-correct protocol
+  links.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -186,9 +199,10 @@ hash from another session.
   require separate locale root layouts or an equivalent routing change.
 - The operating review dates and the playbook snapshot date are explicit
   reference data. Review them before presenting a later release as current.
-- No browser-control audit was run for the 0.3 tranche. The four intended site
-  files matched byte-for-byte between the canonical and publishing mirror
-  sources, and both passed lint, production build, and all nine tests.
+- No full browser-control or responsive audit was run for the field-pilot
+  tranche. The three intended site files matched byte-for-byte between the
+  canonical and publishing mirror sources, and both passed lint, production
+  build, and all nine tests.
 - The sector and legal-orientation sources were checked on 19 August 2026. They
   remain orientation material, not legal, clinical, financial, educational, or
   critical-infrastructure certification.
@@ -197,12 +211,13 @@ hash from another session.
 
 ## First authorized next step
 
-Sites version 20 contains the first roadmap 0.3 tranche. The next evidence-backed
-step is to obtain one genuine field submission, review its consent, provenance,
-redaction, limitations, and transferability against the publication contract,
-then admit it to `field-notes/index.json` only if it passes. If no real submission
-exists, keep the registry empty and ask for a different product priority. Do not
-invent a field report, change access mode, or broaden legal claims.
+Sites version 21 contains the field-pilot assistant and protocol. The next step
+is operational rather than another content expansion: recruit one genuine pilot,
+complete the local draft, and review consent, provenance, redaction, limitations,
+and transferability against the publication contract. Admit it to
+`field-notes/index.json` only if it passes. If no real submission exists, keep
+the registry empty. Do not invent a field report, change access mode, or broaden
+legal claims.
 
 ## Resume checklist
 
