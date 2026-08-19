@@ -5,16 +5,17 @@ Snapshot: 2026-08-19 (Europe/Zurich)
 ## Status
 
 The current reference version is implemented, validated, pushed, and deployed.
-There is no unfinished implementation hidden behind this handoff.
+The first roadmap 0.3 tranche is complete; the field-feedback publication item
+remains intentionally open until a real submission passes review.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `c55fad1c686065f400a41f8d0b03d762b6c11206`
+- Reference implementation commit: `c5f8b778b670eb09175b9181b9c3bf5787e08742`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `24bf34e655fc004926e62598b6e9954c79b4057f`
+- Publishing-mirror commit: `c31aa6d4ca33b791e76e5700a7d51412ef0ccfe2`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +27,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `19`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_f72b05b4951081919fff282e09bbdbb5`
-- Source commit used by Sites: `24bf34e655fc004926e62598b6e9954c79b4057f`
-- Archive content hash: `sha256:06711a23cc0a189daf65884c59b954ec9256614a53248ed0137b2ac0408e36e4`
-- Deployment ID: `appgdep_6a856f2acdb4819186d303c930e01b0e`
+- Current Sites version: `20`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_1703df69d1b0819198e6429bfc38c2b0`
+- Source commit used by Sites: `c31aa6d4ca33b791e76e5700a7d51412ef0ccfe2`
+- Archive content hash: `sha256:b1653b5f3396acafe384591fbf2c2853c4d0e754489351a259f643da62d599e9`
+- Deployment ID: `appgdep_6a8578a6d750819197b98d96751a5a7e`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -81,8 +82,19 @@ Roadmap 0.2 is complete. Six operating guides, eight copy-ready templates, and
 six organization-track files now have explicit one-to-one English/French pairs.
 The language-neutral CSV register remains shared. The English README and web
 experience link to the English artifacts; the French README and `/fr` route keep
-their French links. Repository validation treats all 20 pairs as a required
-contract and rejects English operating files that fall back to `.fr.md` links.
+their French links. Repository validation treats all 29 current pairs as a
+required contract and rejects English operating files that fall back to
+`.fr.md` links.
+
+The first roadmap 0.3 tranche adds four bilingual sector overlays: healthcare,
+education, finance, and critical infrastructure. Each keeps the universal
+process intact while adding sector triggers, non-transferable vetoes, a default
+autonomy ceiling, minimum evidence, and an explicit transfer boundary. Three
+new bilingual tools cover accessibility, fundamental-rights impact, and field
+feedback. The field registry is valid but empty: synthetic examples and
+unreviewed submissions cannot be presented as field evidence. Repository links
+from the deployed site target the real canonical branch rather than an absent
+`main` branch.
 
 ## Decision and evidence rules
 
@@ -117,8 +129,8 @@ mirror where applicable:
 - Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 9/9 passed.
-- Repository validation: 70 Markdown files, 20 EN/FR pairs, AI register, and
-  control-crosswalk contracts passed.
+- Repository validation: 88 Markdown files, 29 EN/FR pairs, AI register,
+  field-feedback registry, and control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
   nine source records.
 - Previous browser audit: 1440 × 900 and 390 × 844, through the SME case.
@@ -141,6 +153,8 @@ mirror where applicable:
 - New locale-link assertions verify that `/` exposes the English mandate,
   evaluation plan, incident runbook, and organization track, while `/fr`
   exposes their French counterparts.
+- New sector assertions cover the four bilingual overlays, their explicit
+  non-transferable-veto boundary, and the three new assessment/report tools.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -172,20 +186,23 @@ hash from another session.
   require separate locale root layouts or an equivalent routing change.
 - The operating review dates and the playbook snapshot date are explicit
   reference data. Review them before presenting a later release as current.
-- No new browser-control audit was run for the translation-link change. The two
-  intended site files matched byte-for-byte between the canonical and publishing
-  mirror sources, and both passed lint, production build, and all nine tests.
-- The legal-orientation snapshot remains dated 18 August 2026 in both languages.
-  Translation did not re-verify or extend its legal claims.
+- No browser-control audit was run for the 0.3 tranche. The four intended site
+  files matched byte-for-byte between the canonical and publishing mirror
+  sources, and both passed lint, production build, and all nine tests.
+- The sector and legal-orientation sources were checked on 19 August 2026. They
+  remain orientation material, not legal, clinical, financial, educational, or
+  critical-infrastructure certification.
+- `field-notes/index.json` contains zero reports. This is an honest publication
+  boundary, not evidence that the method has already been validated in the field.
 
 ## First authorized next step
 
-Roadmap 0.2 is implemented and deployed. The next session should first open Sites
-version 19 while signed in and collect one bounded list of editorial, translation,
-or visual defects. If no defect is identified, ask which roadmap 0.3 sector
-extension should come first: healthcare, education, finance, or critical
-infrastructure. Do not infer that priority, change access mode, or broaden legal
-claims without a new user decision.
+Sites version 20 contains the first roadmap 0.3 tranche. The next evidence-backed
+step is to obtain one genuine field submission, review its consent, provenance,
+redaction, limitations, and transferability against the publication contract,
+then admit it to `field-notes/index.json` only if it passes. If no real submission
+exists, keep the registry empty and ask for a different product priority. Do not
+invent a field report, change access mode, or broaden legal claims.
 
 ## Resume checklist
 
