@@ -11,7 +11,7 @@ remains intentionally open until a real submission passes review.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `main`
-- Reference implementation commit: `9ebef93be09b6e03632ecbc284e14c5edffabcfa`
+- Reference implementation commit: `2857d53be6df366fc89da4598010db7b4203b634`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - GitHub Pages client entry: `site/pages-client/`
@@ -32,9 +32,9 @@ be refreshed.
 - Canonical public URL: <https://musyg.github.io/ai-adoption-playbook/>
 - Canonical French route: <https://musyg.github.io/ai-adoption-playbook/fr/>
 - Pages source: GitHub Actions workflow from `main`
-- Verified workflow run: <https://github.com/Musyg/ai-adoption-playbook/actions/runs/32250045693>
+- Verified workflow run: <https://github.com/Musyg/ai-adoption-playbook/actions/runs/32255319169>
 - Deployment result: successful, public, HTTPS enforced
-- Merge path: PRs `#1`, `#2`, `#3`, and `#4`
+- Merge path: PRs `#1` through `#8`
 - Authenticated Sites fallback: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
 - Current Sites version: `21`
@@ -94,7 +94,7 @@ Roadmap 0.2 is complete. Six operating guides, eight copy-ready templates, and
 six organization-track files now have explicit one-to-one English/French pairs.
 The language-neutral CSV register remains shared. The English README and web
 experience link to the English artifacts; the French README and `/fr` route keep
-their French links. Repository validation treats all 30 current pairs as a
+their French links. Repository validation treats all 31 current pairs as a
 required contract and rejects English operating files that fall back to
 `.fr.md` links.
 
@@ -115,10 +115,20 @@ checks six publication safeguards, and downloads a local Markdown draft. The
 site sends none of these inputs to a server, and the export always remains a
 draft pending independent review and a separate admission decision. The paired
 Markdown protocol makes the same boundary available outside the web interface.
-The site and `CONTRIBUTING.md` link to a public GitHub pilot-intake form that
-accepts non-identifying coordination metadata only. A separate pull-request
-template is reserved for independently reviewed, sanitized field reports; raw
-evidence never belongs in GitHub.
+The site and contribution guides link to locale-specific public GitHub
+pilot-intake forms that accept non-identifying coordination metadata only.
+`CONTRIBUTING.md` and `CONTRIBUTING.fr.md`, the field-pilot issue forms, and the
+field-report pull-request templates each keep one language per artifact. The
+report templates remain reserved for independently reviewed, sanitized field
+reports; raw evidence never belongs in GitHub.
+
+The visual system now follows the portfolio surface rule: blue remains an accent
+for orientation, progress, focus, borders, and small indicators, but is not used
+as a large section, panel, decision-band, or button background. Neutral paper,
+surface, and ink layers carry the hierarchy. Primary and secondary actions have
+explicit normal, hover, active, and focus states in both color schemes. The
+field-pilot handoff uses a balanced two-column action grid on desktop, two action
+columns below 980 px, and one below 680 px.
 
 ## Decision and evidence rules
 
@@ -153,7 +163,7 @@ The following checks passed on the canonical source and in GitHub Actions:
 - Rendered bilingual HTML tests: 2/2 passed.
 - GitHub Pages artifact tests: 3/3 passed.
 - Combined Node test run: 12/12 passed.
-- Repository validation: 91 Markdown files, 30 EN/FR pairs, AI register,
+- Repository validation: 93 Markdown files, 31 EN/FR pairs, AI register,
   field-feedback registry, and control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
   nine source records.
@@ -192,9 +202,15 @@ The following checks passed on the canonical source and in GitHub Actions:
   `ARRÊTER + ROLLBACK`; naming both owners produced `DOSSIER RÉVISABLE` with zero
   missing items.
 - Final real-Chrome audit of the public French Pages route confirmed
-  `lang="fr"`, the portfolio blue `#1c9fff`, 23 buttons, 30 form controls, no
-  horizontal overflow, the correct pilot-intake URL, and a visible
-  `#field-pilot` heading after direct deep-link navigation.
+  `lang="fr"`, French-only rendered contribution copy, the French
+  `field-pilot-fr.yml` intake link, zero horizontal overflow, and neutral
+  `#field-pilot` section/background surfaces. Elements retaining `#1c9fff` as a
+  background were limited to thin progress/workflow indicators.
+- The same Chrome session confirmed primary hover from light-on-dark to
+  transparent-with-light-text, and secondary hover from transparent-with-light-
+  text to light-with-dark-text, both with a visible border and `translateY(-2px)`.
+  The English route rendered `lang="en"`, no French pilot CTA, and the dedicated
+  `field-pilot-en.yml` intake link.
 - Public HTTP checks returned `200` for the English route, French route, JSON
   crosswalk, and hashed client bundle. The deployed HTML contains no `/_next/`
   server-runtime path.
