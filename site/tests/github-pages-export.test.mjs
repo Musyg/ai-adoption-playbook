@@ -32,7 +32,8 @@ test("copies public assets and ships the interactive client", async () => {
   assert.match(client, /Propose a pilot on GitHub/);
   assert.match(client, /Proposer un pilote sur GitHub/);
   assert.match(client, /control-crosswalk\.v1\.json/);
-  assert.match(client, /issues\/new\?template=field-pilot\.yml/);
+  assert.match(client, /issues\/new\?template=field-pilot-en\.yml/);
+  assert.match(client, /issues\/new\?template=field-pilot-fr\.yml/);
   assert.match(client, /\/ai-adoption-playbook/);
   assert.match(client, /scrollIntoView/);
 

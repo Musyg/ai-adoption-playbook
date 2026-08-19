@@ -6,7 +6,7 @@ Start with the [field-pilot protocol](../docs/field-pilot-protocol.md). Its site
 assistant creates a local draft only; raw evidence must never be submitted
 through a public issue.
 
-Use the [public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml)
+Use the [public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml)
 only to coordinate a non-identifying pilot. After the private evidence review,
 a sanitized report may use the
 [field-report pull-request template](../.github/PULL_REQUEST_TEMPLATE/field-report.md).

@@ -1,8 +1,6 @@
-## Reviewed field report / Rapport terrain révisé
+## Reviewed field report
 
 Use this template only for a sanitized report that has already completed the private review described in the [field-pilot protocol](../../docs/field-pilot-protocol.md). Never attach raw evidence.
-
-Utilisez ce modèle uniquement pour un rapport nettoyé ayant déjà suivi la revue privée du [protocole terrain](../../docs/field-pilot-protocol.fr.md). Ne joignez jamais les preuves brutes.
 
 ### Publication record
 

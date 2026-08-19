@@ -90,11 +90,12 @@ button, summary { font: inherit; }
 h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .98; margin: 0; max-width: 840px; }
 .lede { color: var(--muted); font-size: clamp(18px, 2vw, 22px); line-height: 1.55; margin: 32px 0 0; max-width: 700px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 38px; }
-.button { border-radius: 999px; display: inline-block; font-size: 15px; font-weight: 800; padding: 15px 22px; text-decoration: none; }
-.primary { background: var(--ink); color: white; }
-.primary:hover { background: var(--blue-deep); }
-.secondary { border: 1px solid var(--line); }
-.secondary:hover { border-color: var(--blue); }
+.button { align-items: center; border: 1px solid transparent; border-radius: 999px; cursor: pointer; display: inline-flex; font-size: 15px; font-weight: 800; justify-content: center; padding: 15px 22px; text-decoration: none; transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease; }
+.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.primary:hover { background: transparent; color: var(--ink); transform: translateY(-2px); }
+.secondary { background: transparent; border-color: var(--line); color: var(--ink); }
+.secondary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); transform: translateY(-2px); }
+.button:active { transform: translateY(0); }
 .hero-rule { align-self: end; border-left: 4px solid var(--blue); padding-left: 24px; }
 .rule-label { color: var(--muted); font: 700 12px/1 "Courier New", monospace; letter-spacing: .15em; }
 .hero-rule ol { list-style: none; margin: 24px 0 0; padding: 0; }
@@ -119,7 +120,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 
 .section-dark { background: var(--dark); color: var(--dark-text); }
 .section-light { background: var(--paper); color: var(--ink); }
-.section-blue { background: var(--blue); color: #071018; }
+.section-blue { background: var(--paper); border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); color: var(--ink); }
 .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
 main section[id] { scroll-margin-top: 72px; }
 .section-heading { display: grid; gap: 24px 48px; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); margin-bottom: 48px; }
@@ -1057,13 +1058,66 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 footer { align-items: center; background: var(--dark); color: var(--dark-muted); display: flex; font: 700 12px "Courier New", monospace; justify-content: space-between; letter-spacing: .08em; padding: 28px max(40px, calc((100vw - var(--content)) / 2)); text-transform: uppercase; }
 footer a { color: var(--blue); }
 
+/* Portfolio visual contract: blue is an accent, never a large surface. */
+.section-blue .eyebrow { color: var(--blue-deep); }
+.section-blue .section-heading > p:last-child { color: var(--muted); }
+.calibrator-shell, .evidence-shell { border-color: var(--line); }
+.integration-card .integration-gain, .calibrator-note, .evidence-roadmap, .evidence-footer, .field-pilot-privacy, .sector-grid .sector-veto, .sme-denominator, .orientation, .case-level-note, .agency-eligibility { background: var(--surface); border-left: 4px solid var(--blue-deep); }
+.calibrator-note strong, .field-pilot-footer strong { color: var(--ink); }
+.calibrator-note p, .evidence-footer p, .field-pilot-privacy, .field-pilot-footer p { color: var(--muted); }
+
+.pilot-roadmap li[data-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.pilot-roadmap li[data-current="true"] span { color: var(--blue); }
+.pilot-gates, .operation-owners, .operation-rollback { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--blue-deep); color: var(--ink); }
+.pilot-gates .eyebrow, .operation-rollback .eyebrow, .operation-rollback li > span { color: var(--blue-deep); }
+.pilot-gates li, .operation-owners label, .operation-rollback li { border-color: var(--line); }
+.operation-owners input { background: var(--paper); border-color: var(--line); }
+.operation-rollback li p { color: var(--muted); }
+
+.dossier-status[data-ready="true"], .field-pilot-status[data-ready="true"] { background: #151b21; color: var(--dark-text); }
+.dossier-handoff > aside, .dossier-copy { background: #151b21; border-left: 4px solid var(--blue); color: var(--dark-text); }
+.dossier-copy p, .dossier-handoff > aside p { color: var(--dark-muted); }
+.dossier-copy:hover { background: var(--dark-text); border-left-color: var(--dark-text); color: var(--dark); transform: translateY(-2px); }
+.dossier-download:hover { background: var(--dark-text); border-color: var(--dark-text) !important; color: var(--dark); transform: translateY(-2px); }
+.field-pilot-footer .secondary { border-color: var(--line); color: var(--ink); }
+
+.path-card { transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease; }
+.path-card:hover { background: #151b21; border-color: var(--blue); transform: translateY(-4px); }
+.path-card[data-active="true"] { background: #151b21; border-color: var(--blue); color: var(--dark-text); transform: translateY(-4px); }
+
+.case-decision, .sme-decision, .mission-decision, .agent-decision, .agency-decision { background: #151b21; border-left: 4px solid var(--blue); color: var(--dark-text); }
+.case-decision .eyebrow, .sme-decision .eyebrow, .mission-decision .eyebrow, .agent-decision .eyebrow, .agency-decision .eyebrow { color: var(--blue); }
+.case-decision p:not(.eyebrow), .sme-decision p:not(.eyebrow), .mission-decision p:not(.eyebrow), .agent-decision p:not(.eyebrow), .agency-decision p:not(.eyebrow) { color: var(--dark-muted); }
+.mission-mark, .agent-mark, .agency-orchestrator, .crosswalk-reading { background: #151b21; border-left: 4px solid var(--blue); color: var(--dark-text); }
+.mission-mark span, .agent-mark span, .agency-orchestrator p, .crosswalk-reading li p { color: var(--dark-muted); }
+.solo-clock { background: var(--surface); border-left: 4px solid var(--blue-deep); color: var(--ink); }
+.solo-clock small { border-color: var(--line); color: var(--muted); }
+.crosswalk-reading .eyebrow { color: var(--blue); }
+.crosswalk-reading li, .crosswalk-reading li:last-child { border-color: var(--dark-line); }
+.crosswalk-reading li > span { border-color: var(--dark-line); }
+.crosswalk-controls summary > small[data-priority="critical"] { background: transparent; border-color: var(--blue); color: var(--blue); }
+.sme-evidence a:hover { background: var(--surface); border-color: var(--blue-deep); }
+
+:is(.section-dark, .case-decision, .sme-decision, .mission-decision, .public-decision, .solo-decision, .agent-decision, .agency-decision, .crosswalk-footer) .primary { background: var(--dark-text); border-color: var(--dark-text); color: var(--dark); }
+:is(.section-dark, .case-decision, .sme-decision, .mission-decision, .public-decision, .solo-decision, .agent-decision, .agency-decision, .crosswalk-footer) .primary:hover { background: transparent; color: var(--dark-text); }
+:is(.section-dark, .case-decision, .sme-decision, .mission-decision, .public-decision, .solo-decision, .agent-decision, .agency-decision, .crosswalk-footer) .secondary { border-color: var(--dark-line); color: var(--dark-text); }
+:is(.section-dark, .case-decision, .sme-decision, .mission-decision, .public-decision, .solo-decision, .agent-decision, .agency-decision, .crosswalk-footer) .secondary:hover { background: var(--dark-text); border-color: var(--dark-text); color: var(--dark); }
+.case-button { background: var(--dark-text); border-color: var(--dark-text); color: var(--dark); }
+.case-button:hover { background: transparent; border-color: var(--dark-text); color: var(--dark-text); transform: translateY(-2px); }
+.lang { text-decoration: none; transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.lang:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.calibrator-levels button, .choice-list button { transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease; }
+.calibrator-levels button:hover, .choice-list button:hover { background: var(--paper); border-color: var(--blue-deep); transform: translateX(3px); }
+.calibrator-levels button[aria-pressed="true"], .choice-list button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
 :focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
 
 @media (prefers-color-scheme: dark) {
   :root { --paper: #0f1216; --surface: #171d23; --ink: #f1f5f7; --muted: #b7c2c9; --line: #25303a; --blue-deep: #1c9fff; --blue-soft: #102333; }
-  .primary { background: var(--blue); color: #071018; }
-  .primary:hover { background: #75c7ff; }
-  .choice-list button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #071018; }
+  .primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .primary:hover { background: transparent; color: var(--ink); }
+  .choice-list button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
   .stat-strip strong { color: var(--blue); }
 }
 
