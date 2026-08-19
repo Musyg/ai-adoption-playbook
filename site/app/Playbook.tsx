@@ -47,7 +47,9 @@ type Audience = {
 };
 
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
-const repositorySource = `${repository}/blob/agent/add-visual-playbook`;
+const repositorySource = `${repository}/blob/main`;
+const fieldPilotIssue = `${repository}/issues/new?template=field-pilot.yml`;
+const githubPagesBase = "/ai-adoption-playbook";
 const caseRevision = "8e9b2c3ef2109cbbe537c3dbe9011b6599526b01";
 const controlCatalog = controlCrosswalk.controls as CrosswalkControl[];
 const evidenceCatalog = new Map((controlCrosswalk.evidence_types as CrosswalkEvidence[]).map((evidence) => [evidence.evidence_id, evidence]));
@@ -225,6 +227,7 @@ const copy = {
     fieldPilotDownload: "Download the local draft",
     fieldPilotProtocol: "Open the complete protocol",
     fieldPilotTemplate: "Open the blank report",
+    fieldPilotGitHub: "Propose a pilot on GitHub",
     fieldPilotAlwaysDraft: "The export always remains a draft. Review readiness is not publication approval and is not field validation.",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
@@ -573,6 +576,7 @@ const copy = {
     fieldPilotDownload: "Télécharger le brouillon local",
     fieldPilotProtocol: "Ouvrir le protocole complet",
     fieldPilotTemplate: "Ouvrir le rapport vierge",
+    fieldPilotGitHub: "Proposer un pilote sur GitHub",
     fieldPilotAlwaysDraft: "L’export reste toujours un brouillon. Être prêt pour la revue n’est ni une autorisation de publier ni une validation terrain.",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
@@ -856,7 +860,12 @@ export function Playbook({ locale }: { locale: Locale }) {
     && control.applicability.autonomy_levels.includes(`A${autonomy}`)
   )), [selected.id, risk, autonomy]);
   const applicableSourceCount = useMemo(() => new Set(applicableControls.flatMap((control) => control.source_refs.map((source) => source.source_id))).size, [applicableControls]);
-  const langHref = locale === "en" ? "/fr/" : "/";
+  const deploymentBase = typeof window !== "undefined"
+    && (window.location.pathname === githubPagesBase || window.location.pathname.startsWith(`${githubPagesBase}/`))
+    ? githubPagesBase
+    : "";
+  const sitePath = (path: string) => `${deploymentBase}${path}`;
+  const langHref = sitePath(locale === "en" ? "/fr/" : "/");
   const langLabel = locale === "en" ? "FR" : "EN";
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
   const journeySteps = locale === "en"
@@ -1259,7 +1268,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>
-          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
+          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssue}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
@@ -1301,7 +1310,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="sme-metrics">{t.smeMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
           <aside className="sme-denominator"><div><span>316</span><small>{locale === "en" ? "ALL REQUESTS" : "TOUTES DEMANDES"}</small></div><div><span>238</span><small>{locale === "en" ? "INITIALLY ELIGIBLE" : "ÉLIGIBLES INITIALES"}</small></div><div><span>220</span><small>{locale === "en" ? "ACCEPTED QUOTES" : "DEVIS ACCEPTÉS"}</small></div><article><strong>{t.smeDenominatorTitle}</strong><p>{t.smeDenominatorText}</p></article></aside>
           <div className="sme-evidence"><h3>{t.smeEvidenceTitle}</h3><div>{t.smeEvidence.map(([kind, value, text, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{text}</p><b aria-hidden="true">↗</b></a>)}</div><p>{t.smeSourceNote}</p></div>
-          <div className="sme-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "LEVEL DECISION" : "DÉCISION DE NIVEAU"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
+          <div className="sme-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "LEVEL DECISION" : "DÉCISION DE NIVEAU"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
         </section>
 
         <section className="mission-case section-dark" id="mission-case" aria-labelledby="mission-case-title">
@@ -1315,7 +1324,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="mission-gates"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "MISSION BEFORE EFFICIENCY" : "MISSION AVANT EFFICACITÉ"}</p><h3>{t.missionGateTitle}</h3></div><ol>{t.missionGate.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol></div>
           <div className="mission-evidence"><h3>{t.missionEvidenceTitle}</h3><div>{t.missionEvidence.map(([kind, value, evidence, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{evidence}</p><b aria-hidden="true">↗</b></a>)}</div></div>
           <aside className="mission-legal"><strong>{locale === "en" ? "AUTOMATED-DECISION BOUNDARY" : "FRONTIÈRE DE DÉCISION AUTOMATISÉE"}</strong><p>{t.missionLegalNote}</p><a href="https://www.edoeb.admin.ch/en/duty-to-provide-information">{locale === "en" ? "Swiss FDPIC guidance" : "Indications du PFPDT"} ↗</a></aside>
-          <div className="mission-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`}>{t.missionCta} ↗</a></div>
+          <div className="mission-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`}>{t.missionCta} ↗</a></div>
         </section>
 
         <section className="public-case section-blue" id="public-case" aria-labelledby="public-case-title">
@@ -1329,7 +1338,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="public-gates"><div><p className="eyebrow">P0 → P5</p><h3>{t.publicGatesTitle}</h3></div><ol>{t.publicGates.map(([gate, title, text]) => <li key={gate}><span>{gate}</span><strong>{title}</strong><p>{text}</p></li>)}</ol></div>
           <div className="public-evidence"><h3>{t.publicEvidenceTitle}</h3><div>{t.publicEvidence.map(([kind, value, evidence, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{evidence}</p><b aria-hidden="true">↗</b></a>)}</div></div>
           <aside className="public-legal"><strong>{locale === "en" ? "SWISS LEGAL BOUNDARY" : "FRONTIÈRE JURIDIQUE SUISSE"}</strong><p>{t.publicLegalNote}</p><div><a href="https://www.bk.admin.ch/en/artificial-intelligence">{locale === "en" ? "Federal Chancellery" : "Chancellerie fédérale"} ↗</a><a href="https://www.edoeb.admin.ch/en/ai-and-data-protection">PFPDT / FDPIC ↗</a></div></aside>
-          <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`}>{t.publicCta} ↗</a></div>
+          <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`}>{t.publicCta} ↗</a></div>
         </section>
 
         <section className="solo-case section-light" aria-labelledby="solo-title">
@@ -1352,7 +1361,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agent-metrics">{t.agentMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
           <div className="agent-comparison"><h3>{t.agentCompareTitle}</h3><div>{t.agentCompare.map(([level, value, text]) => <article key={level}><span>{level}</span><strong>{value}</strong><p>{text}</p></article>)}</div></div>
           <ol className="agent-phases">{t.agentPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
-          <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
+          <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
         </section>
 
         <section className="agency-case section-light" id="agency-case" aria-labelledby="agency-case-title">
@@ -1368,7 +1377,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <aside className="agency-eligibility"><strong>{t.agencyEligibilityTitle}</strong><p>{t.agencyEligibilityText}</p></aside>
           <ol className="agency-phases">{t.agencyPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <aside className="agency-talos"><strong>{t.agencyTalosNote}</strong><p>{t.agencyTalosText}</p><a href="https://github.com/Musyg/talos">Talos ↗</a></aside>
-          <div className="agency-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repository}/blob/agent/add-visual-playbook/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
+          <div className="agency-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
         </section>
 
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>
@@ -1390,7 +1399,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <aside className="crosswalk-reading"><p className="eyebrow">{t.crosswalkRead}</p><h3>{t.crosswalkReadingTitle}</h3><ol>{t.crosswalkReading.map(([label, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{label}</strong><p>{text}</p></div></li>)}</ol></aside>
             <div className="crosswalk-controls">{applicableControls.map((control) => <details key={control.control_id}><summary><span>{control.control_id}</span><strong>{control.title[locale]}</strong><small data-priority={control.priority}>{t.crosswalkPriority[control.priority]}</small></summary><div className="crosswalk-detail"><p>{control.objective[locale]}</p><dl><div><dt>{t.crosswalkEvidence}</dt><dd>{control.evidence_ids.map((evidenceId) => `${evidenceId} · ${evidenceCatalog.get(evidenceId)?.name[locale] ?? evidenceId}`).join(" / ")}</dd></div><div><dt>{t.crosswalkGates}</dt><dd>{control.gates.join(" · ")}</dd></div><div><dt>{t.crosswalkPhases}</dt><dd>{control.lifecycle_phases.join(" · ")}</dd></div><div><dt>{t.crosswalkSourceRefs}</dt><dd>{control.source_refs.map((source) => source.source_id).join(" · ")}</dd></div></dl>{control.applicability.conditions[0] !== "always" && <p className="crosswalk-condition"><strong>{t.crosswalkCondition}</strong>{control.applicability.conditions.map((condition) => crosswalkConditions[locale][condition] ?? condition).join(" · ")}</p>}</div></details>)}</div>
           </div>
-          <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href="/data/control-crosswalk.v1.json">{t.crosswalkDownload} ↓</a><a className="button secondary" download href="/data/control-crosswalk.schema.json">{t.crosswalkSchema} ↓</a></div></div>
+          <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href={sitePath("/data/control-crosswalk.v1.json")}>{t.crosswalkDownload} ↓</a><a className="button secondary" download href={sitePath("/data/control-crosswalk.schema.json")}>{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
         <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>

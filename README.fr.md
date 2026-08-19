@@ -2,9 +2,9 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Édition visuelle](site/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
+[Édition interactive](https://musyg.github.io/ai-adoption-playbook/fr/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
 
-[![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](site/)
+[![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/fr/)
 
 L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
 copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
@@ -35,6 +35,8 @@ vetoes et gates sectoriels sans remplacer le processus universel.
 [protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
 brouillon local, conserver le dénominateur complet et demander une revue
 indépendante avant toute admission d’un résultat anonymisé dans le registre.
+Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez
+l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
 
 ## Pourquoi ce dépôt existe
 

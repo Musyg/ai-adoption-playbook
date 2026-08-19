@@ -1,0 +1,91 @@
+name: Propose a field pilot / Proposer un pilote terrain
+description: Open a public, non-identifying intake before collecting or sharing any evidence.
+title: "[Field pilot]: "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Public intake only — no raw evidence
+
+        This issue coordinates a possible pilot. It is **not** a field report and cannot validate the playbook.
+
+        Cette issue sert uniquement à coordonner un pilote possible. Ce n’est **pas** un rapport terrain et elle ne valide pas le playbook.
+
+        Do not include client or organization names, personal data, secrets, contracts, raw prompts, logs, screenshots, privileged material, or exploitable security details.
+
+  - type: input
+    id: alias
+    attributes:
+      label: Non-identifying alias / Alias non identifiant
+      description: Use a neutral project name that cannot identify a person, client, or organization.
+      placeholder: Workshop North / Atelier Nord
+    validations:
+      required: true
+
+  - type: dropdown
+    id: organization
+    attributes:
+      label: Organization path / Parcours
+      options:
+        - Independent professional / Indépendant
+        - Micro-business / TPE
+        - SME / PME
+        - Nonprofit or foundation / Association ou fondation
+        - Public service / Service public
+    validations:
+      required: true
+
+  - type: dropdown
+    id: integration
+    attributes:
+      label: Intended integration level / Niveau d’intégration visé
+      options:
+        - Copilot A0–A1 / Copilote A0–A1
+        - Business agent A2–A3 / Agent métier A2–A3
+        - Orchestrated agency A3–A4 / Agence orchestrée A3–A4
+        - Not decided / Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sector
+    attributes:
+      label: Sector overlay / Extension sectorielle
+      options:
+        - General or cross-sector / Général ou transverse
+        - Healthcare / Santé
+        - Education / Éducation
+        - Finance
+        - Critical infrastructure / Infrastructure critique
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: One bounded workflow / Un workflow borné
+      description: Describe the input, accepted outcome, human decision, and excluded work without identifying the organization.
+      placeholder: From a generic inbound request to a reviewed draft; sending and contractual decisions remain human.
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Decision the pilot should inform / Décision à éclairer
+      description: State the concrete continue, rework, or stop decision this pilot should support.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safeguards
+    attributes:
+      label: Public-boundary confirmation / Confirmation de la frontière publique
+      options:
+        - label: I included no identity, personal data, confidential material, secret, raw evidence, or exploitable security detail.
+          required: true
+        - label: I understand this issue is coordination metadata, not evidence, approval, or a published field result.
+          required: true
+        - label: I will keep raw evidence in an authorized private system and submit only a separately reviewed, anonymized report if publication is appropriate.
+          required: true

@@ -50,7 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.lang=location.pathname==='/fr'||location.pathname.startsWith('/fr/')?'fr':'en'" }} />
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.lang=/(?:^|\\/)fr(?:\\/|$)/.test(location.pathname)?'fr':'en'" }} />
       </head>
       <body>{children}</body>
     </html>

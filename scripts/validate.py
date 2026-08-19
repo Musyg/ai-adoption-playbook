@@ -17,6 +17,7 @@ MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 REQUIRED_FILES = (
     "README.md",
     "README.fr.md",
+    "CONTRIBUTING.md",
     "LICENSE",
     "docs/evaluations-and-gates.md",
     "docs/field-pilot-protocol.md",
@@ -73,6 +74,9 @@ REQUIRED_FILES = (
     "controls/README.md",
     "site/public/data/control-crosswalk.schema.json",
     "site/public/data/control-crosswalk.v1.json",
+    ".github/ISSUE_TEMPLATE/field-pilot.yml",
+    ".github/PULL_REQUEST_TEMPLATE/field-report.md",
+    ".github/workflows/pages.yml",
 )
 TRANSLATION_PAIRS = (
     ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),

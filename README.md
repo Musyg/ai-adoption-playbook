@@ -2,9 +2,9 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
+[Interactive edition](https://musyg.github.io/ai-adoption-playbook/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
-[![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](site/)
+[![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/)
 
 The bilingual visual edition turns the method into an interactive path: distinguish
 copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
@@ -33,7 +33,9 @@ vetoes and evidence gates without replacing the universal process.
 
 **Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
 to prepare a local draft, preserve the full denominator, and request independent
-review before any anonymized result can enter the public registry.
+review before any anonymized result can enter the public registry. To coordinate
+a genuine pilot without publishing raw evidence, open the
+[public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
 
 ## Why this repository exists
 
