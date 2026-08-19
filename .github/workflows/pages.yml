@@ -30,6 +30,9 @@ jobs:
       - name: Lint
         working-directory: site
         run: npm run lint
+      - name: Build the server-rendered site
+        working-directory: site
+        run: npm run build
       - name: Build static GitHub Pages artifact
         working-directory: site
         run: npm run build:pages
