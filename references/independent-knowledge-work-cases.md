@@ -39,7 +39,7 @@ outils d’exécution ni action autonome. La personne reste opératrice à chaqu
 cycle. Son gain synthétique de 23 % ne constitue donc ni une borne basse ni une
 moyenne pour un agent métier A2/A3 ou une agence orchestrée A3/A4.
 
-Les définitions, fourchettes et contre-preuves applicables à ces systèmes sont
+Les définitions, ancrages publics et contre-preuves applicables à ces systèmes sont
 séparées dans la note
 [Copilote, agent métier et agence orchestrée](agentic-integration-levels.md).
 

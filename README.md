@@ -26,7 +26,12 @@ from baseline and pre-registered thresholds to an explicit scope decision.
 
 > Status: version **0.2.0**, private repository, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
-**0.3 sector overlays:** [healthcare](sectors/en/healthcare.md),
+**0.3 evidence and sector work:** the bilingual
+[20-source public evidence review](references/field-evidence-review-2026.md)
+separates task effects, eligible-flow effects, whole-workload outcomes,
+benchmarks, telemetry, and supplier cases. It finds no independent causal field
+support for a generic 5x to 12x accepted-outcome multiplier. The
+[healthcare](sectors/en/healthcare.md),
 [education](sectors/en/education.md), [finance](sectors/en/finance.md), and
 [critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
 vetoes and evidence gates without replacing the universal process.

@@ -83,14 +83,14 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
 };
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
 const calibrationSpecs: Record<IntegrationId, { low: number; high: number; setup: number }> = {
-  copilot: { low: 0.2, high: 0.4, setup: 8 },
-  agent: { low: 0.5, high: 0.75, setup: 40 },
-  agency: { low: 0.8, high: 0.92, setup: 120 },
+  copilot: { low: 0.1, high: 0.3, setup: 8 },
+  agent: { low: 0.2, high: 0.5, setup: 40 },
+  agency: { low: 0.35, high: 0.7, setup: 120 },
 };
 const pilotSpecs: Record<IntegrationId, { horizon: number; frozen: number; live: number; valueFloor: number }> = {
-  copilot: { horizon: 14, frozen: 20, live: 14, valueFloor: 15 },
-  agent: { horizon: 30, frozen: 40, live: 20, valueFloor: 35 },
-  agency: { horizon: 60, frozen: 60, live: 12, valueFloor: 60 },
+  copilot: { horizon: 14, frozen: 20, live: 14, valueFloor: 10 },
+  agent: { horizon: 30, frozen: 40, live: 20, valueFloor: 20 },
+  agency: { horizon: 60, frozen: 60, live: 12, valueFloor: 35 },
 };
 const operationSpecs: Record<IntegrationId, { reviewDate: string; reviewDays: number; containment: string }> = {
   copilot: { reviewDate: "2026-09-17", reviewDays: 30, containment: "4 h" },
@@ -116,24 +116,36 @@ const copy = {
     integrationEyebrow: "NAME THE SYSTEM BEFORE QUOTING THE GAIN",
     integrationTitle: "Copilot, business agent, and orchestrated agency are not the same integration.",
     integrationText: "They move different amounts of work, require different permissions, and must be measured with different outcomes. A percentage without its level is misleading.",
-    integrationLabels: { system: "What the system does", human: "Human role", planning: "Planning band", flow: "Eligible cases completed end to end" },
+    integrationLabels: { system: "What the system does", human: "Human role", planning: "Public evidence anchor", flow: "End-to-end evidence" },
     integrationLevels: [
-      { code: "A0–A1", title: "Copilot", system: "Researches, extracts, or drafts one step. The person starts the task, carries the context, checks the answer, and performs every external action.", human: "Operator at every cycle", planning: "20–40% less active time · ×1.25–1.7 accepted throughput", flow: "0% without human completion" },
-      { code: "A2–A3", title: "Business agent", system: "Receives a bounded case, uses approved tools and memory, follows the workflow, completes eligible cases, and escalates exceptions.", human: "Approver and exception owner", planning: "50–75% less active time · ×2–4 accepted throughput", flow: "50–85% planning range" },
-      { code: "A3–A4", title: "Orchestrated agency", system: "An orchestrator delegates to specialist agents for research, execution, quality control, and cross-system coordination under shared controls.", human: "Governor of goals, limits, and exceptions", planning: "80–92% less active time · ×5–12 on a clean bounded workflow", flow: "80–94% on narrow eligible requests" },
+      { code: "A0–A1", title: "Copilot", system: "Researches, extracts, or drafts one step. The person starts the task, carries the context, checks the answer, and performs every external action.", human: "Operator at every cycle", planning: "Published effects run from a measured slowdown to large gains on narrow tasks. There is no universal range.", flow: "0% without human completion" },
+      { code: "A2–A3", title: "Business agent", system: "Receives a bounded case, uses approved tools and memory, follows the workflow, completes eligible cases, and escalates exceptions.", human: "Approver and exception owner", planning: "Direct field RCT: 16.8% faster on eligible chats, 3.2% across all chats, with a customer-rating trade-off.", flow: "5.8% eligible; 35% of agent-handled eligible chats without escalation in that setting" },
+      { code: "A3–A4", title: "Orchestrated agency", system: "An orchestrator delegates to specialist agents for research, execution, quality control, and cross-system coordination under shared controls.", human: "Governor of goals, limits, and exceptions", planning: "No independent field study supports a generic 5x to 12x multiplier on accepted business outcomes.", flow: "CORPGEN: 15.2% completed at 46 concurrent tasks in a benchmark, not production" },
     ],
     measurementTitle: "Five numbers that must stay separate",
     measurements: [["01", "Cycle time", "Elapsed time from request to result."], ["02", "Human active time", "Minutes actually spent by a person."], ["03", "Accepted throughput", "Outputs accepted per owner-hour."], ["04", "Straight-through rate", "Eligible cases completed without intervention."], ["05", "Shipped outcome", "A real downstream result, not model activity."]],
-    rangeNote: "These are evidence-informed planning bands, not promises or statistical confidence intervals. The high range applies only to eligible, digital, stable workflows. Setup can produce no gain and may temporarily make performance worse.",
-    evidenceLead: "FIELD EVIDENCE AND COUNTER-EVIDENCE",
-    evidenceLinks: [["Linde · 24h → 2h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94% containment", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · SEC filing", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2.5%", "https://scale.com/blog/rli"]],
+    rangeNote: "The former universal 20–40%, 50–75%, and 80–92% bands have been removed. Public studies do not establish them as general effects. The calibrator now starts with editable challenge hypotheses, never with a promised gain.",
+    evidenceLead: "PRIMARY FIELD EVIDENCE",
+    evidenceLinks: [["Support copilot · +15%", "https://academic.oup.com/qje/article/140/2/889/7990658"], ["Small business · 0% average", "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf"], ["Business agent · 5.8% eligible", "https://arxiv.org/abs/2605.14830"], ["Autonomous code · delivery gap", "https://www.nber.org/papers/w35275"]],
+    researchEyebrow: "WHAT THE DENOMINATOR CHANGES",
+    researchTitle: "Six findings that prevent inflated AI claims.",
+    researchText: "Each figure answers a different question. Read the measured outcome and the transfer limit together.",
+    researchSignals: [
+      { tag: "COPILOT · FIELD", value: "+15%", title: "Support output", text: "Average issues resolved per hour. Less-experienced workers gained most; top performers had small quality declines.", url: "https://academic.oup.com/qje/article/140/2/889/7990658" },
+      { tag: "SMALL BUSINESS · RCT", value: "0%", title: "Average business effect", text: "About +15% for high performers and −8% for low performers. Access to advice did not guarantee execution quality.", url: "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf" },
+      { tag: "BUSINESS AGENT · RCT", value: "5.8%", title: "Eligible share", text: "Eligible chats were 16.8% faster, but the whole flow improved 3.2% and customer rating fell on eligible chats.", url: "https://arxiv.org/abs/2605.14830" },
+      { tag: "AUTONOMOUS CODE · FIELD", value: "+180%", title: "Commits, not outcomes", text: "The signal attenuated to +30% releases and no detected increase in total app usage.", url: "https://www.nber.org/papers/w35275" },
+      { tag: "AGENCY · BENCHMARK", value: "15.2%", title: "Absolute completion", text: "A 3.5x relative gain over 4.3% at 46 concurrent tasks, in a simulated six-hour environment.", url: "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/" },
+      { tag: "PUBLIC SECTOR · REVIEW", value: "19–26 min", title: "Self-reported daily saving", text: "Large trials, but no random allocation and no proof that saved time became a delivered public outcome.", url: "https://www.gov.uk/government/publications/microsoft-365-copilot-experiment-cross-government-findings-report" },
+    ],
+    researchReview: "Read the full 20-source evidence review",
     calibratorEyebrow: "CALIBRATE BEFORE YOU PROMISE",
     calibratorTitle: "Turn the ranges into a testable scenario for your own workflow.",
-    calibratorText: "Choose the integration level, then expose volume, manual time, eligible share, and setup effort. The result is a planning envelope, not a forecast.",
+    calibratorText: "Choose the integration level, then expose volume, manual time, eligible share, low and high effect hypotheses, and setup effort. The result is a stress-test envelope, not a forecast.",
     calibratorLevel: "Integration level",
     calibratorLevels: [{ id: "copilot", label: "Copilot · A0–A1", note: "One assisted step" }, { id: "agent", label: "Business agent · A2–A3", note: "One bounded workflow" }, { id: "agency", label: "Orchestrated agency · A3", note: "Specialists under one policy" }],
-    calibratorInputs: { minutes: "Manual minutes per case", cases: "Cases per month", eligible: "Share genuinely eligible", setup: "One-off setup effort" },
-    calibratorUnits: { minutes: "min", cases: "cases", eligible: "%", setup: "hours" },
+    calibratorInputs: { minutes: "Manual minutes per case", cases: "Cases per month", eligible: "Share genuinely eligible", low: "Low effect hypothesis", high: "High effect hypothesis", setup: "One-off setup effort" },
+    calibratorUnits: { minutes: "min", cases: "cases", eligible: "%", low: "%", high: "%", setup: "hours" },
     calibratorResults: { eligible: "Eligible workload today", freed: "Human hours freed / month", remaining: "Human hours remaining on eligible cases", total: "Reduction across the whole workload", throughput: "Theoretical accepted throughput", payback: "Setup absorbed after" },
     calibratorReading: "READ THIS RESULT CORRECTLY",
     calibratorCaution: "The calculation assumes accepted quality, no new bottleneck, and stable eligibility. It excludes model cost, supervision drift, incidents, demand elasticity, revenue, and the time of people outside the measured workflow. Replace every assumption with observed data during the pilot.",
@@ -468,24 +480,36 @@ const copy = {
     integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
     integrationTitle: "Copilote, agent métier et agence orchestrée ne sont pas la même intégration.",
     integrationText: "Ils déplacent des volumes de travail différents, exigent des permissions différentes et se mesurent par des résultats différents. Un pourcentage sans son niveau induit en erreur.",
-    integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Fourchette de planification", flow: "Cas éligibles traités de bout en bout" },
+    integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Ancrage dans les preuves publiques", flow: "Preuve de bout en bout" },
     integrationLevels: [
-      { code: "A0–A1", title: "Copilote", system: "Recherche, extrait ou rédige une étape. La personne déclenche, apporte le contexte, contrôle la réponse et réalise chaque action externe.", human: "Opérateur à chaque cycle", planning: "20–40 % de temps actif en moins · débit accepté ×1,25–1,7", flow: "0 % sans finalisation humaine" },
-      { code: "A2–A3", title: "Agent métier", system: "Reçoit un dossier borné, utilise outils et mémoire autorisés, suit le workflow, termine les cas éligibles et escalade les exceptions.", human: "Validateur et responsable des exceptions", planning: "50–75 % de temps actif en moins · débit accepté ×2–4", flow: "Fourchette de planification 50–85 %" },
-      { code: "A3–A4", title: "Agence orchestrée", system: "Un orchestrateur délègue recherche, exécution, contrôle qualité et coordination inter-systèmes à des agents spécialisés sous des règles communes.", human: "Gouverne objectifs, limites et exceptions", planning: "80–92 % de temps actif en moins · ×5–12 sur un workflow propre et borné", flow: "80–94 % sur des demandes étroites et éligibles" },
+      { code: "A0–A1", title: "Copilote", system: "Recherche, extrait ou rédige une étape. La personne déclenche, apporte le contexte, contrôle la réponse et réalise chaque action externe.", human: "Opérateur à chaque cycle", planning: "Les effets publiés vont d’un ralentissement mesuré à de forts gains sur des tâches étroites. Il n’existe pas de plage universelle.", flow: "0 % sans finalisation humaine" },
+      { code: "A2–A3", title: "Agent métier", system: "Reçoit un dossier borné, utilise outils et mémoire autorisés, suit le workflow, termine les cas éligibles et escalade les exceptions.", human: "Validateur et responsable des exceptions", planning: "Essai terrain direct : 16,8 % plus rapide sur les échanges éligibles, 3,2 % sur tout le flux, avec une baisse de la note client.", flow: "5,8 % éligibles ; 35 % des échanges éligibles traités par l’agent sans escalade dans ce contexte" },
+      { code: "A3–A4", title: "Agence orchestrée", system: "Un orchestrateur délègue recherche, exécution, contrôle qualité et coordination inter-systèmes à des agents spécialisés sous des règles communes.", human: "Gouverne objectifs, limites et exceptions", planning: "Aucune étude de terrain indépendante ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés.", flow: "CORPGEN : 15,2 % terminés avec 46 tâches concurrentes dans un benchmark, pas en production" },
     ],
     measurementTitle: "Cinq chiffres à ne jamais mélanger",
     measurements: [["01", "Temps de cycle", "Délai écoulé entre demande et résultat."], ["02", "Temps humain actif", "Minutes réellement consacrées par une personne."], ["03", "Débit accepté", "Sorties acceptées par heure du responsable."], ["04", "Taux de bout en bout", "Cas éligibles terminés sans intervention."], ["05", "Résultat livré", "Effet réel en aval, pas l’activité du modèle."]],
-    rangeNote: "Ces valeurs sont des fourchettes de planification synthétisées à partir de cas publiés, pas des promesses ni des intervalles de confiance. La borne haute ne vaut que pour des workflows éligibles, numériques, stables et bornés. La mise en place peut ne produire aucun gain et même dégrader temporairement la performance.",
-    evidenceLead: "PREUVES DE TERRAIN ET CONTRE-PREUVES",
-    evidenceLinks: [["Linde · 24 h → 2 h", "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3"], ["IBM AskHR · 94 % de traitement autonome", "https://www.ibm.com/case-studies/ibm-askhr"], ["Klarna · dépôt SEC", "https://www.sec.gov/Archives/edgar/data/2003292/000162828025012824/klarnagroupplcf-1.htm"], ["Remote Labor Index · 2,5 %", "https://scale.com/blog/rli"]],
+    rangeNote: "Les anciennes plages universelles 20–40 %, 50–75 % et 80–92 % ont été retirées. Les études publiques ne les établissent pas comme effets généraux. Le calibrateur part maintenant d’hypothèses de mise à l’épreuve modifiables, jamais d’un gain promis.",
+    evidenceLead: "PREUVES PRIMAIRES DE TERRAIN",
+    evidenceLinks: [["Copilote support · +15 %", "https://academic.oup.com/qje/article/140/2/889/7990658"], ["Petite entreprise · 0 % en moyenne", "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf"], ["Agent métier · 5,8 % éligibles", "https://arxiv.org/abs/2605.14830"], ["Code autonome · écart de livraison", "https://www.nber.org/papers/w35275"]],
+    researchEyebrow: "CE QUE CHANGE LE DÉNOMINATEUR",
+    researchTitle: "Six constats qui empêchent de gonfler les gains IA.",
+    researchText: "Chaque chiffre répond à une question différente. Le résultat mesuré et la limite de transfert doivent être lus ensemble.",
+    researchSignals: [
+      { tag: "COPILOTE · TERRAIN", value: "+15 %", title: "Production du support", text: "Problèmes résolus par heure en moyenne. Les moins expérimentés gagnent le plus ; les meilleurs perdent légèrement en qualité.", url: "https://academic.oup.com/qje/article/140/2/889/7990658" },
+      { tag: "PETITE ENTREPRISE · ECR", value: "0 %", title: "Effet métier moyen", text: "Environ +15 % pour les meilleurs et −8 % pour les plus faibles. Accéder au conseil ne garantit pas la qualité d’exécution.", url: "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf" },
+      { tag: "AGENT MÉTIER · ECR", value: "5,8 %", title: "Part éligible", text: "Les échanges éligibles sont 16,8 % plus rapides, mais le flux total gagne 3,2 % et leur note client baisse.", url: "https://arxiv.org/abs/2605.14830" },
+      { tag: "CODE AUTONOME · TERRAIN", value: "+180 %", title: "Commits, pas résultats", text: "Le signal tombe à +30 % sur les versions livrées, sans hausse détectée de l’usage total des applications.", url: "https://www.nber.org/papers/w35275" },
+      { tag: "AGENCE · BENCHMARK", value: "15,2 %", title: "Réalisation absolue", text: "Gain relatif de 3,5 face à 4,3 %, avec 46 tâches concurrentes dans un environnement simulé de six heures.", url: "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/" },
+      { tag: "SECTEUR PUBLIC · ÉVALUATION", value: "19–26 min", title: "Gain quotidien déclaré", text: "Essais larges, sans attribution aléatoire ni preuve que le temps libéré devient un résultat public livré.", url: "https://www.gov.uk/government/publications/microsoft-365-copilot-experiment-cross-government-findings-report" },
+    ],
+    researchReview: "Lire la revue complète de 20 sources",
     calibratorEyebrow: "CALIBREZ AVANT DE PROMETTRE",
     calibratorTitle: "Transformez les fourchettes en scénario testable pour votre propre workflow.",
-    calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible et effort de mise en place. Le résultat est une enveloppe de planification, pas une prévision.",
+    calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible, hypothèses d’effet basse et haute et effort initial. Le résultat est une enveloppe de stress, pas une prévision.",
     calibratorLevel: "Niveau d’intégration",
     calibratorLevels: [{ id: "copilot", label: "Copilote · A0–A1", note: "Une étape assistée" }, { id: "agent", label: "Agent métier · A2–A3", note: "Un workflow borné" }, { id: "agency", label: "Agence orchestrée · A3", note: "Spécialistes sous une politique" }],
-    calibratorInputs: { minutes: "Minutes manuelles par dossier", cases: "Dossiers par mois", eligible: "Part réellement éligible", setup: "Effort initial de mise en place" },
-    calibratorUnits: { minutes: "min", cases: "dossiers", eligible: "%", setup: "heures" },
+    calibratorInputs: { minutes: "Minutes manuelles par dossier", cases: "Dossiers par mois", eligible: "Part réellement éligible", low: "Hypothèse d’effet basse", high: "Hypothèse d’effet haute", setup: "Effort initial de mise en place" },
+    calibratorUnits: { minutes: "min", cases: "dossiers", eligible: "%", low: "%", high: "%", setup: "heures" },
     calibratorResults: { eligible: "Charge éligible actuelle", freed: "Heures humaines libérées / mois", remaining: "Heures humaines restantes sur les cas éligibles", total: "Réduction sur toute la charge", throughput: "Débit accepté théorique", payback: "Mise en place absorbée après" },
     calibratorReading: "LIRE CE RÉSULTAT CORRECTEMENT",
     calibratorCaution: "Le calcul suppose une qualité acceptée, aucun nouveau goulot et une éligibilité stable. Il exclut coût modèle, dérive de supervision, incidents, élasticité de la demande, revenu et temps des personnes hors workflow mesuré. Remplacez chaque hypothèse par une observation pendant le pilote.",
@@ -839,6 +863,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [caseMinutes, setCaseMinutes] = useState(60);
   const [monthlyCases, setMonthlyCases] = useState(40);
   const [eligibleShare, setEligibleShare] = useState(70);
+  const [impactLow, setImpactLow] = useState(calibrationSpecs.agent.low * 100);
+  const [impactHigh, setImpactHigh] = useState(calibrationSpecs.agent.high * 100);
   const [setupHours, setSetupHours] = useState(40);
   const [pilotPlanCopied, setPilotPlanCopied] = useState(false);
   const [observedCases, setObservedCases] = useState(20);
@@ -882,28 +908,43 @@ export function Playbook({ locale }: { locale: Locale }) {
   const journeySteps = locale === "en"
     ? [["calibrator", "Calibrate"], ["pilot-plan", "Pilot"], ["evidence-gate", "Decide"], ["operations", "Operate"], ["decision-dossier", "Hand off"], ["field-pilot", "Field test"]]
     : [["calibrator", "Calibrer"], ["pilot-plan", "Piloter"], ["evidence-gate", "Décider"], ["operations", "Exploiter"], ["decision-dossier", "Transmettre"], ["field-pilot", "Terrain"]];
+  const selectCalibrationLevel = (level: IntegrationId) => {
+    const spec = calibrationSpecs[level];
+    setCalibrationLevel(level);
+    setImpactLow(spec.low * 100);
+    setImpactHigh(spec.high * 100);
+    setSetupHours(spec.setup);
+    setReviewDate(operationSpecs[level].reviewDate);
+    setOperationCopied(false);
+    setDossierCopied(false);
+    setFieldEvidenceConfirmed(false);
+  };
   const calibration = useMemo(() => {
     const spec = calibrationSpecs[calibrationLevel];
+    const low = Math.min(impactLow, impactHigh) / 100;
+    const high = Math.max(impactLow, impactHigh) / 100;
     const eligibleCases = monthlyCases * eligibleShare / 100;
     const eligibleHours = eligibleCases * caseMinutes / 60;
-    const freedLow = eligibleHours * spec.low;
-    const freedHigh = eligibleHours * spec.high;
+    const freedLow = eligibleHours * low;
+    const freedHigh = eligibleHours * high;
     return {
       spec,
+      low,
+      high,
       eligibleCases,
       eligibleHours,
       freedLow,
       freedHigh,
-      remainingLow: eligibleHours * (1 - spec.high),
-      remainingHigh: eligibleHours * (1 - spec.low),
-      totalLow: eligibleShare * spec.low,
-      totalHigh: eligibleShare * spec.high,
-      throughputLow: 1 / (1 - spec.low),
-      throughputHigh: 1 / (1 - spec.high),
+      remainingLow: eligibleHours * (1 - high),
+      remainingHigh: eligibleHours * (1 - low),
+      totalLow: eligibleShare * low,
+      totalHigh: eligibleShare * high,
+      throughputLow: 1 / (1 - low),
+      throughputHigh: 1 / (1 - high),
       paybackLow: setupHours / Math.max(freedHigh, 0.01),
       paybackHigh: setupHours / Math.max(freedLow, 0.01),
     };
-  }, [calibrationLevel, caseMinutes, monthlyCases, eligibleShare, setupHours]);
+  }, [calibrationLevel, caseMinutes, monthlyCases, eligibleShare, impactLow, impactHigh, setupHours]);
   const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
   const pilotSpec = pilotSpecs[calibrationLevel];
   const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
@@ -1143,22 +1184,29 @@ export function Playbook({ locale }: { locale: Locale }) {
             <ol>{t.measurements.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
           </div>
           <aside className="range-note"><p>{t.rangeNote}</p><div><span>{t.evidenceLead}</span>{t.evidenceLinks.map(([label, url]) => <a href={url} key={url}>{label} ↗</a>)}</div></aside>
+          <section className="research-reality" aria-labelledby="research-reality-title">
+            <div className="research-reality-head"><div><p className="eyebrow">{t.researchEyebrow}</p><h3 id="research-reality-title">{t.researchTitle}</h3></div><p>{t.researchText}</p></div>
+            <div className="research-reality-grid">{t.researchSignals.map((signal) => <a href={signal.url} key={signal.tag}><small>{signal.tag}</small><strong>{signal.value}</strong><h4>{signal.title}</h4><p>{signal.text}</p><span aria-hidden="true">↗</span></a>)}</div>
+            <a className="research-review-link" href={`${repositorySource}/references/field-evidence-review-2026${locale === "fr" ? ".fr" : ""}.md`}>{t.researchReview} ↗</a>
+          </section>
         </section>
 
         <section className="calibrator section-blue" id="calibrator" aria-labelledby="calibrator-title">
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
-              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); setDossierCopied(false); setFieldEvidenceConfirmed(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
+              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => selectCalibrationLevel(level.id)} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
               <div className="calibrator-inputs">
                 <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
                 <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
                 <label><span>{t.calibratorInputs.eligible}</span><div><input aria-label={t.calibratorInputs.eligible} max="100" min="1" onChange={(event) => setEligibleShare(Math.min(100, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={eligibleShare} /><small>{t.calibratorUnits.eligible}</small></div></label>
+                <label><span>{t.calibratorInputs.low}</span><div><input aria-label={t.calibratorInputs.low} max="95" min="0" onChange={(event) => setImpactLow(Math.min(95, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={impactLow} /><small>{t.calibratorUnits.low}</small></div></label>
+                <label><span>{t.calibratorInputs.high}</span><div><input aria-label={t.calibratorInputs.high} max="95" min="0" onChange={(event) => setImpactHigh(Math.min(95, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={impactHigh} /><small>{t.calibratorUnits.high}</small></div></label>
                 <label><span>{t.calibratorInputs.setup}</span><div><input aria-label={t.calibratorInputs.setup} max="2000" min="0" onChange={(event) => setSetupHours(Math.min(2000, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={setupHours} /><small>{t.calibratorUnits.setup}</small></div><em>{t.calibratorPreset}: {calibration.spec.setup} h</em></label>
               </div>
             </div>
             <output className="calibrator-results" aria-live="polite">
-              <div className="calibrator-result-head"><span>{t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label}</span><strong>{formatNumber(calibration.spec.low * 100, 0)}–{formatNumber(calibration.spec.high * 100, 0)}%</strong><small>{locale === "en" ? "planning range on eligible work" : "fourchette sur la charge éligible"}</small></div>
+              <div className="calibrator-result-head"><span>{t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label}</span><strong>{formatNumber(calibration.low * 100, 0)}–{formatNumber(calibration.high * 100, 0)}%</strong><small>{locale === "en" ? "editable hypothesis on eligible work" : "hypothèse modifiable sur la charge éligible"}</small></div>
               <div className="calibrator-result-grid">
                 <p><span>{t.calibratorResults.eligible}</span><strong>{formatNumber(calibration.eligibleHours)} h</strong><small>{formatNumber(calibration.eligibleCases)} {t.calibratorUnits.cases}</small></p>
                 <p><span>{t.calibratorResults.freed}</span><strong>{formatNumber(calibration.freedLow)}–{formatNumber(calibration.freedHigh)} h</strong></p>
@@ -1167,7 +1215,7 @@ export function Playbook({ locale }: { locale: Locale }) {
                 <p><span>{t.calibratorResults.throughput}</span><strong>×{formatNumber(calibration.throughputLow)}–{formatNumber(calibration.throughputHigh)}</strong></p>
                 <p><span>{t.calibratorResults.payback}</span><strong>{formatNumber(calibration.paybackLow)}–{formatNumber(calibration.paybackHigh)} {t.calibratorMonths}</strong></p>
               </div>
-              <p className="calibrator-equation">{eligibleShare}% × {formatNumber(calibration.spec.low * 100, 0)}–{formatNumber(calibration.spec.high * 100, 0)}% = <strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong> {locale === "en" ? "across the whole measured workload" : "sur toute la charge mesurée"}</p>
+              <p className="calibrator-equation">{eligibleShare}% × {formatNumber(calibration.low * 100, 0)}–{formatNumber(calibration.high * 100, 0)}% = <strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong> {locale === "en" ? "across the whole measured workload" : "sur toute la charge mesurée"}</p>
             </output>
           </div>
           <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
@@ -1281,7 +1329,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <p className="field-pilot-privacy"><strong>{locale === "en" ? "PRIVACY BOUNDARY" : "FRONTIÈRE DE CONFIDENTIALITÉ"}</strong>{t.fieldPilotPrivacy}</p>
               <div className="field-pilot-selects">
                 <label><span>{t.fieldPilotLabels.organization}</span><select onChange={(event) => { setAudienceId(event.target.value as AudienceId); setFieldEvidenceConfirmed(false); }} value={audienceId}>{audiences[locale].map((audience) => <option key={audience.id} value={audience.id}>{audience.title}</option>)}</select></label>
-                <label><span>{t.fieldPilotLabels.integration}</span><select onChange={(event) => { const level = event.target.value as IntegrationId; setCalibrationLevel(level); setSetupHours(calibrationSpecs[level].setup); setReviewDate(operationSpecs[level].reviewDate); setOperationCopied(false); setDossierCopied(false); setFieldEvidenceConfirmed(false); }} value={calibrationLevel}>{t.calibratorLevels.map((level) => <option key={level.id} value={level.id}>{level.label}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.integration}</span><select onChange={(event) => selectCalibrationLevel(event.target.value as IntegrationId)} value={calibrationLevel}>{t.calibratorLevels.map((level) => <option key={level.id} value={level.id}>{level.label}</option>)}</select></label>
                 <label><span>{t.fieldPilotLabels.sector}</span><select onChange={(event) => { setFieldSectorId(event.target.value as FieldSectorId); setFieldEvidenceConfirmed(false); }} value={fieldSectorId}>{t.fieldPilotSectors.map((sector) => <option key={sector.id} value={sector.id}>{sector.label}</option>)}</select></label>
               </div>
               <div className="field-pilot-fields">

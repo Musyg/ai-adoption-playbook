@@ -38,6 +38,20 @@ test("audience selection updates the active decision path", async ({ page }) => 
   expect(await cards.evaluateAll((items) => items.filter((item) => item.getAttribute("aria-pressed") === "true").length)).toBe(1);
 });
 
+test("calibrator treats low and high effects as editable hypotheses", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("20–50%");
+  await page.getByLabel("Low effect hypothesis").fill("10");
+  await page.getByLabel("High effect hypothesis").fill("20");
+
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("10–20%");
+  await expect(page.locator(".calibrator-equation")).toContainText("7–14%");
+
+  await page.getByRole("button", { name: /Orchestrated agency/ }).click();
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("35–70%");
+});
+
 test("rendered page has no automatic axe violations", async ({ page }) => {
   await page.goto("/");
   const results = await new AxeBuilder({ page }).analyze();

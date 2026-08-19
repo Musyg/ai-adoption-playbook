@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added a bilingual review of 20 public field studies, deployments, benchmarks,
+  and negative results, with evidence classes and explicit transfer limits.
+- Removed universal productivity bands from the visual integration guide and
+  replaced them with primary-study anchors and editable low/high hypotheses.
+- Added a six-card denominator view covering copilot output, small-business
+  heterogeneity, agent eligibility, the activity-to-delivery gap, agency
+  benchmark completion, and self-reported public-sector savings.
+- Kept the first-party field registry empty: public third-party evidence informs
+  the 0.3 pilot but does not satisfy its field-feedback admission rule.
 - Updated the supported toolchain to TypeScript 6.0.3, ESLint 9.39.5,
   `typescript-eslint` 8.67.0, `globals` 17.11.0, and the latest compatible
   Node 22 type definitions.

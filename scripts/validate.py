@@ -72,6 +72,8 @@ REQUIRED_FILES = (
     "field-notes/README.fr.md",
     "field-notes/index.json",
     "references/sources.md",
+    "references/field-evidence-review-2026.md",
+    "references/field-evidence-review-2026.fr.md",
     "controls/README.md",
     "site/public/data/control-crosswalk.schema.json",
     "site/public/data/control-crosswalk.v1.json",
@@ -116,6 +118,7 @@ TRANSLATION_PAIRS = (
     ("templates/fundamental-rights-impact-assessment.md", "templates/fundamental-rights-impact-assessment.fr.md"),
     ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
     ("field-notes/README.md", "field-notes/README.fr.md"),
+    ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
 )
 EXPECTED_REGISTER_COLUMNS = (
     "system_id",

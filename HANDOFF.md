@@ -31,15 +31,24 @@ choice to a bounded operating handoff. It keeps three systems distinct:
 3. an orchestrated agency, where specialist agents coordinate under shared
    controls and must outperform a simpler design.
 
-The visual application includes realistic planning ranges, seven synthetic
-worked cases, pilot preregistration, evidence gates, reversible operations,
-decision-dossier export, field-pilot preparation, five organization paths, four
-sector overlays, and a versioned control crosswalk. The Markdown guides and
-templates remain the operational source of truth.
+The visual application includes editable low/high challenge hypotheses, six
+primary-evidence reality checks, seven synthetic worked cases, pilot
+preregistration, evidence gates, reversible operations, decision-dossier
+export, field-pilot preparation, five organization paths, four sector overlays,
+and a versioned control crosswalk. The Markdown guides and templates remain the
+operational source of truth.
+
+The 0.3 research pass adds a bilingual review of 20 public studies,
+deployments, benchmarks, official evaluations, and negative results. It removes
+the former universal productivity bands from the visual guide. The public
+evidence does not support a generic 5x to 12x multiplier on accepted business
+outcomes. Those figures may be tested as explicit hypotheses only.
 
 Synthetic examples are not field evidence. `field-notes/index.json` remains
-empty until a genuine, independently reviewed and sanitized submission meets the
-publication contract.
+empty until a genuine, independently reviewed and sanitized submission meets
+the publication contract. Public third-party studies inform pilot design but do
+not satisfy that first-party admission rule. This remains the only open 0.3
+roadmap item.
 
 ## Hosting-neutral behavior
 
@@ -67,6 +76,17 @@ npm ci
 npm run verify
 python ../scripts/validate.py
 ```
+
+Latest local 0.3 verification on 2026-08-19:
+
+- ESLint: pass
+- TypeScript 6.0.3: pass
+- server and static builds: pass
+- Node tests: 18/18 pass
+- Playwright: 15/15 pass across English, French, desktop light, desktop dark,
+  and mobile light
+- automated axe checks: zero violations
+- repository validation: 95 Markdown files and 32 bilingual pairs pass
 
 The verification contract covers:
 

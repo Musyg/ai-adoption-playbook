@@ -26,7 +26,12 @@ de la baseline jusqu’à une décision explicite de périmètre.
 
 > État : version **0.2.0**, dépôt privé, photographie au **19 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
-**Extensions 0.3 :** [santé](sectors/fr/healthcare.md),
+**Preuves et extensions 0.3 :** la
+[revue bilingue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
+sépare effets sur une tâche, effets sur le flux éligible, résultats sur toute la
+charge, benchmarks, télémétrie et cas fournisseurs. Elle ne trouve aucune preuve
+causale indépendante d’un multiplicateur générique de 5 à 12 sur les résultats
+acceptés. Les extensions [santé](sectors/fr/healthcare.md),
 [éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et
 [infrastructure critique](sectors/fr/critical-infrastructure.md) ajoutent des
 vetoes et gates sectoriels sans remplacer le processus universel.

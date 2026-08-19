@@ -59,7 +59,7 @@
     "eyebrow": "REALISTIC VALUE",
     "title": "What ROI can a business AI agent realistically deliver?",
     "description": "A realistic way to estimate the low and high return of a business AI agent without confusing task speed, workflow automation, and company-wide savings.",
-    "answer": "A business agent can cut human active time by 50% to 75% on a clean, eligible, digital workflow, but the company-wide gain is usually lower. Multiply the workflow gain by the eligible share, then subtract setup, review, exceptions, incidents, maintenance, and model costs. A credible ROI is measured on accepted downstream outcomes, not generated text or tool calls.",
+    "answer": "There is no defensible universal low and high return for a business AI agent. The strongest direct field experiment found 16.8% faster eligible chats, but only 5.8% of chats were eligible, so the effect across all chats was 3.2% and customer ratings fell on eligible chats. Enter a low and high hypothesis for your workflow, multiply by observed eligibility, then deduct supervision, exceptions, incidents, maintenance, and model costs.",
     "updated": "19 August 2026",
     "readingTime": "7 minute read",
     "takeaways": [
@@ -68,12 +68,12 @@
       "Separate released capacity from cash savings and new revenue."
     ],
     "comparison": {
-      "caption": "A planning range, not a promise",
-      "headers": ["Scenario", "Workflow condition", "Human time reduction", "Typical interpretation"],
+      "caption": "Three different results, not one universal range",
+      "headers": ["Evidence", "Measured setting", "Observed result", "Correct interpretation"],
       "rows": [
-        ["Low", "Dirty data, many exceptions, small volume", "0% to 30%", "The pilot may not repay setup"],
-        ["Central", "Stable rules and useful integrations", "50% to 75%", "A bounded agent may release capacity"],
-        ["High", "Narrow, repetitive, digital flow at scale", "80% to 92%", "Possible for specific workflows, not the whole business"]
+        ["Small-business RCT", "Open-ended business advice", "0% average; about −8% to +15% by baseline skill", "Judgment and implementation determine the sign"],
+        ["Business-agent RCT", "Standardized customer-service chats", "−16.8% eligible duration; −3.2% across all chats", "Eligibility and quality limit the headline gain"],
+        ["Agency benchmark", "46 concurrent simulated corporate tasks", "15.2% completed; 3.5x relative to 4.3%", "Capability signal, not a production ROI"]
       ]
     },
     "sections": [
@@ -93,13 +93,13 @@
     ],
     "caseStudy": {
       "title": "Example: 40 monthly cases",
-      "text": "At 60 manual minutes per case, 70% eligibility, and a 50% to 75% reduction on eligible work, the gross release is 14 to 21 hours per month. A 40-hour setup therefore takes roughly two to three months to absorb before recurring costs. Real observations may move the result below zero.",
-      "metrics": ["28 eligible cases", "14 to 21 hours gross", "Setup and recurring costs still deducted"]
+      "text": "At 60 manual minutes per case and 70% assumed eligibility, editable challenge hypotheses of 20% and 50% produce 5.6 to 14 gross hours per month. A 40-hour setup would take about 2.9 to 7.1 months to absorb before recurring costs. These are scenario inputs, not an evidence range; the pilot must replace them with observations.",
+      "metrics": ["28 assumed eligible cases", "5.6 to 14 gross hours", "2.9 to 7.1 months before recurring costs"]
     },
     "sources": [
-      {"label": "OECD: Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "SME adoption and the difference between task and workforce effects."},
-      {"label": "Generative AI at Work", "url": "https://academic.oup.com/qje/article/140/2/889/7990658", "note": "Empirical evidence for assisted customer support work."},
-      {"label": "METR developer study", "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/", "note": "Counter-example where AI increased completion time."}
+      {"label": "Agentic AI in customer service", "url": "https://arxiv.org/abs/2605.14830", "note": "Direct randomized field evidence for a bounded business agent."},
+      {"label": "The Uneven Impact of Generative AI", "url": "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf", "note": "Randomized small-business evidence with an average null and heterogeneous effects."},
+      {"label": "Writing Code vs. Shipping Code", "url": "https://www.nber.org/papers/w35275", "note": "Activity gains attenuate at projects, releases, and downstream usage."}
     ],
     "relatedIds": ["integration-choice", "pilot", "sme-case"]
   },
@@ -372,7 +372,7 @@
     "eyebrow": "VALEUR RÉALISTE",
     "title": "Quel ROI attendre réellement d’un agent IA métier ?",
     "description": "Une méthode réaliste pour estimer le ROI bas et haut d’un agent IA métier sans confondre vitesse de tâche, automatisation du workflow et économie globale.",
-    "answer": "Un agent métier peut réduire de 50 à 75 % le temps humain actif sur un workflow propre, éligible et numérique, mais le gain global de l’entreprise est généralement plus faible. Multipliez le gain par la part éligible, puis retirez mise en place, revue, exceptions, incidents, maintenance et coûts modèles. Le ROI crédible se mesure sur des résultats aval acceptés, pas sur le texte généré.",
+    "answer": "Il n’existe pas de marge basse et haute universelle défendable pour le ROI d’un agent IA métier. Le meilleur essai terrain direct trouvé mesure 16,8 % de durée en moins sur les échanges éligibles, mais seulement 5,8 % du flux est éligible. L’effet sur tout le flux tombe à 3,2 % et la note client baisse sur les échanges éligibles. Saisissez vos propres hypothèses basse et haute, multipliez-les par l’éligibilité observée, puis retirez supervision, exceptions, incidents, maintenance et coûts modèles.",
     "updated": "19 août 2026",
     "readingTime": "7 minutes",
     "takeaways": [
@@ -381,12 +381,12 @@
       "Séparez capacité libérée, économie comptable et nouveau revenu."
     ],
     "comparison": {
-      "caption": "Une fourchette de planification, pas une promesse",
-      "headers": ["Scénario", "État du workflow", "Réduction du temps humain", "Lecture"],
+      "caption": "Trois résultats différents, pas une plage universelle",
+      "headers": ["Preuve", "Contexte mesuré", "Résultat observé", "Lecture correcte"],
       "rows": [
-        ["Bas", "Données sales, nombreuses exceptions, petit volume", "0 à 30 %", "Le pilote peut ne pas rembourser sa mise en place"],
-        ["Central", "Règles stables et intégrations utiles", "50 à 75 %", "Un agent borné peut libérer de la capacité"],
-        ["Haut", "Flux étroit, répétitif, numérique et volumique", "80 à 92 %", "Possible sur un workflow précis, pas sur toute l’entreprise"]
+        ["ECR petite entreprise", "Conseil métier ouvert", "0 % en moyenne ; environ −8 % à +15 % selon le niveau initial", "Le jugement et l’exécution déterminent le signe"],
+        ["ECR agent métier", "Échanges standardisés de support client", "−16,8 % sur la durée éligible ; −3,2 % sur tout le flux", "L’éligibilité et la qualité bornent le gain annoncé"],
+        ["Benchmark d’agence", "46 tâches d’entreprise simulées en parallèle", "15,2 % terminées ; facteur relatif de 3,5 face à 4,3 %", "Signal de capacité, pas ROI de production"]
       ]
     },
     "sections": [
@@ -406,13 +406,13 @@
     ],
     "caseStudy": {
       "title": "Exemple : 40 dossiers par mois",
-      "text": "Avec 60 minutes manuelles par dossier, 70 % d’éligibilité et une baisse de 50 à 75 % sur le travail éligible, la libération brute atteint 14 à 21 heures par mois. Une mise en place de 40 heures demande donc environ deux à trois mois avant coûts récurrents. Les observations réelles peuvent rendre le résultat négatif.",
-      "metrics": ["28 dossiers éligibles", "14 à 21 heures brutes", "Coûts initiaux et récurrents encore à retirer"]
+      "text": "Avec 60 minutes manuelles par dossier et 70 % d’éligibilité supposée, des hypothèses de mise à l’épreuve modifiables de 20 % et 50 % donnent 5,6 à 14 heures brutes par mois. Une mise en place de 40 heures demanderait environ 2,9 à 7,1 mois avant coûts récurrents. Ce sont des entrées de scénario, pas une plage probante ; le pilote doit les remplacer par des observations.",
+      "metrics": ["28 dossiers supposés éligibles", "5,6 à 14 heures brutes", "2,9 à 7,1 mois avant coûts récurrents"]
     },
     "sources": [
-      {"label": "OCDE : Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "Adoption des PME et différence entre effet sur une tâche et effet global."},
-      {"label": "Generative AI at Work", "url": "https://academic.oup.com/qje/article/140/2/889/7990658", "note": "Résultats empiriques sur le support client assisté."},
-      {"label": "Étude METR sur les développeurs", "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/", "note": "Contre-exemple où l’IA allonge le temps de réalisation."}
+      {"label": "IA agentique dans le service client", "url": "https://arxiv.org/abs/2605.14830", "note": "Preuve terrain randomisée directe sur un agent métier borné."},
+      {"label": "The Uneven Impact of Generative AI", "url": "https://www.hbs.edu/ris/download.aspx?name=24-042.pdf", "note": "Essai randomisé en petite entreprise avec effet moyen nul et effets hétérogènes."},
+      {"label": "Writing Code vs. Shipping Code", "url": "https://www.nber.org/papers/w35275", "note": "Les gains d’activité s’atténuent sur les projets, versions et usages aval."}
     ],
     "relatedIds": ["integration-choice", "pilot", "sme-case"]
   },
