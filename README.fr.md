@@ -19,6 +19,7 @@ opérationnelle de référence.
 [boîte partagée de TPE](examples/fr/tpe-demandes-clients.md), d’un
 [agent métier de devis B2B pour PME](examples/fr/pme-agent-metier-devis-b2b.md), d’un
 [agent administratif de dossiers de subvention pour fondation](examples/fr/association-agent-dossiers-subventions.md), d’un
+[agent administratif de dossiers d’urbanisme pour service public](examples/fr/service-public-agent-dossiers-urbanisme.md), d’un
 [agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.

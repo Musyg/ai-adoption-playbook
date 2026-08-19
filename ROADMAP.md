@@ -6,9 +6,10 @@
 - Add worked, synthetic examples for each track.
 - Add a machine-readable control crosswalk with source and version fields.
 
-Progress: the bilingual independent-professional, TPE, SME/PME, and
-nonprofit/foundation worked examples are complete; the public-sector example
-remains planned for 0.2.
+Progress: bilingual worked examples now cover every organization track:
+independent professional, TPE, SME/PME, nonprofit/foundation, and public sector.
+The complete English operating-guide translation and the machine-readable
+control crosswalk remain planned for 0.2.
 
 ## 0.3
 

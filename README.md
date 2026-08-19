@@ -19,6 +19,7 @@ of truth.
 [micro-business shared inbox](examples/en/tpe-customer-requests.md), a
 [B2B quote business agent for an SME](examples/en/sme-b2b-quote-business-agent.md), a
 [grant-dossier administrative agent for a foundation](examples/en/nonprofit-grant-dossier-business-agent.md), a
+[planning-dossier administrative agent for a public service](examples/en/public-sector-planning-dossier-business-agent.md), a
 [bounded business agent](examples/en/independent-business-agent-follow-up.md), and an
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
