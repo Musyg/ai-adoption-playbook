@@ -9,12 +9,12 @@ There is no unfinished implementation hidden behind this handoff.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `8a2bfa57472cbf9ef708e50db045fee2f516af6a`
+- Reference implementation commit: `c55fad1c686065f400a41f8d0b03d762b6c11206`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `598ffcd7919d61c0c6723be1a4c2876a16d5ca42`
+- Publishing-mirror commit: `24bf34e655fc004926e62598b6e9954c79b4057f`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +26,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `18`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_bb074312f790819180e414c7e387d7dd`
-- Source commit used by Sites: `598ffcd7919d61c0c6723be1a4c2876a16d5ca42`
-- Archive content hash: `sha256:acbd579f40668a3de11ce3817b84e6c189ff2fb4623958615b176dd98f970377`
-- Deployment ID: `appgdep_6a84fcc8a7ec81918bc0e3f0465d4ae4`
+- Current Sites version: `19`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_f72b05b4951081919fff282e09bbdbb5`
+- Source commit used by Sites: `24bf34e655fc004926e62598b6e9954c79b4057f`
+- Archive content hash: `sha256:06711a23cc0a189daf65884c59b954ec9256614a53248ed0137b2ac0408e36e4`
+- Deployment ID: `appgdep_6a856f2acdb4819186d303c930e01b0e`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -77,6 +77,13 @@ organization and R×A profile while keeping conditional triggers visible. Its
 source relations are deliberately thematic, not clause-level equivalence,
 certification, or legal-compliance claims.
 
+Roadmap 0.2 is complete. Six operating guides, eight copy-ready templates, and
+six organization-track files now have explicit one-to-one English/French pairs.
+The language-neutral CSV register remains shared. The English README and web
+experience link to the English artifacts; the French README and `/fr` route keep
+their French links. Repository validation treats all 20 pairs as a required
+contract and rejects English operating files that fall back to `.fr.md` links.
+
 ## Decision and evidence rules
 
 - A productivity percentage applies only to eligible work, not automatically to
@@ -110,8 +117,8 @@ mirror where applicable:
 - Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 9/9 passed.
-- Repository validation: 50 Markdown files, AI register, and control-crosswalk
-  contracts passed.
+- Repository validation: 70 Markdown files, 20 EN/FR pairs, AI register, and
+  control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
   nine source records.
 - Previous browser audit: 1440 × 900 and 390 × 844, through the SME case.
@@ -131,6 +138,9 @@ mirror where applicable:
 - New control-crosswalk rendered assertions cover the bilingual section,
   stable control and evidence IDs, source references, public JSON/schema links,
   and the explicit non-equivalence boundary.
+- New locale-link assertions verify that `/` exposes the English mandate,
+  evaluation plan, incident runbook, and organization track, while `/fr`
+  exposes their French counterparts.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -162,28 +172,20 @@ hash from another session.
   require separate locale root layouts or an equivalent routing change.
 - The operating review dates and the playbook snapshot date are explicit
   reference data. Review them before presenting a later release as current.
-- Markdown operating tracks currently exist in French only. The English web
-  experience does not mean every underlying guide has an English file.
-- No new browser-control audit was run for the foundation, public-service, or
-  control-crosswalk sections. The eight intended site files matched between the
-  canonical and publishing-mirror sources, and both passed lint, production
-  build, and all nine tests.
-- Bilingual worked examples cover every organization track, and the machine-
-  readable control crosswalk is implemented. Roadmap 0.2 now lacks only the
-  complete English operating-guide translation.
+- No new browser-control audit was run for the translation-link change. The two
+  intended site files matched byte-for-byte between the canonical and publishing
+  mirror sources, and both passed lint, production build, and all nine tests.
+- The legal-orientation snapshot remains dated 18 August 2026 in both languages.
+  Translation did not re-verify or extend its legal claims.
 
 ## First authorized next step
 
-The implementation is complete. The next session should first open Sites version
-18 while signed in and collect one bounded list of editorial or visual defects.
-Do not change access mode, architecture, claims, or deploy another version without
-a new user request.
-
-If the reference version is accepted without defects, resume roadmap `0.2` with
-the remaining English operating-guide translations. Preserve the French source
-files, add one English counterpart at a time, keep links explicit, and do not
-claim roadmap `0.2` complete until every operating guide and organization track
-has a validated English file.
+Roadmap 0.2 is implemented and deployed. The next session should first open Sites
+version 19 while signed in and collect one bounded list of editorial, translation,
+or visual defects. If no defect is identified, ask which roadmap 0.3 sector
+extension should come first: healthcare, education, finance, or critical
+infrastructure. Do not infer that priority, change access mode, or broaden legal
+claims without a new user decision.
 
 ## Resume checklist
 
