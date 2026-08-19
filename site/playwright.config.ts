@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const ciBrowser = process.env.CI ? { channel: "chrome" as const } : {};
+
 export default defineConfig({
   testDir: "./browser-tests",
   fullyParallel: true,
@@ -15,15 +17,15 @@ export default defineConfig({
   projects: [
     {
       name: "desktop-light",
-      use: { ...devices["Desktop Chrome"], colorScheme: "light" },
+      use: { ...devices["Desktop Chrome"], ...ciBrowser, colorScheme: "light" },
     },
     {
       name: "desktop-dark",
-      use: { ...devices["Desktop Chrome"], colorScheme: "dark" },
+      use: { ...devices["Desktop Chrome"], ...ciBrowser, colorScheme: "dark" },
     },
     {
       name: "mobile-light",
-      use: { ...devices["Pixel 7"], colorScheme: "light" },
+      use: { ...devices["Pixel 7"], ...ciBrowser, colorScheme: "light" },
     },
   ],
   webServer: {

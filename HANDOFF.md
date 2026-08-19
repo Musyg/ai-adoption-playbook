@@ -87,7 +87,7 @@ The verification contract covers:
 One least-privilege validation workflow handles pull requests and pushes to
 `main`. It has read-only repository contents permission, cancels superseded
 runs, and performs repository validation, dependency audit, lint, type checks,
-builds, Node tests, and Chromium browser tests.
+builds, Node tests, and Chrome browser tests.
 
 Dependabot configuration covers npm dependencies under `site/` and GitHub
 Actions at the repository root. Repository vulnerability alerts and automatic
