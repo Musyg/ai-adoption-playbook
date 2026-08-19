@@ -1083,7 +1083,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     <div className="page-shell">
       <a className="skip-link" href="#main">{locale === "en" ? "Skip to content" : "Aller au contenu"}</a>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="AI Adoption Playbook"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
+        <a className="brand" href="#top"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
           <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#sectors">{t.nav[2]}</a><a href="#method">{t.nav[3]}</a><a href="#case">{t.nav[4]}</a><a href="#controls">{t.nav[5]}</a><a href="#toolkit">{t.nav[6]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
@@ -1305,7 +1305,7 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
           <div className="section-heading"><p className="eyebrow">{t.pathsEyebrow}</p><h2 id="paths-title">{t.pathsTitle}</h2><p>{t.pathsText}</p></div>
-          <div className="path-grid" role="list">
+          <div className="path-grid">
             {audiences[locale].map((audience) => <button aria-pressed={audience.id === selected.id} className="path-card" data-active={audience.id === selected.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span className="path-number">{audience.number}</span><span className="path-title">{audience.title}</span><span className="path-copy">{audience.short}</span><span className="path-horizon">{audience.horizon} →</span></button>)}
           </div>
           <article className="selected-plan" aria-live="polite">
