@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
+import { geoArticlePath, geoArticles } from "./geo-content";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -874,6 +875,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     ? githubPagesBase
     : "";
   const sitePath = (path: string) => `${deploymentBase}${path}`;
+  const geoGuides = geoArticles.filter((article) => article.locale === locale);
   const langHref = sitePath(locale === "en" ? "/fr/" : "/");
   const langLabel = locale === "en" ? "FR" : "EN";
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
@@ -1104,6 +1106,21 @@ export function Playbook({ locale }: { locale: Locale }) {
           <p className="eyebrow">{t.summaryEyebrow}</p>
           <h2 id="plain-summary-title">{t.summaryTitle}</h2>
           <p>{t.summaryText}</p>
+        </section>
+
+        <section className="geo-library" aria-labelledby="geo-library-title">
+          <div className="section-heading">
+            <p className="eyebrow">{locale === "en" ? "PRACTICAL ANSWERS" : "RÉPONSES PRATIQUES"}</p>
+            <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Approfondissez les questions qui font la décision."}</h2>
+            <p>{locale === "en" ? "Each guide gives a direct answer, a comparison, a realistic example, and the sources that limit the claim." : "Chaque guide apporte une réponse directe, une comparaison, un exemple réaliste et les sources qui bornent la conclusion."}</p>
+          </div>
+          <div className="geo-library-grid">
+            {geoGuides.map((guide, index) => (
+              <a href={sitePath(geoArticlePath(guide))} key={guide.id}>
+                <span>0{index + 1}</span><small>{guide.eyebrow}</small><strong>{guide.title}</strong><p>{guide.description}</p>
+              </a>
+            ))}
+          </div>
         </section>
 
         <section className="integration-guide section-light" id="integration-levels" aria-labelledby="integration-title">

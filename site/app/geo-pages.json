@@ -1,0 +1,628 @@
+[
+  {
+    "id": "integration-choice",
+    "locale": "en",
+    "slug": "copilot-vs-business-agent",
+    "navLabel": "Copilot or agent",
+    "eyebrow": "AI INTEGRATION GUIDE",
+    "title": "AI copilot or business agent: what is the difference?",
+    "description": "A practical comparison of AI copilots, bounded business agents, and orchestrated agencies, with realistic measures and decision criteria.",
+    "answer": "An AI copilot helps a person complete one step, such as research or drafting. A business agent carries a bounded case through several steps, uses approved tools, records its actions, and escalates exceptions. An orchestrated agency coordinates several specialist agents. The right choice depends on the workflow, permissions, evidence, and consequences, not on the model name.",
+    "updated": "19 August 2026",
+    "readingTime": "6 minute read",
+    "takeaways": [
+      "Choose a copilot when a person must remain the operator at every cycle.",
+      "Choose a business agent only when the workflow, tools, limits, and exceptions can be written down.",
+      "Use an orchestrated agency only when specialist roles produce measurable value beyond a simpler agent."
+    ],
+    "comparison": {
+      "caption": "The three integration levels",
+      "headers": ["Level", "Work moved", "Human role", "Useful measure"],
+      "rows": [
+        ["Copilot A0/A1", "One assisted step", "Operator", "Accepted time per task"],
+        ["Business agent A2/A3", "One bounded case from intake to approved effect", "Approver and exception owner", "Accepted cases per owner-hour"],
+        ["Orchestrated agency A3/A4", "Several specialist roles under one policy", "Governor", "Accepted end-to-end outcomes and coordination cost"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "The fastest model is not necessarily the most autonomous system",
+        "paragraphs": [
+          "Autonomy comes from the operating design around the model. A business agent needs identity boundaries, tool permissions, state, approval gates, logs, exception handling, and rollback. A strong model without those controls is still only an assistant.",
+          "This distinction matters when quoting productivity. A 30% gain on drafting cannot be compared directly with a 70% reduction in human time across an integrated workflow. The amount of work moved is different."
+        ]
+      },
+      {
+        "title": "A simple selection rule",
+        "paragraphs": [
+          "Start with the lowest level that can change the business outcome. If a reviewed draft removes the bottleneck, stop at a copilot. If the bottleneck is the transport of a case across several systems, test a bounded business agent. Add orchestration only when distinct research, execution, and quality roles justify the coordination overhead."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Example: the same consultant, three different systems",
+      "text": "A copilot turns meeting notes into a draft follow-up. A business agent reads authorized CRM context, prepares the follow-up, waits for approval, then updates the CRM and sends it. An orchestrated agency adds separate research and quality roles for a complete diagnostic. Each level needs its own baseline and pilot.",
+      "metrics": ["A1: one drafted step", "A2: one approved workflow", "A3: several coordinated roles"]
+    },
+    "sources": [
+      {"label": "The Agent-Centric Enterprise", "url": "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3", "note": "High-end integrated workflow examples."},
+      {"label": "IBM AskHR case study", "url": "https://www.ibm.com/case-studies/ibm-askhr", "note": "A large bounded HR workflow with published containment figures."},
+      {"label": "Remote Labor Index", "url": "https://scale.com/blog/rli", "note": "Counter-evidence for general-purpose autonomous work."}
+    ],
+    "relatedIds": ["roi", "pilot", "agency"]
+  },
+  {
+    "id": "roi",
+    "locale": "en",
+    "slug": "business-agent-roi",
+    "navLabel": "Agent ROI",
+    "eyebrow": "REALISTIC VALUE",
+    "title": "What ROI can a business AI agent realistically deliver?",
+    "description": "A realistic way to estimate the low and high return of a business AI agent without confusing task speed, workflow automation, and company-wide savings.",
+    "answer": "A business agent can cut human active time by 50% to 75% on a clean, eligible, digital workflow, but the company-wide gain is usually lower. Multiply the workflow gain by the eligible share, then subtract setup, review, exceptions, incidents, maintenance, and model costs. A credible ROI is measured on accepted downstream outcomes, not generated text or tool calls.",
+    "updated": "19 August 2026",
+    "readingTime": "7 minute read",
+    "takeaways": [
+      "Apply the gain only to eligible work, never to the whole workload by default.",
+      "Count corrections, approvals, exceptions, and maintenance as real labor.",
+      "Separate released capacity from cash savings and new revenue."
+    ],
+    "comparison": {
+      "caption": "A planning range, not a promise",
+      "headers": ["Scenario", "Workflow condition", "Human time reduction", "Typical interpretation"],
+      "rows": [
+        ["Low", "Dirty data, many exceptions, small volume", "0% to 30%", "The pilot may not repay setup"],
+        ["Central", "Stable rules and useful integrations", "50% to 75%", "A bounded agent may release capacity"],
+        ["High", "Narrow, repetitive, digital flow at scale", "80% to 92%", "Possible for specific workflows, not the whole business"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Use the full denominator",
+        "paragraphs": [
+          "If 70% of requests are eligible and the agent reduces human time by 60% on those requests, the gross reduction across all requests is 42% before operating costs. Excluded, failed, and escalated requests must remain visible.",
+          "This prevents a common reporting error: publishing a strong rate on accepted cases while hiding the cases that never entered the system."
+        ]
+      },
+      {
+        "title": "Measure an outcome that the organization values",
+        "paragraphs": [
+          "Time saved is useful only when it changes capacity, cost, service, quality, or revenue. Record accepted cases per owner-hour, major corrections, critical errors, cost per accepted result, and the downstream result. Keep each measure separate."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Example: 40 monthly cases",
+      "text": "At 60 manual minutes per case, 70% eligibility, and a 50% to 75% reduction on eligible work, the gross release is 14 to 21 hours per month. A 40-hour setup therefore takes roughly two to three months to absorb before recurring costs. Real observations may move the result below zero.",
+      "metrics": ["28 eligible cases", "14 to 21 hours gross", "Setup and recurring costs still deducted"]
+    },
+    "sources": [
+      {"label": "OECD: Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "SME adoption and the difference between task and workforce effects."},
+      {"label": "Generative AI at Work", "url": "https://academic.oup.com/qje/article/140/2/889/7990658", "note": "Empirical evidence for assisted customer support work."},
+      {"label": "METR developer study", "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/", "note": "Counter-example where AI increased completion time."}
+    ],
+    "relatedIds": ["integration-choice", "pilot", "sme-case"]
+  },
+  {
+    "id": "pilot",
+    "locale": "en",
+    "slug": "business-agent-pilot",
+    "navLabel": "Run a pilot",
+    "eyebrow": "FROM DEMO TO EVIDENCE",
+    "title": "How do you pilot a business AI agent?",
+    "description": "A practical pilot protocol for a bounded business AI agent, from baseline and frozen cases to live evidence, stop rules, and production gates.",
+    "answer": "Pilot a business agent in four stages: freeze the decision and baseline, evaluate on a fixed set of real cases, run the complete workflow in shadow mode, then release a small number of eligible live cases behind explicit approval. Define value, quality, safety, traceability, and eligibility thresholds before launch. A critical unauthorized effect should stop the pilot regardless of average productivity.",
+    "updated": "19 August 2026",
+    "readingTime": "8 minute read",
+    "takeaways": [
+      "Write the pass, rework, and stop decisions before observing results.",
+      "Test failures, duplicates, abstentions, and rollback, not only happy paths.",
+      "Increase autonomy only after the current level passes on real evidence."
+    ],
+    "comparison": {
+      "caption": "Four pilot stages",
+      "headers": ["Stage", "System effect", "Evidence", "Exit condition"],
+      "rows": [
+        ["Baseline", "None", "Manual time, quality, volume, eligibility", "Decision and thresholds frozen"],
+        ["Offline", "None", "Fixed real cases and adversarial cases", "No critical failure"],
+        ["Shadow", "No external effect", "Full workflow traces", "Stable accepted quality"],
+        ["Bounded live", "Approved reversible effects", "Outcomes, exceptions, rollback", "Pass, rework, or stop"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Define five separate gates",
+        "paragraphs": [
+          "Value asks whether accepted work improves. Quality asks whether outputs meet the review standard. Safety asks whether any critical or unauthorized effect occurred. Traceability asks whether approvals and effects can be reconstructed. Eligibility shows how much of the real workload the result covers."
+        ]
+      },
+      {
+        "title": "Treat missing evidence as unknown",
+        "paragraphs": [
+          "An incomplete trace or a sample that never reached the required size is not a pass and not automatically a failure. It means the pilot cannot support the decision yet. Extend the observation or repair the evidence path without increasing autonomy."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "A practical A2 floor",
+      "text": "For a bounded business agent, start with about 40 frozen cases and 20 eligible live cases over at least 30 days. Increase the sample for rare failures, protected groups, high variance, or higher-stakes effects. Calendar time never replaces enough eligible cases.",
+      "metrics": ["40 frozen cases", "20 bounded live cases", "Zero critical unauthorized effect"]
+    },
+    "sources": [
+      {"label": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework", "note": "Roles, measurement, risk treatment, and lifecycle governance."},
+      {"label": "NIST Generative AI Profile", "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf", "note": "Generative AI risk actions and evidence considerations."},
+      {"label": "OWASP GenAI Security Project", "url": "https://genai.owasp.org/", "note": "Current security guidance for LLM and agentic systems."}
+    ],
+    "relatedIds": ["governance", "roi", "sme-case"]
+  },
+  {
+    "id": "governance",
+    "locale": "en",
+    "slug": "ai-agent-governance",
+    "navLabel": "Agent governance",
+    "eyebrow": "CONTROL BEFORE AUTONOMY",
+    "title": "How should a business AI agent be governed?",
+    "description": "A concise governance model for business AI agents covering ownership, permissions, human approval, evidence, incidents, reassessment, and retirement.",
+    "answer": "Govern a business AI agent as a versioned operating system, not as a chatbot. Name an accountable owner, limit its identity and tools, require approval for consequential effects, record every external action, define stop and rollback authority, and reassess the exact model, prompt, data, permissions, and policy on a fixed date. Governance must follow the workflow risk and actual autonomy.",
+    "updated": "19 August 2026",
+    "readingTime": "7 minute read",
+    "takeaways": [
+      "One named owner remains accountable for the operating outcome.",
+      "Permissions should be narrower than the agent's technical capability.",
+      "Production remains reversible and tied to one evaluated version."
+    ],
+    "comparison": {
+      "caption": "Minimum control layers",
+      "headers": ["Layer", "Question", "Required evidence", "Owner"],
+      "rows": [
+        ["Mandate", "What may the agent do?", "Scope and prohibited effects", "Business owner"],
+        ["Identity", "Which data and systems may it reach?", "Accounts and permission map", "System owner"],
+        ["Decision", "Which effects need approval?", "Approval and veto log", "Approver"],
+        ["Operations", "Can the effect be contained and reversed?", "Incident and rollback test", "Operator"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Govern the effect, not only the answer",
+        "paragraphs": [
+          "The key boundary is what the system can change. Drafting a price, committing a price, sending a price, and recording a contract are different effects. Each needs a separate permission, validation rule, and trace.",
+          "Human approval must show the actual recipient, amount, object, and intended change. A generic confirmation button is not a meaningful control."
+        ]
+      },
+      {
+        "title": "Reassess after every material change",
+        "paragraphs": [
+          "A new model, prompt, retrieval source, connector, memory policy, permission, or business rule can invalidate prior evidence. Keep the operating configuration versioned and return to the appropriate evaluation stage when it changes."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "A five-step rollback",
+      "text": "Disable writes, revoke the agent identity, preserve the trace, restore the last known safe state, and route work to the manual process. The rollback is only credible if it has been tested before production and can be executed by a named person.",
+      "metrics": ["Named stop authority", "Versioned permissions", "Tested manual fallback"]
+    },
+    "sources": [
+      {"label": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework", "note": "A lifecycle framework for governing and measuring AI risk."},
+      {"label": "EU AI Act official portal", "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "note": "Current regulatory orientation and implementation material."},
+      {"label": "MITRE ATLAS", "url": "https://atlas.mitre.org/", "note": "Threat, technique, and mitigation knowledge for AI systems."}
+    ],
+    "relatedIds": ["pilot", "integration-choice", "agency"]
+  },
+  {
+    "id": "agency",
+    "locale": "en",
+    "slug": "orchestrated-ai-agency",
+    "navLabel": "AI agency",
+    "eyebrow": "WHEN ONE AGENT IS NOT ENOUGH",
+    "title": "When does an orchestrated AI agency make sense?",
+    "description": "A realistic guide to deciding when specialist AI agents and an orchestrator outperform a simpler business agent, with evidence and limits.",
+    "answer": "An orchestrated AI agency makes sense when one bounded service contains genuinely distinct roles, such as research, analysis, execution, and independent quality control, and those roles can work in parallel under shared permissions and evidence rules. It should beat a single agent on accepted outcomes, cost, reliability, or cycle time. More agents alone do not create more autonomy or value.",
+    "updated": "19 August 2026",
+    "readingTime": "7 minute read",
+    "takeaways": [
+      "Benchmark manual, copilot, single-agent, and orchestrated conditions.",
+      "Keep one orchestrator responsible for scope, identity, and final state.",
+      "Reject orchestration when coordination cost exceeds measured benefit."
+    ],
+    "comparison": {
+      "caption": "Single agent versus orchestrated agency",
+      "headers": ["Question", "Single agent", "Orchestrated agency", "Evidence needed"],
+      "rows": [
+        ["Work shape", "Sequential and uniform", "Distinct roles can run separately", "Workflow map"],
+        ["Quality", "Self-check or one reviewer", "Independent specialist review", "Blind acceptance comparison"],
+        ["Operations", "One tool and state boundary", "Shared state and several tool boundaries", "End-to-end trace"],
+        ["Cost", "Lower coordination overhead", "Higher orchestration overhead", "Cost per accepted outcome"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Test the architecture, not the label",
+        "paragraphs": [
+          "A system may resemble Talos or Hermes without having demonstrated their value on a business workflow. Measure the same frozen cases under four conditions: manual, copilot, single business agent, and orchestrated agency. Publish accepted outcomes, human time, completion, corrections, cost, and critical failures for each."
+        ]
+      },
+      {
+        "title": "Keep the scope smaller than the organization",
+        "paragraphs": [
+          "The credible unit is one eligible service, not the whole company. New pricing, contract changes, sensitive HR data, contradictory identities, and high-stakes judgment should remain outside the agency until separately evaluated."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Example: a standard diagnostic service",
+      "text": "One agent researches authorized sources, another analyzes the evidence, a third checks quality, and an executor prepares approved updates. An orchestrator owns the case state and exceptions. If the same outcome is cheaper and equally reliable with one agent, orchestration fails its gate.",
+      "metrics": ["One bounded service", "Four measured conditions", "A4 remains unproven without its own test"]
+    },
+    "sources": [
+      {"label": "Microsoft Research CORPGEN", "url": "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/", "note": "Evidence on hierarchical agents under concurrent workload."},
+      {"label": "Remote Labor Index", "url": "https://scale.com/blog/rli", "note": "A difficult end-to-end benchmark for general-purpose agents."},
+      {"label": "Talos public repository", "url": "https://github.com/Musyg/talos", "note": "An architectural reference, not a published productivity claim."}
+    ],
+    "relatedIds": ["integration-choice", "governance", "pilot"]
+  },
+  {
+    "id": "sme-case",
+    "locale": "en",
+    "slug": "business-agent-small-business-case",
+    "navLabel": "SME example",
+    "eyebrow": "REALISTIC WORKED EXAMPLE",
+    "title": "A realistic business AI agent example for an SME",
+    "description": "A worked example of a bounded AI agent preparing B2B quotes for an SME, with eligibility, approval, realistic gains, and failure conditions.",
+    "answer": "A credible SME business agent automates a narrow case, not an entire department. In this synthetic quote example, the agent reads an email and attachments, checks an authorized customer, catalogue, price matrix, and lead time, then prepares a quote. It writes to the ERP and sends only after explicit approval. Ambiguous identity, new prices, contracts, or engineering judgment stop the workflow.",
+    "updated": "19 August 2026",
+    "readingTime": "8 minute read",
+    "takeaways": [
+      "Quote preparation can be automated more safely than pricing authority.",
+      "Every excluded request remains in the business denominator.",
+      "The economic gate can fail even when the agent works technically."
+    ],
+    "comparison": {
+      "caption": "Noroît Mécanique synthetic pilot",
+      "headers": ["Measure", "Baseline", "Observed example", "Decision use"],
+      "rows": [
+        ["Human active time", "76 minutes", "27 minutes", "Value gate"],
+        ["Initial eligibility", "All requests counted", "238 of 316", "Transfer boundary"],
+        ["Ready for approval", "Manual preparation", "163 of 238", "Not autonomous completion"],
+        ["Critical effects", "Human controlled", "Zero required", "Safety veto"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "What the agent may do",
+        "paragraphs": [
+          "It may extract line items, check approved sources, calculate from a locked matrix, prepare the document, and show the intended recipient and system changes. It must abstain when customer identity, catalogue match, price authority, contract terms, or technical scope are unclear."
+        ]
+      },
+      {
+        "title": "What the result does not prove",
+        "paragraphs": [
+          "A reduction from 76 to 27 minutes on accepted cases does not mean 64% less work across the company. Only 238 of 316 requests entered the workflow, every quote kept a human approval gate, and setup, recurring cost, exceptions, and released-capacity use remain separate."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "The realistic decision",
+      "text": "Continue A2 for the same catalogue quotes if value, quality, safety, traceability, and eligibility gates pass. Keep new prices, contract changes, engineering judgment, and autonomous sending outside scope. Recalculate the business case after recurring costs and actual capacity reuse.",
+      "metrics": ["316 total requests", "238 initially eligible", "Zero autonomous pricing decisions"]
+    },
+    "sources": [
+      {"label": "OECD: Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "SME adoption and transfer limits."},
+      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "A functional analogue for email-to-quote preparation."},
+      {"label": "AWS Grupo Elfa quote automation", "url": "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/", "note": "A provider-reported high-end reference with limited transferability."}
+    ],
+    "relatedIds": ["roi", "pilot", "governance"]
+  },
+  {
+    "id": "integration-choice",
+    "locale": "fr",
+    "slug": "copilote-ou-agent-metier",
+    "navLabel": "Copilote ou agent",
+    "eyebrow": "GUIDE D’INTÉGRATION IA",
+    "title": "Copilote IA ou agent métier : quelle différence ?",
+    "description": "Une comparaison pratique entre copilote IA, agent métier borné et agence orchestrée, avec mesures réalistes et critères de décision.",
+    "answer": "Un copilote IA aide une personne sur une étape, par exemple la recherche ou la rédaction. Un agent métier prend en charge un dossier borné sur plusieurs étapes, utilise des outils autorisés, journalise ses actions et escalade les exceptions. Une agence orchestrée coordonne plusieurs agents spécialisés. Le bon choix dépend du workflow, des permissions, des preuves et des conséquences, pas du nom du modèle.",
+    "updated": "19 août 2026",
+    "readingTime": "6 minutes",
+    "takeaways": [
+      "Choisissez un copilote lorsque la personne doit rester opératrice à chaque cycle.",
+      "Choisissez un agent métier seulement si le workflow, les outils, les limites et les exceptions peuvent être écrits.",
+      "Utilisez une agence orchestrée uniquement si les rôles spécialisés créent une valeur mesurable face à un agent plus simple."
+    ],
+    "comparison": {
+      "caption": "Les trois niveaux d’intégration",
+      "headers": ["Niveau", "Travail déplacé", "Rôle humain", "Mesure utile"],
+      "rows": [
+        ["Copilote A0/A1", "Une étape assistée", "Opérateur", "Temps accepté par tâche"],
+        ["Agent métier A2/A3", "Un dossier borné jusqu’à l’effet approuvé", "Validateur et responsable des exceptions", "Cas acceptés par heure du responsable"],
+        ["Agence orchestrée A3/A4", "Plusieurs rôles spécialisés sous les mêmes règles", "Gouverneur", "Résultats acceptés de bout en bout et coût de coordination"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Le modèle le plus rapide n’est pas forcément le système le plus autonome",
+        "paragraphs": [
+          "L’autonomie vient du dispositif qui entoure le modèle. Un agent métier a besoin de frontières d’identité, de permissions d’outils, d’un état, de validations, de journaux, d’une gestion des exceptions et d’un rollback. Sans cela, même un excellent modèle reste un assistant.",
+          "Cette distinction change la lecture des gains. Un gain de 30 % sur la rédaction ne se compare pas directement à une baisse de 70 % du temps humain sur un workflow intégré. Le volume de travail déplacé n’est pas le même."
+        ]
+      },
+      {
+        "title": "Une règle de choix simple",
+        "paragraphs": [
+          "Commencez par le niveau le plus bas capable de changer le résultat métier. Si un brouillon relu supprime le goulot, restez au copilote. Si le goulot vient du transport du dossier entre plusieurs systèmes, testez un agent métier borné. Ajoutez l’orchestration uniquement lorsque recherche, exécution et contrôle qualité justifient son coût."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Exemple : le même consultant, trois systèmes différents",
+      "text": "Le copilote transforme des notes de réunion en brouillon de suivi. L’agent métier lit le contexte CRM autorisé, prépare le suivi, attend l’approbation, puis met à jour le CRM et envoie. L’agence orchestrée ajoute des rôles de recherche et de contrôle pour un diagnostic complet. Chaque niveau exige sa propre baseline et son propre pilote.",
+      "metrics": ["A1 : une étape rédigée", "A2 : un workflow approuvé", "A3 : plusieurs rôles coordonnés"]
+    },
+    "sources": [
+      {"label": "The Agent-Centric Enterprise", "url": "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3", "note": "Exemples hauts de workflows intégrés."},
+      {"label": "Cas IBM AskHR", "url": "https://www.ibm.com/case-studies/ibm-askhr", "note": "Un grand workflow RH borné avec des chiffres publiés."},
+      {"label": "Remote Labor Index", "url": "https://scale.com/blog/rli", "note": "Contre-preuve pour le travail autonome généraliste."}
+    ],
+    "relatedIds": ["roi", "pilot", "agency"]
+  },
+  {
+    "id": "roi",
+    "locale": "fr",
+    "slug": "roi-agent-metier",
+    "navLabel": "ROI d’un agent",
+    "eyebrow": "VALEUR RÉALISTE",
+    "title": "Quel ROI attendre réellement d’un agent IA métier ?",
+    "description": "Une méthode réaliste pour estimer le ROI bas et haut d’un agent IA métier sans confondre vitesse de tâche, automatisation du workflow et économie globale.",
+    "answer": "Un agent métier peut réduire de 50 à 75 % le temps humain actif sur un workflow propre, éligible et numérique, mais le gain global de l’entreprise est généralement plus faible. Multipliez le gain par la part éligible, puis retirez mise en place, revue, exceptions, incidents, maintenance et coûts modèles. Le ROI crédible se mesure sur des résultats aval acceptés, pas sur le texte généré.",
+    "updated": "19 août 2026",
+    "readingTime": "7 minutes",
+    "takeaways": [
+      "Appliquez le gain au travail éligible, jamais à toute la charge par défaut.",
+      "Comptez corrections, validations, exceptions et maintenance comme du vrai travail.",
+      "Séparez capacité libérée, économie comptable et nouveau revenu."
+    ],
+    "comparison": {
+      "caption": "Une fourchette de planification, pas une promesse",
+      "headers": ["Scénario", "État du workflow", "Réduction du temps humain", "Lecture"],
+      "rows": [
+        ["Bas", "Données sales, nombreuses exceptions, petit volume", "0 à 30 %", "Le pilote peut ne pas rembourser sa mise en place"],
+        ["Central", "Règles stables et intégrations utiles", "50 à 75 %", "Un agent borné peut libérer de la capacité"],
+        ["Haut", "Flux étroit, répétitif, numérique et volumique", "80 à 92 %", "Possible sur un workflow précis, pas sur toute l’entreprise"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Gardez le dénominateur complet",
+        "paragraphs": [
+          "Si 70 % des demandes sont éligibles et que l’agent réduit de 60 % le temps humain sur ces demandes, la baisse brute sur toutes les demandes est de 42 % avant coûts d’exploitation. Les demandes exclues, échouées et escaladées doivent rester visibles.",
+          "Cette règle évite de publier un excellent taux sur les cas acceptés tout en cachant ceux qui ne sont jamais entrés dans le système."
+        ]
+      },
+      {
+        "title": "Mesurez un résultat qui compte pour l’organisation",
+        "paragraphs": [
+          "Le temps économisé n’a de valeur que s’il change la capacité, le coût, le service, la qualité ou le revenu. Suivez les cas acceptés par heure, les corrections majeures, les erreurs critiques, le coût par résultat accepté et le résultat aval. Gardez ces mesures séparées."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Exemple : 40 dossiers par mois",
+      "text": "Avec 60 minutes manuelles par dossier, 70 % d’éligibilité et une baisse de 50 à 75 % sur le travail éligible, la libération brute atteint 14 à 21 heures par mois. Une mise en place de 40 heures demande donc environ deux à trois mois avant coûts récurrents. Les observations réelles peuvent rendre le résultat négatif.",
+      "metrics": ["28 dossiers éligibles", "14 à 21 heures brutes", "Coûts initiaux et récurrents encore à retirer"]
+    },
+    "sources": [
+      {"label": "OCDE : Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "Adoption des PME et différence entre effet sur une tâche et effet global."},
+      {"label": "Generative AI at Work", "url": "https://academic.oup.com/qje/article/140/2/889/7990658", "note": "Résultats empiriques sur le support client assisté."},
+      {"label": "Étude METR sur les développeurs", "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/", "note": "Contre-exemple où l’IA allonge le temps de réalisation."}
+    ],
+    "relatedIds": ["integration-choice", "pilot", "sme-case"]
+  },
+  {
+    "id": "pilot",
+    "locale": "fr",
+    "slug": "piloter-agent-metier",
+    "navLabel": "Piloter un agent",
+    "eyebrow": "DE LA DÉMO À LA PREUVE",
+    "title": "Comment piloter un agent IA métier ?",
+    "description": "Un protocole pratique pour piloter un agent IA métier borné, de la baseline aux cas réels, avec seuils, règles d’arrêt et décision de production.",
+    "answer": "Pilotez un agent métier en quatre temps : figez la décision et la baseline, évaluez un jeu fixe de cas réels, exécutez le workflow complet sans effet externe, puis libérez quelques cas éligibles derrière une approbation explicite. Définissez avant le lancement les seuils de valeur, qualité, sécurité, traçabilité et éligibilité. Un effet critique non autorisé doit arrêter le pilote.",
+    "updated": "19 août 2026",
+    "readingTime": "8 minutes",
+    "takeaways": [
+      "Écrivez les décisions de passage, correction et arrêt avant d’observer les résultats.",
+      "Testez pannes, doublons, abstentions et rollback, pas seulement les cas faciles.",
+      "N’augmentez l’autonomie qu’après le passage du niveau actuel sur preuves réelles."
+    ],
+    "comparison": {
+      "caption": "Quatre étapes de pilote",
+      "headers": ["Étape", "Effet du système", "Preuve", "Condition de sortie"],
+      "rows": [
+        ["Baseline", "Aucun", "Temps manuel, qualité, volume, éligibilité", "Décision et seuils figés"],
+        ["Hors ligne", "Aucun", "Cas réels figés et cas adverses", "Aucun échec critique"],
+        ["Shadow", "Aucun effet externe", "Traces du workflow complet", "Qualité acceptée stable"],
+        ["Réel borné", "Effets réversibles approuvés", "Résultats, exceptions, rollback", "Passer, corriger ou arrêter"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Définissez cinq gates séparées",
+        "paragraphs": [
+          "La valeur demande si le travail accepté s’améliore. La qualité vérifie le respect du standard de revue. La sécurité cherche tout effet critique ou non autorisé. La traçabilité permet de reconstruire validations et effets. L’éligibilité montre quelle part de la charge réelle est couverte."
+        ]
+      },
+      {
+        "title": "Une preuve manquante donne un résultat inconnu",
+        "paragraphs": [
+          "Une trace incomplète ou un échantillon trop petit ne constitue ni un passage ni automatiquement un échec. Le pilote ne permet simplement pas encore de décider. Prolongez l’observation ou réparez la collecte sans augmenter l’autonomie."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Un plancher pratique pour A2",
+      "text": "Pour un agent métier borné, commencez avec environ 40 cas figés et 20 cas réels éligibles sur au moins 30 jours. Augmentez le volume pour les erreurs rares, les groupes affectés, la forte variance ou les effets à enjeu élevé. Le calendrier ne remplace jamais les cas éligibles.",
+      "metrics": ["40 cas figés", "20 cas réels bornés", "Zéro effet critique non autorisé"]
+    },
+    "sources": [
+      {"label": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework", "note": "Rôles, mesure, traitement du risque et gouvernance du cycle de vie."},
+      {"label": "NIST Generative AI Profile", "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf", "note": "Actions de maîtrise des risques et considérations de preuve."},
+      {"label": "OWASP GenAI Security Project", "url": "https://genai.owasp.org/", "note": "Recommandations actuelles pour les systèmes LLM et agentiques."}
+    ],
+    "relatedIds": ["governance", "roi", "sme-case"]
+  },
+  {
+    "id": "governance",
+    "locale": "fr",
+    "slug": "gouvernance-agents-ia",
+    "navLabel": "Gouvernance",
+    "eyebrow": "LE CONTRÔLE AVANT L’AUTONOMIE",
+    "title": "Comment gouverner un agent IA métier ?",
+    "description": "Un modèle concis de gouvernance des agents IA métier : responsabilité, permissions, validation humaine, preuves, incidents, réévaluation et retrait.",
+    "answer": "Gouvernez un agent IA métier comme un système d’exploitation versionné, pas comme un chatbot. Nommez un responsable, limitez son identité et ses outils, exigez une validation pour les effets importants, journalisez chaque action externe, définissez l’autorité d’arrêt et de rollback, puis réévaluez à date fixe le modèle, le prompt, les données, les permissions et les règles réellement exploités.",
+    "updated": "19 août 2026",
+    "readingTime": "7 minutes",
+    "takeaways": [
+      "Une personne nommée reste responsable du résultat d’exploitation.",
+      "Les permissions doivent être plus étroites que les capacités techniques de l’agent.",
+      "La production reste réversible et liée à une version évaluée."
+    ],
+    "comparison": {
+      "caption": "Les couches minimales de contrôle",
+      "headers": ["Couche", "Question", "Preuve requise", "Responsable"],
+      "rows": [
+        ["Mandat", "Que peut faire l’agent ?", "Périmètre et effets interdits", "Responsable métier"],
+        ["Identité", "Quelles données et quels systèmes ?", "Comptes et carte des permissions", "Responsable système"],
+        ["Décision", "Quels effets exigent une validation ?", "Journal des validations et vetos", "Validateur"],
+        ["Exploitation", "L’effet peut-il être contenu et annulé ?", "Test d’incident et de rollback", "Opérateur"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Gouvernez l’effet, pas seulement la réponse",
+        "paragraphs": [
+          "Rédiger un prix, engager un prix, envoyer un prix et enregistrer un contrat sont des effets différents. Chacun exige une permission, une règle de validation et une trace distinctes.",
+          "La validation humaine doit montrer le destinataire, le montant, l’objet et la modification prévue. Un bouton de confirmation générique n’est pas un contrôle suffisant."
+        ]
+      },
+      {
+        "title": "Réévaluez après chaque changement important",
+        "paragraphs": [
+          "Un nouveau modèle, prompt, source documentaire, connecteur, régime de mémoire, niveau de permission ou règle métier peut invalider les preuves précédentes. Versionnez la configuration exploitée et revenez à l’étape d’évaluation appropriée lorsqu’elle change."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Un rollback en cinq étapes",
+      "text": "Désactivez les écritures, révoquez l’identité de l’agent, conservez la trace, restaurez le dernier état sûr et redirigez le travail vers le processus manuel. Le rollback n’est crédible que s’il a été testé avant la production et peut être exécuté par une personne nommée.",
+      "metrics": ["Autorité d’arrêt nommée", "Permissions versionnées", "Fallback manuel testé"]
+    },
+    "sources": [
+      {"label": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework", "note": "Cadre de cycle de vie pour gouverner et mesurer le risque IA."},
+      {"label": "Portail officiel de l’AI Act", "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai", "note": "Orientation réglementaire et ressources actuelles de mise en œuvre."},
+      {"label": "MITRE ATLAS", "url": "https://atlas.mitre.org/", "note": "Base de menaces, techniques et mitigations pour les systèmes IA."}
+    ],
+    "relatedIds": ["pilot", "integration-choice", "agency"]
+  },
+  {
+    "id": "agency",
+    "locale": "fr",
+    "slug": "agence-ia-orchestree",
+    "navLabel": "Agence IA",
+    "eyebrow": "QUAND UN AGENT NE SUFFIT PLUS",
+    "title": "Quand une agence IA orchestrée devient-elle utile ?",
+    "description": "Un guide réaliste pour décider quand des agents IA spécialisés et un orchestrateur dépassent un agent métier plus simple, avec preuves et limites.",
+    "answer": "Une agence IA orchestrée devient utile lorsqu’un service borné contient des rôles réellement distincts, par exemple recherche, analyse, exécution et contrôle qualité indépendant, et que ces rôles peuvent avancer séparément sous les mêmes permissions et règles de preuve. Elle doit battre un agent unique sur les résultats acceptés, le coût, la fiabilité ou le délai. Ajouter des agents ne crée pas automatiquement de valeur.",
+    "updated": "19 août 2026",
+    "readingTime": "7 minutes",
+    "takeaways": [
+      "Comparez manuel, copilote, agent unique et agence orchestrée.",
+      "Gardez un orchestrateur responsable du périmètre, de l’identité et de l’état final.",
+      "Refusez l’orchestration lorsque son coût dépasse le bénéfice mesuré."
+    ],
+    "comparison": {
+      "caption": "Agent unique ou agence orchestrée",
+      "headers": ["Question", "Agent unique", "Agence orchestrée", "Preuve nécessaire"],
+      "rows": [
+        ["Forme du travail", "Séquentiel et uniforme", "Rôles distincts séparables", "Carte du workflow"],
+        ["Qualité", "Auto-contrôle ou un validateur", "Revue indépendante spécialisée", "Comparaison d’acceptation à l’aveugle"],
+        ["Exploitation", "Une frontière d’outil et d’état", "État partagé et plusieurs outils", "Trace de bout en bout"],
+        ["Coût", "Coordination plus légère", "Orchestration plus coûteuse", "Coût par résultat accepté"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Testez l’architecture, pas l’étiquette",
+        "paragraphs": [
+          "Un système peut ressembler à Talos ou Hermes sans avoir démontré sa valeur sur un workflow métier. Mesurez les mêmes cas figés dans quatre conditions : manuel, copilote, agent métier unique et agence orchestrée. Publiez résultats acceptés, temps humain, traitement de bout en bout, corrections, coût et échecs critiques."
+        ]
+      },
+      {
+        "title": "Gardez un périmètre plus petit que l’organisation",
+        "paragraphs": [
+          "L’unité crédible est un service éligible, pas toute l’entreprise. Nouveaux prix, changements contractuels, données RH sensibles, identités contradictoires et jugements à enjeu élevé restent hors de l’agence tant qu’ils n’ont pas leur propre évaluation."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "Exemple : un diagnostic standard",
+      "text": "Un agent recherche dans les sources autorisées, un autre analyse les preuves, un troisième contrôle la qualité et un exécuteur prépare les mises à jour approuvées. L’orchestrateur gère l’état du dossier et les exceptions. Si un agent unique fournit le même résultat à moindre coût, l’orchestration échoue à sa gate.",
+      "metrics": ["Un service borné", "Quatre conditions mesurées", "A4 reste non démontré sans test propre"]
+    },
+    "sources": [
+      {"label": "Microsoft Research CORPGEN", "url": "https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/", "note": "Résultats sur des agents hiérarchiques sous charge concurrente."},
+      {"label": "Remote Labor Index", "url": "https://scale.com/blog/rli", "note": "Benchmark difficile de travail autonome de bout en bout."},
+      {"label": "Dépôt public Talos", "url": "https://github.com/Musyg/talos", "note": "Référence d’architecture, pas revendication de productivité publiée."}
+    ],
+    "relatedIds": ["integration-choice", "governance", "pilot"]
+  },
+  {
+    "id": "sme-case",
+    "locale": "fr",
+    "slug": "cas-agent-ia-pme",
+    "navLabel": "Cas PME",
+    "eyebrow": "CAS D’ÉCOLE RÉALISTE",
+    "title": "Exemple réaliste d’agent IA métier pour une PME",
+    "description": "Un cas d’école d’agent IA borné qui prépare des devis B2B en PME, avec éligibilité, approbation, gains réalistes et conditions d’échec.",
+    "answer": "Un agent IA crédible en PME automatise un dossier étroit, pas un service entier. Dans cet exemple synthétique de devis, il lit le courriel et les pièces, contrôle le client autorisé, le catalogue, la matrice de prix et le délai, puis prépare le devis. Il écrit dans l’ERP et envoie uniquement après approbation explicite. Identité ambiguë, nouveau prix, contrat ou jugement technique arrêtent le workflow.",
+    "updated": "19 août 2026",
+    "readingTime": "8 minutes",
+    "takeaways": [
+      "La préparation du devis s’automatise plus sûrement que l’autorité de prix.",
+      "Chaque demande exclue reste dans le dénominateur métier.",
+      "La gate économique peut échouer même si l’agent fonctionne techniquement."
+    ],
+    "comparison": {
+      "caption": "Pilote synthétique Noroît Mécanique",
+      "headers": ["Mesure", "Baseline", "Exemple observé", "Usage dans la décision"],
+      "rows": [
+        ["Temps humain actif", "76 minutes", "27 minutes", "Gate de valeur"],
+        ["Éligibilité initiale", "Toutes les demandes comptées", "238 sur 316", "Limite de transfert"],
+        ["Prêt pour approbation", "Préparation manuelle", "163 sur 238", "Pas un traitement autonome"],
+        ["Effets critiques", "Contrôle humain", "Zéro requis", "Veto de sécurité"]
+      ]
+    },
+    "sections": [
+      {
+        "title": "Ce que l’agent peut faire",
+        "paragraphs": [
+          "Il peut extraire les lignes, contrôler les sources autorisées, calculer depuis une matrice verrouillée, préparer le document et afficher le destinataire ainsi que les modifications prévues. Il doit s’abstenir si l’identité client, le catalogue, l’autorité de prix, le contrat ou le périmètre technique sont ambigus."
+        ]
+      },
+      {
+        "title": "Ce que le résultat ne prouve pas",
+        "paragraphs": [
+          "Une baisse de 76 à 27 minutes sur les cas acceptés ne signifie pas 64 % de travail en moins dans toute l’entreprise. Seules 238 demandes sur 316 entrent dans le workflow, chaque devis garde une approbation humaine, et la mise en place, les coûts récurrents, les exceptions et l’usage de la capacité libérée restent séparés."
+        ]
+      }
+    ],
+    "caseStudy": {
+      "title": "La décision réaliste",
+      "text": "Continuez A2 sur les mêmes devis catalogue si les gates de valeur, qualité, sécurité, traçabilité et éligibilité passent. Gardez nouveaux prix, changements contractuels, jugement technique et envoi autonome hors périmètre. Recalculez le cas économique après coûts récurrents et usage réel de la capacité.",
+      "metrics": ["316 demandes totales", "238 initialement éligibles", "Zéro décision autonome de prix"]
+    },
+    "sources": [
+      {"label": "OCDE : Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "Adoption des PME et limites de transfert."},
+      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "Analogue fonctionnel pour la préparation de devis depuis un courriel."},
+      {"label": "AWS Grupo Elfa", "url": "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/", "note": "Repère haut déclaré par un fournisseur, à transférer avec prudence."}
+    ],
+    "relatedIds": ["roi", "pilot", "governance"]
+  }
+]
