@@ -9,12 +9,12 @@ There is no unfinished implementation hidden behind this handoff.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `41b4fccb3487cf5bcef26c5b07a93947ed9f22e9`
+- Reference implementation commit: `cf5dbbb77b5da7e96402f2565968395604feedd4`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `5036074ab41ff37381e4f75e2f95f830f2d69e9d`
+- Publishing-mirror commit: `654f281175f37bf49bf48c5aa1409cd8e6b666fe`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +26,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `16`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_0dbe0351b78c8191b792f4645c87c96c`
-- Source commit used by Sites: `5036074ab41ff37381e4f75e2f95f830f2d69e9d`
-- Archive content hash: `sha256:a68858e8d3977686669e0b6fba18bb39c1d6233c91d5e38eef3320f6b27adaa0`
-- Deployment ID: `appgdep_6a84efc53e648191a30a7e7a10117030`
+- Current Sites version: `17`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_79b934c3cc588191a9a4cc4634a0b45c`
+- Source commit used by Sites: `654f281175f37bf49bf48c5aa1409cd8e6b666fe`
+- Archive content hash: `sha256:09bbba8f158481bd496b85ef5454482db3044c0357a350df641105a76a54bcab`
+- Deployment ID: `appgdep_6a84f3c3745081919e5a9f6325a4df5d`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -57,13 +57,15 @@ distinction instead of jumping past the new workflow.
 The worked material includes an independent-professional copilot, a bounded
 business agent, an orchestrated-agency analogy, a TPE customer-request case, an
 SME/PME A2 business agent for B2B quotes, and a foundation A2 agent for grant
-dossier administration. The new Fondation Lien Local case keeps telephone and
-paper channels open, separates administrative transport from funding judgment,
-uses a full 120-application denominator, and makes access, dignity, equity, and
-recourse four mission vetoes. Its low, central, and high ranges are calculable;
-all funding decisions remain human. The numerical ranges are planning envelopes
-and the cases are synthetic; none is presented as a universal forecast or field
-proof.
+dossier administration, plus a public-service A2 agent for planning dossiers.
+The Fondation Lien Local case keeps telephone and paper channels open and makes
+access, dignity, equity, and recourse four mission vetoes. The new City of
+Mont-Rive case keeps public authority visible through formal gates P0–P5,
+preserves counter, post, and assisted channels, makes its low case fail the
+economic gate, and keeps every planning decision human. Both cases use full
+intake denominators and distinguish administrative transport from judgment.
+The numerical ranges are planning envelopes and the cases are synthetic; none
+is presented as a universal forecast or field proof.
 
 ## Decision and evidence rules
 
@@ -95,7 +97,7 @@ mirror where applicable:
 - Gate-decision unit tests: 4/4 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
 - Combined publishing-mirror test run: 6/6 passed.
-- Repository validation: 46 Markdown files and register contract passed.
+- Repository validation: 49 Markdown files and register contract passed.
 - Previous browser audit: 1440 × 900 and 390 × 844, through the SME case.
 - That earlier browser audit found no duplicate IDs, unnamed visible controls,
   or page overflow at either audited viewport.
@@ -106,6 +108,10 @@ mirror where applicable:
   envelope, 96-to-39-minute observation, 58/86 correction denominator,
   approximately 39% portfolio ceiling, 100% human funding decisions, four
   mission vetoes, and the sector-evidence boundary.
+- New public-service rendered assertions cover Mont-Rive, formal gates P0–P5,
+  the 39.2–106.5 hour envelope, 145-to-58-minute observation, 121/166 correction
+  denominator, approximately 35% portfolio ceiling, 100% human public decisions,
+  a deliberately non-viable low case, and three external evidence classes.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -139,23 +145,25 @@ hash from another session.
   reference data. Review them before presenting a later release as current.
 - Markdown operating tracks currently exist in French only. The English web
   experience does not mean every underlying guide has an English file.
-- No new browser-control audit was run for the foundation section. The exact
-  canonical and publishing-mirror sources matched byte for byte, and both passed
-  lint, production build, and bilingual rendered-HTML tests.
-- The roadmap still lacks the public-sector worked example and the planned
+- No new browser-control audit was run for the foundation or public-service
+  sections. The exact canonical and publishing-mirror sources matched byte for
+  byte, and both passed lint, production build, and bilingual rendered-HTML tests.
+- Bilingual worked examples now cover every organization track. Roadmap 0.2
+  still lacks the complete English operating-guide translation and the planned
   machine-readable control crosswalk.
 
 ## First authorized next step
 
 The implementation is complete. The next session should first open Sites version
-16 while signed in and collect one bounded list of editorial or visual defects.
+17 while signed in and collect one bounded list of editorial or visual defects.
 Do not change access mode, architecture, claims, or deploy another version without
 a new user request.
 
 If the reference version is accepted without defects, resume roadmap `0.2` with
-the public-sector worked case. Keep it synthetic, source-labelled,
-denominator-aware, explicit about transfer limits, and strict about mandate,
-appeal, recordkeeping, procurement, and equality of access.
+the machine-readable control crosswalk, including stable control IDs, source and
+version fields, applicability, required evidence, and mappings to the playbook's
+gates. Then complete the remaining English operating-guide translations without
+claiming that the current bilingual web copy already satisfies that item.
 
 ## Resume checklist
 
