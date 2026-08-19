@@ -51,3 +51,8 @@ Pour toute affirmation susceptible de changer :
 2. indiquer la date de vérification ;
 3. distinguer texte en vigueur, proposition, recommandation et choix interne ;
 4. ne jamais promouvoir une consultation, un projet ou une norme en développement au rang d’obligation en vigueur.
+
+Le [référentiel de contrôles](../controls/README.md) conserve en complément une
+version et une date de vérification par source. Ces relations sont thématiques :
+elles ne constituent ni une équivalence article par article, ni une preuve de
+certification ou de conformité.

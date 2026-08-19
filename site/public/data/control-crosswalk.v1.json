@@ -1,0 +1,519 @@
+{
+  "$schema": "./control-crosswalk.schema.json",
+  "schema_version": "1.0.0",
+  "catalog_version": "2026.08",
+  "published_on": "2026-08-19",
+  "status": "maintained_internal_crosswalk",
+  "scope": {
+    "en": "A minimum operational control set for selecting, piloting, operating, changing, and retiring bounded AI systems across the five playbook organization types.",
+    "fr": "Un socle opérationnel minimal pour sélectionner, piloter, exploiter, modifier et retirer des systèmes IA bornés dans les cinq types d’organisation du playbook."
+  },
+  "limitations": {
+    "en": "This crosswalk is an internal implementation aid. A listed source supports the control theme; it does not prove clause-level equivalence, certification, or legal compliance. Qualify applicable law and obtain licensed standards where required.",
+    "fr": "Cette table est une aide interne à la mise en œuvre. Une source citée soutient le thème du contrôle ; elle ne prouve ni équivalence article par article, ni certification, ni conformité juridique. Qualifier le droit applicable et obtenir les normes sous licence lorsque nécessaire."
+  },
+  "axes": {
+    "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"],
+    "risk_levels": ["R0", "R1", "R2", "R3"],
+    "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"],
+    "gates": ["G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"],
+    "lifecycle_phases": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  },
+  "sources": [
+    {
+      "source_id": "AAP-PROCESS-02",
+      "title": "AI Adoption Playbook — universal process and gates",
+      "publisher": "Musyg",
+      "version": "0.2 draft · 2026.08",
+      "status": "internal_method",
+      "url": "https://github.com/Musyg/ai-adoption-playbook/blob/agent/add-visual-playbook/docs/universal-process.fr.md",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Direct source for playbook lifecycle, evidence, and gate mappings.",
+        "fr": "Source directe des correspondances avec le cycle de vie, les preuves et les gates du playbook."
+      }
+    },
+    {
+      "source_id": "NIST-AI-100-1",
+      "title": "Artificial Intelligence Risk Management Framework",
+      "publisher": "NIST",
+      "version": "AI RMF 1.0 · NIST AI 100-1 · 2023-01-26",
+      "status": "voluntary_framework",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Thematic support for Govern, Map, Measure, and Manage; NIST states that version 1.0 is under revision.",
+        "fr": "Appui thématique pour Govern, Map, Measure et Manage ; NIST indique que la version 1.0 est en révision."
+      }
+    },
+    {
+      "source_id": "NIST-AI-600-1",
+      "title": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+      "publisher": "NIST",
+      "version": "NIST AI 600-1 · 2024-07-26",
+      "status": "voluntary_framework",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Cross-sector GenAI risk profile; used as supporting guidance, not a mandatory control catalogue.",
+        "fr": "Profil de risque GenAI intersectoriel ; utilisé comme orientation, pas comme catalogue de contrôles obligatoire."
+      }
+    },
+    {
+      "source_id": "ISO-IEC-42001-2023",
+      "title": "Information technology — Artificial intelligence — Management system",
+      "publisher": "ISO/IEC",
+      "version": "ISO/IEC 42001:2023 · Edition 1",
+      "status": "published_standard",
+      "url": "https://www.iso.org/standard/42001",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Management-system themes only. No clause-level mapping or proprietary standard text is reproduced.",
+        "fr": "Thèmes de système de management uniquement. Aucune correspondance article par article ni reproduction du texte propriétaire."
+      }
+    },
+    {
+      "source_id": "ISO-IEC-23894-2023",
+      "title": "Information technology — Artificial intelligence — Guidance on risk management",
+      "publisher": "ISO/IEC",
+      "version": "ISO/IEC 23894:2023 · Edition 1",
+      "status": "published_standard",
+      "url": "https://www.iso.org/standard/77304.html",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Risk-management themes only; consult the licensed standard for normative detail.",
+        "fr": "Thèmes de gestion du risque uniquement ; consulter la norme sous licence pour le détail normatif."
+      }
+    },
+    {
+      "source_id": "ISO-IEC-5338-2023",
+      "title": "Information technology — Artificial intelligence — AI system life cycle processes",
+      "publisher": "ISO/IEC",
+      "version": "ISO/IEC 5338:2023 · Edition 1",
+      "status": "published_standard",
+      "url": "https://www.iso.org/standard/81118.html",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Lifecycle themes only; the playbook phase mapping remains an internal design choice.",
+        "fr": "Thèmes de cycle de vie uniquement ; la correspondance des phases du playbook reste un choix interne."
+      }
+    },
+    {
+      "source_id": "OWASP-LLM-TOP10-2025",
+      "title": "Top 10 Risk and Mitigations for LLMs and Gen AI Apps",
+      "publisher": "OWASP GenAI Security Project",
+      "version": "2025 edition",
+      "status": "community_guidance",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Security test orientation for LLM and GenAI applications; tailor threats to the actual architecture.",
+        "fr": "Orientation des tests de sécurité pour applications LLM et GenAI ; adapter les menaces à l’architecture réelle."
+      }
+    },
+    {
+      "source_id": "CH-FDPIC-AI-DP",
+      "title": "AI and data protection",
+      "publisher": "Swiss Federal Data Protection and Information Commissioner",
+      "version": "official guidance · published 2025-09-24",
+      "status": "official_guidance",
+      "url": "https://www.edoeb.admin.ch/en/ai-and-data-protection",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Federal orientation for data protection. Public bodies must separately qualify the public and cantonal law applicable to them.",
+        "fr": "Orientation fédérale en protection des données. Les autorités publiques doivent qualifier séparément le droit public et cantonal qui leur est applicable."
+      }
+    },
+    {
+      "source_id": "EU-AI-PROCUREMENT-MCC",
+      "title": "Updated EU AI model contractual clauses",
+      "publisher": "European Commission Public Buyers Community",
+      "version": "updated edition aligned with the AI Act adopted 2024-06-13 · checked 2026-08-19",
+      "status": "official_guidance",
+      "url": "https://public-buyers-community.ec.europa.eu/communities/procurement-ai/resources/updated-eu-ai-model-contractual-clauses",
+      "checked_on": "2026-08-19",
+      "use_boundary": {
+        "en": "Procurement orientation only; clauses must be adapted to the applicable law, role, and contract.",
+        "fr": "Orientation d’achat uniquement ; les clauses doivent être adaptées au droit, au rôle et au contrat applicables."
+      }
+    }
+  ],
+  "evidence_types": [
+    {
+      "evidence_id": "EV-MANDATE",
+      "name": { "en": "Signed mandate", "fr": "Mandat signé" },
+      "minimum_record": ["owner", "measurable_outcome", "scope", "prohibited_actions", "decision_authority", "date"],
+      "template": "templates/mandate.fr.md"
+    },
+    {
+      "evidence_id": "EV-SYSTEM-REGISTER",
+      "name": { "en": "Versioned AI system register entry", "fr": "Entrée versionnée du registre IA" },
+      "minimum_record": ["system_id", "owner", "purpose", "provider", "model_or_version", "risk_level", "autonomy_level", "review_date"],
+      "template": "templates/ai-system-register.csv"
+    },
+    {
+      "evidence_id": "EV-BASELINE",
+      "name": { "en": "Measured baseline", "fr": "Baseline mesurée" },
+      "minimum_record": ["population", "period", "volume", "human_active_time", "quality_or_error", "cost_or_service_value"],
+      "template": "templates/use-case-card.fr.md"
+    },
+    {
+      "evidence_id": "EV-RISK-ASSESSMENT",
+      "name": { "en": "Risk and autonomy assessment", "fr": "Évaluation risque et autonomie" },
+      "minimum_record": ["impact_level", "autonomy_level", "affected_people", "harm_scenarios", "residual_risk_owner", "review_date"],
+      "template": "templates/risk-assessment.fr.md"
+    },
+    {
+      "evidence_id": "EV-DATA-MAP",
+      "name": { "en": "Data and processing map", "fr": "Carte des données et traitements" },
+      "minimum_record": ["purpose", "data_classes", "provenance", "access", "processing_regions", "retention", "deletion", "subprocessors"],
+      "template": "templates/risk-assessment.fr.md"
+    },
+    {
+      "evidence_id": "EV-VENDOR-DOSSIER",
+      "name": { "en": "Supplier and exit dossier", "fr": "Dossier fournisseur et sortie" },
+      "minimum_record": ["provider", "service_version", "change_notice", "audit_access", "subprocessors", "export", "deletion", "continuity", "exit_rights"],
+      "template": "templates/vendor-assessment.fr.md"
+    },
+    {
+      "evidence_id": "EV-EVALUATION-PLAN",
+      "name": { "en": "Preregistered evaluation plan", "fr": "Plan d’évaluation préenregistré" },
+      "minimum_record": ["decision_gate", "test_population", "critical_segments", "acceptance_thresholds", "stop_thresholds", "judge", "frozen_version"],
+      "template": "templates/evaluation-plan.fr.md"
+    },
+    {
+      "evidence_id": "EV-EVALUATION-REPORT",
+      "name": { "en": "Segmented evaluation report", "fr": "Rapport d’évaluation segmenté" },
+      "minimum_record": ["test_set_id", "global_results", "segment_results", "critical_errors", "uncertainty", "deviations", "decision"],
+      "template": "templates/pilot-decision.fr.md"
+    },
+    {
+      "evidence_id": "EV-THREAT-MODEL",
+      "name": { "en": "AI system threat model", "fr": "Modèle de menace du système IA" },
+      "minimum_record": ["assets", "actors", "trust_boundaries", "attack_paths", "controls", "residual_risks", "owner"],
+      "template": "templates/risk-assessment.fr.md"
+    },
+    {
+      "evidence_id": "EV-SECURITY-TESTS",
+      "name": { "en": "Adversarial security test record", "fr": "Registre des tests de sécurité adversariaux" },
+      "minimum_record": ["scenario_id", "source_boundary", "attempt", "expected_block", "observed_effect", "severity", "remediation"],
+      "template": null
+    },
+    {
+      "evidence_id": "EV-ACTION-CATALOG",
+      "name": { "en": "Authorized action catalogue", "fr": "Catalogue des actions autorisées" },
+      "minimum_record": ["action_id", "tool", "permission", "approval_rule", "idempotency_key", "effect_check", "rollback", "owner"],
+      "template": null
+    },
+    {
+      "evidence_id": "EV-APPROVAL-RECOURSE",
+      "name": { "en": "Approval and recourse record", "fr": "Registre d’approbation et de recours" },
+      "minimum_record": ["qualified_approver", "information_shown", "decision", "override", "appeal_channel", "response_owner", "timestamp"],
+      "template": null
+    },
+    {
+      "evidence_id": "EV-AUDIT-TRACE",
+      "name": { "en": "End-to-end audit trace", "fr": "Trace d’audit de bout en bout" },
+      "minimum_record": ["case_id", "input_reference", "configuration_version", "decision", "tool_parameters", "external_effect", "effect_readback", "actor", "timestamp"],
+      "template": null
+    },
+    {
+      "evidence_id": "EV-OPERATING-CARD",
+      "name": { "en": "Bounded operating and rollback card", "fr": "Fiche d’exploitation et rollback bornés" },
+      "minimum_record": ["authorized_scope", "owners", "limits", "suspension_triggers", "manual_fallback", "rollback_steps", "review_date"],
+      "template": "templates/pilot-decision.fr.md"
+    },
+    {
+      "evidence_id": "EV-INCIDENT-RUNBOOK",
+      "name": { "en": "Tested incident runbook", "fr": "Runbook d’incident testé" },
+      "minimum_record": ["severity", "containment", "evidence_preservation", "notifications", "access_revocation", "recovery", "reassessment_rule"],
+      "template": "templates/incident-runbook.fr.md"
+    },
+    {
+      "evidence_id": "EV-CHANGE-REVIEW",
+      "name": { "en": "Change and monitoring review", "fr": "Revue de changement et de surveillance" },
+      "minimum_record": ["metric_period", "business_outcome", "quality", "incidents", "drift", "change_inventory", "gate_decision", "next_review"],
+      "template": "templates/pilot-decision.fr.md"
+    },
+    {
+      "evidence_id": "EV-RETIREMENT",
+      "name": { "en": "Retirement record", "fr": "Dossier de retrait" },
+      "minimum_record": ["access_revoked", "required_export", "data_disposition", "retained_evidence", "stakeholder_notice", "replacement_process", "authority"],
+      "template": null
+    },
+    {
+      "evidence_id": "EV-IMPACT-ASSESSMENT",
+      "name": { "en": "Rights, privacy, access, and mission impact assessment", "fr": "Analyse d’impact droits, données, accès et mission" },
+      "minimum_record": ["affected_population", "legal_basis", "rights_and_harms", "language_and_accessibility", "non_ai_option", "mitigations", "consulted_roles", "decision"],
+      "template": "templates/risk-assessment.fr.md"
+    },
+    {
+      "evidence_id": "EV-PUBLIC-PROCUREMENT",
+      "name": { "en": "Auditable public procurement record", "fr": "Dossier d’achat public auditable" },
+      "minimum_record": ["requirements", "evaluation_method", "audit_rights", "change_notice", "data_terms", "continuity", "exit", "award_authority"],
+      "template": "templates/vendor-assessment.fr.md"
+    }
+  ],
+  "controls": [
+    {
+      "control_id": "AAP-GOV-001",
+      "family": "governance",
+      "priority": "baseline",
+      "title": { "en": "Named mandate and decision authority", "fr": "Mandat et autorité de décision nommés" },
+      "objective": { "en": "Tie the system to one measurable problem, a bounded mandate, prohibited actions, and a person accountable for the final decision.", "fr": "Relier le système à un problème mesurable, un mandat borné, des actions interdites et une personne responsable de la décision finale." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [0, 3, 9],
+      "gates": ["G1", "G3", "P0", "P5"],
+      "evidence_ids": ["EV-MANDATE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
+      "implementation_refs": ["docs/universal-process.fr.md", "templates/mandate.fr.md"]
+    },
+    {
+      "control_id": "AAP-GOV-002",
+      "family": "governance",
+      "priority": "baseline",
+      "title": { "en": "Versioned system inventory", "fr": "Inventaire versionné des systèmes" },
+      "objective": { "en": "Make official and informal AI use visible, with ownership, provider, model, risk, autonomy, and review dates.", "fr": "Rendre visibles les usages IA officiels et informels avec responsable, fournisseur, modèle, risque, autonomie et dates de revue." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [2, 9, 10, 11],
+      "gates": ["G1", "G5", "P0", "P5"],
+      "evidence_ids": ["EV-SYSTEM-REGISTER"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }],
+      "implementation_refs": ["templates/ai-system-register.csv", "docs/universal-process.fr.md"]
+    },
+    {
+      "control_id": "AAP-VAL-001",
+      "family": "value",
+      "priority": "baseline",
+      "title": { "en": "Measured baseline and success unit", "fr": "Baseline et unité de réussite mesurées" },
+      "objective": { "en": "Compare the AI system with the real current process using complete denominators and a business or public-service outcome.", "fr": "Comparer le système IA au processus réel avec des dénominateurs complets et un résultat métier ou de service public." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [1, 3, 6, 8, 10],
+      "gates": ["G1", "G2", "G3", "G5", "P0", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-BASELINE", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
+      "implementation_refs": ["templates/use-case-card.fr.md", "docs/evaluations-and-gates.fr.md"]
+    },
+    {
+      "control_id": "AAP-RSK-001",
+      "family": "risk",
+      "priority": "baseline",
+      "title": { "en": "Separate impact, autonomy, data, role, and law", "fr": "Séparer impact, autonomie, données, rôle et droit" },
+      "objective": { "en": "Prevent a low technical autonomy label from hiding high human impact, sensitive data, or regulated responsibility.", "fr": "Éviter qu’une faible autonomie technique masque un fort impact humain, des données sensibles ou une responsabilité réglementée." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [4, 5, 10],
+      "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
+      "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-IMPACT-ASSESSMENT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-23894-2023", "relation": "contextual" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
+      "implementation_refs": ["docs/risk-autonomy.fr.md", "docs/legal-switzerland-eu.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-DAT-001",
+      "family": "data",
+      "priority": "strengthened",
+      "title": { "en": "Purpose-bound data and processing map", "fr": "Carte des données et traitements liée à la finalité" },
+      "objective": { "en": "Record provenance, purpose, access, processing locations, reuse, retention, deletion, and subprocessors before using personal or confidential data.", "fr": "Documenter provenance, finalité, accès, lieux de traitement, réutilisation, conservation, suppression et sous-traitants avant toute donnée personnelle ou confidentielle." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["personal_or_confidential_data"] },
+      "lifecycle_phases": [2, 4, 5, 9, 11],
+      "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
+      "evidence_ids": ["EV-DATA-MAP", "EV-RISK-ASSESSMENT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
+      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-SUP-001",
+      "family": "procurement",
+      "priority": "strengthened",
+      "title": { "en": "Auditable supplier and exit terms", "fr": "Fournisseur auditable et conditions de sortie" },
+      "objective": { "en": "Preserve audit, change notice, export, deletion, continuity, and exit rights when an external provider is part of the system.", "fr": "Préserver audit, notification des changements, export, suppression, continuité et sortie lorsqu’un fournisseur externe participe au système." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["external_provider"] },
+      "lifecycle_phases": [5, 9, 10, 11],
+      "gates": ["G2", "G4", "G5", "P2", "P5"],
+      "evidence_ids": ["EV-VENDOR-DOSSIER"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }, { "source_id": "EU-AI-PROCUREMENT-MCC", "relation": "contextual" }],
+      "implementation_refs": ["templates/vendor-assessment.fr.md", "tracks/fr/public-sector.md"]
+    },
+    {
+      "control_id": "AAP-EVA-001",
+      "family": "evaluation",
+      "priority": "baseline",
+      "title": { "en": "Preregistered acceptance and stop thresholds", "fr": "Seuils d’acceptation et d’arrêt préenregistrés" },
+      "objective": { "en": "Fix the decision unit, test population, thresholds, critical errors, and authorized judge before optimizing or piloting.", "fr": "Fixer unité de décision, population de test, seuils, erreurs critiques et juge habilité avant optimisation ou pilote." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [6, 8],
+      "gates": ["G2", "G3", "G4", "P3", "P4"],
+      "evidence_ids": ["EV-EVALUATION-PLAN"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "templates/evaluation-plan.fr.md"]
+    },
+    {
+      "control_id": "AAP-EVA-002",
+      "family": "evaluation",
+      "priority": "strengthened",
+      "title": { "en": "Independent, segmented, severity-aware evaluation", "fr": "Évaluation indépendante, segmentée et sensible à la gravité" },
+      "objective": { "en": "Keep a decision set separate from development and reject averages that conceal failure on a critical segment or an unacceptable error.", "fr": "Séparer le jeu de décision du développement et rejeter les moyennes qui masquent un échec critique ou une erreur inacceptable." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["material_human_impact"] },
+      "lifecycle_phases": [6, 8, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "templates/evaluation-plan.fr.md", "templates/pilot-decision.fr.md"]
+    },
+    {
+      "control_id": "AAP-SEC-001",
+      "family": "security",
+      "priority": "strengthened",
+      "title": { "en": "Distinct identity and least privilege", "fr": "Identité distincte et moindre privilège" },
+      "objective": { "en": "Use attributable identities, read-only defaults, temporary permissions, approved destinations, isolated secrets, and enforceable limits.", "fr": "Utiliser identités attribuables, lecture seule par défaut, permissions temporaires, destinations autorisées, secrets isolés et limites imposables." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["external_content_or_tools"] },
+      "lifecycle_phases": [5, 7, 8, 9],
+      "gates": ["G2", "G3", "G4", "P2", "P3", "P4"],
+      "evidence_ids": ["EV-THREAT-MODEL", "EV-ACTION-CATALOG"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/security.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-SEC-002",
+      "family": "security",
+      "priority": "critical",
+      "title": { "en": "Adversarial tests across every trust boundary", "fr": "Tests adversariaux sur chaque frontière de confiance" },
+      "objective": { "en": "Test hostile content, identity confusion, poisoned context, unsafe tool parameters, partial failure, loops, data leakage, and attempts to disable controls.", "fr": "Tester contenus hostiles, confusion d’identité, contexte empoisonné, paramètres d’outil dangereux, échecs partiels, boucles, fuites et désactivation des contrôles." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["external_content_or_tools"] },
+      "lifecycle_phases": [6, 7, 8, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-THREAT-MODEL", "EV-SECURITY-TESTS"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/security.fr.md", "docs/evaluations-and-gates.fr.md"]
+    },
+    {
+      "control_id": "AAP-AUT-001",
+      "family": "autonomy",
+      "priority": "critical",
+      "title": { "en": "Catalogued actions with effect verification", "fr": "Actions cataloguées avec vérification de l’effet" },
+      "objective": { "en": "For every agent action, bind the tool, permission, approval, idempotency key, destination, effect read-back, rollback, and owner.", "fr": "Pour chaque action d’agent, relier outil, permission, approbation, clé d’idempotence, destination, relecture de l’effet, rollback et responsable." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A2", "A3", "A4"], "conditions": ["external_or_irreversible_action"] },
+      "lifecycle_phases": [5, 6, 7, 8, 9],
+      "gates": ["G2", "G3", "G4", "P2", "P3", "P4"],
+      "evidence_ids": ["EV-ACTION-CATALOG", "EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/security.fr.md", "docs/evaluations-and-gates.fr.md"]
+    },
+    {
+      "control_id": "AAP-HUM-001",
+      "family": "human_oversight",
+      "priority": "critical",
+      "title": { "en": "Effective approval, override, and human recourse", "fr": "Approbation, reprise en main et recours humain effectifs" },
+      "objective": { "en": "Ensure a qualified person has enough information, time, authority, and an operational channel to reject, correct, override, and hear appeals.", "fr": "Garantir qu’une personne qualifiée dispose des informations, du temps, de l’autorité et du canal opérationnel nécessaires pour rejeter, corriger, reprendre et traiter les recours." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["material_human_impact"] },
+      "lifecycle_phases": [4, 6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
+      "implementation_refs": ["docs/risk-autonomy.fr.md", "tracks/fr/public-sector.md", "templates/pilot-decision.fr.md"]
+    },
+    {
+      "control_id": "AAP-TRC-001",
+      "family": "traceability",
+      "priority": "strengthened",
+      "title": { "en": "End-to-end decision and effect trace", "fr": "Trace de décision et d’effet de bout en bout" },
+      "objective": { "en": "Link each case to the exact configuration, evidence, approval, tool parameters, external effect, read-back, actor, and time.", "fr": "Relier chaque dossier à la configuration exacte, aux preuves, à l’approbation, aux paramètres d’outil, à l’effet externe, à sa relecture, à l’acteur et au temps." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["material_human_impact"] },
+      "lifecycle_phases": [6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
+      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "docs/security.fr.md"]
+    },
+    {
+      "control_id": "AAP-OPS-001",
+      "family": "operations",
+      "priority": "critical",
+      "title": { "en": "Bounded operating state, manual continuity, and rollback", "fr": "État d’exploitation borné, continuité manuelle et rollback" },
+      "objective": { "en": "Authorize only the proven scope and maintain tested suspension, safe routing, evidence preservation, reconciliation, rollback, and re-authorization steps.", "fr": "N’autoriser que le périmètre prouvé et maintenir des étapes testées de suspension, routage sûr, préservation, réconciliation, rollback et réautorisation." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A2", "A3", "A4"], "conditions": ["external_or_irreversible_action"] },
+      "lifecycle_phases": [8, 9, 10],
+      "gates": ["G3", "G4", "G5", "P4", "P5"],
+      "evidence_ids": ["EV-OPERATING-CARD", "EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }],
+      "implementation_refs": ["docs/universal-process.fr.md", "templates/pilot-decision.fr.md"]
+    },
+    {
+      "control_id": "AAP-OPS-002",
+      "family": "operations",
+      "priority": "critical",
+      "title": { "en": "Owned and tested incident response", "fr": "Réponse aux incidents attribuée et testée" },
+      "objective": { "en": "Give a reachable owner the authority and tested procedure to contain, preserve evidence, notify, revoke access, recover, and trigger reassessment.", "fr": "Donner à un responsable joignable l’autorité et la procédure testée pour contenir, préserver les preuves, notifier, révoquer, rétablir et déclencher une réévaluation." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A1", "A2", "A3", "A4"], "conditions": ["external_content_or_tools"] },
+      "lifecycle_phases": [7, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-INCIDENT-RUNBOOK"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }],
+      "implementation_refs": ["docs/security.fr.md", "templates/incident-runbook.fr.md"]
+    },
+    {
+      "control_id": "AAP-MON-001",
+      "family": "monitoring",
+      "priority": "baseline",
+      "title": { "en": "Outcome monitoring and change-triggered reassessment", "fr": "Surveillance des résultats et réévaluation après changement" },
+      "objective": { "en": "Monitor business outcomes, critical segments, corrections, incidents, drift, and cost; return to the right gate after any material model, data, tool, permission, or population change.", "fr": "Surveiller résultats métier, segments critiques, corrections, incidents, dérive et coût ; revenir au bon gate après tout changement matériel de modèle, donnée, outil, permission ou population." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [9, 10],
+      "gates": ["G3", "G4", "G5", "P4", "P5"],
+      "evidence_ids": ["EV-CHANGE-REVIEW", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
+      "implementation_refs": ["docs/universal-process.fr.md", "templates/pilot-decision.fr.md"]
+    },
+    {
+      "control_id": "AAP-RET-001",
+      "family": "retirement",
+      "priority": "baseline",
+      "title": { "en": "Planned retirement, export, deletion, and revocation", "fr": "Retrait planifié, export, suppression et révocation" },
+      "objective": { "en": "Stop the system cleanly by revoking access, exporting what continuity requires, disposing of data, preserving required evidence, and restoring a safe process.", "fr": "Arrêter proprement le système en révoquant les accès, exportant ce qu’exige la continuité, traitant les données, conservant les preuves requises et rétablissant un processus sûr." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["always"] },
+      "lifecycle_phases": [5, 9, 11],
+      "gates": ["G2", "G4", "G5", "P2", "P5"],
+      "evidence_ids": ["EV-RETIREMENT", "EV-VENDOR-DOSSIER"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
+      "implementation_refs": ["docs/universal-process.fr.md", "templates/vendor-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-MIS-001",
+      "family": "mission",
+      "priority": "critical",
+      "title": { "en": "Mission, access, dignity, equity, and recourse veto", "fr": "Veto mission, accès, dignité, équité et recours" },
+      "objective": { "en": "Block deployment when efficiency degrades mission outcomes, excludes a population, creates stigma, removes a usable channel, or makes recourse ineffective.", "fr": "Bloquer le déploiement lorsque l’efficacité dégrade la mission, exclut une population, stigmatise, supprime un canal utilisable ou rend le recours inefficace." },
+      "applicability": { "organization_types": ["nonprofit", "public"], "risk_levels": ["R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["mission_population", "material_human_impact"] },
+      "lifecycle_phases": [0, 1, 4, 6, 8, 9, 10],
+      "gates": ["G1", "G2", "G3", "G4", "G5", "P0", "P1", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-IMPACT-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
+      "implementation_refs": ["tracks/fr/nonprofit-foundation.md", "tracks/fr/public-sector.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-PUB-001",
+      "family": "public_governance",
+      "priority": "critical",
+      "title": { "en": "Public mandate, non-AI alternative, and accountable authority", "fr": "Mandat public, option non-IA et autorité responsable" },
+      "objective": { "en": "Require a lawful public purpose, competent authority, proportionate non-AI comparison, affected-population analysis, and a named human decision authority before procurement.", "fr": "Exiger finalité publique légale, autorité compétente, comparaison proportionnée avec une option non-IA, analyse de la population et autorité humaine nommée avant achat." },
+      "applicability": { "organization_types": ["public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["public_authority"] },
+      "lifecycle_phases": [0, 1, 3, 4],
+      "gates": ["P0", "P1"],
+      "evidence_ids": ["EV-MANDATE", "EV-BASELINE", "EV-IMPACT-ASSESSMENT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
+      "implementation_refs": ["tracks/fr/public-sector.md", "docs/legal-switzerland-eu.fr.md"]
+    },
+    {
+      "control_id": "AAP-PUB-002",
+      "family": "public_governance",
+      "priority": "critical",
+      "title": { "en": "Auditable public procurement and accountable production record", "fr": "Achat public auditable et registre de production responsable" },
+      "objective": { "en": "Put audit, logs, change notice, access, continuity, appeal, archives, and exit into enforceable procurement and production records without outsourcing public responsibility.", "fr": "Inscrire audit, journaux, changements, accès, continuité, recours, archives et sortie dans des dossiers d’achat et de production opposables sans externaliser la responsabilité publique." },
+      "applicability": { "organization_types": ["public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "conditions": ["public_procurement", "public_authority"] },
+      "lifecycle_phases": [5, 8, 9, 10, 11],
+      "gates": ["P2", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-PUBLIC-PROCUREMENT", "EV-SYSTEM-REGISTER", "EV-APPROVAL-RECOURSE", "EV-AUDIT-TRACE", "EV-RETIREMENT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "EU-AI-PROCUREMENT-MCC", "relation": "contextual" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
+      "implementation_refs": ["tracks/fr/public-sector.md", "templates/vendor-assessment.fr.md", "templates/ai-system-register.csv"]
+    }
+  ]
+}

@@ -19,3 +19,8 @@ seven visual worked cases linked to complete bilingual evidence files under
 agent, a foundation grant-dossier administrative agent, a public planning-
 dossier administrative agent, an independent A2 business agent, and an
 orchestrated-agency analogy.
+
+The control explorer is backed by a public, versioned JSON crosswalk and schema
+under `public/data/`. It filters stable controls by the selected organization,
+risk, and autonomy while preserving conditions, evidence IDs, gate mappings,
+source versions, and implementation references.

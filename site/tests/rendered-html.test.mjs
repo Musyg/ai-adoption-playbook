@@ -106,6 +106,16 @@ for (const [pathname, language, title] of [
     assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
     assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
     assert.match(html, /Guided decision path|Parcours de décision guidé/i);
+    assert.match(html, /id=["']control-crosswalk["']/i);
+    assert.match(html, /Turn a risk label into controls|Transformez un niveau de risque en contrôles/i);
+    assert.match(html, /candidate controls|contrôles candidats/i);
+    assert.match(html, /AAP-GOV-001/);
+    assert.match(html, /AAP-SEC-002/);
+    assert.match(html, /EV-AUDIT-TRACE/);
+    assert.match(html, /NIST-AI-100-1/);
+    assert.match(html, /href=["']\/data\/control-crosswalk\.v1\.json["']/i);
+    assert.match(html, /href=["']\/data\/control-crosswalk\.schema\.json["']/i);
+    assert.match(html, /not clause-level equivalence|pas une équivalence article par article/i);
     assert.match(html, /href=["']#calibrator["']/i);
     assert.match(html, /href=["']#pilot-plan["']/i);
     assert.match(html, /href=["']#decision-dossier["']/i);

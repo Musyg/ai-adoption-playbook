@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
 
 type Locale = "en" | "fr";
@@ -10,6 +11,25 @@ type IntegrationId = "copilot" | "agent" | "agency";
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
 type DossierStatus = "ready" | "recorded" | "incomplete";
+type LocalizedText = { en: string; fr: string };
+type CrosswalkEvidence = { evidence_id: string; name: LocalizedText };
+type CrosswalkControl = {
+  control_id: string;
+  family: string;
+  priority: "baseline" | "strengthened" | "critical";
+  title: LocalizedText;
+  objective: LocalizedText;
+  applicability: {
+    organization_types: string[];
+    risk_levels: string[];
+    autonomy_levels: string[];
+    conditions: string[];
+  };
+  lifecycle_phases: number[];
+  gates: string[];
+  evidence_ids: string[];
+  source_refs: Array<{ source_id: string; relation: string }>;
+};
 type Phase = { label: string; title: string; text: string };
 type Audience = {
   id: AudienceId;
@@ -27,6 +47,32 @@ type Audience = {
 
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
 const caseRevision = "8e9b2c3ef2109cbbe537c3dbe9011b6599526b01";
+const controlCatalog = controlCrosswalk.controls as CrosswalkControl[];
+const evidenceCatalog = new Map((controlCrosswalk.evidence_types as CrosswalkEvidence[]).map((evidence) => [evidence.evidence_id, evidence]));
+const crosswalkConditions: Record<Locale, Record<string, string>> = {
+  en: {
+    always: "Always",
+    external_provider: "When an external provider is used",
+    personal_or_confidential_data: "When personal or confidential data is processed",
+    external_content_or_tools: "When external content or tools cross a trust boundary",
+    external_or_irreversible_action: "When the system can create an external or irreversible effect",
+    material_human_impact: "When people may be materially affected",
+    mission_population: "When mission populations or beneficiaries are affected",
+    public_authority: "When public authority or public responsibility is involved",
+    public_procurement: "When public procurement is involved",
+  },
+  fr: {
+    always: "Toujours",
+    external_provider: "Lorsqu’un fournisseur externe est utilisé",
+    personal_or_confidential_data: "Lorsque des données personnelles ou confidentielles sont traitées",
+    external_content_or_tools: "Lorsque du contenu externe ou des outils franchissent une frontière de confiance",
+    external_or_irreversible_action: "Lorsque le système peut produire un effet externe ou irréversible",
+    material_human_impact: "Lorsque des personnes peuvent être matériellement affectées",
+    mission_population: "Lorsque des bénéficiaires ou populations de mission sont concernés",
+    public_authority: "Lorsqu’une autorité ou responsabilité publique est engagée",
+    public_procurement: "Lorsqu’un achat public est engagé",
+  },
+};
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
 const calibrationSpecs: Record<IntegrationId, { low: number; high: number; setup: number }> = {
   copilot: { low: 0.2, high: 0.4, setup: 8 },
@@ -334,6 +380,26 @@ const copy = {
     autonomyOptions: ["A0 · advice only", "A1 · research or draft", "A2 · action after explicit approval", "A3 · bounded autonomous actions", "A4 · broad multi-system autonomy"],
     orientation: "Recommended control baseline",
     orientations: ["Owner, data rules, business tests, and a change log.", "Qualified approval, output validation, full logging, and rollback.", "Threat model, least privilege, limits, monitoring, and adversarial tests.", "Formal legal and impact assessment, governance, independent review, and human recourse.", "Executive exception, proof that lower autonomy is insufficient, reinforced containment, and independent audit."],
+    crosswalkOpen: "Open the matched control set",
+    crosswalkEyebrow: "VERSIONED CONTROL CROSSWALK · JSON 1.0",
+    crosswalkTitle: "Turn a risk label into controls that leave evidence.",
+    crosswalkText: "The selected organization, impact, and autonomy now resolve to stable control IDs. Each row exposes its trigger, evidence, decision gates, lifecycle phases, and dated source references.",
+    crosswalkMatched: "candidate controls",
+    crosswalkOrganization: "organization",
+    crosswalkProfile: "active profile",
+    crosswalkSources: "versioned sources",
+    crosswalkRead: "READ 01 → 04",
+    crosswalkReadingTitle: "Four questions per control",
+    crosswalkReading: [["CONTROL", "What must be true?"], ["TRIGGER", "When does it apply?"], ["EVIDENCE", "What record must exist?"], ["GATE", "Which decision does it block or enable?"]],
+    crosswalkEvidence: "Required evidence",
+    crosswalkGates: "Decision gates",
+    crosswalkPhases: "Lifecycle phases",
+    crosswalkSourceRefs: "Source references",
+    crosswalkCondition: "Trigger condition",
+    crosswalkPriority: { baseline: "BASELINE", strengthened: "STRENGTHENED", critical: "CRITICAL" },
+    crosswalkDownload: "Download the full control catalogue",
+    crosswalkSchema: "Download the JSON schema",
+    crosswalkLimit: "A thematic implementation crosswalk—not clause-level equivalence, certification, or legal compliance. Conditions still require a qualified human determination.",
     toolkitEyebrow: "USE THE PLAYBOOK",
     toolkitTitle: "Start with a blank decision, not a blank page.",
     toolkitText: "Copy the operational templates, complete the first gate, and keep the evidence with the project.",
@@ -632,6 +698,26 @@ const copy = {
     autonomyOptions: ["A0 · conseil uniquement", "A1 · recherche ou brouillon", "A2 · action après approbation explicite", "A3 · actions autonomes bornées", "A4 · autonomie large et multi-systèmes"],
     orientation: "Socle de contrôle recommandé",
     orientations: ["Responsable, règles de données, tests métier et journal des changements.", "Approbation qualifiée, validation des sorties, journal complet et rollback.", "Modèle de menace, moindre privilège, limites, surveillance et tests adversariaux.", "Qualification juridique et analyse d’impact formelles, gouvernance, revue indépendante et recours humain.", "Exception de direction, preuve qu’une autonomie inférieure ne suffit pas, confinement renforcé et audit indépendant."],
+    crosswalkOpen: "Ouvrir les contrôles correspondants",
+    crosswalkEyebrow: "RÉFÉRENTIEL VERSIONNÉ · JSON 1.0",
+    crosswalkTitle: "Transformez un niveau de risque en contrôles qui laissent des preuves.",
+    crosswalkText: "L’organisation, l’impact et l’autonomie sélectionnés conduisent maintenant à des identifiants de contrôle stables. Chaque ligne expose son déclencheur, ses preuves, ses gates, ses phases et ses sources datées.",
+    crosswalkMatched: "contrôles candidats",
+    crosswalkOrganization: "organisation",
+    crosswalkProfile: "profil actif",
+    crosswalkSources: "sources versionnées",
+    crosswalkRead: "LIRE 01 → 04",
+    crosswalkReadingTitle: "Quatre questions par contrôle",
+    crosswalkReading: [["CONTRÔLE", "Qu’est-ce qui doit être vrai ?"], ["DÉCLENCHEUR", "Quand s’applique-t-il ?"], ["PREUVE", "Quel enregistrement doit exister ?"], ["GATE", "Quelle décision bloque-t-il ou autorise-t-il ?"]],
+    crosswalkEvidence: "Preuves requises",
+    crosswalkGates: "Gates de décision",
+    crosswalkPhases: "Phases du cycle de vie",
+    crosswalkSourceRefs: "Références sources",
+    crosswalkCondition: "Condition de déclenchement",
+    crosswalkPriority: { baseline: "SOCLE", strengthened: "RENFORCÉ", critical: "CRITIQUE" },
+    crosswalkDownload: "Télécharger le catalogue complet",
+    crosswalkSchema: "Télécharger le schéma JSON",
+    crosswalkLimit: "Une correspondance thématique de mise en œuvre — pas une équivalence article par article, une certification ou une conformité juridique. Les conditions restent à qualifier par une personne compétente.",
     toolkitEyebrow: "UTILISEZ LE PLAYBOOK",
     toolkitTitle: "Commencez par une décision vide, pas par une page blanche.",
     toolkitText: "Copiez les modèles opérationnels, franchissez le premier gate et conservez les preuves avec le projet.",
@@ -692,6 +778,12 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [operationCopied, setOperationCopied] = useState(false);
   const [dossierCopied, setDossierCopied] = useState(false);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
+  const applicableControls = useMemo(() => controlCatalog.filter((control) => (
+    control.applicability.organization_types.includes(selected.id)
+    && control.applicability.risk_levels.includes(`R${risk}`)
+    && control.applicability.autonomy_levels.includes(`A${autonomy}`)
+  )), [selected.id, risk, autonomy]);
+  const applicableSourceCount = useMemo(() => new Set(applicableControls.flatMap((control) => control.source_refs.map((source) => source.source_id))).size, [applicableControls]);
   const langHref = locale === "en" ? "/fr/" : "/";
   const langLabel = locale === "en" ? "FR" : "EN";
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
@@ -1118,7 +1210,22 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <section className="controls section-light" id="controls" aria-labelledby="controls-title">
           <div className="section-heading"><p className="eyebrow">{t.riskEyebrow}</p><h2 id="controls-title">{t.riskTitle}</h2><p>{t.riskText}</p></div>
-          <div className="control-explorer"><fieldset><legend>{t.impact}</legend><div className="choice-list">{t.impactOptions.map((label, index) => <button aria-pressed={risk === index} key={label} onClick={() => setRisk(index)} type="button">{label}</button>)}</div></fieldset><fieldset><legend>{t.autonomy}</legend><div className="choice-list">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index} key={label} onClick={() => setAutonomy(index)} type="button">{label}</button>)}</div></fieldset><output className="orientation" aria-live="polite"><span>{t.orientation}</span><strong>{t.orientations[controlIndex(risk, autonomy)]}</strong><small>R{risk} × A{autonomy}</small></output></div>
+          <div className="control-explorer"><fieldset><legend>{t.impact}</legend><div className="choice-list">{t.impactOptions.map((label, index) => <button aria-pressed={risk === index} key={label} onClick={() => setRisk(index)} type="button">{label}</button>)}</div></fieldset><fieldset><legend>{t.autonomy}</legend><div className="choice-list">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index} key={label} onClick={() => setAutonomy(index)} type="button">{label}</button>)}</div></fieldset><output className="orientation" aria-live="polite"><span>{t.orientation}</span><strong>{t.orientations[controlIndex(risk, autonomy)]}</strong><small>R{risk} × A{autonomy}</small><a className="orientation-link" href="#control-crosswalk">{t.crosswalkOpen} ↓</a></output></div>
+        </section>
+
+        <section className="control-crosswalk section-dark" id="control-crosswalk" aria-labelledby="control-crosswalk-title">
+          <div className="section-heading"><p className="eyebrow">{t.crosswalkEyebrow}</p><h2 id="control-crosswalk-title">{t.crosswalkTitle}</h2><p>{t.crosswalkText}</p></div>
+          <div className="crosswalk-summary" aria-live="polite">
+            <p><strong>{applicableControls.length}</strong><span>{t.crosswalkMatched}</span></p>
+            <p><strong>{selected.title}</strong><span>{t.crosswalkOrganization}</span></p>
+            <p><strong>R{risk} × A{autonomy}</strong><span>{t.crosswalkProfile}</span></p>
+            <p><strong>{applicableSourceCount}</strong><span>{t.crosswalkSources}</span></p>
+          </div>
+          <div className="crosswalk-shell">
+            <aside className="crosswalk-reading"><p className="eyebrow">{t.crosswalkRead}</p><h3>{t.crosswalkReadingTitle}</h3><ol>{t.crosswalkReading.map(([label, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{label}</strong><p>{text}</p></div></li>)}</ol></aside>
+            <div className="crosswalk-controls">{applicableControls.map((control) => <details key={control.control_id}><summary><span>{control.control_id}</span><strong>{control.title[locale]}</strong><small data-priority={control.priority}>{t.crosswalkPriority[control.priority]}</small></summary><div className="crosswalk-detail"><p>{control.objective[locale]}</p><dl><div><dt>{t.crosswalkEvidence}</dt><dd>{control.evidence_ids.map((evidenceId) => `${evidenceId} · ${evidenceCatalog.get(evidenceId)?.name[locale] ?? evidenceId}`).join(" / ")}</dd></div><div><dt>{t.crosswalkGates}</dt><dd>{control.gates.join(" · ")}</dd></div><div><dt>{t.crosswalkPhases}</dt><dd>{control.lifecycle_phases.join(" · ")}</dd></div><div><dt>{t.crosswalkSourceRefs}</dt><dd>{control.source_refs.map((source) => source.source_id).join(" · ")}</dd></div></dl>{control.applicability.conditions[0] !== "always" && <p className="crosswalk-condition"><strong>{t.crosswalkCondition}</strong>{control.applicability.conditions.map((condition) => crosswalkConditions[locale][condition] ?? condition).join(" · ")}</p>}</div></details>)}</div>
+          </div>
+          <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href="/data/control-crosswalk.v1.json">{t.crosswalkDownload} ↓</a><a className="button secondary" download href="/data/control-crosswalk.schema.json">{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
         <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repository}/blob/main/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>

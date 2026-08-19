@@ -2,7 +2,7 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Édition visuelle](site/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modèles](templates/) · [Sources](references/sources.md)
+[Édition visuelle](site/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
 
 [![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](site/)
 
@@ -97,6 +97,7 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 - cinq parcours d’adoption adaptés à la structure ;
 - des guides d’évaluation, de sécurité et d’orientation juridique ;
 - des registres, questionnaires et runbooks copiables ;
+- un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;
 - une validation automatisée du dépôt, sans dépendance externe.
 

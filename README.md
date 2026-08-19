@@ -2,7 +2,7 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [Templates](templates/) · [Sources](references/sources.md)
+[Visual edition](site/) · [Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
 [![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](site/)
 
@@ -89,6 +89,7 @@ Start at the lowest level that can solve the problem and only move upward when e
 - adoption tracks for each organization type;
 - evaluation, security and legal orientation;
 - copy-ready registers, assessment forms and runbooks;
+- a versioned JSON crosswalk connecting controls, applicability, evidence, gates, and sources;
 - a dated register of primary sources;
 - dependency-free repository validation in CI.
 
