@@ -1,0 +1,9 @@
+site/**/*.css text eol=lf
+site/**/*.json text eol=lf
+site/**/*.md text eol=lf
+site/**/*.mjs text eol=lf
+site/**/*.ts text eol=lf
+site/**/*.tsx text eol=lf
+site/.gitignore text eol=lf
+site/public/*.svg text eol=lf
+site/public/*.png binary

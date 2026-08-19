@@ -2,9 +2,40 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Version française](README.fr.md) · [Start here](docs/universal-process.fr.md) · [Templates](templates/) · [Sources](references/sources.md)
+[Interactive edition](https://musyg.github.io/ai-adoption-playbook/) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
 
-> Status: public foundation, snapshot **2026-08-18**. The operational edition is currently written in French; English translations are tracked in the roadmap.
+[![AI Adoption Playbook — Evidence before autonomy](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/)
+
+The bilingual visual edition turns the method into an interactive path: distinguish
+copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
+range; turn it into a preregistered pilot protocol; enter the observed evidence; then
+make a bounded gate decision and generate a reversible operating card with monitoring,
+suspension, rollback, and dated reassessment; finally, export the complete chain as a
+reviewable Markdown decision dossier. The Markdown guides remain the operational source
+of truth.
+
+**New:** compare the complete synthetic cases for an
+[independent copilot](examples/en/independent-client-follow-up.md), a
+[micro-business shared inbox](examples/en/tpe-customer-requests.md), a
+[B2B quote business agent for an SME](examples/en/sme-b2b-quote-business-agent.md), a
+[grant-dossier administrative agent for a foundation](examples/en/nonprofit-grant-dossier-business-agent.md), a
+[planning-dossier administrative agent for a public service](examples/en/public-sector-planning-dossier-business-agent.md), a
+[bounded business agent](examples/en/independent-business-agent-follow-up.md), and an
+[orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
+from baseline and pre-registered thresholds to an explicit scope decision.
+
+> Status: public foundation, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual edition are available in English and French.
+
+**0.3 sector overlays:** [healthcare](sectors/en/healthcare.md),
+[education](sectors/en/education.md), [finance](sectors/en/finance.md), and
+[critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
+vetoes and evidence gates without replacing the universal process.
+
+**Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
+to prepare a local draft, preserve the full denominator, and request independent
+review before any anonymized result can enter the public registry. To coordinate
+a genuine pilot without publishing raw evidence, open the
+[public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
 
 ## Why this repository exists
 
@@ -22,11 +53,11 @@ It scales across five contexts without pretending their controls should be ident
 
 Open the matching implementation track:
 
-- [Independent professional](tracks/fr/independent.md)
-- [Micro-business / TPE](tracks/fr/tpe.md)
-- [SME / PME](tracks/fr/pme.md)
-- [Nonprofit or foundation](tracks/fr/nonprofit-foundation.md)
-- [Public service](tracks/fr/public-sector.md)
+- [Independent professional](tracks/en/independent.md)
+- [Micro-business / TPE](tracks/en/tpe.md)
+- [SME / PME](tracks/en/pme.md)
+- [Nonprofit or foundation](tracks/en/nonprofit-foundation.md)
+- [Public service](tracks/en/public-sector.md)
 
 ## The operating loop
 
@@ -67,18 +98,21 @@ Start at the lowest level that can solve the problem and only move upward when e
 - a universal lifecycle with explicit evidence gates;
 - risk × autonomy classification;
 - adoption tracks for each organization type;
+- sector overlays for healthcare, education, finance, and critical infrastructure;
 - evaluation, security and legal orientation;
-- copy-ready registers, assessment forms and runbooks;
+- copy-ready registers, accessibility and fundamental-rights assessments, forms, and runbooks;
+- a versioned JSON crosswalk connecting controls, applicability, evidence, gates, and sources;
 - a dated register of primary sources;
 - dependency-free repository validation in CI.
 
 ## Quick start
 
-1. Read the [universal process](docs/universal-process.fr.md).
-2. Select one organizational [track](tracks/fr/).
-3. Copy the [mandate](templates/mandate.fr.md) and [use-case card](templates/use-case-card.fr.md).
-4. Record every current or proposed system in the [AI register](templates/ai-system-register.csv).
-5. Do not build until the first gate is satisfied.
+1. Read the [universal process](docs/universal-process.md).
+2. Select one organizational [track](tracks/en/).
+3. Add the relevant [sector overlay](sectors/en/) when the work affects healthcare, education, finance, or critical infrastructure.
+4. Copy the [mandate](templates/mandate.md) and [use-case card](templates/use-case-card.md).
+5. Record every current or proposed system in the [AI register](templates/ai-system-register.csv).
+6. Do not build until the first gate is satisfied.
 
 ## Scope and limits
 

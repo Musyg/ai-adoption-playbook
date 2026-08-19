@@ -8,6 +8,9 @@ Professionnel seul ou micro-activité avec un site, des demandes clients, des de
 
 Un seul workflow peu risqué, mesuré, réversible et documenté. L’objectif n’est pas de créer un agent général.
 
+Pour voir le parcours rempli de bout en bout, ouvrir le
+[cas synthétique de suivi client sur 14 jours](../../examples/fr/independant-suivi-client.md).
+
 ## Jours 1–2 — Choisir le problème
 
 - relever cinq tâches répétitives sur une semaine ;

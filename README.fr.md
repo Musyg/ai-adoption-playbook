@@ -2,9 +2,41 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modèles](templates/) · [Sources](references/sources.md)
+[Édition interactive](https://musyg.github.io/ai-adoption-playbook/fr/) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md)
 
-> État : fondation publique, photographie au **18 août 2026**.
+[![AI Adoption Playbook — La preuve avant l’autonomie](site/public/og.png)](https://musyg.github.io/ai-adoption-playbook/fr/)
+
+L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
+copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
+convertir en protocole de pilote préenregistré ; saisir les preuves observées ; puis
+prendre une décision de gate bornée et générer une fiche d’exploitation réversible avec
+surveillance, suspension, rollback et réévaluation datée ; enfin, exporter toute la chaîne
+dans un dossier de décision Markdown révisable. Les guides Markdown restent la source
+opérationnelle de référence.
+
+**Nouveau :** comparez les cas synthétiques complets d’un
+[copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
+[boîte partagée de TPE](examples/fr/tpe-demandes-clients.md), d’un
+[agent métier de devis B2B pour PME](examples/fr/pme-agent-metier-devis-b2b.md), d’un
+[agent administratif de dossiers de subvention pour fondation](examples/fr/association-agent-dossiers-subventions.md), d’un
+[agent administratif de dossiers d’urbanisme pour service public](examples/fr/service-public-agent-dossiers-urbanisme.md), d’un
+[agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
+[agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
+de la baseline jusqu’à une décision explicite de périmètre.
+
+> État : fondation publique, photographie au **19 août 2026**.
+
+**Extensions 0.3 :** [santé](sectors/fr/healthcare.md),
+[éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et
+[infrastructure critique](sectors/fr/critical-infrastructure.md) ajoutent des
+vetoes et gates sectoriels sans remplacer le processus universel.
+
+**Validation terrain :** utilisez le
+[protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
+brouillon local, conserver le dénominateur complet et demander une revue
+indépendante avant toute admission d’un résultat anonymisé dans le registre.
+Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez
+l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot.yml).
 
 ## Pourquoi ce dépôt existe
 
@@ -66,17 +98,20 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 
 1. Ouvrez le [processus universel](docs/universal-process.fr.md).
 2. Sélectionnez un [parcours par structure](tracks/fr/).
-3. Copiez le [mandat](templates/mandate.fr.md) et la [fiche de cas d’usage](templates/use-case-card.fr.md).
-4. Inscrivez les systèmes actuels et envisagés dans le [registre IA](templates/ai-system-register.csv).
-5. Ne construisez rien avant la validation du premier gate.
+3. Ajoutez l’[extension sectorielle](sectors/fr/) lorsque le travail touche la santé, l’éducation, la finance ou une infrastructure critique.
+4. Copiez le [mandat](templates/mandate.fr.md) et la [fiche de cas d’usage](templates/use-case-card.fr.md).
+5. Inscrivez les systèmes actuels et envisagés dans le [registre IA](templates/ai-system-register.csv).
+6. Ne construisez rien avant la validation du premier gate.
 
 ## Ce que contient le playbook
 
 - un cycle de vie universel avec preuves de sortie ;
 - une classification risque × autonomie ;
 - cinq parcours d’adoption adaptés à la structure ;
+- quatre extensions pour la santé, l’éducation, la finance et les infrastructures critiques ;
 - des guides d’évaluation, de sécurité et d’orientation juridique ;
-- des registres, questionnaires et runbooks copiables ;
+- des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
+- un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;
 - une validation automatisée du dépôt, sans dépendance externe.
 

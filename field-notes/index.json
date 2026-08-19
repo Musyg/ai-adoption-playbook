@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "published_on": "2026-08-19",
+  "status": "accepting-reviewed-submissions",
+  "limitations": {
+    "en": "No field report has been admitted yet. Synthetic examples and published third-party cases are excluded from this registry.",
+    "fr": "Aucun rapport terrain n'a encore été admis. Les cas synthétiques et les cas tiers publiés sont exclus de ce registre."
+  },
+  "reports": []
+}

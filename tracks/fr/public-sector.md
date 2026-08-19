@@ -4,6 +4,12 @@
 
 Un gain d’efficacité ne suffit pas à légitimer un système public. Le mandat légal, la proportionnalité, les droits fondamentaux, la transparence, l’accessibilité, le recours et l’archivage font partie du résultat.
 
+Le [cas synthétique Ville de Mont-Rive](../../examples/fr/service-public-agent-dossiers-urbanisme.md)
+applique ces gates à un agent A2 de contrôle administratif des dossiers
+d’urbanisme. Il conserve le guichet et le courrier, rend le cas bas économiquement
+non viable, et maintient 100 % des décisions publiques chez des collaborateurs
+qualifiés.
+
 ## Gate P0 — Opportunité publique
 
 Exiger :
