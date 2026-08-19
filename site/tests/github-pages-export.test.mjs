@@ -34,6 +34,7 @@ test("copies public assets and ships the interactive client", async () => {
   assert.match(client, /control-crosswalk\.v1\.json/);
   assert.match(client, /issues\/new\?template=field-pilot\.yml/);
   assert.match(client, /\/ai-adoption-playbook/);
+  assert.match(client, /scrollIntoView/);
 
   await Promise.all([
     access(path.join(pagesRoot, ".nojekyll")),
