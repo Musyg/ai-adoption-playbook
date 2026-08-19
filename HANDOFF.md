@@ -4,28 +4,38 @@ Snapshot: 2026-08-19 (Europe/Zurich)
 
 ## Status
 
-The current reference version is implemented, validated, pushed, and deployed.
+The current reference version is implemented, validated, merged into `main`,
+and publicly deployed through GitHub Pages.
 The first roadmap 0.3 tranche is complete; the field-feedback publication item
 remains intentionally open until a real submission passes review.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
-- Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `dd159a336f600a3cd9aa725aa419f5b400558f96`
+- Canonical branch: `main`
+- Reference implementation commit: `9ebef93be09b6e03632ecbc284e14c5edffabcfa`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
-- Local Sites publishing mirror: `work/sites-source/`
+- GitHub Pages client entry: `site/pages-client/`
+- GitHub Pages workflow: `.github/workflows/pages.yml`
+- Legacy Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
 - Publishing-mirror commit: `85a80a08f4350402025cc5d856d60672e2a289eb`
-- Both worktrees were clean and equal to their remotes at this snapshot.
+- The reference implementation was clean, merged, and equal to `origin/main`
+  before this handoff-only update.
 
-The publishing mirror is not a second source of product truth. Make changes in
-the canonical repository first, validate them there, then copy only the intended
-site files into the mirror for Sites publication.
+The Sites mirror is not a second source of product truth. Make changes in the
+canonical repository first. A merge to `main` now builds and deploys GitHub Pages
+automatically; sync the Sites mirror only if the authenticated fallback must also
+be refreshed.
 
 ## Production
 
-- Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
-- French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
+- Canonical public URL: <https://musyg.github.io/ai-adoption-playbook/>
+- Canonical French route: <https://musyg.github.io/ai-adoption-playbook/fr/>
+- Pages source: GitHub Actions workflow from `main`
+- Verified workflow run: <https://github.com/Musyg/ai-adoption-playbook/actions/runs/32250045693>
+- Deployment result: successful, public, HTTPS enforced
+- Merge path: PRs `#1`, `#2`, `#3`, and `#4`
+- Authenticated Sites fallback: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
 - Current Sites version: `21`
 - Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_ca11992f83608191bf2b7e42168b6fcc`
@@ -33,7 +43,8 @@ site files into the mirror for Sites publication.
 - Archive content hash: `sha256:35850e44a041dfa4af6f9bb0928fff5c9ba64cd06cc24482dde9faee4c8dafc5`
 - Deployment ID: `appgdep_6a85865b511481918fc9e663f99aada4`
 - Deployment state: `succeeded`
-- Access mode: private/custom; visitors may need to continue with ChatGPT.
+- Sites fallback access: private/custom; visitors may need to continue with
+  ChatGPT. GitHub Pages is the public reference.
 
 Never persist a Sites source-repository token. Generate a fresh short-lived
 credential for each later publishing session and use per-command Git
@@ -83,7 +94,7 @@ Roadmap 0.2 is complete. Six operating guides, eight copy-ready templates, and
 six organization-track files now have explicit one-to-one English/French pairs.
 The language-neutral CSV register remains shared. The English README and web
 experience link to the English artifacts; the French README and `/fr` route keep
-their French links. Repository validation treats all 29 current pairs as a
+their French links. Repository validation treats all 30 current pairs as a
 required contract and rejects English operating files that fall back to
 `.fr.md` links.
 
@@ -94,8 +105,7 @@ autonomy ceiling, minimum evidence, and an explicit transfer boundary. Three
 new bilingual tools cover accessibility, fundamental-rights impact, and field
 feedback. The field registry is valid but empty: synthetic examples and
 unreviewed submissions cannot be presented as field evidence. Repository links
-from the deployed site target the real canonical branch rather than an absent
-`main` branch.
+from the deployed site target the canonical `main` branch.
 
 The new bilingual field-pilot assistant frames an organization, integration
 level, sector, non-identifying alias, exact workflow, version, observation
@@ -105,6 +115,10 @@ checks six publication safeguards, and downloads a local Markdown draft. The
 site sends none of these inputs to a server, and the export always remains a
 draft pending independent review and a separate admission decision. The paired
 Markdown protocol makes the same boundary available outside the web interface.
+The site and `CONTRIBUTING.md` link to a public GitHub pilot-intake form that
+accepts non-identifying coordination metadata only. A separate pull-request
+template is reserved for independently reviewed, sanitized field reports; raw
+evidence never belongs in GitHub.
 
 ## Decision and evidence rules
 
@@ -130,16 +144,16 @@ page is in `site/app/Playbook.tsx`, and the visual system is in
 
 ## Latest validation
 
-The following checks passed on the canonical source and again on the publishing
-mirror where applicable:
+The following checks passed on the canonical source and in GitHub Actions:
 
 - ESLint: clean.
 - Vinext production build: successful for `/` and `/fr`.
 - Gate-decision unit tests: 4/4 passed.
 - Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
-- Combined publishing-mirror test run: 9/9 passed.
-- Repository validation: 90 Markdown files, 30 EN/FR pairs, AI register,
+- GitHub Pages artifact tests: 3/3 passed.
+- Combined Node test run: 12/12 passed.
+- Repository validation: 91 Markdown files, 30 EN/FR pairs, AI register,
   field-feedback registry, and control-crosswalk contracts passed.
 - JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
   nine source records.
@@ -168,19 +182,29 @@ mirror where applicable:
 - New field-pilot assertions cover the local-only boundary, demonstration-value
   confirmation, publication review, draft export, and locale-correct protocol
   links.
+- GitHub Pages assertions cover the English and French documents, repository
+  base path, copied JSON/schema and visual assets, absence of the Vinext runtime,
+  interactive client bundle, public pilot-intake link, and initial-anchor logic.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
   produced `CONTINUER BORNÉ`; one critical effect produced
   `ARRÊTER + ROLLBACK`; naming both owners produced `DOSSIER RÉVISABLE` with zero
   missing items.
+- Final real-Chrome audit of the public French Pages route confirmed
+  `lang="fr"`, the portfolio blue `#1c9fff`, 23 buttons, 30 form controls, no
+  horizontal overflow, the correct pilot-intake URL, and a visible
+  `#field-pilot` heading after direct deep-link navigation.
+- Public HTTP checks returned `200` for the English route, French route, JSON
+  crosswalk, and hashed client bundle. The deployed HTML contains no `/_next/`
+  server-runtime path.
 
 From `site/`, use a supported Node.js runtime and run:
 
 ```powershell
 npm run lint
-npm run build
-node --test tests/*.test.mjs
+npm test
+python ../scripts/validate.py
 ```
 
 On the snapshot machine, Node/npm were not on the default PowerShell `PATH`.
@@ -189,20 +213,18 @@ hash from another session.
 
 ## Known boundaries
 
-- The live site is authentication-protected. The visual and interaction audit
-  used the exact local source/build because the automation session reached the
-  Sites sign-in gate; Sites then confirmed the saved version and production
-  deployment as successful.
-- The shared root layout serializes `lang="en"`. A synchronous bootstrap sets
-  the runtime document language to `fr` on `/fr` before interaction, and the
-  client keeps it synchronized. A fully SSR-native French root language would
-  require separate locale root layouts or an equivalent routing change.
+- GitHub Pages is a browser-rendered React build and therefore requires
+  JavaScript for the interactive content. Its English and French HTML shells
+  still publish locale-correct titles, descriptions, social metadata, language
+  attributes, and fallback text.
+- The Sites fallback remains authentication-protected. Its shared server layout
+  serializes `lang="en"`; a synchronous bootstrap and the client correct the
+  French route at runtime. The GitHub Pages French shell starts with `lang="fr"`.
 - The operating review dates and the playbook snapshot date are explicit
   reference data. Review them before presenting a later release as current.
-- No full browser-control or responsive audit was run for the field-pilot
-  tranche. The three intended site files matched byte-for-byte between the
-  canonical and publishing mirror sources, and both passed lint, production
-  build, and all nine tests.
+- The final GitHub Actions run passed but emitted non-blocking Node 20
+  deprecation annotations for GitHub-maintained action majors that GitHub forced
+  to Node 24. The build, artifact upload, and deployment all completed.
 - The sector and legal-orientation sources were checked on 19 August 2026. They
   remain orientation material, not legal, clinical, financial, educational, or
   critical-infrastructure certification.
@@ -211,8 +233,9 @@ hash from another session.
 
 ## First authorized next step
 
-Sites version 21 contains the field-pilot assistant and protocol. The next step
-is operational rather than another content expansion: recruit one genuine pilot,
+The public GitHub Pages site contains the field-pilot assistant, protocol, and
+non-identifying intake route. The next step is operational rather than another
+content expansion: recruit one genuine pilot,
 complete the local draft, and review consent, provenance, redaction, limitations,
 and transferability against the publication contract. Admit it to
 `field-notes/index.json` only if it passes. If no real submission exists, keep
@@ -223,10 +246,12 @@ legal claims.
 
 1. Read this file and `ROADMAP.md` before editing.
 2. Verify the canonical branch, commit, remote divergence, and clean worktree.
-3. Treat `site/` as canonical and `work/sites-source/` as a publishing mirror.
+3. Treat `site/` as canonical, `site/pages-client/` as the Pages entry, and
+   `work/sites-source/` as a legacy fallback mirror only.
 4. Preserve the distinction between copilot, business agent, and orchestrated
    agency throughout copy, calculations, and examples.
 5. Re-run lint, build, unit tests, rendered tests, and proportional browser checks.
-6. Push the canonical commit before syncing the publishing mirror.
-7. Save and deploy only a Sites archive built from the exact pushed mirror commit.
+6. Use a reviewed PR to merge canonical changes into `main`.
+7. Verify the Pages workflow, public HTTP responses, and real-browser behavior;
+   sync Sites only when a fallback update is explicitly needed.
 8. Update this handoff after every material, independently verified advancement.
