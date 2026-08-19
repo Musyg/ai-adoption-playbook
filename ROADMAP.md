@@ -14,9 +14,15 @@ lifecycle phases, gates, sources, and implementation files.
 
 ## 0.3
 
-- Add sector extensions for healthcare, education, finance and critical infrastructure.
-- Add accessibility and fundamental-rights assessment templates.
+- [x] Add sector extensions for healthcare, education, finance and critical infrastructure.
+- [x] Add accessibility and fundamental-rights assessment templates.
 - Publish anonymized field feedback with explicit transfer limits.
+
+Progress: four bilingual sector overlays and three bilingual assessment/report
+templates are implemented. The reviewed field-feedback publication contract and
+empty machine-readable registry are available under `field-notes/`. No field
+report has yet met the admission rule, so the final 0.3 item remains open rather
+than substituting synthetic cases or vendor claims for observed evidence.
 
 ## Release rule
 

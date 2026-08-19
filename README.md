@@ -26,6 +26,11 @@ from baseline and pre-registered thresholds to an explicit scope decision.
 
 > Status: public foundation, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual edition are available in English and French.
 
+**0.3 sector overlays:** [healthcare](sectors/en/healthcare.md),
+[education](sectors/en/education.md), [finance](sectors/en/finance.md), and
+[critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
+vetoes and evidence gates without replacing the universal process.
+
 ## Why this repository exists
 
 AI adoption fails when a tool demo is mistaken for an operating model. This playbook starts with the actual work, measures the baseline, chooses the least complex sufficient system, and requires evidence before autonomy increases.
@@ -87,8 +92,9 @@ Start at the lowest level that can solve the problem and only move upward when e
 - a universal lifecycle with explicit evidence gates;
 - risk × autonomy classification;
 - adoption tracks for each organization type;
+- sector overlays for healthcare, education, finance, and critical infrastructure;
 - evaluation, security and legal orientation;
-- copy-ready registers, assessment forms and runbooks;
+- copy-ready registers, accessibility and fundamental-rights assessments, forms, and runbooks;
 - a versioned JSON crosswalk connecting controls, applicability, evidence, gates, and sources;
 - a dated register of primary sources;
 - dependency-free repository validation in CI.
@@ -97,9 +103,10 @@ Start at the lowest level that can solve the problem and only move upward when e
 
 1. Read the [universal process](docs/universal-process.md).
 2. Select one organizational [track](tracks/en/).
-3. Copy the [mandate](templates/mandate.md) and [use-case card](templates/use-case-card.md).
-4. Record every current or proposed system in the [AI register](templates/ai-system-register.csv).
-5. Do not build until the first gate is satisfied.
+3. Add the relevant [sector overlay](sectors/en/) when the work affects healthcare, education, finance, or critical infrastructure.
+4. Copy the [mandate](templates/mandate.md) and [use-case card](templates/use-case-card.md).
+5. Record every current or proposed system in the [AI register](templates/ai-system-register.csv).
+6. Do not build until the first gate is satisfied.
 
 ## Scope and limits
 

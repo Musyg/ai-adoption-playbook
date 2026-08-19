@@ -24,7 +24,7 @@
       "source_id": "AAP-PROCESS-02",
       "title": "AI Adoption Playbook — universal process and gates",
       "publisher": "Musyg",
-      "version": "0.2 draft · 2026.08",
+      "version": "0.3 draft · 2026.08",
       "status": "internal_method",
       "url": "https://github.com/Musyg/ai-adoption-playbook/blob/agent/add-visual-playbook/docs/universal-process.fr.md",
       "checked_on": "2026-08-19",
@@ -161,7 +161,7 @@
       "evidence_id": "EV-RISK-ASSESSMENT",
       "name": { "en": "Risk and autonomy assessment", "fr": "Évaluation risque et autonomie" },
       "minimum_record": ["impact_level", "autonomy_level", "affected_people", "harm_scenarios", "residual_risk_owner", "review_date"],
-      "template": "templates/risk-assessment.fr.md"
+      "template": "templates/fundamental-rights-impact-assessment.fr.md"
     },
     {
       "evidence_id": "EV-DATA-MAP",

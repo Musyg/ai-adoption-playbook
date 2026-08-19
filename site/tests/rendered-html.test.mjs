@@ -121,11 +121,24 @@ for (const [pathname, language, title] of [
     assert.match(html, /href=["']#decision-dossier["']/i);
     assert.match(html, /og\.png/i);
     assert.match(html, /href=["']#integration-levels["']/i);
+    assert.match(html, /id=["']sectors["']/i);
+    assert.match(html, /Healthcare|Santé/);
+    assert.match(html, /Education|Éducation/);
+    assert.match(html, /Finance/);
+    assert.match(html, /Critical infrastructure|Infrastructure critique/);
+    assert.match(html, /Non-transferable veto|Veto non transférable/i);
+    assert.match(html, /Accessibility assessment|Évaluation d’accessibilité/i);
+    assert.match(html, /Fundamental-rights assessment|Analyse des droits fondamentaux/i);
+    assert.match(html, /Field-feedback report|Rapport de retour terrain/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);
       assert.match(html, /templates\/incident-runbook\.md/);
       assert.match(html, /tracks\/en\/independent\.md/);
+      assert.match(html, /sectors\/en\/healthcare\.md/);
+      assert.match(html, /templates\/accessibility-assessment\.md/);
+      assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
+      assert.match(html, /templates\/field-feedback-report\.md/);
       assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
       assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
     } else {
@@ -133,6 +146,10 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/evaluation-plan\.fr\.md/);
       assert.match(html, /templates\/incident-runbook\.fr\.md/);
       assert.match(html, /tracks\/fr\/independent\.md/);
+      assert.match(html, /sectors\/fr\/healthcare\.md/);
+      assert.match(html, /templates\/accessibility-assessment\.fr\.md/);
+      assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
+      assert.match(html, /templates\/field-feedback-report\.fr\.md/);
     }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });

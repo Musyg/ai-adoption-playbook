@@ -46,6 +46,7 @@ type Audience = {
 };
 
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
+const repositorySource = `${repository}/blob/agent/add-visual-playbook`;
 const caseRevision = "8e9b2c3ef2109cbbe537c3dbe9011b6599526b01";
 const controlCatalog = controlCrosswalk.controls as CrosswalkControl[];
 const evidenceCatalog = new Map((controlCrosswalk.evidence_types as CrosswalkEvidence[]).map((evidence) => [evidence.evidence_id, evidence]));
@@ -93,7 +94,7 @@ const operationSpecs: Record<IntegrationId, { reviewDate: string; reviewDays: nu
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
-    nav: ["Integration levels", "Paths", "Method", "Worked cases", "Control level", "Toolkit"],
+    nav: ["Integration levels", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
@@ -215,6 +216,19 @@ const copy = {
     pilot: "Good first pilot",
     controls: "Do not skip",
     fullGuide: "Open the complete guide on GitHub",
+    sectorEyebrow: "0.3 · ADD THE SECTOR VETOES",
+    sectorTitle: "The process stays universal. The release conditions do not.",
+    sectorText: "Choose the organization path first, then add every sector overlay that touches the service. A hospital can require healthcare and critical-infrastructure gates at the same time.",
+    sectorFlow: [["01", "Universal process", "Owner, baseline, risk, evaluations, pilot."], ["02", "Sector veto", "Name the harm that efficiency cannot offset."], ["03", "Bounded release", "Keep only the authority proven safe in context."]],
+    sectorLabels: { trigger: "When it changes the gate", veto: "Non-transferable veto", evidence: "Minimum release proof" },
+    sectorGuide: "Open the sector gates",
+    sectorCaveat: "These are operational overlays, not legal classifications. Verify the exact role, jurisdiction, product, population, and sector rules before release.",
+    sectors: [
+      { code: "H", title: "Healthcare", trigger: "Clinical purpose, patient-facing guidance, triage, diagnosis, treatment, or medical-device software.", veto: "No ambiguous intended purpose, unsafe subgroup result, or unowned clinical decision.", evidence: "Product qualification · clinical owner · subgroup evaluation · safe-care fallback", file: "sectors/en/healthcare.md" },
+      { code: "E", title: "Education", trigger: "Learner data, assessment, admission, placement, discipline, safeguarding, or personalized pathways.", veto: "No efficiency gain can excuse exclusion, invalid assessment, or unavailable human challenge.", evidence: "Pedagogical mandate · learner segments · accessibility · correction and recourse", file: "sectors/en/education.md" },
+      { code: "F", title: "Finance", trigger: "A material model, regulated control, customer outcome, transaction, or critical outsourced function.", veto: "No material use without inventory, accountable owners, independent validation, and resilience.", evidence: "Materiality file · model validation · customer impact · tested provider exit", file: "sectors/en/finance.md" },
+      { code: "C", title: "Critical infrastructure", trigger: "Advice or action can affect an essential service, operational technology, safety state, or recovery path.", veto: "No untested command path, weakened interlock, common-mode failure, or AI-dependent shutdown.", evidence: "Hazard case · segregated architecture · simulator tests · independent kill path", file: "sectors/en/critical-infrastructure.md" },
+    ],
     methodEyebrow: "THE OPERATING LOOP",
     methodTitle: "Eight steps, in the order people need them.",
     methodText: "Open only the step you are working on. Every step ends with a concrete piece of evidence, not a presentation.",
@@ -403,7 +417,7 @@ const copy = {
     toolkitEyebrow: "USE THE PLAYBOOK",
     toolkitTitle: "Start with a blank decision, not a blank page.",
     toolkitText: "Copy the operational templates, complete the first gate, and keep the evidence with the project.",
-    tools: [["Mandate", "Owner, baseline, outcome, and boundaries.", "templates/mandate.md"], ["Use-case card", "Value and difficulty kept separate.", "templates/use-case-card.md"], ["Risk assessment", "Scenarios, controls, and residual risk.", "templates/risk-assessment.md"], ["Evaluation plan", "Metrics, segments, thresholds, and stop rules.", "templates/evaluation-plan.md"], ["Pilot decision", "Value, reliability, and risk judged separately.", "templates/pilot-decision.md"], ["Incident runbook", "Contain, qualify, recover, and learn.", "templates/incident-runbook.md"]],
+    tools: [["Mandate", "Owner, baseline, outcome, and boundaries.", "templates/mandate.md"], ["Use-case card", "Value and difficulty kept separate.", "templates/use-case-card.md"], ["Risk assessment", "Scenarios, controls, and residual risk.", "templates/risk-assessment.md"], ["Evaluation plan", "Metrics, segments, thresholds, and stop rules.", "templates/evaluation-plan.md"], ["Pilot decision", "Value, reliability, and risk judged separately.", "templates/pilot-decision.md"], ["Incident runbook", "Contain, qualify, recover, and learn.", "templates/incident-runbook.md"], ["Accessibility assessment", "Complete tasks, assistive technologies, and an equivalent non-AI channel.", "templates/accessibility-assessment.md"], ["Fundamental-rights assessment", "Affected groups, rights, safeguards, recourse, and residual impact.", "templates/fundamental-rights-impact-assessment.md"], ["Field-feedback report", "Observed evidence, anonymization review, and explicit transfer limits.", "templates/field-feedback-report.md"]],
     sourceTitle: "Dated, primary-source foundation.",
     sourceText: "The playbook links to the official ISO catalogue, NIST AI RMF, OWASP GenAI, MITRE ATLAS, Swiss authorities, and current EU AI Act material. It is an implementation aid—not certification or legal advice.",
     sources: "Review the source register",
@@ -411,7 +425,7 @@ const copy = {
   },
   fr: {
     meta: "GUIDE DE TERRAIN · AOÛT 2026",
-    nav: ["Niveaux d’intégration", "Parcours", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
+    nav: ["Niveaux d’intégration", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
@@ -533,6 +547,19 @@ const copy = {
     pilot: "Bon premier pilote",
     controls: "À ne pas supprimer",
     fullGuide: "Ouvrir le guide complet sur GitHub",
+    sectorEyebrow: "0.3 · AJOUTEZ LES VETOES SECTORIELS",
+    sectorTitle: "Le processus reste universel. Les conditions de mise en service, non.",
+    sectorText: "Choisissez d’abord le parcours de la structure, puis ajoutez chaque extension qui touche le service. Un hôpital peut cumuler les gates santé et infrastructure critique.",
+    sectorFlow: [["01", "Processus universel", "Responsable, baseline, risque, évaluations, pilote."], ["02", "Veto sectoriel", "Nommer le dommage qu’un gain d’efficacité ne compense pas."], ["03", "Mise en service bornée", "Ne conserver que l’autorité prouvée sûre dans ce contexte."]],
+    sectorLabels: { trigger: "Quand le gate change", veto: "Veto non transférable", evidence: "Preuve minimale de mise en service" },
+    sectorGuide: "Ouvrir les gates du secteur",
+    sectorCaveat: "Ces extensions sont opérationnelles, pas des qualifications juridiques. Vérifiez rôle, juridiction, produit, population et règles sectorielles avant la mise en service.",
+    sectors: [
+      { code: "H", title: "Santé", trigger: "Finalité clinique, guidance patient, triage, diagnostic, traitement ou logiciel de dispositif médical.", veto: "Aucune finalité ambiguë, défaillance grave d’un sous-groupe ou décision clinique sans responsable.", evidence: "Qualification produit · responsable clinique · évaluation segmentée · fallback de soin sûr", file: "sectors/fr/healthcare.md" },
+      { code: "E", title: "Éducation", trigger: "Données apprenant, évaluation, admission, orientation, discipline, protection ou parcours personnalisé.", veto: "Aucun gain ne compense exclusion, évaluation invalide ou contestation humaine indisponible.", evidence: "Mandat pédagogique · segments apprenants · accessibilité · correction et recours", file: "sectors/fr/education.md" },
+      { code: "F", title: "Finance", trigger: "Modèle matériel, contrôle réglementé, résultat client, transaction ou fonction critique externalisée.", veto: "Aucun usage matériel sans inventaire, responsables, validation indépendante et résilience.", evidence: "Matérialité · validation modèle · impact client · sortie fournisseur testée", file: "sectors/fr/finance.md" },
+      { code: "C", title: "Infrastructure critique", trigger: "Le conseil ou l’action peut affecter service essentiel, technologie opérationnelle, état de sûreté ou reprise.", veto: "Aucune commande non testée, interlock affaibli, défaillance commune ou arrêt dépendant de l’IA.", evidence: "Dangers · architecture ségrégée · simulateur · arrêt indépendant", file: "sectors/fr/critical-infrastructure.md" },
+    ],
     methodEyebrow: "LA BOUCLE OPÉRATIONNELLE",
     methodTitle: "Huit étapes, dans l’ordre utile aux personnes.",
     methodText: "N’ouvrez que l’étape sur laquelle vous travaillez. Chacune se termine par une preuve concrète, pas par une présentation.",
@@ -721,7 +748,7 @@ const copy = {
     toolkitEyebrow: "UTILISEZ LE PLAYBOOK",
     toolkitTitle: "Commencez par une décision vide, pas par une page blanche.",
     toolkitText: "Copiez les modèles opérationnels, franchissez le premier gate et conservez les preuves avec le projet.",
-    tools: [["Mandat", "Responsable, baseline, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Runbook d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"]],
+    tools: [["Mandat", "Responsable, baseline, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Runbook d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"], ["Évaluation d’accessibilité", "Tâches complètes, technologies d’assistance et canal équivalent sans IA.", "templates/accessibility-assessment.fr.md"], ["Analyse des droits fondamentaux", "Groupes affectés, droits, garanties, recours et impact résiduel.", "templates/fundamental-rights-impact-assessment.fr.md"], ["Rapport de retour terrain", "Preuves observées, revue d’anonymisation et limites de transfert explicites.", "templates/field-feedback-report.fr.md"]],
     sourceTitle: "Un socle daté, fondé sur des sources primaires.",
     sourceText: "Le playbook renvoie vers le catalogue ISO, le NIST AI RMF, OWASP GenAI, MITRE ATLAS, les autorités suisses et les ressources actuelles de l’AI Act. C’est une aide à la mise en œuvre, pas une certification ni un avis juridique.",
     sources: "Consulter le registre des sources",
@@ -937,7 +964,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="AI Adoption Playbook"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
-          <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#method">{t.nav[2]}</a><a href="#case">{t.nav[3]}</a><a href="#controls">{t.nav[4]}</a><a href="#toolkit">{t.nav[5]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
+          <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#sectors">{t.nav[2]}</a><a href="#method">{t.nav[3]}</a><a href="#case">{t.nav[4]}</a><a href="#controls">{t.nav[5]}</a><a href="#toolkit">{t.nav[6]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
       </header>
 
@@ -1033,7 +1060,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <div className="pilot-plan-footer">
             <p>{t.pilotPlanCaveat}</p>
-            <div><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a></div>
+            <div><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a></div>
           </div>
         </section>
 
@@ -1089,7 +1116,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <article className="operation-rollback"><p className="eyebrow">{t.operationRollbackTitle}</p><ol>{t.operationRollback.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol></article>
           </div>
           <div className="operation-rules"><article><span>{t.operationChangeRuleTitle}</span><p>{t.operationChangeRule}</p></article><article><span>{t.operationRetireTitle}</span><p>{t.operationRetire}</p></article></div>
-          <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repository}/blob/main/templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`}>{t.operationRunbook} ↗</a></div></div>
+          <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repositorySource}/templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`}>{t.operationRunbook} ↗</a></div></div>
         </section>
 
         <section className="decision-dossier section-dark" id="decision-dossier" aria-labelledby="decision-dossier-title">
@@ -1112,8 +1139,15 @@ export function Playbook({ locale }: { locale: Locale }) {
           <article className="selected-plan" aria-live="polite">
             <div className="plan-intro"><p className="eyebrow">{t.selected} · {selected.number}</p><h3>{selected.title}</h3><p>{selected.objective}</p><dl><div><dt>{t.roles}</dt><dd>{selected.roles}</dd></div><div><dt>{t.pilot}</dt><dd>{selected.pilot}</dd></div></dl></div>
             <ol className="phase-list">{selected.phases.map((item) => <li key={item.label}><span>{item.label}</span><div><strong>{item.title}</strong><p>{item.text}</p></div></li>)}</ol>
-            <div className="control-box"><p>{t.controls}</p><ul>{selected.controls.map((control) => <li key={control}>{control}</li>)}</ul><a href={`${repository}/blob/main/${selected.file}`}>{t.fullGuide} ↗</a></div>
+            <div className="control-box"><p>{t.controls}</p><ul>{selected.controls.map((control) => <li key={control}>{control}</li>)}</ul><a href={`${repositorySource}/${selected.file}`}>{t.fullGuide} ↗</a></div>
           </article>
+        </section>
+
+        <section className="sector-lenses section-blue" id="sectors" aria-labelledby="sectors-title">
+          <div className="section-heading"><p className="eyebrow">{t.sectorEyebrow}</p><h2 id="sectors-title">{t.sectorTitle}</h2><p>{t.sectorText}</p></div>
+          <ol className="sector-flow">{t.sectorFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
+          <div className="sector-grid">{t.sectors.map((sector, index) => <a href={`${repositorySource}/${sector.file}`} key={sector.code}><header><span>{sector.code}</span><small>0{index + 1}</small></header><h3>{sector.title}</h3><dl><div><dt>{t.sectorLabels.trigger}</dt><dd>{sector.trigger}</dd></div><div className="sector-veto"><dt>{t.sectorLabels.veto}</dt><dd>{sector.veto}</dd></div><div><dt>{t.sectorLabels.evidence}</dt><dd>{sector.evidence}</dd></div></dl><b>{t.sectorGuide} ↗</b></a>)}</div>
+          <p className="sector-caveat">{t.sectorCaveat}</p>
         </section>
 
         <section className="method section-light" id="method" aria-labelledby="method-title">
@@ -1228,9 +1262,9 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href="/data/control-crosswalk.v1.json">{t.crosswalkDownload} ↓</a><a className="button secondary" download href="/data/control-crosswalk.schema.json">{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
-        <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repository}/blob/main/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
+        <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
 
-        <aside className="source-note"><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repository}/blob/main/references/sources.md`}>{t.sources} ↗</a></aside>
+        <aside className="source-note"><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources.md`}>{t.sources} ↗</a></aside>
       </main>
       <footer><p>{t.footer}</p><a href={repository}>GitHub ↗</a></footer>
     </div>

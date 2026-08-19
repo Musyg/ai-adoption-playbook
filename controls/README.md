@@ -28,6 +28,11 @@ article : le dépôt ne reproduit pas le texte propriétaire. De même, une
 orientation juridique doit être requalifiée selon la juridiction, le secteur, le
 rôle et le cas d’usage réels.
 
+Les [surcouches sectorielles](../sectors/fr/README.md) ajoutent des gates, des
+plafonds d’autonomie et des preuves adaptées au contexte. Elles ne modifient pas
+les axes du schéma `1.0.0` et ne transforment pas ce catalogue transversal en
+preuve de conformité sectorielle.
+
 ## Exemple de requête PowerShell
 
 ```powershell

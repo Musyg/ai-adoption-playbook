@@ -25,6 +25,16 @@ REQUIRED_FILES = (
     "docs/security.md",
     "docs/universal-process.md",
     "docs/universal-process.fr.md",
+    "sectors/en/README.md",
+    "sectors/en/healthcare.md",
+    "sectors/en/education.md",
+    "sectors/en/finance.md",
+    "sectors/en/critical-infrastructure.md",
+    "sectors/fr/README.md",
+    "sectors/fr/healthcare.md",
+    "sectors/fr/education.md",
+    "sectors/fr/finance.md",
+    "sectors/fr/critical-infrastructure.md",
     "tracks/en/README.md",
     "tracks/en/independent.md",
     "tracks/en/tpe.md",
@@ -48,6 +58,15 @@ REQUIRED_FILES = (
     "templates/risk-assessment.md",
     "templates/training-plan.md",
     "templates/vendor-assessment.md",
+    "templates/accessibility-assessment.md",
+    "templates/accessibility-assessment.fr.md",
+    "templates/fundamental-rights-impact-assessment.md",
+    "templates/fundamental-rights-impact-assessment.fr.md",
+    "templates/field-feedback-report.md",
+    "templates/field-feedback-report.fr.md",
+    "field-notes/README.md",
+    "field-notes/README.fr.md",
+    "field-notes/index.json",
     "references/sources.md",
     "controls/README.md",
     "site/public/data/control-crosswalk.schema.json",
@@ -74,6 +93,15 @@ TRANSLATION_PAIRS = (
     ("tracks/en/pme.md", "tracks/fr/pme.md"),
     ("tracks/en/nonprofit-foundation.md", "tracks/fr/nonprofit-foundation.md"),
     ("tracks/en/public-sector.md", "tracks/fr/public-sector.md"),
+    ("sectors/en/README.md", "sectors/fr/README.md"),
+    ("sectors/en/healthcare.md", "sectors/fr/healthcare.md"),
+    ("sectors/en/education.md", "sectors/fr/education.md"),
+    ("sectors/en/finance.md", "sectors/fr/finance.md"),
+    ("sectors/en/critical-infrastructure.md", "sectors/fr/critical-infrastructure.md"),
+    ("templates/accessibility-assessment.md", "templates/accessibility-assessment.fr.md"),
+    ("templates/fundamental-rights-impact-assessment.md", "templates/fundamental-rights-impact-assessment.fr.md"),
+    ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
+    ("field-notes/README.md", "field-notes/README.fr.md"),
 )
 EXPECTED_REGISTER_COLUMNS = (
     "system_id",
@@ -178,6 +206,43 @@ def check_register(errors: list[str]) -> None:
         header = tuple(next(rows, ()))
     if header != EXPECTED_REGISTER_COLUMNS:
         errors.append("AI system register columns do not match the contract")
+
+
+def check_field_notes(errors: list[str]) -> None:
+    relative = "field-notes/index.json"
+    registry = load_json(relative, errors)
+    if not isinstance(registry, dict):
+        return
+    if registry.get("schema_version") != "1.0.0":
+        errors.append("field-feedback schema_version must be 1.0.0")
+    expect_date(registry, "published_on", "field-feedback registry", errors)
+    expect_localized(registry, "limitations", "field-feedback registry", errors)
+    reports = registry.get("reports")
+    if not isinstance(reports, list):
+        errors.append("field-feedback reports must be an array")
+        return
+    report_ids: set[str] = set()
+    for index, report in enumerate(reports):
+        context = f"field-feedback reports[{index}]"
+        if not isinstance(report, dict):
+            errors.append(f"{context} must be an object")
+            continue
+        report_id = report.get("report_id")
+        if not isinstance(report_id, str) or not re.fullmatch(r"FIELD-[0-9]{4}-[0-9]{3}", report_id):
+            errors.append(f"{context}: invalid report_id")
+        elif report_id in report_ids:
+            errors.append(f"duplicate field-feedback report_id: {report_id}")
+        else:
+            report_ids.add(report_id)
+        if report.get("status") not in {"reviewed", "withdrawn"}:
+            errors.append(f"{context}: status must be reviewed or withdrawn")
+        for field in ("source_type", "evidence_boundary", "transfer_limits", "report_path"):
+            expect_string(report, field, context, errors)
+        if report.get("contains_personal_data") is not False:
+            errors.append(f"{context}: contains_personal_data must be false")
+        report_path = report.get("report_path")
+        if isinstance(report_path, str) and not (ROOT / report_path).is_file():
+            errors.append(f"{context}: missing report_path: {report_path}")
 
 
 def load_json(relative: str, errors: list[str]) -> object | None:
@@ -376,6 +441,7 @@ def main() -> int:
     check_translation_parity(errors)
     check_markdown(errors)
     check_register(errors)
+    check_field_notes(errors)
     check_crosswalk(errors)
     if errors:
         print("Validation failed:")
@@ -389,8 +455,8 @@ def main() -> int:
     )
     print(
         f"Validation passed: {markdown_count} Markdown files, "
-        f"{len(TRANSLATION_PAIRS)} EN/FR pairs, AI register, and control "
-        "crosswalk contracts OK."
+        f"{len(TRANSLATION_PAIRS)} EN/FR pairs, AI register, field-feedback "
+        "registry, and control crosswalk contracts OK."
     )
     return 0
 

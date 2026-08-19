@@ -26,6 +26,11 @@ de la baseline jusqu’à une décision explicite de périmètre.
 
 > État : fondation publique, photographie au **19 août 2026**.
 
+**Extensions 0.3 :** [santé](sectors/fr/healthcare.md),
+[éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et
+[infrastructure critique](sectors/fr/critical-infrastructure.md) ajoutent des
+vetoes et gates sectoriels sans remplacer le processus universel.
+
 ## Pourquoi ce dépôt existe
 
 L’adoption de l’IA échoue souvent lorsqu’une démonstration d’outil est confondue avec un système de travail. Ce playbook part du métier réel, mesure la situation initiale, retient la solution la moins complexe suffisante et exige des preuves avant d’augmenter l’autonomie.
@@ -86,17 +91,19 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 
 1. Ouvrez le [processus universel](docs/universal-process.fr.md).
 2. Sélectionnez un [parcours par structure](tracks/fr/).
-3. Copiez le [mandat](templates/mandate.fr.md) et la [fiche de cas d’usage](templates/use-case-card.fr.md).
-4. Inscrivez les systèmes actuels et envisagés dans le [registre IA](templates/ai-system-register.csv).
-5. Ne construisez rien avant la validation du premier gate.
+3. Ajoutez l’[extension sectorielle](sectors/fr/) lorsque le travail touche la santé, l’éducation, la finance ou une infrastructure critique.
+4. Copiez le [mandat](templates/mandate.fr.md) et la [fiche de cas d’usage](templates/use-case-card.fr.md).
+5. Inscrivez les systèmes actuels et envisagés dans le [registre IA](templates/ai-system-register.csv).
+6. Ne construisez rien avant la validation du premier gate.
 
 ## Ce que contient le playbook
 
 - un cycle de vie universel avec preuves de sortie ;
 - une classification risque × autonomie ;
 - cinq parcours d’adoption adaptés à la structure ;
+- quatre extensions pour la santé, l’éducation, la finance et les infrastructures critiques ;
 - des guides d’évaluation, de sécurité et d’orientation juridique ;
-- des registres, questionnaires et runbooks copiables ;
+- des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
 - un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;
 - une validation automatisée du dépôt, sans dépendance externe.
