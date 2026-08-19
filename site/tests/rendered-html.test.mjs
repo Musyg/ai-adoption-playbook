@@ -130,6 +130,15 @@ for (const [pathname, language, title] of [
     assert.match(html, /Accessibility assessment|Évaluation d’accessibilité/i);
     assert.match(html, /Fundamental-rights assessment|Analyse des droits fondamentaux/i);
     assert.match(html, /Field-feedback report|Rapport de retour terrain/i);
+    assert.match(html, /id=["']field-pilot["']/i);
+    assert.match(html, /Prepare one real pilot|Préparez un vrai pilote/i);
+    assert.match(html, /Nothing entered here is sent|Rien de ce qui est saisi ici n’est transmis/i);
+    assert.match(html, /LOCAL DRAFT · INCOMPLETE|BROUILLON LOCAL · INCOMPLET/i);
+    assert.match(html, /PUBLICATION REVIEW|REVUE DE PUBLICATION/i);
+    assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);
+    assert.match(html, /Download the local draft|Télécharger le brouillon local/i);
+    assert.match(html, /The export always remains a draft|L’export reste toujours un brouillon/i);
+    assert.match(html, /href=["']#field-pilot["']/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);
@@ -139,6 +148,7 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/accessibility-assessment\.md/);
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
       assert.match(html, /templates\/field-feedback-report\.md/);
+      assert.match(html, /docs\/field-pilot-protocol\.md/);
       assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
       assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
     } else {
@@ -150,6 +160,7 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/accessibility-assessment\.fr\.md/);
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
       assert.match(html, /templates\/field-feedback-report\.fr\.md/);
+      assert.match(html, /docs\/field-pilot-protocol\.fr\.md/);
     }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });

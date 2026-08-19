@@ -31,6 +31,11 @@ de la baseline jusqu’à une décision explicite de périmètre.
 [infrastructure critique](sectors/fr/critical-infrastructure.md) ajoutent des
 vetoes et gates sectoriels sans remplacer le processus universel.
 
+**Validation terrain :** utilisez le
+[protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
+brouillon local, conserver le dénominateur complet et demander une revue
+indépendante avant toute admission d’un résultat anonymisé dans le registre.
+
 ## Pourquoi ce dépôt existe
 
 L’adoption de l’IA échoue souvent lorsqu’une démonstration d’outil est confondue avec un système de travail. Ce playbook part du métier réel, mesure la situation initiale, retient la solution la moins complexe suffisante et exige des preuves avant d’augmenter l’autonomie.

@@ -8,6 +8,7 @@ import { decideEvidence } from "./evidence-decision.mjs";
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type IntegrationId = "copilot" | "agent" | "agency";
+type FieldSectorId = "general" | "healthcare" | "education" | "finance" | "critical";
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
 type DossierStatus = "ready" | "recorded" | "incomplete";
@@ -99,6 +100,7 @@ const copy = {
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
     methodCta: "See the method",
+    fieldPilotHero: "Prepare a field pilot",
     rule: "THE RELEASE RULE",
     gates: [["No owner or baseline", "No project"], ["No acceptance thresholds", "No pilot"], ["No separate evidence", "No production"]],
     stats: [["5", "organization paths"], ["8", "ordered steps"], ["3", "non-negotiable gates"]],
@@ -208,6 +210,22 @@ const copy = {
     dossierCopy: "Copy the complete dossier",
     dossierCopied: "Complete dossier copied",
     dossierDownload: "Download Markdown dossier",
+    fieldPilotEyebrow: "0.3 · FROM METHOD TO FIELD EVIDENCE",
+    fieldPilotTitle: "Prepare one real pilot without publishing raw evidence.",
+    fieldPilotText: "Frame the observation, preserve the full denominator, review the redaction, and export a local draft. Nothing entered here is sent to a server or admitted to the public registry.",
+    fieldPilotFlow: [["01", "Frame", "One workflow, version, baseline, population, and stop rule."], ["02", "Observe", "Keep accepted, failed, excluded, escalated, and missing cases."], ["03", "Review", "An independent person checks provenance, redaction, and transfer limits."], ["04", "Admit or withhold", "Only reviewed, anonymized reports may enter the public registry."]],
+    fieldPilotLabels: { organization: "Organization path", integration: "Integration level", sector: "Sector overlay", alias: "Non-identifying project alias", workflow: "Exact workflow observed", version: "System + workflow version", start: "Observation start", end: "Observation end", transfer: "Where the result may transfer", unsupported: "What this result does not prove" },
+    fieldPilotSectors: [{ id: "general", label: "General / cross-sector" }, { id: "healthcare", label: "Healthcare" }, { id: "education", label: "Education" }, { id: "finance", label: "Finance" }, { id: "critical", label: "Critical infrastructure" }],
+    fieldPilotPrivacy: "Local-only drafting · Do not enter client names, personal data, secrets, privileged content, raw prompts, or exploitable security details.",
+    fieldPilotChecklistTitle: "PUBLICATION REVIEW · ALL SIX MUST BE TRUE",
+    fieldPilotChecklist: ["The baseline, denominator, exclusions, and missing cases are retained.", "Observation, internal measurement, estimate, opinion, and supplier claim are separated.", "Incidents, near misses, corrections, refusals, and withdrawals remain visible.", "Personal, identifying, confidential, privileged, and security-sensitive detail is removed.", "An independent reviewer, publication authority, and withdrawal route exist in the private record.", "Transfer limits and unsupported claims are explicit enough to prevent reuse as a universal benchmark."],
+    fieldPilotState: { draft: "LOCAL DRAFT · INCOMPLETE", review: "READY FOR INDEPENDENT REVIEW", completed: "requirements complete", remaining: "still required" },
+    fieldPilotEvidenceTitle: "CURRENT OBSERVATION SNAPSHOT",
+    fieldPilotEvidenceConfirm: "I replaced the demonstration values above with actual observations from this exact pilot and kept every eligible, excluded, failed, and missing case in the denominator.",
+    fieldPilotDownload: "Download the local draft",
+    fieldPilotProtocol: "Open the complete protocol",
+    fieldPilotTemplate: "Open the blank report",
+    fieldPilotAlwaysDraft: "The export always remains a draft. Review readiness is not publication approval and is not field validation.",
     pathsEyebrow: "START WITH YOUR REALITY",
     pathsTitle: "Choose the structure you are working with.",
     pathsText: "Same method. Different depth of control, evidence, and responsibility.",
@@ -430,6 +448,7 @@ const copy = {
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
     methodCta: "Voir la méthode",
+    fieldPilotHero: "Préparer un pilote terrain",
     rule: "LA RÈGLE DE PASSAGE",
     gates: [["Sans responsable ni baseline", "Pas de projet"], ["Sans seuils d’acceptation", "Pas de pilote"], ["Sans preuves séparées", "Pas de production"]],
     stats: [["5", "parcours par structure"], ["8", "étapes ordonnées"], ["3", "gates non négociables"]],
@@ -539,6 +558,22 @@ const copy = {
     dossierCopy: "Copier le dossier complet",
     dossierCopied: "Dossier complet copié",
     dossierDownload: "Télécharger le dossier Markdown",
+    fieldPilotEyebrow: "0.3 · DE LA MÉTHODE À LA PREUVE TERRAIN",
+    fieldPilotTitle: "Préparez un vrai pilote sans publier les preuves brutes.",
+    fieldPilotText: "Cadrez l’observation, conservez le dénominateur complet, révisez l’anonymisation et exportez un brouillon local. Rien de ce qui est saisi ici n’est transmis à un serveur ni admis dans le registre public.",
+    fieldPilotFlow: [["01", "Cadrer", "Un workflow, une version, une baseline, une population et une règle d’arrêt."], ["02", "Observer", "Conserver cas acceptés, échoués, exclus, escaladés et traces manquantes."], ["03", "Réviser", "Une personne indépendante contrôle provenance, anonymisation et limites de transfert."], ["04", "Admettre ou retenir", "Seuls les rapports révisés et anonymisés peuvent rejoindre le registre public."]],
+    fieldPilotLabels: { organization: "Parcours de l’organisation", integration: "Niveau d’intégration", sector: "Extension sectorielle", alias: "Alias de projet non identifiant", workflow: "Workflow exact observé", version: "Version du système + workflow", start: "Début de l’observation", end: "Fin de l’observation", transfer: "Contextes auxquels le résultat peut se transférer", unsupported: "Ce que ce résultat ne démontre pas" },
+    fieldPilotSectors: [{ id: "general", label: "Général / transverse" }, { id: "healthcare", label: "Santé" }, { id: "education", label: "Éducation" }, { id: "finance", label: "Finance" }, { id: "critical", label: "Infrastructure critique" }],
+    fieldPilotPrivacy: "Brouillon local uniquement · Ne saisissez ni nom de client, donnée personnelle, secret, contenu privilégié, prompt brut ou détail de sécurité exploitable.",
+    fieldPilotChecklistTitle: "REVUE DE PUBLICATION · LES SIX DOIVENT ÊTRE VRAIES",
+    fieldPilotChecklist: ["La baseline, le dénominateur, les exclusions et les cas manquants sont conservés.", "Observation, mesure interne, estimation, opinion et affirmation fournisseur sont séparées.", "Incidents, quasi-incidents, corrections, refus et retraits restent visibles.", "Les détails personnels, identifiants, confidentiels, privilégiés et sensibles pour la sécurité sont retirés.", "Un réviseur indépendant, une autorité de publication et une voie de retrait existent dans le dossier privé.", "Les limites de transfert et affirmations non démontrées empêchent l’usage comme benchmark universel."],
+    fieldPilotState: { draft: "BROUILLON LOCAL · INCOMPLET", review: "PRÊT POUR REVUE INDÉPENDANTE", completed: "exigences complètes", remaining: "encore requises" },
+    fieldPilotEvidenceTitle: "PHOTOGRAPHIE ACTUELLE DES OBSERVATIONS",
+    fieldPilotEvidenceConfirm: "J’ai remplacé les valeurs de démonstration ci-dessus par les observations réelles de ce pilote précis et conservé chaque cas éligible, exclu, échoué ou manquant dans le dénominateur.",
+    fieldPilotDownload: "Télécharger le brouillon local",
+    fieldPilotProtocol: "Ouvrir le protocole complet",
+    fieldPilotTemplate: "Ouvrir le rapport vierge",
+    fieldPilotAlwaysDraft: "L’export reste toujours un brouillon. Être prêt pour la revue n’est ni une autorisation de publier ni une validation terrain.",
     pathsEyebrow: "PARTEZ DE VOTRE RÉALITÉ",
     pathsTitle: "Choisissez la structure dans laquelle vous intervenez.",
     pathsText: "Même méthode. Profondeur différente pour les contrôles, les preuves et les responsabilités.",
@@ -804,6 +839,16 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [reviewDate, setReviewDate] = useState(operationSpecs.agent.reviewDate);
   const [operationCopied, setOperationCopied] = useState(false);
   const [dossierCopied, setDossierCopied] = useState(false);
+  const [fieldSectorId, setFieldSectorId] = useState<FieldSectorId>("general");
+  const [fieldAlias, setFieldAlias] = useState("");
+  const [fieldWorkflow, setFieldWorkflow] = useState("");
+  const [fieldVersion, setFieldVersion] = useState("");
+  const [fieldStart, setFieldStart] = useState("");
+  const [fieldEnd, setFieldEnd] = useState("");
+  const [fieldTransfer, setFieldTransfer] = useState("");
+  const [fieldUnsupported, setFieldUnsupported] = useState("");
+  const [fieldEvidenceConfirmed, setFieldEvidenceConfirmed] = useState(false);
+  const [fieldReviewChecks, setFieldReviewChecks] = useState<boolean[]>(() => t.fieldPilotChecklist.map(() => false));
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const applicableControls = useMemo(() => controlCatalog.filter((control) => (
     control.applicability.organization_types.includes(selected.id)
@@ -815,8 +860,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const langLabel = locale === "en" ? "FR" : "EN";
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
   const journeySteps = locale === "en"
-    ? [["calibrator", "Calibrate"], ["pilot-plan", "Pilot"], ["evidence-gate", "Decide"], ["operations", "Operate"], ["decision-dossier", "Hand off"]]
-    : [["calibrator", "Calibrer"], ["pilot-plan", "Piloter"], ["evidence-gate", "Décider"], ["operations", "Exploiter"], ["decision-dossier", "Transmettre"]];
+    ? [["calibrator", "Calibrate"], ["pilot-plan", "Pilot"], ["evidence-gate", "Decide"], ["operations", "Operate"], ["decision-dossier", "Hand off"], ["field-pilot", "Field test"]]
+    : [["calibrator", "Calibrer"], ["pilot-plan", "Piloter"], ["evidence-gate", "Décider"], ["operations", "Exploiter"], ["decision-dossier", "Transmettre"], ["field-pilot", "Terrain"]];
   const calibration = useMemo(() => {
     const spec = calibrationSpecs[calibrationLevel];
     const eligibleCases = monthlyCases * eligibleShare / 100;
@@ -914,6 +959,53 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     t.dossierBoundary,
   ].join("\n");
+  const fieldSector = t.fieldPilotSectors.find((sector) => sector.id === fieldSectorId) ?? t.fieldPilotSectors[0];
+  const fieldDatesValid = Boolean(fieldStart && fieldEnd && fieldEnd >= fieldStart);
+  const fieldRequirements = [
+    fieldAlias.trim().length > 0,
+    fieldWorkflow.trim().length > 0,
+    fieldVersion.trim().length > 0,
+    fieldDatesValid,
+    fieldTransfer.trim().length > 0,
+    fieldUnsupported.trim().length > 0,
+    evidenceRecordReady && fieldEvidenceConfirmed,
+    ...fieldReviewChecks,
+  ];
+  const fieldCompleted = fieldRequirements.filter(Boolean).length;
+  const fieldReadyForReview = fieldCompleted === fieldRequirements.length;
+  const fieldSlug = fieldAlias.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48) || "field-pilot";
+  const fieldReportMarkdown = [
+    `# ${locale === "en" ? "Anonymized field-feedback report" : "Rapport anonymisé de retour terrain"}`,
+    ``,
+    `**${locale === "en" ? "Status" : "Statut"}:** ${locale === "en" ? "DRAFT · not admitted to the public registry" : "BROUILLON · non admis dans le registre public"}`,
+    `**${locale === "en" ? "Review readiness" : "État de préparation"}:** ${fieldReadyForReview ? t.fieldPilotState.review : t.fieldPilotState.draft} · ${fieldCompleted}/${fieldRequirements.length}`,
+    ``,
+    `## ${locale === "en" ? "Pilot identity" : "Identité du pilote"}`,
+    ``,
+    `- ${t.fieldPilotLabels.alias}: ${fieldAlias.trim() || "[TO COMPLETE]"}`,
+    `- ${t.fieldPilotLabels.organization}: ${selected.title}`,
+    `- ${t.fieldPilotLabels.sector}: ${fieldSector.label}`,
+    `- ${t.fieldPilotLabels.integration}: ${pilotLevelLabel}`,
+    `- ${t.fieldPilotLabels.version}: ${fieldVersion.trim() || "[TO COMPLETE]"}`,
+    `- ${locale === "en" ? "Observation period" : "Période d’observation"}: ${fieldStart || "[TO COMPLETE]"} → ${fieldEnd || "[TO COMPLETE]"}`,
+    ``,
+    `## ${locale === "en" ? "Workflow and evidence boundary" : "Workflow et frontière des preuves"}`,
+    ``,
+    `${fieldWorkflow.trim() || "[TO COMPLETE]"}`,
+    ``,
+    fieldEvidenceConfirmed ? evidenceMemo : `[${locale === "en" ? "TO COMPLETE — confirm that demonstration values were replaced with observed evidence" : "À COMPLÉTER — confirmer que les valeurs de démonstration ont été remplacées par des preuves observées"}]`,
+    ``,
+    `## ${locale === "en" ? "Transfer limits" : "Limites de transfert"}`,
+    ``,
+    `- ${t.fieldPilotLabels.transfer}: ${fieldTransfer.trim() || "[TO COMPLETE]"}`,
+    `- ${t.fieldPilotLabels.unsupported}: ${fieldUnsupported.trim() || "[TO COMPLETE]"}`,
+    ``,
+    `## ${locale === "en" ? "Publication review" : "Revue avant publication"}`,
+    ``,
+    ...t.fieldPilotChecklist.map((item, index) => `- [${fieldReviewChecks[index] ? "x" : " "}] ${item}`),
+    ``,
+    `> ${t.fieldPilotAlwaysDraft}`,
+  ].join("\n");
   const copyPilotBrief = async () => {
     try {
       await navigator.clipboard.writeText(pilotBrief);
@@ -955,6 +1047,15 @@ export function Playbook({ locale }: { locale: Locale }) {
     anchor.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 0);
   };
+  const downloadFieldReport = () => {
+    const blob = new Blob([fieldReportMarkdown], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `field-feedback-${fieldSlug}.md`;
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
 
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
 
@@ -975,7 +1076,7 @@ export function Playbook({ locale }: { locale: Locale }) {
 
       <main id="main">
         <section className="hero" id="top">
-          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#integration-levels">{t.start}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
+          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#integration-levels">{t.start}</a><a className="button secondary" href="#field-pilot">{t.fieldPilotHero}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
           <aside className="hero-rule" aria-label={t.rule}><p className="rule-label">{t.rule}</p><ol>{t.gates.map(([condition, decision], index) => <li key={condition}><span>0{index + 1}</span><strong>{condition}</strong><em>{decision}</em></li>)}</ol></aside>
         </section>
 
@@ -1007,7 +1108,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
-              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); setDossierCopied(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
+              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => { setCalibrationLevel(level.id); setSetupHours(calibrationSpecs[level.id].setup); setReviewDate(operationSpecs[level.id].reviewDate); setOperationCopied(false); setDossierCopied(false); setFieldEvidenceConfirmed(false); }} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
               <div className="calibrator-inputs">
                 <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
                 <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
@@ -1072,12 +1173,12 @@ export function Playbook({ locale }: { locale: Locale }) {
               <p className="eyebrow">{t.evidenceInputsTitle}</p>
               <h3>{pilotLevelLabel}</h3>
               <div>
-                <label><span>{t.evidenceInputs.cases}</span><div><input aria-label={t.evidenceInputs.cases} max="2000" min="0" onChange={(event) => setObservedCases(Math.min(2000, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedCases} /><small>{t.evidenceUnits.cases}</small></div></label>
-                <label><span>{t.evidenceInputs.time}</span><div><input aria-label={t.evidenceInputs.time} max="100" min="0" onChange={(event) => setObservedTimeReduction(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedTimeReduction} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.quality}</span><div><input aria-label={t.evidenceInputs.quality} max="100" min="0" onChange={(event) => setObservedQuality(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedQuality} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.critical}</span><div><input aria-label={t.evidenceInputs.critical} max="99" min="0" onChange={(event) => setCriticalEffects(Math.min(99, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={criticalEffects} /><small>{t.evidenceUnits.events}</small></div></label>
-                <label><span>{t.evidenceInputs.trace}</span><div><input aria-label={t.evidenceInputs.trace} max="100" min="0" onChange={(event) => setTraceCompleteness(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={traceCompleteness} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.eligibility}</span><div><input aria-label={t.evidenceInputs.eligibility} max="100" min="0" onChange={(event) => setObservedEligibility(Math.min(100, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={observedEligibility} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.cases}</span><div><input aria-label={t.evidenceInputs.cases} max="2000" min="0" onChange={(event) => { setObservedCases(Math.min(2000, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedCases} /><small>{t.evidenceUnits.cases}</small></div></label>
+                <label><span>{t.evidenceInputs.time}</span><div><input aria-label={t.evidenceInputs.time} max="100" min="0" onChange={(event) => { setObservedTimeReduction(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedTimeReduction} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.quality}</span><div><input aria-label={t.evidenceInputs.quality} max="100" min="0" onChange={(event) => { setObservedQuality(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedQuality} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.critical}</span><div><input aria-label={t.evidenceInputs.critical} max="99" min="0" onChange={(event) => { setCriticalEffects(Math.min(99, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={criticalEffects} /><small>{t.evidenceUnits.events}</small></div></label>
+                <label><span>{t.evidenceInputs.trace}</span><div><input aria-label={t.evidenceInputs.trace} max="100" min="0" onChange={(event) => { setTraceCompleteness(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={traceCompleteness} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.eligibility}</span><div><input aria-label={t.evidenceInputs.eligibility} max="100" min="0" onChange={(event) => { setObservedEligibility(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedEligibility} /><small>{t.evidenceUnits.percent}</small></div></label>
               </div>
             </div>
             <output className="evidence-result" data-decision={evidenceDecision} aria-live="polite">
@@ -1129,6 +1230,36 @@ export function Playbook({ locale }: { locale: Locale }) {
             <aside><span>{t.dossierBoundaryTitle}</span><p>{t.dossierBoundary}</p><div><strong>4</strong><small>{locale === "en" ? "decision artifacts in the export" : "artefacts de décision dans l’export"}</small></div></aside>
           </div>
           <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
+        </section>
+
+        <section className="field-pilot section-blue" id="field-pilot" aria-labelledby="field-pilot-title">
+          <div className="section-heading"><p className="eyebrow">{t.fieldPilotEyebrow}</p><h2 id="field-pilot-title">{t.fieldPilotTitle}</h2><p>{t.fieldPilotText}</p></div>
+          <ol className="field-pilot-flow">{t.fieldPilotFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
+          <div className="field-pilot-shell">
+            <div className="field-pilot-form">
+              <p className="field-pilot-privacy"><strong>{locale === "en" ? "PRIVACY BOUNDARY" : "FRONTIÈRE DE CONFIDENTIALITÉ"}</strong>{t.fieldPilotPrivacy}</p>
+              <div className="field-pilot-selects">
+                <label><span>{t.fieldPilotLabels.organization}</span><select onChange={(event) => { setAudienceId(event.target.value as AudienceId); setFieldEvidenceConfirmed(false); }} value={audienceId}>{audiences[locale].map((audience) => <option key={audience.id} value={audience.id}>{audience.title}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.integration}</span><select onChange={(event) => { const level = event.target.value as IntegrationId; setCalibrationLevel(level); setSetupHours(calibrationSpecs[level].setup); setReviewDate(operationSpecs[level].reviewDate); setOperationCopied(false); setDossierCopied(false); setFieldEvidenceConfirmed(false); }} value={calibrationLevel}>{t.calibratorLevels.map((level) => <option key={level.id} value={level.id}>{level.label}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.sector}</span><select onChange={(event) => { setFieldSectorId(event.target.value as FieldSectorId); setFieldEvidenceConfirmed(false); }} value={fieldSectorId}>{t.fieldPilotSectors.map((sector) => <option key={sector.id} value={sector.id}>{sector.label}</option>)}</select></label>
+              </div>
+              <div className="field-pilot-fields">
+                <label><span>{t.fieldPilotLabels.alias}</span><input maxLength={80} onChange={(event) => setFieldAlias(event.target.value)} placeholder={locale === "en" ? "Example: Workshop North" : "Exemple : Atelier Nord"} type="text" value={fieldAlias} /></label>
+                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => setFieldVersion(event.target.value)} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Workflow 1.2 · modèle/config 2026-08"} type="text" value={fieldVersion} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.workflow}</span><textarea maxLength={360} onChange={(event) => setFieldWorkflow(event.target.value)} placeholder={locale === "en" ? "Describe one bounded input-to-accepted-outcome workflow." : "Décrivez un seul workflow borné, de l’entrée au résultat accepté."} rows={3} value={fieldWorkflow} /></label>
+                <label><span>{t.fieldPilotLabels.start}</span><input onChange={(event) => setFieldStart(event.target.value)} type="date" value={fieldStart} /></label>
+                <label><span>{t.fieldPilotLabels.end}</span><input min={fieldStart || undefined} onChange={(event) => setFieldEnd(event.target.value)} type="date" value={fieldEnd} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.transfer}</span><textarea maxLength={420} onChange={(event) => setFieldTransfer(event.target.value)} placeholder={locale === "en" ? "Name the represented population, workflow, permissions, and conditions." : "Nommez population, workflow, permissions et conditions représentés."} rows={3} value={fieldTransfer} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.unsupported}</span><textarea maxLength={420} onChange={(event) => setFieldUnsupported(event.target.value)} placeholder={locale === "en" ? "Example: does not prove gains for other sectors, versions, or autonomy levels." : "Exemple : ne démontre aucun gain pour d’autres secteurs, versions ou niveaux d’autonomie."} rows={3} value={fieldUnsupported} /></label>
+              </div>
+            </div>
+            <aside className="field-pilot-review">
+              <output className="field-pilot-status" data-ready={fieldReadyForReview} aria-live="polite"><span>{fieldReadyForReview ? t.fieldPilotState.review : t.fieldPilotState.draft}</span><strong>{fieldCompleted}/{fieldRequirements.length}</strong><small>{fieldReadyForReview ? t.fieldPilotState.completed : `${fieldRequirements.length - fieldCompleted} ${t.fieldPilotState.remaining}`}</small></output>
+              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{observedTimeReduction}%</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
+              <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
+            </aside>
+          </div>
+          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
         <section className="paths section-dark" id="paths" aria-labelledby="paths-title">

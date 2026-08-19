@@ -31,6 +31,10 @@ from baseline and pre-registered thresholds to an explicit scope decision.
 [critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
 vetoes and evidence gates without replacing the universal process.
 
+**Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
+to prepare a local draft, preserve the full denominator, and request independent
+review before any anonymized result can enter the public registry.
+
 ## Why this repository exists
 
 AI adoption fails when a tool demo is mistaken for an operating model. This playbook starts with the actual work, measures the baseline, chooses the least complex sufficient system, and requires evidence before autonomy increases.

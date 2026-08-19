@@ -19,6 +19,8 @@ REQUIRED_FILES = (
     "README.fr.md",
     "LICENSE",
     "docs/evaluations-and-gates.md",
+    "docs/field-pilot-protocol.md",
+    "docs/field-pilot-protocol.fr.md",
     "docs/legal-switzerland-eu.md",
     "docs/maturity-model.md",
     "docs/risk-autonomy.md",
@@ -74,6 +76,7 @@ REQUIRED_FILES = (
 )
 TRANSLATION_PAIRS = (
     ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),
+    ("docs/field-pilot-protocol.md", "docs/field-pilot-protocol.fr.md"),
     ("docs/legal-switzerland-eu.md", "docs/legal-switzerland-eu.fr.md"),
     ("docs/maturity-model.md", "docs/maturity-model.fr.md"),
     ("docs/risk-autonomy.md", "docs/risk-autonomy.fr.md"),

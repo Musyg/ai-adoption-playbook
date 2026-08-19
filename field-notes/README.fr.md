@@ -2,6 +2,10 @@
 
 Ce dossier constitue la frontière de publication des retours terrain révisés et anonymisés. Il ne contient encore aucun rapport terrain. Un registre vide ne prouve pas que le playbook fonctionne en pratique.
 
+Commencez par le [protocole de pilote terrain](../docs/field-pilot-protocol.fr.md).
+Son assistant web crée uniquement un brouillon local ; les preuves brutes ne
+doivent jamais être transmises dans une issue publique.
+
 ## Règle d’admission
 
 Un rapport apparaît dans [`index.json`](index.json) uniquement s’il :
