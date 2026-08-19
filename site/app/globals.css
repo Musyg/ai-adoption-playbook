@@ -453,6 +453,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .field-pilot-footer .button { min-width: 0; text-align: center; width: 100%; }
 .field-pilot-footer .primary { border-color: var(--ink); }
 .field-pilot-footer .secondary { border-color: rgb(7 16 24 / 38%); color: #071018; font-size: 12px; }
+.field-pilot-footer .secondary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
 .path-grid { border-bottom: 1px solid var(--dark-line); border-top: 1px solid var(--dark-line); display: grid; grid-template-columns: repeat(5, 1fr); }
 .path-card {
