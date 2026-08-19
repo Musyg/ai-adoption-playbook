@@ -18,3 +18,19 @@ if (!root) {
 }
 
 createRoot(root).render(<Playbook locale={locale} />);
+
+function scrollToCurrentHash() {
+  const rawId = window.location.hash.slice(1);
+  if (!rawId) return;
+
+  let id = rawId;
+  try {
+    id = decodeURIComponent(rawId);
+  } catch {
+    // Keep the literal fragment when it is not valid URI-encoded text.
+  }
+  document.getElementById(id)?.scrollIntoView();
+}
+
+window.addEventListener("hashchange", scrollToCurrentHash);
+window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToCurrentHash));
