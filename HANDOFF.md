@@ -9,12 +9,12 @@ There is no unfinished implementation hidden behind this handoff.
 
 - Canonical repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `agent/add-visual-playbook`
-- Reference implementation commit: `cf5dbbb77b5da7e96402f2565968395604feedd4`
+- Reference implementation commit: `8a2bfa57472cbf9ef708e50db045fee2f516af6a`
 - Handoff document commit: the commit containing this file.
 - Canonical site source: `site/`
 - Local Sites publishing mirror: `work/sites-source/`
 - Publishing-mirror branch: `main`
-- Publishing-mirror commit: `654f281175f37bf49bf48c5aa1409cd8e6b666fe`
+- Publishing-mirror commit: `598ffcd7919d61c0c6723be1a4c2876a16d5ca42`
 - Both worktrees were clean and equal to their remotes at this snapshot.
 
 The publishing mirror is not a second source of product truth. Make changes in
@@ -26,11 +26,11 @@ site files into the mirror for Sites publication.
 - Live URL: <https://ai-adoption-playbook.gimu84.chatgpt.site>
 - French route: <https://ai-adoption-playbook.gimu84.chatgpt.site/fr/>
 - Sites project: `appgprj_6a841ee3465c819189931388f30b54d6`
-- Current Sites version: `17`
-- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_79b934c3cc588191a9a4cc4634a0b45c`
-- Source commit used by Sites: `654f281175f37bf49bf48c5aa1409cd8e6b666fe`
-- Archive content hash: `sha256:09bbba8f158481bd496b85ef5454482db3044c0357a350df641105a76a54bcab`
-- Deployment ID: `appgdep_6a84f3c3745081919e5a9f6325a4df5d`
+- Current Sites version: `18`
+- Version ID: `appgprj_6a841ee3465c819189931388f30b54d6~appgver_bb074312f790819180e414c7e387d7dd`
+- Source commit used by Sites: `598ffcd7919d61c0c6723be1a4c2876a16d5ca42`
+- Archive content hash: `sha256:acbd579f40668a3de11ce3817b84e6c189ff2fb4623958615b176dd98f970377`
+- Deployment ID: `appgdep_6a84fcc8a7ec81918bc0e3f0465d4ae4`
 - Deployment state: `succeeded`
 - Access mode: private/custom; visitors may need to continue with ChatGPT.
 
@@ -47,7 +47,8 @@ The web experience is bilingual and follows one explicit decision chain:
 3. preregister a bounded pilot and its acceptance thresholds;
 4. enter observed evidence and obtain one of four gate outcomes;
 5. translate the gate into a reversible operating state;
-6. export a reviewable Markdown decision dossier.
+6. resolve organization, impact, and autonomy to a versioned control set;
+7. export a reviewable Markdown decision dossier.
 
 The sticky decision rail exposes the five operational stages: Calibrate, Pilot,
 Decide, Operate, and Hand off. On small screens it becomes a keyboard-accessible
@@ -67,6 +68,15 @@ intake denominators and distinguish administrative transport from judgment.
 The numerical ranges are planning envelopes and the cases are synthetic; none
 is presented as a universal forecast or field proof.
 
+The new machine-readable crosswalk publishes 20 stable control IDs, 19 evidence
+types, and nine dated source records under `site/public/data/`. A JSON Schema
+fixes contract version `1.0.0`; the repository validator checks uniqueness,
+references, applicability axes, gates, lifecycle phases, and implementation
+paths. The bilingual interface filters candidate controls by the selected
+organization and R×A profile while keeping conditional triggers visible. Its
+source relations are deliberately thematic, not clause-level equivalence,
+certification, or legal-compliance claims.
+
 ## Decision and evidence rules
 
 - A productivity percentage applies only to eligible work, not automatically to
@@ -82,6 +92,8 @@ is presented as a universal forecast or field proof.
   secrets, or uncontrolled evidence copies.
 - An orchestrated agency must earn its added complexity against a simpler design;
   the playbook does not treat multi-agent architecture as the default.
+- A filtered control list remains conditional guidance. A qualified person must
+  decide whether each trigger and applicable legal requirement is present.
 
 The pure gate function is in `site/app/evidence-decision.mjs`. The interactive
 page is in `site/app/Playbook.tsx`, and the visual system is in
@@ -95,9 +107,13 @@ mirror where applicable:
 - ESLint: clean.
 - Vinext production build: successful for `/` and `/fr`.
 - Gate-decision unit tests: 4/4 passed.
+- Control-crosswalk contract tests: 3/3 passed.
 - Rendered bilingual HTML tests: 2/2 passed.
-- Combined publishing-mirror test run: 6/6 passed.
-- Repository validation: 49 Markdown files and register contract passed.
+- Combined publishing-mirror test run: 9/9 passed.
+- Repository validation: 50 Markdown files, AI register, and control-crosswalk
+  contracts passed.
+- JSON Schema 2020-12 validation passed for 20 controls, 19 evidence types, and
+  nine source records.
 - Previous browser audit: 1440 × 900 and 390 × 844, through the SME case.
 - That earlier browser audit found no duplicate IDs, unnamed visible controls,
   or page overflow at either audited viewport.
@@ -112,6 +128,9 @@ mirror where applicable:
   the 39.2–106.5 hour envelope, 145-to-58-minute observation, 121/166 correction
   denominator, approximately 35% portfolio ceiling, 100% human public decisions,
   a deliberately non-viable low case, and three external evidence classes.
+- New control-crosswalk rendered assertions cover the bilingual section,
+  stable control and evidence IDs, source references, public JSON/schema links,
+  and the explicit non-equivalence boundary.
 - Keyboard audit: skip link, header navigation, language switch, five-step rail,
   and hero actions expose visible focus.
 - Interaction audit: the agency scenario produced `80–92%`; passing evidence
@@ -124,7 +143,7 @@ From `site/`, use a supported Node.js runtime and run:
 ```powershell
 npm run lint
 npm run build
-node --test tests/evidence-decision.test.mjs tests/rendered-html.test.mjs
+node --test tests/*.test.mjs
 ```
 
 On the snapshot machine, Node/npm were not on the default PowerShell `PATH`.
@@ -145,25 +164,26 @@ hash from another session.
   reference data. Review them before presenting a later release as current.
 - Markdown operating tracks currently exist in French only. The English web
   experience does not mean every underlying guide has an English file.
-- No new browser-control audit was run for the foundation or public-service
-  sections. The exact canonical and publishing-mirror sources matched byte for
-  byte, and both passed lint, production build, and bilingual rendered-HTML tests.
-- Bilingual worked examples now cover every organization track. Roadmap 0.2
-  still lacks the complete English operating-guide translation and the planned
-  machine-readable control crosswalk.
+- No new browser-control audit was run for the foundation, public-service, or
+  control-crosswalk sections. The eight intended site files matched between the
+  canonical and publishing-mirror sources, and both passed lint, production
+  build, and all nine tests.
+- Bilingual worked examples cover every organization track, and the machine-
+  readable control crosswalk is implemented. Roadmap 0.2 now lacks only the
+  complete English operating-guide translation.
 
 ## First authorized next step
 
 The implementation is complete. The next session should first open Sites version
-17 while signed in and collect one bounded list of editorial or visual defects.
+18 while signed in and collect one bounded list of editorial or visual defects.
 Do not change access mode, architecture, claims, or deploy another version without
 a new user request.
 
 If the reference version is accepted without defects, resume roadmap `0.2` with
-the machine-readable control crosswalk, including stable control IDs, source and
-version fields, applicability, required evidence, and mappings to the playbook's
-gates. Then complete the remaining English operating-guide translations without
-claiming that the current bilingual web copy already satisfies that item.
+the remaining English operating-guide translations. Preserve the French source
+files, add one English counterpart at a time, keep links explicit, and do not
+claim roadmap `0.2` complete until every operating guide and organization track
+has a validated English file.
 
 ## Resume checklist
 
