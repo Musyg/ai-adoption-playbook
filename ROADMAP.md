@@ -8,11 +8,16 @@
 - [x] Consolidate validation workflows and add dependency update configuration.
 - [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
 - [x] Update version, changelog, operational documentation, and handoff.
+- [x] Complete the private repository, history, security, and community-file audit.
 - [ ] Change repository visibility or select a host.
 
 The final item is intentionally outside this release preparation. The repository
 remains private, has no declared website URL, and must be reviewed before any
 separate publication decision.
+
+The open field-feedback item under 0.3 is an evidence-growth objective. It does
+not block publication of the complete 0.2 release, because the empty registry
+and the absence of first-party evidence are stated explicitly.
 
 ## 0.2
 

@@ -1,6 +1,6 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-19 (Europe/Zurich)
+Snapshot: 2026-08-20 (Europe/Zurich)
 
 ## Current state
 
@@ -48,7 +48,7 @@ Synthetic examples are not field evidence. `field-notes/index.json` remains
 empty until a genuine, independently reviewed and sanitized submission meets
 the publication contract. Public third-party studies inform pilot design but do
 not satisfy that first-party admission rule. This remains the only open 0.3
-roadmap item.
+roadmap item and does not block publication of the complete 0.2 release.
 
 ## Hosting-neutral behavior
 
@@ -77,7 +77,7 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local 0.3 verification on 2026-08-19:
+Latest local verification on 2026-08-20:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
@@ -86,7 +86,7 @@ Latest local 0.3 verification on 2026-08-19:
 - Playwright: 15/15 pass across English, French, desktop light, desktop dark,
   and mobile light
 - automated axe checks: zero violations
-- repository validation: 95 Markdown files and 32 bilingual pairs pass
+- repository validation: 98 Markdown files and 33 bilingual pairs pass
 
 The verification contract covers:
 
@@ -94,7 +94,7 @@ The verification contract covers:
 - the Vinext server build and provider-neutral static export;
 - 18 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 12 Playwright checks across English, French, desktop light, desktop dark, and
+- 15 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;
@@ -129,9 +129,13 @@ public and do not deploy the application.
 - Search-ready metadata does not prove indexation, ranking, or answer-engine
   citation.
 
-## Next authorized decision
+## Publication decision
 
-Present the final private-repository audit to the owner. Do not change visibility,
-declare a website URL, enable static hosting, deploy a mirror, or submit a
-sitemap. Those actions require a later, explicit instruction after the owner has
-accepted the repository result.
+After this release-preparation change is merged and `main` is green, the
+repository is technically ready for the owner to decide whether to change its
+visibility. The incomplete field-feedback objective remains visible and is not
+presented as implemented.
+
+Do not change visibility, declare a website URL, enable static hosting, deploy a
+mirror, or submit a sitemap without a separate explicit instruction. Making the
+repository public would not authorize hosting.

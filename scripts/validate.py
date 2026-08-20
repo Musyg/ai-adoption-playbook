@@ -17,6 +17,8 @@ MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 REQUIRED_FILES = (
     "README.md",
     "README.fr.md",
+    "CODE_OF_CONDUCT.md",
+    "CODE_OF_CONDUCT.fr.md",
     "CONTRIBUTING.md",
     "CONTRIBUTING.fr.md",
     "LICENSE",
@@ -81,12 +83,15 @@ REQUIRED_FILES = (
     ".github/ISSUE_TEMPLATE/correction-fr.yml",
     ".github/ISSUE_TEMPLATE/field-pilot-en.yml",
     ".github/ISSUE_TEMPLATE/field-pilot-fr.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/PULL_REQUEST_TEMPLATE/field-report.md",
     ".github/PULL_REQUEST_TEMPLATE/field-report.fr.md",
     ".github/workflows/validate.yml",
     ".github/dependabot.yml",
 )
 TRANSLATION_PAIRS = (
+    ("CODE_OF_CONDUCT.md", "CODE_OF_CONDUCT.fr.md"),
     ("CONTRIBUTING.md", "CONTRIBUTING.fr.md"),
     ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),
     ("docs/field-pilot-protocol.md", "docs/field-pilot-protocol.fr.md"),
@@ -148,9 +153,9 @@ IGNORED_PARTS = {
     "static-dist",
     "work",
 }
-FORBIDDEN_HOSTING_ORIGINS = (
-    "musyg" + ".github.io/ai-adoption-playbook",
-    "ai-adoption-playbook.gimu84." + "chatgpt.site",
+FORBIDDEN_HOSTING_SUFFIXES = (
+    ".".join(("github", "io")),
+    ".".join(("chatgpt", "site")),
 )
 CONTROL_ID = re.compile(r"^AAP-[A-Z]{3}-[0-9]{3}$")
 EVIDENCE_ID = re.compile(r"^EV-[A-Z0-9-]+$")
@@ -250,8 +255,8 @@ def check_hosting_neutrality(errors: list[str]) -> None:
         if is_ignored_repo_path(path):
             continue
         text = path.read_text(encoding="utf-8")
-        for origin in FORBIDDEN_HOSTING_ORIGINS:
-            if origin in text:
+        for suffix in FORBIDDEN_HOSTING_SUFFIXES:
+            if suffix in text:
                 errors.append(f"provider-specific hosting origin: {path.relative_to(ROOT)}")
 
 

@@ -2,7 +2,7 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md)
+[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md) · [Contributing](CONTRIBUTING.md) · [Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
 
 ![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
@@ -24,7 +24,7 @@ of truth.
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
 
-> Status: version **0.2.0**, private repository, snapshot **2026-08-19**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
+> Status: version **0.2.0**, private repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
 **0.3 evidence and sector work:** the bilingual
 [20-source public evidence review](references/field-evidence-review-2026.md)

@@ -11,6 +11,11 @@
   benchmark completion, and self-reported public-sector savings.
 - Kept the first-party field registry empty: public third-party evidence informs
   the 0.3 pilot but does not satisfy its field-feedback admission rule.
+- Completed the private public-readiness audit, added bilingual conduct guidance
+  and a general pull-request checklist, and removed exact legacy hosting origins
+  from the current validation source.
+- Clarified that future first-party field feedback is an evidence-growth item,
+  not a blocker for publishing the complete 0.2 release.
 - Updated the supported toolchain to TypeScript 6.0.3, ESLint 9.39.5,
   `typescript-eslint` 8.67.0, `globals` 17.11.0, and the latest compatible
   Node 22 type definitions.
