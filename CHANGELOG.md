@@ -2,23 +2,23 @@
 
 ## Unreleased
 
-- Completed a bilingual editorial audit of the 95 paired content headings,
-  browser titles, language metadata, and six paired GEO intents. Rephrased key
-  French titles and summaries for clarity and added structural translation
-  checks to the automated test suite.
+- Completed an editorial audit of the 95 paired content headings, browser
+  titles, route metadata, and six practical guides. Rephrased unclear titles
+  and summaries and added structural consistency checks to the automated test
+  suite.
 - Recorded the owner-authorized change to public repository visibility while
   keeping website hosting, canonical URLs, and sitemap publication disabled.
 
 ## 0.2.1, 2026-08-20
 
-- Rebuilt the visual entry experience as a five-step bilingual guide that
+- Rebuilt the visual entry experience as a five-step guide that
   reveals one decision at a time, explains unfamiliar choices through
   accessible help bubbles, and keeps the detailed corpus in three closed,
   deep-linkable chapters.
 - Added progressive topic routers inside every chapter and a separate worked-
   case selector. Only one topic and one comparable case are visible at a time;
   direct links restore the correct nested view.
-- Added a bilingual seven-pattern AI-use classification for generation,
+- Added a seven-pattern AI-use classification for generation,
   retrieval, classification, prediction, conversation, multimodal systems, and
   agentic action. The classification stays separate from integration level,
   autonomy, deployment, and organizational risk.
@@ -34,11 +34,11 @@
 - Added an accessible visual selector with explicit hover and focus states. Its
   pattern and jurisdiction choices filter the evidence controls on desktop and
   mobile.
-- Added four bilingual synthetic non-agentic cases for read-only RAG,
+- Added four synthetic non-agentic cases for read-only RAG,
   conventional prediction, an external customer chatbot, and multimodal
   catalogue accessibility. Their A0 or A1 boundaries, frozen evaluations,
   security tests, legal routes, stop rules, and evidence packs remain distinct.
-- Added a bilingual review of 20 public field studies, deployments, benchmarks,
+- Added a review of 20 public field studies, deployments, benchmarks,
   and negative results, with evidence classes and explicit transfer limits.
 - Removed universal productivity bands from the visual integration guide and
   replaced them with primary-study anchors and editable low/high hypotheses.
@@ -47,7 +47,7 @@
   benchmark completion, and self-reported public-sector savings.
 - Kept the first-party field registry empty: public third-party evidence informs
   the 0.3 pilot but does not satisfy its field-feedback admission rule.
-- Completed the private public-readiness audit, added bilingual conduct guidance
+- Completed the private public-readiness audit, added conduct guidance
   and a general pull-request checklist, and removed exact legacy hosting origins
   from the current validation source.
 - Clarified that future first-party field feedback is an evidence-growth item,
@@ -62,7 +62,7 @@
 
 ## 0.2.0, 2026-08-19
 
-- Added the complete bilingual interactive decision path, six paired GEO guides,
+- Added the complete interactive decision path, six practical guides,
   seven worked cases, sector overlays, and the machine-readable control crosswalk.
 - Distinguished copilots, bounded business agents, and orchestrated agencies,
   with separate planning ranges and evidence requirements.

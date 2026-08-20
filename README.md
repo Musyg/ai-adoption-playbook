@@ -6,7 +6,7 @@
 
 ![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
-The bilingual visual edition starts with a short five-step guide. It asks who
+The visual edition starts with a short five-step guide. It asks who
 you are, what the AI must do, how much it may act, which legal route applies,
 and what a sensible first pilot looks like. One question appears at a time,
 plain-language help bubbles explain unfamiliar choices, and the detailed
@@ -32,9 +32,9 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
+> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available. No public hosting URL is declared.
 
-**0.3 evidence and sector work:** the bilingual
+**0.3 evidence and sector work:** the
 [20-source public evidence review](references/field-evidence-review-2026.md)
 separates task effects, eligible-flow effects, whole-workload outcomes,
 benchmarks, telemetry, and supplier cases. It finds no independent causal field
@@ -114,7 +114,7 @@ autonomy while requiring different evidence.
 ## What is included
 
 - a universal lifecycle with explicit evidence gates;
-- a bilingual taxonomy of generation, retrieval, classification, prediction,
+- a taxonomy of generation, retrieval, classification, prediction,
   conversation, multimodal, and agentic use patterns;
 - risk × autonomy classification;
 - adoption tracks for each organization type;

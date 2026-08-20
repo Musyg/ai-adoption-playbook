@@ -23,7 +23,7 @@ separate owner decision.
 
 ## What is ready
 
-The repository contains a bilingual, progressive decision path from a first
+The repository contains a progressive decision path from a first
 plain-language question to a bounded operating handoff. The default path shows
 one of five decisions at a time, provides contextual help bubbles, and returns
 a personalized starting plan. Three closed chapters keep the concept library,
@@ -62,13 +62,13 @@ covers provider/deployer roles, AI Act classification, Article 50 transparency,
 and separate GDPR or high-risk duties. Neither route is evidence of compliance
 with the other.
 
-Four additional bilingual synthetic cases operationalize the non-agentic modes:
+Four additional synthetic cases operationalize the non-agentic modes:
 read-only RAG, conventional prediction, an external customer chatbot, and a
 multimodal catalogue assistant. They demonstrate that systems can share A0 or
 A1 autonomy while requiring different frozen datasets, failure metrics, legal
 routes, security tests, and release gates.
 
-The 0.3 research pass adds a bilingual review of 20 public studies,
+The 0.3 research pass adds a review of 20 public studies,
 deployments, benchmarks, official evaluations, and negative results. It removes
 the former universal productivity bands from the visual guide. The public
 evidence does not support a generic 5x to 12x multiplier on accepted business
@@ -83,9 +83,9 @@ roadmap item and does not block publication of the complete 0.2.1 release.
 ## Hosting-neutral behavior
 
 The default server and static builds declare no production origin. They omit
-canonical links, language alternates tied to an origin, `og:url`, and social
-images that require an absolute URL. The static export also omits a sitemap and
-ships with `noindex, nofollow`.
+canonical links, alternate route metadata tied to an origin, `og:url`, and
+social images that require an absolute URL. The static export also omits a
+sitemap and ships with `noindex, nofollow`.
 
 Only after the owner approves a host may a deployment configure:
 
@@ -93,9 +93,8 @@ Only after the owner approves a host may a deployment configure:
 - `STATIC_BASE_PATH`, if the application is served below the origin root.
 
 With `PUBLIC_SITE_URL` set, the static finalizer can generate canonical links,
-English and French alternates, `og:url`, absolute social images, and the
-bilingual sitemap. This capability is build-time configuration, not a current
-deployment.
+alternate routes, `og:url`, absolute social images, and the sitemap. This
+capability is build-time configuration, not a current deployment.
 
 ## Validation contract
 
@@ -113,10 +112,10 @@ Latest local verification on 2026-08-20:
 - TypeScript 6.0.3: pass
 - server and static builds: pass
 - Node tests: 21/21 pass
-- Playwright: 27/27 pass across English, French, desktop light, desktop dark,
-  and mobile light
+- Playwright: 27/27 pass across both routes, desktop light, desktop dark, and
+  mobile light
 - automated axe checks: zero violations
-- repository validation: 108 Markdown files and 45 bilingual pairs pass
+- repository validation: 108 Markdown files and 45 paired documents pass
 
 The verification contract covers:
 
@@ -124,11 +123,11 @@ The verification contract covers:
 - the Vinext server build and provider-neutral static export;
 - 21 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 27 Playwright checks across English, French, desktop light, desktop dark, and
+- 27 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;
-- repository structure, bilingual pairs, links, register contracts, crosswalk
+- repository structure, paired documents, links, register contracts, crosswalk
   references, and forbidden historical hosting origins;
 - npm dependency audit at the moderate threshold in continuous integration.
 

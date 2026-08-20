@@ -29,7 +29,7 @@ Talos/Hermes de toute revendication de performance.
 Les anciennes plages 20–40 %, 50–75 % et 80–92 %, ainsi que le facteur 5 à 12,
 ne doivent donc pas être présentés comme des bornes empiriques générales. Ils
 peuvent seulement servir d’hypothèses de stress modifiables avant un pilote.
-La [revue bilingue de 20 sources](field-evidence-review-2026.fr.md) classe chaque
+La [revue de 20 sources](field-evidence-review-2026.fr.md) classe chaque
 observation par force de preuve, résultat mesuré et limite de transfert.
 
 ## La preuve directe la plus proche d’un agent métier
