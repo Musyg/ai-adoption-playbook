@@ -54,6 +54,24 @@ test("use pattern and jurisdiction update the evidence profile", async ({ page }
   await expect(page.getByText("AAP-TRN-004", { exact: true })).toHaveCount(1);
 });
 
+test("non-agentic cases expose four distinct evidence contracts", async ({ page }) => {
+  await page.goto("/");
+
+  const cards = page.locator(".non-agentic-grid article");
+  await expect(cards).toHaveCount(4);
+  await expect(cards.nth(0)).toContainText("A1");
+  await expect(cards.nth(1)).toContainText("A0");
+  await expect(cards.nth(2)).toContainText("No account");
+  await expect(cards.nth(3)).toContainText("0 publishing rights");
+
+  const caseLinks = page.locator(".non-agentic-footer a");
+  await expect(caseLinks).toHaveCount(4);
+  await expect(caseLinks.nth(0)).toHaveAttribute("href", /examples\/en\/rag-policy-assistant\.md$/);
+  await expect(caseLinks.nth(1)).toHaveAttribute("href", /examples\/en\/predictive-demand-forecast\.md$/);
+  await expect(caseLinks.nth(2)).toHaveAttribute("href", /examples\/en\/external-customer-chatbot\.md$/);
+  await expect(caseLinks.nth(3)).toHaveAttribute("href", /examples\/en\/multimodal-catalog-accessibility\.md$/);
+});
+
 test("calibrator treats low and high effects as editable hypotheses", async ({ page }) => {
   await page.goto("/");
 

@@ -26,12 +26,15 @@ and the absence of first-party evidence are stated explicitly.
 
 - [x] Complete English translation of the operating guides and organization tracks.
 - [x] Add worked, synthetic examples for each track.
+- [x] Add four bilingual non-agentic cases for RAG, prediction, an external
+  chatbot, and multimodal work.
 - [x] Add a machine-readable control crosswalk with source and version fields.
 - [x] Add use-pattern evaluation profiles and separate Swiss and EU routing.
 
 Progress: **0.2 complete.** Bilingual operating guides, templates, organization
-tracks, and worked examples now cover independent professionals, TPEs, SMEs/PMEs,
-nonprofits/foundations, and public services. The versioned JSON control crosswalk
+tracks, and eleven worked examples now cover independent professionals, TPEs,
+SMEs/PMEs, nonprofits/foundations, public services, and four distinct
+non-agentic evidence contracts. The versioned JSON control crosswalk
 maps stable control and evidence IDs to organization, risk, autonomy, use pattern,
 jurisdiction, conditions, lifecycle phases, gates, sources, and implementation
 files.

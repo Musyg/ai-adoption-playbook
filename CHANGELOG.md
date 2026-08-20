@@ -20,6 +20,10 @@
 - Added an accessible visual selector with explicit hover and focus states. Its
   pattern and jurisdiction choices filter the evidence controls on desktop and
   mobile.
+- Added four bilingual synthetic non-agentic cases for read-only RAG,
+  conventional prediction, an external customer chatbot, and multimodal
+  catalogue accessibility. Their A0 or A1 boundaries, frozen evaluations,
+  security tests, legal routes, stop rules, and evidence packs remain distinct.
 - Added a bilingual review of 20 public field studies, deployments, benchmarks,
   and negative results, with evidence classes and explicit transfer limits.
 - Removed universal productivity bands from the visual integration guide and

@@ -189,6 +189,53 @@ const usePatternContent: Record<Locale, UsePatternContent> = {
   },
 };
 
+type NonAgenticCaseContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  labels: { scope: string; proof: string; gate: string; open: string };
+  boundary: string;
+  cases: Array<{
+    code: string;
+    pattern: string;
+    title: string;
+    organization: string;
+    scope: string;
+    proof: string[];
+    gate: string;
+    file: string;
+  }>;
+};
+
+const nonAgenticCaseContent: Record<Locale, NonAgenticCaseContent> = {
+  en: {
+    eyebrow: "FOUR SYNTHETIC CASES · ZERO AUTONOMOUS ACTIONS",
+    title: "Same low autonomy, four different evidence contracts.",
+    text: "RAG, prediction, an external chatbot, and a multimodal assistant can all remain at A0 or A1. Their data, failure modes, legal triggers, and acceptance metrics are still fundamentally different.",
+    labels: { scope: "Bounded scope", proof: "Frozen proof contract", gate: "Decision", open: "Open the complete case" },
+    boundary: "Every number below is fictional. These cases demonstrate how to preregister a decision; they are not field evidence, vendor benchmarks, or promised gains.",
+    cases: [
+      { code: "RAG", pattern: "Retrieval + generation · A1 · R1", title: "Read-only field-procedure assistant", organization: "Helvetia Facilities · internal", scope: "Retrieves current authorized passages and drafts a cited answer. No ticket, email, work order, or equipment access.", proof: ["80 frozen questions", "20 access-boundary tests", "0 write tools"], gate: "Authorize 30 shadow cases only", file: "examples/en/rag-policy-assistant.md" },
+      { code: "PRED", pattern: "Prediction · A0 · R1", title: "Weekly spare-parts demand forecast", organization: "Léman Pièces · internal batch", scope: "Produces forecasts and intervals for a planner. New products use a manual rule; no supplier order can be created.", proof: ["26 frozen weeks", "5 product segments", "0 automatic orders"], gate: "Shadow established products only", file: "examples/en/predictive-demand-forecast.md" },
+      { code: "CHAT", pattern: "Conversation + retrieval · A1 · R2", title: "External customer-information chatbot", organization: "Alpina Outdoor · CH + EU", scope: "Answers approved public questions, identifies itself as AI, and hands off. No account, payment, refund, or warranty access.", proof: ["160 conversations", "4 languages", "24 required handoffs"], gate: "Fix and rerun handoff before external use", file: "examples/en/external-customer-chatbot.md" },
+      { code: "MM", pattern: "Multimodal + generation · A1 · R1", title: "Product-catalogue accessibility assistant", organization: "Asteria Home · CH + EU", scope: "Reads authorized images and packaging, drafts alt text, and flags mismatches. It cannot edit an asset or publish.", proof: ["140 image sets", "16 planted mismatches", "0 publishing rights"], gate: "Authorize 60 shadow sets only", file: "examples/en/multimodal-catalog-accessibility.md" },
+    ],
+  },
+  fr: {
+    eyebrow: "QUATRE CAS SYNTHÉTIQUES · AUCUNE ACTION AUTONOME",
+    title: "Même faible autonomie, quatre contrats de preuve différents.",
+    text: "Un RAG, une prédiction, un chatbot externe et un assistant multimodal peuvent tous rester en A0 ou A1. Leurs données, échecs, déclencheurs juridiques et métriques d’acceptation restent pourtant très différents.",
+    labels: { scope: "Périmètre borné", proof: "Contrat de preuve figé", gate: "Décision", open: "Ouvrir le cas complet" },
+    boundary: "Tous les chiffres ci-dessous sont fictifs. Ces cas montrent comment préenregistrer une décision ; ils ne constituent ni preuve terrain, ni benchmark fournisseur, ni promesse de gain.",
+    cases: [
+      { code: "RAG", pattern: "Recherche + génération · A1 · R1", title: "Assistant de procédures terrain en lecture seule", organization: "Helvetia Facilities · interne", scope: "Retrouve les passages actuels et autorisés, puis prépare une réponse citée. Aucun accès aux tickets, e-mails, ordres de travail ou équipements.", proof: ["80 questions figées", "20 tests de frontière d’accès", "0 outil d’écriture"], gate: "Autoriser seulement 30 cas en shadow", file: "examples/fr/assistant-rag-procedures.md" },
+      { code: "PRÉD", pattern: "Prédiction · A0 · R1", title: "Prévision hebdomadaire de pièces", organization: "Léman Pièces · batch interne", scope: "Produit prévisions et intervalles pour un planificateur. Les nouveaux produits restent manuels et aucune commande fournisseur n’est créée.", proof: ["26 semaines figées", "5 segments produit", "0 commande automatique"], gate: "Shadow mode sur produits établis", file: "examples/fr/prevision-demande-pieces.md" },
+      { code: "CHAT", pattern: "Conversation + recherche · A1 · R2", title: "Chatbot externe d’information client", organization: "Alpina Outdoor · CH + UE", scope: "Répond depuis les pages publiques, s’identifie comme IA et transfère. Aucun accès aux comptes, paiements, remboursements ou garanties.", proof: ["160 conversations", "4 langues", "24 transferts obligatoires"], gate: "Corriger et rejouer le transfert avant usage", file: "examples/fr/chatbot-client-externe.md" },
+      { code: "MM", pattern: "Multimodal + génération · A1 · R1", title: "Assistant d’accessibilité du catalogue", organization: "Asteria Home · CH + UE", scope: "Lit images et emballages autorisés, prépare le texte alternatif et signale les écarts. Il ne peut ni modifier un média ni publier.", proof: ["140 jeux d’images", "16 incohérences provoquées", "0 droit de publication"], gate: "Autoriser seulement 60 lots en shadow", file: "examples/fr/catalogue-multimodal-accessibilite.md" },
+    ],
+  },
+};
+
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
@@ -948,6 +995,7 @@ function controlIndex(risk: number, autonomy: number) {
 export function Playbook({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const patternCopy = usePatternContent[locale];
+  const nonAgenticCopy = nonAgenticCaseContent[locale];
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
   const [usePattern, setUsePattern] = useState<UsePatternId>("retrieval");
   const [jurisdiction, setJurisdiction] = useState<JurisdictionId>("BOTH");
@@ -1304,6 +1352,42 @@ export function Playbook({ locale }: { locale: Locale }) {
               <span>{patternCopy.labels.jurisdiction}</span><strong>{patternCopy.jurisdictionNotes[jurisdiction].title}</strong><p>{patternCopy.jurisdictionNotes[jurisdiction].text}</p>
             </aside>
           </div>
+        </section>
+
+        <section className="non-agentic-cases section-light" id="non-agentic-cases" aria-labelledby="non-agentic-cases-title">
+          <div className="section-heading">
+            <p className="eyebrow">{nonAgenticCopy.eyebrow}</p>
+            <h2 id="non-agentic-cases-title">{nonAgenticCopy.title}</h2>
+            <p>{nonAgenticCopy.text}</p>
+          </div>
+          <div className="non-agentic-grid">
+            {nonAgenticCopy.cases.map((item) => (
+              <article key={item.code}>
+                <div className="non-agentic-head">
+                  <span>{item.code}</span>
+                  <small>{item.pattern}</small>
+                </div>
+                <h3>{item.title}</h3>
+                <p className="non-agentic-org">{item.organization}</p>
+                <div className="non-agentic-scope">
+                  <strong>{nonAgenticCopy.labels.scope}</strong>
+                  <p>{item.scope}</p>
+                </div>
+                <div className="non-agentic-proof">
+                  <strong>{nonAgenticCopy.labels.proof}</strong>
+                  <ul>{item.proof.map((signal) => <li key={signal}>{signal}</li>)}</ul>
+                </div>
+                <div className="non-agentic-footer">
+                  <div><span>{nonAgenticCopy.labels.gate}</span><strong>{item.gate}</strong></div>
+                  <a href={`${repositorySource}/${item.file}`}>{nonAgenticCopy.labels.open} ↗</a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <aside className="non-agentic-boundary">
+            <strong>{locale === "en" ? "SYNTHETIC EVIDENCE BOUNDARY" : "FRONTIÈRE DES PREUVES SYNTHÉTIQUES"}</strong>
+            <p>{nonAgenticCopy.boundary}</p>
+          </aside>
         </section>
 
         <section className="integration-guide section-light" id="integration-levels" aria-labelledby="integration-title">

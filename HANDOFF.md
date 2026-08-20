@@ -40,7 +40,7 @@ It then keeps three integration levels distinct:
 Use pattern, interaction, knowledge source, deployment, integration level,
 autonomy, risk, and jurisdiction are separate dimensions. The visual application
 includes editable low/high challenge hypotheses, six
-primary-evidence reality checks, seven synthetic worked cases, pilot
+primary-evidence reality checks, eleven synthetic worked cases, pilot
 preregistration, evidence gates, reversible operations, decision-dossier
 export, field-pilot preparation, five organization paths, four sector overlays,
 and a versioned control crosswalk. The selected use pattern and jurisdiction
@@ -53,6 +53,12 @@ decisions, and applicable cantonal, public-law, and sector rules. The EU route
 covers provider/deployer roles, AI Act classification, Article 50 transparency,
 and separate GDPR or high-risk duties. Neither route is evidence of compliance
 with the other.
+
+Four additional bilingual synthetic cases operationalize the non-agentic modes:
+read-only RAG, conventional prediction, an external customer chatbot, and a
+multimodal catalogue assistant. They demonstrate that systems can share A0 or
+A1 autonomy while requiring different frozen datasets, failure metrics, legal
+routes, security tests, and release gates.
 
 The 0.3 research pass adds a bilingual review of 20 public studies,
 deployments, benchmarks, official evaluations, and negative results. It removes
@@ -99,10 +105,10 @@ Latest local verification on 2026-08-20:
 - TypeScript 6.0.3: pass
 - server and static builds: pass
 - Node tests: 20/20 pass
-- Playwright: 18/18 pass across English, French, desktop light, desktop dark,
+- Playwright: 21/21 pass across English, French, desktop light, desktop dark,
   and mobile light
 - automated axe checks: zero violations
-- repository validation: 100 Markdown files and 34 bilingual pairs pass
+- repository validation: 108 Markdown files and 45 bilingual pairs pass
 
 The verification contract covers:
 
@@ -110,7 +116,7 @@ The verification contract covers:
 - the Vinext server build and provider-neutral static export;
 - 20 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 18 Playwright checks across English, French, desktop light, desktop dark, and
+- 21 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;

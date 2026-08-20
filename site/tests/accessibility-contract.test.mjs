@@ -32,4 +32,6 @@ test("theme-aware surfaces preserve readable control contrast", () => {
   assert.match(styles, /\.use-pattern-grid button:hover \{ background: var\(--surface\); box-shadow: inset 4px 0 0 var\(--blue-deep\); \}/);
   assert.match(styles, /\.use-pattern-grid button:focus-visible, \.jurisdiction-options button:focus-visible \{ outline: 3px solid var\(--blue-deep\);/);
   assert.match(styles, /\.use-pattern-grid button\[aria-pressed="true"\] \{ background: var\(--surface\);/);
+  assert.match(styles, /\.non-agentic-grid article:hover \{ border-color: var\(--blue-deep\);/);
+  assert.match(styles, /\.non-agentic-footer a:focus-visible \{ outline-color: var\(--blue-deep\); \}/);
 });

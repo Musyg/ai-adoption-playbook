@@ -19,7 +19,7 @@ python ../scripts/validate.py
 ```
 
 `npm run verify` checks lint, TypeScript, both production builds, 20 Node tests,
-and 18 Playwright checks across English, French, desktop, dark mode, and mobile.
+and 21 Playwright checks across English, French, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 
@@ -39,11 +39,11 @@ been approved. Set `STATIC_BASE_PATH` only when the chosen host serves the app
 below `/`. These variables are intentionally unset in the private repository.
 
 English is served at `/`; French is served at `/fr/`. Both versions include
-seven visual worked cases linked to complete bilingual evidence files under
-`examples/`: an independent copilot, a micro-business inbox, an SME B2B quote
-agent, a foundation grant-dossier administrative agent, a public planning-
-dossier administrative agent, an independent A2 business agent, and an
-orchestrated-agency analogy.
+eleven visual worked cases linked to complete bilingual evidence files under
+`examples/`: seven organization and integration cases, plus four non-agentic
+cases for read-only RAG, conventional prediction, an external customer chatbot,
+and a multimodal catalogue assistant. Each non-agentic case defines a distinct
+evaluation, security, legal, and gate contract while remaining at A0 or A1.
 
 The control explorer is backed by a public, versioned JSON crosswalk and schema
 under `public/data/`. It filters stable controls by the selected organization,

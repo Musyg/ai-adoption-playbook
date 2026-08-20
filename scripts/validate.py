@@ -127,6 +127,23 @@ TRANSLATION_PAIRS = (
     ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
     ("field-notes/README.md", "field-notes/README.fr.md"),
     ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
+    ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
+    ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
+    ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),
+    ("examples/en/nonprofit-grant-dossier-business-agent.md", "examples/fr/association-agent-dossiers-subventions.md"),
+    ("examples/en/public-sector-planning-dossier-business-agent.md", "examples/fr/service-public-agent-dossiers-urbanisme.md"),
+    ("examples/en/sme-b2b-quote-business-agent.md", "examples/fr/pme-agent-metier-devis-b2b.md"),
+    ("examples/en/tpe-customer-requests.md", "examples/fr/tpe-demandes-clients.md"),
+    ("examples/en/rag-policy-assistant.md", "examples/fr/assistant-rag-procedures.md"),
+    ("examples/en/predictive-demand-forecast.md", "examples/fr/prevision-demande-pieces.md"),
+    ("examples/en/external-customer-chatbot.md", "examples/fr/chatbot-client-externe.md"),
+    ("examples/en/multimodal-catalog-accessibility.md", "examples/fr/catalogue-multimodal-accessibilite.md"),
+)
+NON_AGENTIC_CASES = (
+    ("retrieval", "A1", "examples/en/rag-policy-assistant.md", "examples/fr/assistant-rag-procedures.md"),
+    ("prediction", "A0", "examples/en/predictive-demand-forecast.md", "examples/fr/prevision-demande-pieces.md"),
+    ("conversation", "A1", "examples/en/external-customer-chatbot.md", "examples/fr/chatbot-client-externe.md"),
+    ("multimodal", "A1", "examples/en/multimodal-catalog-accessibility.md", "examples/fr/catalogue-multimodal-accessibilite.md"),
 )
 EXPECTED_REGISTER_COLUMNS = (
     "system_id",
@@ -209,6 +226,21 @@ def check_translation_parity(errors: list[str]) -> None:
             )
         if ".fr.md" in english_text:
             errors.append(f"English file links to a French Markdown file: {english_relative}")
+
+
+def check_non_agentic_cases(errors: list[str]) -> None:
+    for pattern, level, english_relative, french_relative in NON_AGENTIC_CASES:
+        english_text = (ROOT / english_relative).read_text(encoding="utf-8")
+        french_text = (ROOT / french_relative).read_text(encoding="utf-8")
+        context = f"non-agentic {pattern} case"
+        if "Fictional example" not in english_text or "Exemple fictif" not in french_text:
+            errors.append(f"{context}: synthetic-evidence boundary is missing")
+        if f"Level: {level}" not in english_text or f"Niveau : {level}" not in french_text:
+            errors.append(f"{context}: expected autonomy level {level} is missing")
+        if "## 5. Decision" not in english_text or "## 5. Décision" not in french_text:
+            errors.append(f"{context}: explicit gate decision is missing")
+        if "## 7. Evidence pack" not in english_text or "## 7. Dossier de preuves" not in french_text:
+            errors.append(f"{context}: evidence pack is missing")
 
 
 def check_markdown(errors: list[str]) -> None:
@@ -549,6 +581,7 @@ def main() -> int:
     errors: list[str] = []
     check_required_files(errors)
     check_translation_parity(errors)
+    check_non_agentic_cases(errors)
     check_markdown(errors)
     check_hosting_neutrality(errors)
     check_register(errors)

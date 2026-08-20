@@ -209,7 +209,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .section-dark { background: var(--dark); color: var(--dark-text); }
 .section-light { background: var(--paper); color: var(--ink); }
 .section-blue { background: var(--paper); border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); color: var(--ink); }
-.geo-library, .use-patterns, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
+.geo-library, .use-patterns, .non-agentic-cases, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
 main section[id] { scroll-margin-top: 72px; }
 .section-heading { display: grid; gap: 24px 48px; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); margin-bottom: 48px; }
 .section-heading .eyebrow { grid-column: 1 / -1; }
@@ -259,6 +259,32 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .jurisdiction-note > span { color: var(--blue-deep); display: block; font: 700 10px "Courier New", monospace; letter-spacing: .08em; text-transform: uppercase; }
 .jurisdiction-note > strong { display: block; font-size: 22px; margin-top: 14px; }
 .jurisdiction-note p { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 12px 0 0; }
+
+.non-agentic-cases { background: var(--surface); border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); }
+.non-agentic-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.non-agentic-grid article { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; min-height: 510px; padding: 28px; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.non-agentic-grid article:hover { border-color: var(--blue-deep); box-shadow: inset 0 4px 0 var(--blue-deep); transform: translateY(-2px); }
+.non-agentic-head { align-items: flex-start; display: flex; gap: 16px; justify-content: space-between; }
+.non-agentic-head > span { color: var(--blue-deep); font: 700 14px "Courier New", monospace; letter-spacing: .08em; }
+.non-agentic-head > small { border: 1px solid var(--line); color: var(--muted); font: 700 10px/1.4 "Courier New", monospace; letter-spacing: .04em; max-width: 72%; padding: 6px 8px; text-align: right; text-transform: uppercase; }
+.non-agentic-grid h3 { font-size: clamp(27px, 3vw, 38px); letter-spacing: -.035em; line-height: 1.05; margin: 42px 0 10px; max-width: 520px; }
+.non-agentic-org { color: var(--blue-deep); font: 700 11px/1.4 "Courier New", monospace; letter-spacing: .06em; margin: 0 0 26px; text-transform: uppercase; }
+.non-agentic-scope { border-top: 1px solid var(--line); padding-top: 18px; }
+.non-agentic-scope > strong, .non-agentic-proof > strong { color: var(--muted); display: block; font: 700 10px/1.4 "Courier New", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.non-agentic-scope p { font-size: 14px; line-height: 1.6; margin: 9px 0 0; }
+.non-agentic-proof { margin-top: 24px; }
+.non-agentic-proof ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 12px 0 0; padding: 0; }
+.non-agentic-proof li { border-left: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.45; min-height: 58px; padding: 8px 10px; }
+.non-agentic-proof li:last-child { border-right: 1px solid var(--line); }
+.non-agentic-footer { align-items: end; border-top: 1px solid var(--line); display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) auto; margin-top: auto; padding-top: 24px; }
+.non-agentic-footer span { color: var(--muted); display: block; font: 700 10px/1.4 "Courier New", monospace; letter-spacing: .1em; margin-bottom: 6px; text-transform: uppercase; }
+.non-agentic-footer strong { display: block; font-size: 13px; line-height: 1.45; }
+.non-agentic-footer a { border: 1px solid var(--line); color: var(--ink); font-size: 12px; font-weight: 800; padding: 11px 13px; text-align: center; text-decoration: none; transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.non-agentic-footer a:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.non-agentic-footer a:focus-visible { outline-color: var(--blue-deep); }
+.non-agentic-boundary { background: var(--paper); border-left: 4px solid var(--blue-deep); display: grid; gap: 18px; grid-template-columns: minmax(190px, .45fr) minmax(0, 1.55fr); margin-top: 16px; padding: 24px 28px; }
+.non-agentic-boundary > strong { color: var(--blue-deep); font: 700 11px/1.5 "Courier New", monospace; letter-spacing: .1em; }
+.non-agentic-boundary p { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0; }
 
 .integration-grid {
   border-bottom: 1px solid var(--line);
@@ -1362,6 +1388,8 @@ footer a { color: var(--blue); }
   .use-pattern-detail, .jurisdiction-note { margin-left: 0; }
   .use-pattern-detail { margin-top: 20px; min-height: 0; }
   .jurisdiction-note { margin-top: 20px; }
+  .non-agentic-grid { grid-template-columns: 1fr; }
+  .non-agentic-grid article { min-height: 470px; }
   .integration-grid { grid-template-columns: 1fr; }
   .integration-card, .integration-card:last-child { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
   .integration-card:last-child { border-bottom: 0; }
@@ -1434,11 +1462,20 @@ footer a { color: var(--blue); }
   .stat-strip { grid-template-columns: 1fr; padding: 0 20px; }
   .stat-strip p, .stat-strip p:last-child { border-left: 0; border-right: 0; border-top: 1px solid var(--line); }
   .stat-strip p:first-child { border-top: 0; }
-  .geo-library, .use-patterns, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit, .ladder-section { padding: 72px 20px; }
+  .geo-library, .use-patterns, .non-agentic-cases, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit, .ladder-section { padding: 72px 20px; }
   .geo-library-grid { grid-template-columns: 1fr; }
   .use-pattern-grid, .jurisdiction-options { grid-template-columns: 1fr; }
   .jurisdiction-options button { border-bottom: 0; border-right: 1px solid var(--line); }
   .jurisdiction-options button:last-child { border-bottom: 1px solid var(--line); }
+  .non-agentic-grid article { min-height: 0; padding: 24px; }
+  .non-agentic-head { align-items: stretch; flex-direction: column; }
+  .non-agentic-head > small { max-width: none; text-align: left; }
+  .non-agentic-grid h3 { margin-top: 32px; }
+  .non-agentic-proof ul { grid-template-columns: 1fr; }
+  .non-agentic-proof li, .non-agentic-proof li:last-child { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 0; }
+  .non-agentic-proof li + li { border-top: 0; }
+  .non-agentic-footer, .non-agentic-boundary { align-items: start; grid-template-columns: 1fr; }
+  .non-agentic-footer a { justify-self: stretch; }
   .plain-summary { grid-template-columns: 1fr; padding: 56px 20px 0; }
   .section-heading, .source-note { grid-template-columns: 1fr; }
   .path-grid { grid-template-columns: 1fr; }

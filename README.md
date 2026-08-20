@@ -24,6 +24,12 @@ of truth.
 [bounded business agent](examples/en/independent-business-agent-follow-up.md), and an
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
+Four additional non-agentic cases show why low autonomy does not imply one
+evaluation contract: a read-only [RAG procedure assistant](examples/en/rag-policy-assistant.md),
+a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
+[external customer chatbot](examples/en/external-customer-chatbot.md), and a
+[multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
+All eleven cases are synthetic and label their evidence limits explicitly.
 
 > Status: version **0.2.1**, private repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 

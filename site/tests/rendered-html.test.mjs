@@ -121,6 +121,13 @@ for (const [pathname, language, title] of [
     assert.match(html, /Switzerland \+ EU|Suisse \+ UE/i);
     assert.match(html, /Two routes, not one shortcut|Deux routes, aucun raccourci/i);
     assert.match(html, /ai-use-patterns(?:\.fr)?\.md/i);
+    assert.match(html, /id=["']non-agentic-cases["']/i);
+    assert.match(html, /Same low autonomy, four different evidence contracts|Même faible autonomie, quatre contrats de preuve différents/i);
+    assert.match(html, /Read-only field-procedure assistant|Assistant de procédures terrain en lecture seule/i);
+    assert.match(html, /Weekly spare-parts demand forecast|Prévision hebdomadaire de pièces/i);
+    assert.match(html, /External customer-information chatbot|Chatbot externe d’information client/i);
+    assert.match(html, /Product-catalogue accessibility assistant|Assistant d’accessibilité du catalogue/i);
+    assert.match(html, /SYNTHETIC EVIDENCE BOUNDARY|FRONTIÈRE DES PREUVES SYNTHÉTIQUES/i);
     assert.match(html, /id=["']control-crosswalk["']/i);
     assert.match(html, /Turn a risk label into controls|Transformez un niveau de risque en contrôles/i);
     assert.match(html, /candidate controls|contrôles candidats/i);
@@ -165,6 +172,10 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
       assert.match(html, /templates\/field-feedback-report\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.md/);
+      assert.match(html, /examples\/en\/rag-policy-assistant\.md/);
+      assert.match(html, /examples\/en\/predictive-demand-forecast\.md/);
+      assert.match(html, /examples\/en\/external-customer-chatbot\.md/);
+      assert.match(html, /examples\/en\/multimodal-catalog-accessibility\.md/);
       assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
       assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
     } else {
@@ -177,6 +188,10 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
       assert.match(html, /templates\/field-feedback-report\.fr\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.fr\.md/);
+      assert.match(html, /examples\/fr\/assistant-rag-procedures\.md/);
+      assert.match(html, /examples\/fr\/prevision-demande-pieces\.md/);
+      assert.match(html, /examples\/fr\/chatbot-client-externe\.md/);
+      assert.match(html, /examples\/fr\/catalogue-multimodal-accessibilite\.md/);
     }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });

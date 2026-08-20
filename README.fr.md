@@ -24,6 +24,13 @@ opérationnelle de référence.
 [agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
+Quatre cas non agentiques supplémentaires montrent pourquoi une faible autonomie
+n’implique pas un contrat d’évaluation unique : un
+[assistant RAG de procédures en lecture seule](examples/fr/assistant-rag-procedures.md),
+une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
+[chatbot client externe](examples/fr/chatbot-client-externe.md) et un
+[assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
+Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
 > État : version **0.2.1**, dépôt privé, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
