@@ -1,6 +1,6 @@
-# Note de preuves — Copilote, agent métier et agence orchestrée
+# Note de preuves : copilote, agent métier et agence orchestrée
 
-Dernière vérification : **18 août 2026**.
+Dernière vérification : **19 août 2026**.
 
 Cette note empêche une erreur fréquente : comparer le gain d’un assistant de
 rédaction avec celui d’un système qui prend en charge un workflow métier. Ces
@@ -20,16 +20,32 @@ Talos/Hermes de toute revendication de performance.
 
 ## Trois niveaux d’intégration
 
-| Niveau | Travail réellement déplacé | Rôle humain dominant | Fourchette de planification |
+| Niveau | Travail réellement déplacé | Rôle humain dominant | Ancrage public trouvé |
 |---|---|---|---|
-| **Copilote — A0/A1** | Une étape : recherche, extraction, synthèse ou brouillon. L’humain apporte le contexte et effectue les actions externes. | Opérateur à chaque cycle | **20–40 %** de temps actif en moins ; débit accepté **×1,25–1,7** |
-| **Agent métier — A2/A3** | Un dossier borné de bout en bout, avec outils, mémoire, règles, contrôles et escalade des exceptions. | Validateur et responsable des exceptions | **50–75 %** de temps actif en moins ; débit accepté **×2–4** ; **50–85 %** de cas éligibles sans intervention |
-| **Agence orchestrée — A3/A4** | Plusieurs agents spécialisés coordonnés pour rechercher, décider dans leurs limites, agir, vérifier et mettre à jour plusieurs systèmes. | Gouverne objectifs, permissions et exceptions | **80–92 %** de temps actif en moins ; **×5–12** sur un workflow numérique propre et borné ; **80–94 %** de traitement autonome sur des demandes étroites |
+| **Copilote A0/A1** | Une étape : recherche, extraction, synthèse ou brouillon. L’humain apporte le contexte et effectue les actions externes. | Opérateur à chaque cycle | Les publications vont d’un ralentissement mesuré à de forts gains sur une tâche étroite. Elles ne définissent pas de plage universelle. |
+| **Agent métier A2/A3** | Un dossier borné de bout en bout, avec outils, mémoire, règles, contrôles et escalade des exceptions. | Validateur et responsable des exceptions | Le meilleur essai direct trouvé mesure 16,8 % de durée en moins sur les cas éligibles, 3,2 % sur tout le flux et une baisse de la note client sur les cas éligibles. |
+| **Agence orchestrée A3/A4** | Plusieurs agents spécialisés coordonnés pour rechercher, décider dans leurs limites, agir, vérifier et mettre à jour plusieurs systèmes. | Gouverne objectifs, permissions et exceptions | Aucun essai terrain indépendant trouvé ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés. CORPGEN atteint 15,2 % de réalisation dans un benchmark, pas en production. |
 
-Ces intervalles sont une **synthèse de planification**, pas une estimation
-statistique, une garantie fournisseur ou une prévision de rentabilité. La borne
-haute ne s’applique ni à l’entreprise entière ni aux cas ambigus, rares ou non
-numérisés. La phase d’intégration peut produire un gain nul ou négatif.
+Les anciennes plages 20–40 %, 50–75 % et 80–92 %, ainsi que le facteur 5 à 12,
+ne doivent donc pas être présentés comme des bornes empiriques générales. Ils
+peuvent seulement servir d’hypothèses de stress modifiables avant un pilote.
+La [revue bilingue de 20 sources](field-evidence-review-2026.fr.md) classe chaque
+observation par force de preuve, résultat mesuré et limite de transfert.
+
+## La preuve directe la plus proche d’un agent métier
+
+L’[essai randomisé Alibaba](https://arxiv.org/abs/2605.14830) porte sur 647
+travailleurs, 680 676 conversations et 17 jours de traitement. L’IA agentique
+réduit de 16,8 % la durée des conversations éligibles. Mais ces conversations
+ne représentent que 5,8 % du volume. Le gain sur tout le flux tombe à 3,2 % et
+la note client des conversations éligibles baisse de 0,412 point.
+
+Parmi les conversations éligibles confiées à l’agent, 35 % se terminent sans
+escalade, 44,1 % nécessitent une escalade technique, 8,6 % une escalade
+émotionnelle et 12,3 % une reprise humaine anticipée. Un superviseur humain
+reste responsable de chaque conversation. Cette expérience prouve qu’un agent
+métier peut créer un gain important sur un sous-flux, tout en montrant pourquoi
+éligibilité, escalade, qualité et effet global doivent rester séparés.
 
 ## Observations publiées qui bornent la fourchette
 
@@ -64,8 +80,9 @@ données, aux outils, aux règles métier et aux contrôles est déterminante.
 Microsoft observe la même tension sous charge dans
 [CORPGEN](https://www.microsoft.com/en-us/research/blog/corpgen-advances-ai-agents-for-real-work/) :
 l’architecture hiérarchique avec sous-agents, mémoire isolée et apprentissage
-améliore fortement le résultat relatif, mais le taux absolu de tâches terminées
-reste bas lorsque des dizaines de tâches hétérogènes sont confiées en parallèle.
+atteint 15,2 % de réalisation avec 46 tâches concurrentes, contre 4,3 % pour les
+baselines. Le facteur relatif est 3,5, mais le taux absolu reste 15,2 % dans un
+environnement simulé de six heures.
 
 Enfin, davantage d’activité intermédiaire ne signifie pas autant de résultats
 livrés. L’étude NBER
@@ -83,10 +100,11 @@ organisationnels demeurent.
 5. **Résultat livré** : effet aval réel, et non volume de texte, d’appels ou de
    commits produits par le système.
 
-Une réduction de 75 % du temps humain correspond théoriquement à un débit ×4,
-et une réduction de 92 % à ×12,5, **uniquement si aucun nouveau goulot
-d’étranglement n’apparaît**. Il faut donc mesurer simultanément corrections,
-exceptions, erreurs critiques, coût par résultat accepté et résultat aval.
+Une réduction de 75 % du temps humain correspond mathématiquement à un débit 4,
+et une réduction de 92 % à un débit 12,5, uniquement si aucun nouveau goulot
+n’apparaît. Ce calcul est une identité conditionnelle, pas une observation. Il
+faut donc mesurer simultanément corrections, exceptions, erreurs critiques,
+coût par résultat accepté et résultat aval.
 
 ## Protocole minimal pour une agence de type Talos/Hermes
 
@@ -100,6 +118,6 @@ le dénominateur métier global.
 L’architecture publique de [Talos](https://github.com/Musyg/talos) documente
 orchestration, agents spécialisés, mémoire, exécution et observabilité. Elle ne
 publie pas encore une mesure de productivité permettant d’attribuer un facteur
-×5 ou ×10 au système lui-même. Tant qu’un benchmark reproductible n’existe pas,
-ces facteurs restent des bornes externes plausibles, pas une performance Talos
+5 ou 10 au système lui-même. Tant qu’un benchmark reproductible n’existe pas,
+ces facteurs restent des scénarios à éprouver, pas une performance Talos
 démontrée.

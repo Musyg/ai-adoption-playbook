@@ -1,6 +1,6 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-19 (Europe/Zurich)
+Snapshot: 2026-08-20 (Europe/Zurich)
 
 ## Current state
 
@@ -31,15 +31,24 @@ choice to a bounded operating handoff. It keeps three systems distinct:
 3. an orchestrated agency, where specialist agents coordinate under shared
    controls and must outperform a simpler design.
 
-The visual application includes realistic planning ranges, seven synthetic
-worked cases, pilot preregistration, evidence gates, reversible operations,
-decision-dossier export, field-pilot preparation, five organization paths, four
-sector overlays, and a versioned control crosswalk. The Markdown guides and
-templates remain the operational source of truth.
+The visual application includes editable low/high challenge hypotheses, six
+primary-evidence reality checks, seven synthetic worked cases, pilot
+preregistration, evidence gates, reversible operations, decision-dossier
+export, field-pilot preparation, five organization paths, four sector overlays,
+and a versioned control crosswalk. The Markdown guides and templates remain the
+operational source of truth.
+
+The 0.3 research pass adds a bilingual review of 20 public studies,
+deployments, benchmarks, official evaluations, and negative results. It removes
+the former universal productivity bands from the visual guide. The public
+evidence does not support a generic 5x to 12x multiplier on accepted business
+outcomes. Those figures may be tested as explicit hypotheses only.
 
 Synthetic examples are not field evidence. `field-notes/index.json` remains
-empty until a genuine, independently reviewed and sanitized submission meets the
-publication contract.
+empty until a genuine, independently reviewed and sanitized submission meets
+the publication contract. Public third-party studies inform pilot design but do
+not satisfy that first-party admission rule. This remains the only open 0.3
+roadmap item and does not block publication of the complete 0.2 release.
 
 ## Hosting-neutral behavior
 
@@ -68,13 +77,24 @@ npm run verify
 python ../scripts/validate.py
 ```
 
+Latest local verification on 2026-08-20:
+
+- ESLint: pass
+- TypeScript 6.0.3: pass
+- server and static builds: pass
+- Node tests: 18/18 pass
+- Playwright: 15/15 pass across English, French, desktop light, desktop dark,
+  and mobile light
+- automated axe checks: zero violations
+- repository validation: 98 Markdown files and 33 bilingual pairs pass
+
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
 - 18 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 12 Playwright checks across English, French, desktop light, desktop dark, and
+- 15 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;
@@ -109,9 +129,13 @@ public and do not deploy the application.
 - Search-ready metadata does not prove indexation, ranking, or answer-engine
   citation.
 
-## Next authorized decision
+## Publication decision
 
-Present the final private-repository audit to the owner. Do not change visibility,
-declare a website URL, enable static hosting, deploy a mirror, or submit a
-sitemap. Those actions require a later, explicit instruction after the owner has
-accepted the repository result.
+After this release-preparation change is merged and `main` is green, the
+repository is technically ready for the owner to decide whether to change its
+visibility. The incomplete field-feedback objective remains visible and is not
+presented as implemented.
+
+Do not change visibility, declare a website URL, enable static hosting, deploy a
+mirror, or submit a sitemap without a separate explicit instruction. Making the
+repository public would not authorize hosting.
