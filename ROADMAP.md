@@ -9,11 +9,12 @@
 - [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
 - [x] Update version, changelog, operational documentation, and handoff.
 - [x] Complete the private repository, history, security, and community-file audit.
-- [ ] Change repository visibility or select a host.
+- [ ] Change repository visibility to public after explicit owner approval.
 
-The final item is intentionally outside this release preparation. The repository
-remains private, has no declared website URL, and must be reviewed before any
-separate publication decision.
+The final visibility item is intentionally outside this release preparation.
+The repository remains private and must be reviewed before that state change.
+Hosting is a different future project: repository publication does not select a
+host, declare a website URL, or authorize deployment.
 
 The open field-feedback item under 0.3 is an evidence-growth objective. It does
 not block publication of the complete 0.2 release, because the empty registry
