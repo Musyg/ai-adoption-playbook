@@ -14,6 +14,19 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+PUBLIC_PRESENTATION_FILES = (
+    "README.md",
+    "README.fr.md",
+    "HANDOFF.md",
+    "ROADMAP.md",
+    "CHANGELOG.md",
+    "site/README.md",
+)
+PUBLIC_LANGUAGE_MARKETING = re.compile(
+    r"\b(?:bilingual|bilingue)\b|English and French|French and English|"
+    r"anglais et français|français et anglais|paired GEO intents",
+    re.IGNORECASE,
+)
 REQUIRED_FILES = (
     "README.md",
     "README.fr.md",
@@ -580,6 +593,10 @@ def check_crosswalk(errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     check_required_files(errors)
+    for relative in PUBLIC_PRESENTATION_FILES:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        if match := PUBLIC_LANGUAGE_MARKETING.search(text):
+            errors.append(f"{relative}: remove promotional language label {match.group(0)!r}")
     check_translation_parity(errors)
     check_non_agentic_cases(errors)
     check_markdown(errors)
@@ -599,7 +616,7 @@ def main() -> int:
     )
     print(
         f"Validation passed: {markdown_count} Markdown files, "
-        f"{len(TRANSLATION_PAIRS)} EN/FR pairs, AI register, field-feedback "
+        f"{len(TRANSLATION_PAIRS)} paired documents, AI register, field-feedback "
         "registry, and control crosswalk contracts OK."
     )
     return 0

@@ -18,7 +18,7 @@ function exportedPath(article) {
     : path.join(staticRoot, article.slug, "index.html");
 }
 
-test("publishes six paired GEO intents with bounded evidence", () => {
+test("publishes six paired practical guides with bounded evidence", () => {
   assert.equal(articles.length, 12);
   assert.equal(new Set(articles.map((article) => article.id)).size, 6);
   assert.equal(new Set(articles.map((article) => articlePath(article))).size, 12);

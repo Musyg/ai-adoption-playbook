@@ -45,7 +45,7 @@ for (const [relative, language, title, visibleCopy] of [
   });
 }
 
-test("keeps the English and French heading hierarchies aligned", async () => {
+test("keeps the route heading hierarchies aligned", async () => {
   const extractHeadings = (html) => [...html.matchAll(/<h([1-3])\b[^>]*>[\s\S]*?<\/h\1>/gi)].map((match) => match[1]);
   const english = await readFile(path.join(staticRoot, "index.html"), "utf8");
   const french = await readFile(path.join(staticRoot, "fr", "index.html"), "utf8");

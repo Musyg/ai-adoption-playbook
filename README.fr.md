@@ -6,7 +6,7 @@
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
-L’édition visuelle bilingue commence par un guide court en cinq étapes. Elle
+L’édition visuelle commence par un guide court en cinq étapes. Elle
 demande qui vous êtes, ce que l’IA doit faire, jusqu’où elle peut agir, quelle
 route juridique s’applique et quel premier pilote est raisonnable. Une seule
 question apparaît à la fois. Des bulles simples expliquent les choix moins
@@ -37,7 +37,7 @@ Les onze cas sont synthétiques et indiquent explicitement les limites de leurs 
 > État : version **0.2.1**, dépôt public, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
 **Preuves et extensions 0.3 :** la
-[revue bilingue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
+[revue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
 sépare effets sur une tâche, effets sur le flux éligible, résultats sur toute la
 charge, benchmarks, télémétrie et cas fournisseurs. Elle ne trouve aucune preuve
 causale indépendante d’un multiplicateur générique de 5 à 12 sur les résultats
@@ -127,7 +127,7 @@ preuves différentes.
 ## Ce que contient le playbook
 
 - un cycle de vie universel avec preuves de sortie ;
-- une taxonomie bilingue des modes génération, recherche augmentée,
+- une taxonomie des modes génération, recherche augmentée,
   classification, prédiction, conversation, multimodal et agentique ;
 - une classification risque × autonomie ;
 - cinq parcours d’adoption adaptés à la structure ;
