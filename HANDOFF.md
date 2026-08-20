@@ -8,7 +8,7 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 - Canonical branch: `main`
 - Working branch: `feat/ai-use-patterns-ch-eu`
 - Release prepared: `0.2.1`
-- Visibility: private
+- Publication status: ready after validation on `main`
 - Repository website field: empty
 - Public website URL: none
 - Static hosting: disabled
@@ -18,8 +18,8 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 - Validation workflow: `.github/workflows/validate.yml`
 - Dependency updates: `.github/dependabot.yml`
 
-No publication or hosting change is authorized by this handoff. A future host
-selection is a separate owner decision.
+Repository publication preparation is authorized. The final visibility change
+and any future host selection remain separate owner decisions.
 
 ## What is ready
 

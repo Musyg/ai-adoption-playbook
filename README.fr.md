@@ -34,7 +34,7 @@ une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
 [assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
 Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.1**, dépôt privé, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
+> État : version **0.2.1**, dépôt prêt pour publication, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
 **Preuves et extensions 0.3 :** la
 [revue bilingue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
@@ -156,7 +156,7 @@ L’export statique reste neutre vis-à-vis de l’hébergeur et utilise `noinde
 défaut. Il ne produit ni origine canonique ni sitemap tant que
 `PUBLIC_SITE_URL` n’est pas défini pour un hébergeur explicitement approuvé.
 `STATIC_BASE_PATH` permet ensuite de servir l’application sous un sous-chemin.
-Aucun de ces réglages n’est configuré dans ce dépôt privé.
+Aucun de ces réglages n’est configuré dans ce dépôt.
 
 ## Périmètre et limites
 

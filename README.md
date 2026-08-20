@@ -32,7 +32,7 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.1**, private repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
+> Status: version **0.2.1**, publication-ready repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
 **0.3 evidence and sector work:** the bilingual
 [20-source public evidence review](references/field-evidence-review-2026.md)
@@ -141,7 +141,7 @@ The default static export is provider neutral and deliberately uses `noindex`.
 It emits no canonical origin or sitemap until `PUBLIC_SITE_URL` is configured for
 an explicitly approved host. `STATIC_BASE_PATH` can be set when that host serves
 the application below its root path. Neither setting is configured in this
-private repository.
+repository.
 
 ## Quick start
 
