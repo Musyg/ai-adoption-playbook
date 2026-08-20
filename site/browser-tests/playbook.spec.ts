@@ -170,3 +170,45 @@ test("rendered page has no automatic axe violations", async ({ page }) => {
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
 });
+
+test("large surfaces stay neutral and button hovers stay within the portfolio palette", async ({ page }, testInfo) => {
+  await page.goto("/");
+
+  if (!testInfo.project.name.startsWith("mobile")) {
+    for (const selector of [".hero-actions .primary", ".hero-actions .secondary", ".site-header .lang"]) {
+      const control = page.locator(selector);
+      await control.hover();
+      const colors = await control.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { background: style.backgroundColor, color: style.color, border: style.borderColor };
+      });
+      expect(colors.background).not.toBe("rgb(28, 159, 255)");
+      expect(colors.color).not.toBe("rgb(28, 159, 255)");
+    }
+  }
+
+  await page.locator("details").evaluateAll((elements) => elements.forEach((element) => element.setAttribute("open", "")));
+  await page.locator("[hidden]").evaluateAll((elements) => elements.forEach((element) => element.removeAttribute("hidden")));
+  const largeOffPaletteSurfaces = await page.locator("body").evaluate((body) => {
+    const prohibited = new Set([
+      "rgb(28, 159, 255)",
+      "rgb(0, 103, 184)",
+      "rgb(0, 138, 255)",
+      "rgb(117, 199, 255)",
+      "rgb(231, 245, 255)",
+      "rgb(232, 245, 255)",
+      "rgb(243, 201, 105)",
+      "rgb(255, 173, 159)",
+    ]);
+
+    return [...body.querySelectorAll("*")].flatMap((element) => {
+      const rect = element.getBoundingClientRect();
+      const area = Math.max(0, rect.width) * Math.max(0, rect.height);
+      const background = getComputedStyle(element).backgroundColor;
+      if (area < 12_000 || !prohibited.has(background)) return [];
+      return [{ tag: element.tagName.toLowerCase(), id: element.id, className: element.className, background, area: Math.round(area) }];
+    });
+  });
+
+  expect(largeOffPaletteSurfaces).toEqual([]);
+});

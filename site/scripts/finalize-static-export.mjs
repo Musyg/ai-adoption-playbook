@@ -198,6 +198,8 @@ for (const article of geoArticles) {
 }
 
 if (siteUrl) {
+  await writeFile(path.join(outputRoot, ".nojekyll"), "", "utf8");
+
   const sitemapEntries = [
     { locale: "en", path: "/", alternatePath: "/fr/" },
     { locale: "fr", path: "/fr/", alternatePath: "/" },

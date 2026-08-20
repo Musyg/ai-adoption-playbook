@@ -6,8 +6,12 @@
   titles, route metadata, and six practical guides. Rephrased unclear titles
   and summaries and added structural consistency checks to the automated test
   suite.
-- Recorded the owner-authorized change to public repository visibility while
-  keeping website hosting, canonical URLs, and sitemap publication disabled.
+- Added the owner-approved GitHub Pages deployment gated on a successful
+  validation run for `main`, with host-aware canonical metadata, project-base
+  paths, a 14-route sitemap, `.nojekyll`, and deployment-specific tests.
+- Tightened the portfolio palette so large surfaces remain black or neutral
+  and blue remains the accent. Replaced inherited yellow and coral states and
+  added browser checks for surfaces and button hover states.
 
 ## 0.2.1, 2026-08-20
 

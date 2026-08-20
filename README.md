@@ -2,7 +2,7 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [AI use patterns](docs/ai-use-patterns.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md) · [Contributing](CONTRIBUTING.md) · [Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
+[Interactive guide](https://musyg.github.io/ai-adoption-playbook/) · [Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [AI use patterns](docs/ai-use-patterns.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md) · [Contributing](CONTRIBUTING.md) · [Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
 
 ![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
@@ -32,7 +32,7 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available. No public hosting URL is declared.
+> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
 
 **0.3 evidence and sector work:** the
 [20-source public evidence review](references/field-evidence-review-2026.md)
@@ -140,8 +140,9 @@ python ../scripts/validate.py
 The default static export is provider neutral and deliberately uses `noindex`.
 It emits no canonical origin or sitemap until `PUBLIC_SITE_URL` is configured for
 an explicitly approved host. `STATIC_BASE_PATH` can be set when that host serves
-the application below its root path. Neither setting is configured in this
-repository.
+the application below its root path. The GitHub Pages workflow supplies both
+values at build time for the approved public URL without changing the neutral
+local export.
 
 ## Quick start
 

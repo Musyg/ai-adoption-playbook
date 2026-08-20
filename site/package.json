@@ -13,6 +13,7 @@
     "start": "vinext start",
     "test": "npm run build && npm run build:static && node --test tests/*.test.mjs",
     "test:browser": "playwright test",
+    "test:hosted": "node --test tests/hosted-export.check.mjs",
     "verify": "npm run lint && npm run typecheck && npm test && npm run test:browser",
     "typecheck": "tsc --noEmit --incremental false",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern static-dist"
