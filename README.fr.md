@@ -11,9 +11,11 @@ demande qui vous êtes, ce que l’IA doit faire, jusqu’où elle peut agir, qu
 route juridique s’applique et quel premier pilote est raisonnable. Une seule
 question apparaît à la fois. Des bulles simples expliquent les choix moins
 familiers, tandis que la méthode détaillée reste rangée dans trois chapitres
-fermés jusqu’à leur ouverture. Le résultat mène ensuite au plan de test, aux
-contrôles, aux cas comparables et au dossier de décision Markdown. Les guides
-Markdown restent la source opérationnelle de référence.
+fermés jusqu’à leur ouverture. Chaque chapitre n’affiche ensuite qu’un sujet
+choisi, et la bibliothèque présente un seul cas d’école à la fois. Le résultat
+mène au plan de test, aux contrôles, aux cas comparables et au dossier de
+décision Markdown. Les guides Markdown restent la source opérationnelle de
+référence.
 
 **Nouveau :** comparez les cas synthétiques complets d’un
 [copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une

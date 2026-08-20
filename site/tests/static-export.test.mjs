@@ -26,6 +26,10 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /class="guide-chapter" id="concept-library"/);
     assert.match(html, /class="guide-chapter" id="operational-workspace"/);
     assert.match(html, /class="guide-chapter" id="implementation-library"/);
+    assert.match(html, /class="chapter-router/);
+    assert.match(html, /id="case-library"/);
+    assert.match(html, /Choose what you need now|Choisissez ce dont vous avez besoin maintenant/);
+    assert.match(html, /Previous topic|Sujet précédent/);
     assert.match(html, /id="use-patterns"/);
     assert.match(html, /id="non-agentic-cases"/);
     assert.match(html, /id="integration-levels"/);

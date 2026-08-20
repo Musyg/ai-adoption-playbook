@@ -10,9 +10,11 @@ The bilingual visual edition starts with a short five-step guide. It asks who
 you are, what the AI must do, how much it may act, which legal route applies,
 and what a sensible first pilot looks like. One question appears at a time,
 plain-language help bubbles explain unfamiliar choices, and the detailed
-method stays inside three closed chapters until the reader opens it. The result
-links to the deeper test plan, evidence controls, cases, and Markdown decision
-dossier. The Markdown guides remain the operational source of truth.
+method stays inside three closed chapters until the reader opens it. Each
+chapter then shows one selected topic at a time, and the worked-case library
+opens one comparison at a time. The result links to the deeper test plan,
+evidence controls, cases, and Markdown decision dossier. The Markdown guides
+remain the operational source of truth.
 
 **New:** compare the complete synthetic cases for an
 [independent copilot](examples/en/independent-client-follow-up.md), a

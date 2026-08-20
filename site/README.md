@@ -3,8 +3,10 @@
 The bilingual site turns the repository’s adoption method into a progressive,
 audience-specific path. Its five-step guided start shows one decision at a
 time, adds plain-language help bubbles, and keeps the detailed method in three
-closed expert chapters. It preserves the Musyg portfolio identity and keeps
-the full operational templates in the repository as the source of truth.
+closed expert chapters. Topic routers reveal only one part of a chapter at a
+time, while a separate case router opens one worked comparison. It preserves
+the Musyg portfolio identity and keeps the full operational templates in the
+repository as the source of truth.
 
 Requires Node.js 22.13 or newer.
 
@@ -21,7 +23,7 @@ python ../scripts/validate.py
 ```
 
 `npm run verify` checks lint, TypeScript, both production builds, 20 Node tests,
-and 24 Playwright checks across English, French, desktop, dark mode, and mobile.
+and 27 Playwright checks across English, French, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 

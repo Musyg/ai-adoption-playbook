@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
@@ -250,6 +250,32 @@ type GuidedContent = {
   chapters: Array<{ id: string; number: string; title: string; text: string }>;
 };
 
+type ConceptPanelId = "geo-library" | "use-patterns" | "non-agentic-cases" | "integration-levels";
+type OperationalPanelId = "calibrator" | "pilot-plan" | "evidence-gate" | "operations" | "decision-dossier" | "field-pilot";
+type ImplementationPanelId = "paths" | "sectors" | "method" | "case-library" | "maturity-controls" | "control-crosswalk" | "toolkit";
+type CasePanelId = "case" | "sme-case" | "mission-case" | "public-case" | "solo-case" | "agent-case" | "agency-case";
+type ChapterItem<T extends string> = { id: T; number: string; title: string; text: string };
+type ChapterNavigationContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  current: string;
+  conceptLabel: string;
+  operationalLabel: string;
+  implementationLabel: string;
+  casesEyebrow: string;
+  casesTitle: string;
+  casesText: string;
+  casesLabel: string;
+  previous: string;
+  next: string;
+  position: string;
+  concept: Array<ChapterItem<ConceptPanelId>>;
+  operational: Array<ChapterItem<OperationalPanelId>>;
+  implementation: Array<ChapterItem<ImplementationPanelId>>;
+  cases: Array<ChapterItem<CasePanelId>>;
+};
+
 const guidedContent: Record<Locale, GuidedContent> = {
   en: {
     eyebrow: "GUIDED START · ABOUT 3 MINUTES",
@@ -321,6 +347,139 @@ const guidedContent: Record<Locale, GuidedContent> = {
       { id: "implementation-library", number: "03", title: "Explorer les cas et contrôles", text: "Parcours par structure, secteurs, onze cas, orientation du risque, contrôles et modèles." },
     ],
   },
+};
+
+const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
+  en: {
+    eyebrow: "ONE TOPIC AT A TIME",
+    title: "Choose what you need now.",
+    text: "Only the selected topic appears below. Your previous choices stay available while you explore.",
+    current: "Open now",
+    conceptLabel: "Understanding topics",
+    operationalLabel: "Pilot workspace topics",
+    implementationLabel: "Implementation topics",
+    casesEyebrow: "COMPARABLE EXAMPLES",
+    casesTitle: "Open one case, then compare deliberately.",
+    casesText: "Each case has a different organization, task, autonomy boundary, and proof contract. Select the closest comparison, not the biggest number.",
+    casesLabel: "Worked cases",
+    previous: "Previous topic",
+    next: "Next topic",
+    position: "Current position",
+    concept: [
+      { id: "geo-library", number: "01", title: "Practical questions", text: "Short answers about adoption, agents, evidence, and the Swiss or EU context." },
+      { id: "use-patterns", number: "02", title: "What job does the AI do?", text: "Separate generation, retrieval, prediction, conversation, multimodal work, and action." },
+      { id: "non-agentic-cases", number: "03", title: "Low-autonomy examples", text: "See why RAG, prediction, a chatbot, and multimodal work need different tests." },
+      { id: "integration-levels", number: "04", title: "How much work does it carry?", text: "Compare a copilot, one business agent, and an orchestrated agency without mixing their gains." },
+    ],
+    operational: [
+      { id: "calibrator", number: "01", title: "Test a realistic range", text: "Turn volume, eligible work, setup, and a low or high effect into an editable scenario." },
+      { id: "pilot-plan", number: "02", title: "Build the test plan", text: "Freeze the cases, thresholds, safeguards, and possible decisions before the live pilot." },
+      { id: "evidence-gate", number: "03", title: "Enter observed results", text: "Record value, quality, safety, trace, and eligibility. The weakest critical result decides." },
+      { id: "operations", number: "04", title: "Operate within the proof", text: "Name owners, monitoring, suspension triggers, safe return, and the next review date." },
+      { id: "decision-dossier", number: "05", title: "Prepare the handoff", text: "Export the assumptions, test, decision, operating limits, and records another owner needs." },
+      { id: "field-pilot", number: "06", title: "Prepare field feedback", text: "Create a local draft for independent review without sending or publishing raw evidence." },
+    ],
+    implementation: [
+      { id: "paths", number: "01", title: "Choose the organization path", text: "Adapt ownership, pace, and safeguards for an independent, company, nonprofit, or public service." },
+      { id: "sectors", number: "02", title: "Add sector safeguards", text: "Apply healthcare, education, finance, or critical-infrastructure limits when relevant." },
+      { id: "method", number: "03", title: "Follow the full method", text: "Open the eight implementation steps and their concrete deliverables." },
+      { id: "case-library", number: "04", title: "Explore worked cases", text: "Compare eleven synthetic cases without treating their numbers as universal benchmarks." },
+      { id: "maturity-controls", number: "05", title: "Orient risk and maturity", text: "Find the minimum control depth from impact and autonomy." },
+      { id: "control-crosswalk", number: "06", title: "Filter the controls", text: "Turn organization, risk, autonomy, use pattern, and territory into a traceable control list." },
+      { id: "toolkit", number: "07", title: "Open the templates", text: "Use the mandate, risk, evaluation, incident, accessibility, rights, and field templates." },
+    ],
+    cases: [
+      { id: "case", number: "01", title: "Small-business copilot", text: "A shared inbox with human review and no automatic send." },
+      { id: "sme-case", number: "02", title: "SME quote agent", text: "A bounded B2B quote process with approval on every price." },
+      { id: "mission-case", number: "03", title: "Foundation dossier agent", text: "Administrative preparation without deciding who receives funding." },
+      { id: "public-case", number: "04", title: "Public-service agent", text: "Completeness support without replacing public judgment or appeal." },
+      { id: "solo-case", number: "05", title: "Independent copilot", text: "Draft-only client follow-up with every action kept human." },
+      { id: "agent-case", number: "06", title: "Independent business agent", text: "The same follow-up carried end to end after explicit approval." },
+      { id: "agency-case", number: "07", title: "Orchestrated agency", text: "Several specialists coordinated for one bounded diagnostic service." },
+    ],
+  },
+  fr: {
+    eyebrow: "UN SUJET À LA FOIS",
+    title: "Choisissez ce dont vous avez besoin maintenant.",
+    text: "Seul le sujet choisi apparaît ensuite. Vos choix précédents restent disponibles pendant l’exploration.",
+    current: "Ouvert maintenant",
+    conceptLabel: "Sujets pour comprendre",
+    operationalLabel: "Sujets de l’espace pilote",
+    implementationLabel: "Sujets de mise en œuvre",
+    casesEyebrow: "EXEMPLES COMPARABLES",
+    casesTitle: "Ouvrez un cas, puis comparez avec méthode.",
+    casesText: "Chaque cas possède sa structure, sa tâche, sa limite d’autonomie et son contrat de preuve. Choisissez le cas le plus proche, pas le chiffre le plus élevé.",
+    casesLabel: "Cas d’école",
+    previous: "Sujet précédent",
+    next: "Sujet suivant",
+    position: "Position actuelle",
+    concept: [
+      { id: "geo-library", number: "01", title: "Questions pratiques", text: "Des réponses courtes sur l’adoption, les agents, les preuves et le contexte suisse ou européen." },
+      { id: "use-patterns", number: "02", title: "Quel travail fait l’IA ?", text: "Séparez génération, recherche, prévision, conversation, multimodal et action." },
+      { id: "non-agentic-cases", number: "03", title: "Exemples peu autonomes", text: "Voyez pourquoi RAG, prévision, chatbot et multimodal exigent des tests différents." },
+      { id: "integration-levels", number: "04", title: "Quelle part du travail porte-t-elle ?", text: "Comparez copilote, agent métier et agence orchestrée sans mélanger leurs gains." },
+    ],
+    operational: [
+      { id: "calibrator", number: "01", title: "Tester une fourchette réaliste", text: "Transformez volume, part éligible, préparation et effet bas ou haut en scénario modifiable." },
+      { id: "pilot-plan", number: "02", title: "Construire le plan de test", text: "Figez les cas, seuils, protections et décisions possibles avant le pilote réel." },
+      { id: "evidence-gate", number: "03", title: "Saisir les résultats observés", text: "Notez valeur, qualité, sécurité, traces et éligibilité. Le résultat critique le plus faible décide." },
+      { id: "operations", number: "04", title: "Exploiter dans les limites prouvées", text: "Nommez responsables, suivi, arrêts, retour sûr et prochaine date de revue." },
+      { id: "decision-dossier", number: "05", title: "Préparer la transmission", text: "Exportez hypothèses, test, décision, limites d’exploitation et traces utiles au prochain responsable." },
+      { id: "field-pilot", number: "06", title: "Préparer le retour terrain", text: "Créez un brouillon local pour revue indépendante sans envoyer ni publier les preuves brutes." },
+    ],
+    implementation: [
+      { id: "paths", number: "01", title: "Choisir le parcours de la structure", text: "Adaptez responsabilités, rythme et protections à l’indépendant, l’entreprise, l’association ou le service public." },
+      { id: "sectors", number: "02", title: "Ajouter les protections du secteur", text: "Ajoutez les limites santé, éducation, finance ou infrastructure critique lorsqu’elles s’appliquent." },
+      { id: "method", number: "03", title: "Suivre toute la méthode", text: "Ouvrez les huit étapes de mise en œuvre et leurs livrables concrets." },
+      { id: "case-library", number: "04", title: "Explorer les cas d’école", text: "Comparez onze cas synthétiques sans transformer leurs chiffres en références universelles." },
+      { id: "maturity-controls", number: "05", title: "Orienter risque et maturité", text: "Trouvez la profondeur minimale de contrôle selon l’impact et l’autonomie." },
+      { id: "control-crosswalk", number: "06", title: "Filtrer les contrôles", text: "Transformez structure, risque, autonomie, mode d’usage et territoire en liste traçable." },
+      { id: "toolkit", number: "07", title: "Ouvrir les modèles", text: "Utilisez mandat, risque, évaluation, incident, accessibilité, droits et retour terrain." },
+    ],
+    cases: [
+      { id: "case", number: "01", title: "Copilote de petite entreprise", text: "Une boîte partagée avec revue humaine et aucun envoi automatique." },
+      { id: "sme-case", number: "02", title: "Agent de devis pour PME", text: "Un processus B2B borné avec approbation humaine de chaque prix." },
+      { id: "mission-case", number: "03", title: "Agent de dossiers pour fondation", text: "Une préparation administrative sans décider qui reçoit un financement." },
+      { id: "public-case", number: "04", title: "Agent de service public", text: "Un contrôle de complétude sans remplacer le jugement public ni le recours." },
+      { id: "solo-case", number: "05", title: "Copilote pour indépendant", text: "Un suivi client en brouillon, avec chaque action conservée par la personne." },
+      { id: "agent-case", number: "06", title: "Agent métier pour indépendant", text: "Le même suivi réalisé de bout en bout après une approbation explicite." },
+      { id: "agency-case", number: "07", title: "Agence orchestrée", text: "Plusieurs spécialistes coordonnés pour un seul service de diagnostic borné." },
+    ],
+  },
+};
+
+const conceptTargetMap: Partial<Record<string, ConceptPanelId>> = {
+  "geo-library": "geo-library",
+  "use-patterns": "use-patterns",
+  "non-agentic-cases": "non-agentic-cases",
+  "integration-levels": "integration-levels",
+};
+const operationalTargetMap: Partial<Record<string, OperationalPanelId>> = {
+  calibrator: "calibrator",
+  "pilot-plan": "pilot-plan",
+  "evidence-gate": "evidence-gate",
+  operations: "operations",
+  "decision-dossier": "decision-dossier",
+  "field-pilot": "field-pilot",
+};
+const implementationTargetMap: Partial<Record<string, ImplementationPanelId>> = {
+  paths: "paths",
+  sectors: "sectors",
+  method: "method",
+  "case-library": "case-library",
+  "maturity-controls": "maturity-controls",
+  controls: "maturity-controls",
+  "control-crosswalk": "control-crosswalk",
+  toolkit: "toolkit",
+};
+const caseTargetMap: Partial<Record<string, CasePanelId>> = {
+  case: "case",
+  "sme-case": "sme-case",
+  "mission-case": "mission-case",
+  "public-case": "public-case",
+  "solo-case": "solo-case",
+  "agent-case": "agent-case",
+  "agency-case": "agency-case",
 };
 
 const copy = {
@@ -1088,11 +1247,85 @@ function ConceptTip({ label, text }: { label: string; text: string }) {
   );
 }
 
+function ChapterNavigator<T extends string>({
+  active,
+  ariaLabel,
+  content,
+  items,
+  onSelect,
+  routerId,
+  variant = "chapter",
+}: {
+  active: T;
+  ariaLabel: string;
+  content: ChapterNavigationContent;
+  items: Array<ChapterItem<T>>;
+  onSelect: (id: T) => void;
+  routerId: string;
+  variant?: "chapter" | "cases";
+}) {
+  const selectedItem = items.find((item) => item.id === active) ?? items[0];
+  const isCases = variant === "cases";
+  return (
+    <section className={`chapter-router ${isCases ? "case-router" : ""}`} aria-label={ariaLabel} id={routerId}>
+      <div className="chapter-router-head">
+        <p className="eyebrow">{isCases ? content.casesEyebrow : content.eyebrow}</p>
+        <h3>{isCases ? content.casesTitle : content.title}</h3>
+        <p>{isCases ? content.casesText : content.text}</p>
+      </div>
+      <nav aria-label={ariaLabel}>
+        {items.map((item) => (
+          <button aria-pressed={active === item.id} key={item.id} onClick={() => onSelect(item.id)} type="button">
+            <span>{item.number}</span><strong>{item.title}</strong><small>{item.text}</small>
+          </button>
+        ))}
+      </nav>
+      <div className="chapter-current" aria-live="polite">
+        <span>{content.current}</span><strong>{selectedItem.title}</strong><p>{selectedItem.text}</p>
+      </div>
+    </section>
+  );
+}
+
+function ChapterStepper<T extends string>({
+  active,
+  ariaLabel,
+  content,
+  items,
+  onSelect,
+  routerId,
+}: {
+  active: T;
+  ariaLabel: string;
+  content: ChapterNavigationContent;
+  items: Array<ChapterItem<T>>;
+  onSelect: (id: T) => void;
+  routerId: string;
+}) {
+  const currentIndex = Math.max(0, items.findIndex((item) => item.id === active));
+  const current = items[currentIndex];
+  const previous = items[currentIndex - 1];
+  const next = items[currentIndex + 1];
+  const move = (item: ChapterItem<T> | undefined) => {
+    if (!item) return;
+    onSelect(item.id);
+    window.requestAnimationFrame(() => document.getElementById(routerId)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+  return (
+    <nav className="chapter-stepper" aria-label={`${ariaLabel} · ${content.position}`}>
+      <button disabled={!previous} onClick={() => move(previous)} type="button"><span>← {content.previous}</span><strong>{previous?.title ?? content.previous}</strong></button>
+      <p><span>{content.position}</span><strong>{currentIndex + 1}/{items.length}</strong><small>{current.title}</small></p>
+      <button disabled={!next} onClick={() => move(next)} type="button"><span>{content.next} →</span><strong>{next?.title ?? content.next}</strong></button>
+    </nav>
+  );
+}
+
 export function Playbook({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const patternCopy = usePatternContent[locale];
   const nonAgenticCopy = nonAgenticCaseContent[locale];
   const guideCopy = guidedContent[locale];
+  const chapterCopy = chapterNavigationContent[locale];
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
   const [usePattern, setUsePattern] = useState<UsePatternId>("retrieval");
   const [jurisdiction, setJurisdiction] = useState<JurisdictionId>("BOTH");
@@ -1130,6 +1363,10 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [fieldReviewChecks, setFieldReviewChecks] = useState<boolean[]>(() => t.fieldPilotChecklist.map(() => false));
   const [guideStep, setGuideStep] = useState(0);
   const [guideFurthestStep, setGuideFurthestStep] = useState(0);
+  const [conceptPanel, setConceptPanel] = useState<ConceptPanelId>("use-patterns");
+  const [operationalPanel, setOperationalPanel] = useState<OperationalPanelId>("calibrator");
+  const [implementationPanel, setImplementationPanel] = useState<ImplementationPanelId>("paths");
+  const [casePanel, setCasePanel] = useState<CasePanelId>("case");
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const selectedUsePattern = useMemo(() => patternCopy.patterns.find((item) => item.id === usePattern) ?? patternCopy.patterns[0], [patternCopy.patterns, usePattern]);
   const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
@@ -1172,10 +1409,24 @@ export function Playbook({ locale }: { locale: Locale }) {
     setGuideStep(boundedStep);
     setGuideFurthestStep((current) => Math.max(current, boundedStep));
   };
+  const selectChapterTarget = useCallback((targetId: string) => {
+    const conceptTarget = conceptTargetMap[targetId];
+    const operationalTarget = operationalTargetMap[targetId];
+    const implementationTarget = implementationTargetMap[targetId];
+    const caseTarget = caseTargetMap[targetId];
+    if (conceptTarget) setConceptPanel(conceptTarget);
+    if (operationalTarget) setOperationalPanel(operationalTarget);
+    if (implementationTarget) setImplementationPanel(implementationTarget);
+    if (caseTarget) {
+      setImplementationPanel("case-library");
+      setCasePanel(caseTarget);
+    }
+  }, []);
   const openChapter = (chapterId: string, targetId: string) => {
+    selectChapterTarget(targetId);
     const chapter = document.getElementById(chapterId) as HTMLDetailsElement | null;
     if (chapter) chapter.open = true;
-    window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" })));
   };
   const calibration = useMemo(() => {
     const spec = calibrationSpecs[calibrationLevel];
@@ -1382,14 +1633,17 @@ export function Playbook({ locale }: { locale: Locale }) {
   useEffect(() => {
     const revealHashTarget = () => {
       if (!window.location.hash) return;
-      const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+      const targetId = decodeURIComponent(window.location.hash.slice(1));
+      selectChapterTarget(targetId);
+      const target = document.getElementById(targetId);
       const chapter = target?.closest("details.guide-chapter") as HTMLDetailsElement | null;
       if (chapter) chapter.open = true;
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => target?.scrollIntoView({ block: "start" })));
     };
     revealHashTarget();
     window.addEventListener("hashchange", revealHashTarget);
     return () => window.removeEventListener("hashchange", revealHashTarget);
-  }, []);
+  }, [selectChapterTarget]);
 
   return (
     <div className="page-shell">
@@ -1471,7 +1725,9 @@ export function Playbook({ locale }: { locale: Locale }) {
           <summary><span>{guideCopy.chapters[0].number}</span><div><strong>{guideCopy.chapters[0].title}</strong><small>{guideCopy.chapters[0].text}</small></div><b aria-hidden="true">+</b></summary>
           <div className="guide-chapter-content">
 
-        <section className="geo-library" aria-labelledby="geo-library-title">
+        <ChapterNavigator active={conceptPanel} ariaLabel={chapterCopy.conceptLabel} content={chapterCopy} items={chapterCopy.concept} onSelect={setConceptPanel} routerId="concept-router" />
+
+        <section className="geo-library" hidden={conceptPanel !== "geo-library"} id="geo-library" aria-labelledby="geo-library-title">
           <div className="section-heading">
             <p className="eyebrow">{locale === "en" ? "PRACTICAL ANSWERS" : "RÉPONSES PRATIQUES"}</p>
             <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Approfondissez les questions qui font la décision."}</h2>
@@ -1486,7 +1742,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="use-patterns section-light" id="use-patterns" aria-labelledby="use-patterns-title">
+        <section className="use-patterns section-light" hidden={conceptPanel !== "use-patterns"} id="use-patterns" aria-labelledby="use-patterns-title">
           <div className="section-heading">
             <p className="eyebrow">{patternCopy.eyebrow}</p>
             <h2 id="use-patterns-title">{patternCopy.title}</h2>
@@ -1528,7 +1784,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="non-agentic-cases section-light" id="non-agentic-cases" aria-labelledby="non-agentic-cases-title">
+        <section className="non-agentic-cases section-light" hidden={conceptPanel !== "non-agentic-cases"} id="non-agentic-cases" aria-labelledby="non-agentic-cases-title">
           <div className="section-heading">
             <p className="eyebrow">{nonAgenticCopy.eyebrow}</p>
             <h2 id="non-agentic-cases-title">{nonAgenticCopy.title}</h2>
@@ -1564,7 +1820,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </aside>
         </section>
 
-        <section className="integration-guide section-light" id="integration-levels" aria-labelledby="integration-title">
+        <section className="integration-guide section-light" hidden={conceptPanel !== "integration-levels"} id="integration-levels" aria-labelledby="integration-title">
           <div className="section-heading"><p className="eyebrow">{t.integrationEyebrow}</p><h2 id="integration-title">{t.integrationTitle}</h2><p>{t.integrationText}</p></div>
           <div className="integration-grid">
             {t.integrationLevels.map((level, index) => <article className={`integration-card level-${index + 1}`} key={level.title}>
@@ -1591,6 +1847,8 @@ export function Playbook({ locale }: { locale: Locale }) {
           </section>
         </section>
 
+        <ChapterStepper active={conceptPanel} ariaLabel={chapterCopy.conceptLabel} content={chapterCopy} items={chapterCopy.concept} onSelect={setConceptPanel} routerId="concept-router" />
+
           </div>
         </details>
 
@@ -1598,7 +1856,9 @@ export function Playbook({ locale }: { locale: Locale }) {
           <summary><span>{guideCopy.chapters[1].number}</span><div><strong>{guideCopy.chapters[1].title}</strong><small>{guideCopy.chapters[1].text}</small></div><b aria-hidden="true">+</b></summary>
           <div className="guide-chapter-content">
 
-        <section className="calibrator section-blue" id="calibrator" aria-labelledby="calibrator-title">
+        <ChapterNavigator active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
+
+        <section className="calibrator section-blue" hidden={operationalPanel !== "calibrator"} id="calibrator" aria-labelledby="calibrator-title">
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
@@ -1628,7 +1888,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
         </section>
 
-        <section className="pilot-planner section-light" id="pilot-plan" aria-labelledby="pilot-plan-title">
+        <section className="pilot-planner section-light" hidden={operationalPanel !== "pilot-plan"} id="pilot-plan" aria-labelledby="pilot-plan-title">
           <div className="section-heading"><p className="eyebrow">{t.pilotPlannerEyebrow}</p><h2 id="pilot-plan-title">{t.pilotPlannerTitle}</h2><p>{t.pilotPlannerText}</p></div>
           <ol className="pilot-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 1} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="pilot-specs" aria-live="polite">
@@ -1661,7 +1921,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="evidence-gate section-blue" id="evidence-gate" aria-labelledby="evidence-gate-title">
+        <section className="evidence-gate section-blue" hidden={operationalPanel !== "evidence-gate"} id="evidence-gate" aria-labelledby="evidence-gate-title">
           <div className="section-heading"><p className="eyebrow">{t.evidenceEyebrow}</p><h2 id="evidence-gate-title">{t.evidenceTitle}</h2><p>{t.evidenceText}</p></div>
           <ol className="pilot-roadmap evidence-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 2} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="evidence-shell">
@@ -1691,7 +1951,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="evidence-footer"><p>{t.evidenceRule}</p><button className="button primary" onClick={() => void copyEvidenceMemo()} type="button">{evidenceCopied ? t.evidenceCopied : t.evidenceCopy}</button></div>
         </section>
 
-        <section className="operations section-light" id="operations" aria-labelledby="operations-title">
+        <section className="operations section-light" hidden={operationalPanel !== "operations"} id="operations" aria-labelledby="operations-title">
           <div className="section-heading"><p className="eyebrow">{t.operationsEyebrow}</p><h2 id="operations-title">{t.operationsTitle}</h2><p>{t.operationsText}</p></div>
           <ol className="pilot-roadmap operations-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 4} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="operation-contract">
@@ -1716,7 +1976,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repositorySource}/templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`}>{t.operationRunbook} ↗</a></div></div>
         </section>
 
-        <section className="decision-dossier section-dark" id="decision-dossier" aria-labelledby="decision-dossier-title">
+        <section className="decision-dossier section-dark" hidden={operationalPanel !== "decision-dossier"} id="decision-dossier" aria-labelledby="decision-dossier-title">
           <div className="section-heading"><p className="eyebrow">{t.dossierEyebrow}</p><h2 id="decision-dossier-title">{t.dossierTitle}</h2><p>{t.dossierText}</p></div>
           <div className="dossier-status" data-ready={dossierReady}><div><span>{locale === "en" ? "CURRENT PACKAGE STATE" : "ÉTAT ACTUEL DU DOSSIER"}</span><strong>{dossierReady ? t.dossierReady : t.dossierDraft}</strong></div><p><strong>{dossierMissingItems.length}</strong><span>{t.dossierMissing}</span></p></div>
           <div className="dossier-artifacts">{t.dossierArtifacts.map(([number, title, text], index) => <article data-status={dossierArtifactStatuses[index]} key={number}><div><span>{number}</span><em>{t.dossierStatuses[dossierArtifactStatuses[index]]}</em></div><h3>{title}</h3><p>{text}</p></article>)}</div>
@@ -1728,7 +1988,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
         </section>
 
-        <section className="field-pilot section-blue" id="field-pilot" aria-labelledby="field-pilot-title">
+        <section className="field-pilot section-blue" hidden={operationalPanel !== "field-pilot"} id="field-pilot" aria-labelledby="field-pilot-title">
           <div className="section-heading"><p className="eyebrow">{t.fieldPilotEyebrow}</p><h2 id="field-pilot-title">{t.fieldPilotTitle}</h2><p>{t.fieldPilotText}</p></div>
           <ol className="field-pilot-flow">{t.fieldPilotFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="field-pilot-shell">
@@ -1758,6 +2018,8 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
+        <ChapterStepper active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
+
           </div>
         </details>
 
@@ -1765,7 +2027,9 @@ export function Playbook({ locale }: { locale: Locale }) {
           <summary><span>{guideCopy.chapters[2].number}</span><div><strong>{guideCopy.chapters[2].title}</strong><small>{guideCopy.chapters[2].text}</small></div><b aria-hidden="true">+</b></summary>
           <div className="guide-chapter-content">
 
-        <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
+        <ChapterNavigator active={implementationPanel} ariaLabel={chapterCopy.implementationLabel} content={chapterCopy} items={chapterCopy.implementation} onSelect={setImplementationPanel} routerId="implementation-router" />
+
+        <section className="paths section-dark" hidden={implementationPanel !== "paths"} id="paths" aria-labelledby="paths-title">
           <div className="section-heading"><p className="eyebrow">{t.pathsEyebrow}</p><h2 id="paths-title">{t.pathsTitle}</h2><p>{t.pathsText}</p></div>
           <div className="path-grid">
             {audiences[locale].map((audience) => <button aria-pressed={audience.id === selected.id} className="path-card" data-active={audience.id === selected.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span className="path-number">{audience.number}</span><span className="path-title">{audience.title}</span><span className="path-copy">{audience.short}</span><span className="path-horizon">{audience.horizon} →</span></button>)}
@@ -1777,26 +2041,29 @@ export function Playbook({ locale }: { locale: Locale }) {
           </article>
         </section>
 
-        <section className="sector-lenses section-blue" id="sectors" aria-labelledby="sectors-title">
+        <section className="sector-lenses section-blue" hidden={implementationPanel !== "sectors"} id="sectors" aria-labelledby="sectors-title">
           <div className="section-heading"><p className="eyebrow">{t.sectorEyebrow}</p><h2 id="sectors-title">{t.sectorTitle}</h2><p>{t.sectorText}</p></div>
           <ol className="sector-flow">{t.sectorFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="sector-grid">{t.sectors.map((sector, index) => <a href={`${repositorySource}/${sector.file}`} key={sector.code}><header><span>{sector.code}</span><small>0{index + 1}</small></header><h3>{sector.title}</h3><dl><div><dt>{t.sectorLabels.trigger}</dt><dd>{sector.trigger}</dd></div><div className="sector-veto"><dt>{t.sectorLabels.veto}</dt><dd>{sector.veto}</dd></div><div><dt>{t.sectorLabels.evidence}</dt><dd>{sector.evidence}</dd></div></dl><b>{t.sectorGuide} ↗</b></a>)}</div>
           <p className="sector-caveat">{t.sectorCaveat}</p>
         </section>
 
-        <section className="method section-light" id="method" aria-labelledby="method-title">
+        <section className="method section-light" hidden={implementationPanel !== "method"} id="method" aria-labelledby="method-title">
           <div className="section-heading"><p className="eyebrow">{t.methodEyebrow}</p><h2 id="method-title">{t.methodTitle}</h2><p>{t.methodText}</p></div>
           <div className="process-list">{t.steps.map(([title, text, evidence], index) => <details key={title} open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><em aria-hidden="true">+</em></summary><div className="step-body"><p>{text}</p><p className="evidence"><span>{t.deliverable}</span>{evidence}</p></div></details>)}</div>
         </section>
 
-        <section className="worked-case section-dark" id="case" aria-labelledby="case-title">
+        <div className="case-library" hidden={implementationPanel !== "case-library"} id="case-library">
+        <ChapterNavigator active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" variant="cases" />
+
+        <section className="worked-case section-dark" hidden={casePanel !== "case"} id="case" aria-labelledby="case-title">
           <div className="section-heading"><p className="eyebrow">{t.caseEyebrow}</p><h2 id="case-title">{t.caseTitle}</h2><p>{t.caseText}</p></div>
           <div className="case-overview"><article><span>{t.caseBadge}</span><h3>Atelier Horizon</h3><p>{t.caseProblem}</p></article><div className="case-metrics">{t.caseMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div></div>
           <ol className="case-timeline">{t.caseTimeline.map(([label, title, text]) => <li key={label}><span>{label}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="case-decision"><div><p className="eyebrow">GATE 03 · DECISION</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`}>{t.caseCta} ↗</a></div>
         </section>
 
-        <section className="sme-case section-light" id="sme-case" aria-labelledby="sme-case-title">
+        <section className="sme-case section-light" hidden={casePanel !== "sme-case"} id="sme-case" aria-labelledby="sme-case-title">
           <div className="section-heading"><p className="eyebrow">{t.smeEyebrow}</p><h2 id="sme-case-title">{t.smeTitle}</h2><p>{t.smeText}</p></div>
           <div className="sme-lead"><article><span>{t.smeBadge}</span><h3>Noroît Mécanique SA</h3><p>{t.smeProblem}</p></article><div className="sme-mark"><strong>A2</strong><span>{locale === "en" ? "FULL WORKFLOW · HUMAN GATE" : "WORKFLOW COMPLET · GATE HUMAINE"}</span></div></div>
           <ol className="sme-workflow" aria-label={locale === "en" ? "B2B quote workflow" : "Workflow du devis B2B"}>{t.smeWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1807,7 +2074,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="sme-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "LEVEL DECISION" : "DÉCISION DE NIVEAU"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
         </section>
 
-        <section className="mission-case section-dark" id="mission-case" aria-labelledby="mission-case-title">
+        <section className="mission-case section-dark" hidden={casePanel !== "mission-case"} id="mission-case" aria-labelledby="mission-case-title">
           <div className="section-heading"><p className="eyebrow">{t.missionEyebrow}</p><h2 id="mission-case-title">{t.missionTitle}</h2><p>{t.missionText}</p></div>
           <div className="mission-lead"><article><span>{t.missionBadge}</span><h3>Fondation Lien Local</h3><p>{t.missionProblem}</p></article><div className="mission-mark"><strong>A2</strong><span>{locale === "en" ? "ADMINISTRATION · NOT JUDGMENT" : "ADMINISTRATION · PAS DE JUGEMENT"}</span></div></div>
           <ol className="mission-workflow" aria-label={locale === "en" ? "Grant dossier administrative workflow" : "Workflow administratif des dossiers de subvention"}>{t.missionWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1821,7 +2088,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="mission-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`}>{t.missionCta} ↗</a></div>
         </section>
 
-        <section className="public-case section-blue" id="public-case" aria-labelledby="public-case-title">
+        <section className="public-case section-blue" hidden={casePanel !== "public-case"} id="public-case" aria-labelledby="public-case-title">
           <div className="section-heading"><p className="eyebrow">{t.publicEyebrow}</p><h2 id="public-case-title">{t.publicTitle}</h2><p>{t.publicText}</p></div>
           <div className="public-lead"><article><span>{t.publicBadge}</span><h3>{locale === "en" ? "City of Mont-Rive" : "Ville de Mont-Rive"}</h3><p>{t.publicProblem}</p></article><div className="public-seal"><strong>P0–P5</strong><span>{locale === "en" ? "FORMAL PUBLIC GATES" : "GATES PUBLICS FORMELS"}</span></div></div>
           <ol className="public-workflow" aria-label={locale === "en" ? "Public planning dossier workflow" : "Workflow public des dossiers d’urbanisme"}>{t.publicWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1835,7 +2102,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`}>{t.publicCta} ↗</a></div>
         </section>
 
-        <section className="solo-case section-light" aria-labelledby="solo-title">
+        <section className="solo-case section-light" hidden={casePanel !== "solo-case"} id="solo-case" aria-labelledby="solo-title">
           <div className="section-heading"><p className="eyebrow">{t.soloEyebrow}</p><h2 id="solo-title">{t.soloTitle}</h2><p>{t.soloText}</p></div>
           <div className="solo-board">
             <div className="solo-clock"><span>{locale === "en" ? "PILOT" : "PILOTE"}</span><strong>14</strong><em>{locale === "en" ? "DAYS" : "JOURS"}</em><small>{t.soloBadge}</small></div>
@@ -1847,7 +2114,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="solo-decision"><div><p className="eyebrow">GATE 02 · {locale === "en" ? "BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
         </section>
 
-        <section className="agent-case section-dark" id="agent-case" aria-labelledby="agent-case-title">
+        <section className="agent-case section-dark" hidden={casePanel !== "agent-case"} id="agent-case" aria-labelledby="agent-case-title">
           <div className="section-heading"><p className="eyebrow">{t.agentEyebrow}</p><h2 id="agent-case-title">{t.agentTitle}</h2><p>{t.agentText}</p></div>
           <div className="agent-case-lead"><article><span>{t.agentBadge}</span><h3>Camille Rey · Phase 2</h3><p>{t.agentProblem}</p></article><div className="agent-mark"><strong>A2</strong><span>{locale === "en" ? "ACTION AFTER APPROVAL" : "ACTION APRÈS APPROBATION"}</span></div></div>
           <ol className="agent-flow" aria-label={locale === "en" ? "Business-agent workflow" : "Workflow de l’agent métier"}>{t.agentWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1858,7 +2125,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
         </section>
 
-        <section className="agency-case section-light" id="agency-case" aria-labelledby="agency-case-title">
+        <section className="agency-case section-light" hidden={casePanel !== "agency-case"} id="agency-case" aria-labelledby="agency-case-title">
           <div className="section-heading"><p className="eyebrow">{t.agencyEyebrow}</p><h2 id="agency-case-title">{t.agencyTitle}</h2><p>{t.agencyText}</p></div>
           <div className="agency-lead"><article><span>{t.agencyBadge}</span><h3>{locale === "en" ? "Camille Rey · Standard diagnostic" : "Camille Rey · Diagnostic standard"}</h3><p>{t.agencyProblem}</p></article><div className="agency-mark"><strong>A3</strong><span>{locale === "en" ? "BOUNDED AUTONOMY" : "AUTONOMIE BORNÉE"}</span></div></div>
           <div className="agency-system">
@@ -1874,14 +2141,20 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agency-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
         </section>
 
+        <ChapterStepper active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" />
+
+        </div>
+
+        <div className="maturity-controls-panel" hidden={implementationPanel !== "maturity-controls"} id="maturity-controls">
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>
 
         <section className="controls section-light" id="controls" aria-labelledby="controls-title">
           <div className="section-heading"><p className="eyebrow">{t.riskEyebrow}</p><h2 id="controls-title">{t.riskTitle}</h2><p>{t.riskText}</p></div>
           <div className="control-explorer"><fieldset><legend>{t.impact}</legend><div className="choice-list">{t.impactOptions.map((label, index) => <button aria-pressed={risk === index} key={label} onClick={() => setRisk(index)} type="button">{label}</button>)}</div></fieldset><fieldset><legend>{t.autonomy}</legend><div className="choice-list">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index} key={label} onClick={() => setAutonomy(index)} type="button">{label}</button>)}</div></fieldset><output className="orientation" aria-live="polite"><span>{t.orientation}</span><strong>{t.orientations[controlIndex(risk, autonomy)]}</strong><small>R{risk} × A{autonomy}</small><a className="orientation-link" href="#control-crosswalk">{t.crosswalkOpen} ↓</a></output></div>
         </section>
+        </div>
 
-        <section className="control-crosswalk section-dark" id="control-crosswalk" aria-labelledby="control-crosswalk-title">
+        <section className="control-crosswalk section-dark" hidden={implementationPanel !== "control-crosswalk"} id="control-crosswalk" aria-labelledby="control-crosswalk-title">
           <div className="section-heading"><p className="eyebrow">{t.crosswalkEyebrow}</p><h2 id="control-crosswalk-title">{t.crosswalkTitle}</h2><p>{t.crosswalkText}</p></div>
           <div className="crosswalk-summary" aria-live="polite">
             <p><strong>{applicableControls.length}</strong><span>{t.crosswalkMatched}</span></p>
@@ -1898,9 +2171,10 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href={sitePath("/data/control-crosswalk.v1.json")}>{t.crosswalkDownload} ↓</a><a className="button secondary" download href={sitePath("/data/control-crosswalk.schema.json")}>{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
-        <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
+        <section className="toolkit section-dark" hidden={implementationPanel !== "toolkit"} id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
 
-        <aside className="source-note"><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources.md`}>{t.sources} ↗</a></aside>
+        <aside className="source-note" hidden={implementationPanel !== "toolkit"}><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources.md`}>{t.sources} ↗</a></aside>
+        <ChapterStepper active={implementationPanel} ariaLabel={chapterCopy.implementationLabel} content={chapterCopy} items={chapterCopy.implementation} onSelect={setImplementationPanel} routerId="implementation-router" />
           </div>
         </details>
         </div>

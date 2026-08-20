@@ -9,6 +9,8 @@
 - [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
 - [x] Replace the long default page with a five-step progressive guide and
   on-demand expert chapters.
+- [x] Reveal one topic per expert chapter and one worked case at a time, with
+  responsive selectors and restorable deep links.
 - [x] Separate seven AI use patterns from integration level, autonomy, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Update version, changelog, operational documentation, and handoff.

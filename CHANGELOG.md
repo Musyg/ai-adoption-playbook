@@ -8,6 +8,9 @@
   reveals one decision at a time, explains unfamiliar choices through
   accessible help bubbles, and keeps the detailed corpus in three closed,
   deep-linkable chapters.
+- Added progressive topic routers inside every chapter and a separate worked-
+  case selector. Only one topic and one comparable case are visible at a time;
+  direct links restore the correct nested view.
 - Added a bilingual seven-pattern AI-use classification for generation,
   retrieval, classification, prediction, conversation, multimodal systems, and
   agentic action. The classification stays separate from integration level,

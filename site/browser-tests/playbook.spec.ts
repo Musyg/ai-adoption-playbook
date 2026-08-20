@@ -121,11 +121,51 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   await expect(page.locator(".guided-result")).toContainText("Switzerland");
 });
 
+test("chapter routers reveal one topic at a time and restore deep links", async ({ page }) => {
+  await page.goto("/");
+
+  await page.locator("#concept-library > summary").click();
+  await expect(page.locator("#use-patterns")).toBeVisible();
+  await expect(page.locator("#geo-library")).toBeHidden();
+  await page.locator("#concept-library .chapter-router nav button").nth(2).click();
+  await expect(page.locator("#non-agentic-cases")).toBeVisible();
+  await expect(page.locator("#use-patterns")).toBeHidden();
+  await page.locator("#concept-library .chapter-stepper button").last().click();
+  await expect(page.locator("#integration-levels")).toBeVisible();
+
+  await page.locator("#operational-workspace > summary").click();
+  await expect(page.locator("#calibrator")).toBeVisible();
+  await page.locator("#operational-workspace .chapter-router nav button").nth(1).click();
+  await expect(page.locator("#pilot-plan")).toBeVisible();
+  await expect(page.locator("#calibrator")).toBeHidden();
+  await page.locator("#operational-workspace .chapter-stepper button").last().click();
+  await expect(page.locator("#evidence-gate")).toBeVisible();
+
+  await page.locator("#implementation-library > summary").click();
+  await expect(page.locator("#paths")).toBeVisible();
+  await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(3).click();
+  await expect(page.locator("#case-library")).toBeVisible();
+  await expect(page.locator("#case")).toBeVisible();
+  await page.locator("#case-library .case-router nav button").last().click();
+  await expect(page.locator("#agency-case")).toBeVisible();
+  await expect(page.locator("#case")).toBeHidden();
+  await expect(page.locator("#case-library .chapter-stepper button").last()).toBeDisabled();
+  await page.locator("#case-library .chapter-stepper button").first().click();
+  await expect(page.locator("#agent-case")).toBeVisible();
+
+  await page.goto("/#agent-case");
+  await expect(page.locator("#implementation-library")).toHaveAttribute("open", "");
+  await expect(page.locator("#case-library")).toBeVisible();
+  await expect(page.locator("#agent-case")).toBeVisible();
+  await expect(page.locator("#agency-case")).toBeHidden();
+});
+
 test("rendered page has no automatic axe violations", async ({ page }) => {
   await page.goto("/");
   for (const chapter of ["concept-library", "operational-workspace", "implementation-library"]) {
     await page.locator(`#${chapter} > summary`).click();
   }
+  await page.locator(".guide-chapter-content [hidden]").evaluateAll((elements) => elements.forEach((element) => element.removeAttribute("hidden")));
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
 });

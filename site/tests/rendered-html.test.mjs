@@ -122,6 +122,14 @@ for (const [pathname, language, title] of [
     assert.match(html, /id=["']implementation-library["']/i);
     assert.match(html, /Understand the differences|Comprendre les différences/i);
     assert.match(html, /Build and operate a pilot|Construire et exploiter un pilote/i);
+    assert.match(html, /Choose what you need now|Choisissez ce dont vous avez besoin maintenant/i);
+    assert.match(html, /Only the selected topic appears below|Seul le sujet choisi apparaît ensuite/i);
+    assert.match(html, /id=["']case-library["']/i);
+    assert.match(html, /Open one case, then compare deliberately|Ouvrez un cas, puis comparez avec méthode/i);
+    assert.match(html, /Previous topic|Sujet précédent/i);
+    assert.match(html, /Next topic|Sujet suivant/i);
+    assert.match(html, /id=["']solo-case["']/i);
+    assert.match(html, /id=["']maturity-controls["']/i);
     assert.match(html, /id=["']use-patterns["']/i);
     assert.match(html, /Choose the use pattern|Choisissez le mode d’usage/i);
     assert.match(html, /Generation|Génération/i);
