@@ -4,6 +4,10 @@
 
 ## 0.2.1, 2026-08-20
 
+- Rebuilt the visual entry experience as a five-step bilingual guide that
+  reveals one decision at a time, explains unfamiliar choices through
+  accessible help bubbles, and keeps the detailed corpus in three closed,
+  deep-linkable chapters.
 - Added a bilingual seven-pattern AI-use classification for generation,
   retrieval, classification, prediction, conversation, multimodal systems, and
   agentic action. The classification stays separate from integration level,

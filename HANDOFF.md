@@ -23,11 +23,17 @@ selection is a separate owner decision.
 
 ## What is ready
 
-The repository contains a bilingual, interactive decision path from use-pattern
-classification to a bounded operating handoff. It first distinguishes seven
-ways of using AI: generation, retrieval, extraction and classification,
-prediction and recommendation, conversation, multimodal systems, and agentic
-action.
+The repository contains a bilingual, progressive decision path from a first
+plain-language question to a bounded operating handoff. The default path shows
+one of five decisions at a time, provides contextual help bubbles, and returns
+a personalized starting plan. Three closed chapters keep the concept library,
+pilot workspace, and implementation library available without exposing the
+reader to the full technical corpus at once. Deep links open the required
+chapter automatically.
+
+The path distinguishes seven ways of using AI: generation, retrieval,
+extraction and classification, prediction and recommendation, conversation,
+multimodal systems, and agentic action.
 
 It then keeps three integration levels distinct:
 
@@ -105,7 +111,7 @@ Latest local verification on 2026-08-20:
 - TypeScript 6.0.3: pass
 - server and static builds: pass
 - Node tests: 20/20 pass
-- Playwright: 21/21 pass across English, French, desktop light, desktop dark,
+- Playwright: 24/24 pass across English, French, desktop light, desktop dark,
   and mobile light
 - automated axe checks: zero violations
 - repository validation: 108 Markdown files and 45 bilingual pairs pass
@@ -116,7 +122,7 @@ The verification contract covers:
 - the Vinext server build and provider-neutral static export;
 - 20 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 21 Playwright checks across English, French, desktop light, desktop dark, and
+- 24 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;

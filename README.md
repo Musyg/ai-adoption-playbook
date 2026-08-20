@@ -6,14 +6,13 @@
 
 ![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
-The bilingual visual edition turns the method into an interactive path: identify
-generation, retrieval, classification, prediction, conversation, multimodal, and
-agentic patterns; distinguish copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
-range; turn it into a preregistered pilot protocol; enter the observed evidence; then
-make a bounded gate decision and generate a reversible operating card with monitoring,
-suspension, rollback, and dated reassessment; finally, export the complete chain as a
-reviewable Markdown decision dossier. The Markdown guides remain the operational source
-of truth.
+The bilingual visual edition starts with a short five-step guide. It asks who
+you are, what the AI must do, how much it may act, which legal route applies,
+and what a sensible first pilot looks like. One question appears at a time,
+plain-language help bubbles explain unfamiliar choices, and the detailed
+method stays inside three closed chapters until the reader opens it. The result
+links to the deeper test plan, evidence controls, cases, and Markdown decision
+dossier. The Markdown guides remain the operational source of truth.
 
 **New:** compare the complete synthetic cases for an
 [independent copilot](examples/en/independent-client-follow-up.md), a

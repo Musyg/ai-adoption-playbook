@@ -113,6 +113,15 @@ for (const [pathname, language, title] of [
     assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
     assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
     assert.match(html, /Guided decision path|Parcours de décision guidé/i);
+    assert.match(html, /id=["']guided-start["']/i);
+    assert.match(html, /Build your route, one simple choice at a time|Construisez votre parcours, un choix simple à la fois/i);
+    assert.match(html, /What kind of organization are you guiding|Quel type d’organisation accompagnez-vous/i);
+    assert.match(html, /Why ask this first|Pourquoi commencer ici/i);
+    assert.match(html, /id=["']concept-library["']/i);
+    assert.match(html, /id=["']operational-workspace["']/i);
+    assert.match(html, /id=["']implementation-library["']/i);
+    assert.match(html, /Understand the differences|Comprendre les différences/i);
+    assert.match(html, /Build and operate a pilot|Construire et exploiter un pilote/i);
     assert.match(html, /id=["']use-patterns["']/i);
     assert.match(html, /Choose the use pattern|Choisissez le mode d’usage/i);
     assert.match(html, /Generation|Génération/i);
@@ -139,9 +148,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /href=["']\/data\/control-crosswalk\.v1\.json["']/i);
     assert.match(html, /href=["']\/data\/control-crosswalk\.schema\.json["']/i);
     assert.match(html, /does not claim clause-level equivalence|ne constitue ni une équivalence article par article/i);
-    assert.match(html, /href=["']#calibrator["']/i);
-    assert.match(html, /href=["']#pilot-plan["']/i);
-    assert.match(html, /href=["']#decision-dossier["']/i);
+    assert.match(html, /href=["']#guided-start["']/i);
     assert.doesNotMatch(html, /property=["']og:image["']|name=["']twitter:image["']/i);
     assert.match(html, /id=["']integration-levels["']/i);
     assert.match(html, /id=["']sectors["']/i);
@@ -161,7 +168,6 @@ for (const [pathname, language, title] of [
     assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);
     assert.match(html, /Download the local draft|Télécharger le brouillon local/i);
     assert.match(html, /The export always remains a draft|L’export reste toujours un brouillon/i);
-    assert.match(html, /href=["']#field-pilot["']/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);

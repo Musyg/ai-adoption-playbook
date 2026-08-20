@@ -7,6 +7,8 @@
 - [x] Remove provider-specific hosting configuration and origins.
 - [x] Consolidate validation workflows and add dependency update configuration.
 - [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
+- [x] Replace the long default page with a five-step progressive guide and
+  on-demand expert chapters.
 - [x] Separate seven AI use patterns from integration level, autonomy, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Update version, changelog, operational documentation, and handoff.

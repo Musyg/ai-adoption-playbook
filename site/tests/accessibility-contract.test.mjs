@@ -34,4 +34,7 @@ test("theme-aware surfaces preserve readable control contrast", () => {
   assert.match(styles, /\.use-pattern-grid button\[aria-pressed="true"\] \{ background: var\(--surface\);/);
   assert.match(styles, /\.non-agentic-grid article:hover \{ border-color: var\(--blue-deep\);/);
   assert.match(styles, /\.non-agentic-footer a:focus-visible \{ outline-color: var\(--blue-deep\); \}/);
+  assert.match(styles, /\.guide-choice-grid > button\[aria-pressed="true"\] \{ background: var\(--surface\); border-color: var\(--blue-deep\);/);
+  assert.match(styles, /\.concept-tip > summary \{[^}]*cursor: pointer;/);
+  assert.match(styles, /\.guide-chapter > summary \{[^}]*cursor: pointer;/);
 });

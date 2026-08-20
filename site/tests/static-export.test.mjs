@@ -22,6 +22,10 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /\/favicon\.svg/);
     assert.match(html, /data-prerendered="true"/);
     assert.match(html, /data-prerendered="true"><div class="page-shell"/);
+    assert.match(html, /id="guided-start"/);
+    assert.match(html, /class="guide-chapter" id="concept-library"/);
+    assert.match(html, /class="guide-chapter" id="operational-workspace"/);
+    assert.match(html, /class="guide-chapter" id="implementation-library"/);
     assert.match(html, /id="use-patterns"/);
     assert.match(html, /id="non-agentic-cases"/);
     assert.match(html, /id="integration-levels"/);

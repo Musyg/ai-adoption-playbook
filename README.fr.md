@@ -6,14 +6,14 @@
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
-L’édition visuelle bilingue transforme la méthode en parcours interactif : identifier
-génération, recherche augmentée, classification, prédiction, conversation, multimodal et
-action agentique ; distinguer copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
-convertir en protocole de pilote préenregistré ; saisir les preuves observées ; puis
-prendre une décision de gate bornée et générer une fiche d’exploitation réversible avec
-surveillance, suspension, rollback et réévaluation datée ; enfin, exporter toute la chaîne
-dans un dossier de décision Markdown révisable. Les guides Markdown restent la source
-opérationnelle de référence.
+L’édition visuelle bilingue commence par un guide court en cinq étapes. Elle
+demande qui vous êtes, ce que l’IA doit faire, jusqu’où elle peut agir, quelle
+route juridique s’applique et quel premier pilote est raisonnable. Une seule
+question apparaît à la fois. Des bulles simples expliquent les choix moins
+familiers, tandis que la méthode détaillée reste rangée dans trois chapitres
+fermés jusqu’à leur ouverture. Le résultat mène ensuite au plan de test, aux
+contrôles, aux cas comparables et au dossier de décision Markdown. Les guides
+Markdown restent la source opérationnelle de référence.
 
 **Nouveau :** comparez les cas synthétiques complets d’un
 [copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
