@@ -22,8 +22,8 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-`npm run verify` checks lint, TypeScript, both production builds, 21 Node tests,
-and 27 Playwright checks across both routes, desktop, dark mode, and mobile.
+`npm run verify` checks lint, TypeScript, both production builds, 22 Node tests,
+and 30 Playwright checks across both routes, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 
@@ -38,9 +38,10 @@ The export is written to `static-dist/`. Without configuration it uses
 `noindex, nofollow`, omits canonical URLs, alternate route metadata, `og:url`,
 and the sitemap, and contains no provider-specific deployment artifact.
 
-Set `PUBLIC_SITE_URL` only after a production host and canonical origin have
-been approved. Set `STATIC_BASE_PATH` only when the chosen host serves the app
-below `/`. These variables are intentionally unset in the repository.
+The approved GitHub Pages deployment supplies `PUBLIC_SITE_URL` and
+`STATIC_BASE_PATH` at build time. It verifies canonical metadata, all 14 routes,
+base-aware assets, the sitemap, and `.nojekyll` before publishing. Local builds
+remain neutral unless the variables are set explicitly.
 
 Both available routes include eleven visual worked cases linked to complete
 evidence files under `examples/`: seven organization and integration cases,

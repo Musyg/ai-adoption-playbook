@@ -41,3 +41,11 @@ test("theme-aware surfaces preserve readable control contrast", () => {
   assert.match(styles, /\.concept-tip > summary \{[^}]*cursor: pointer;/);
   assert.match(styles, /\.guide-chapter > summary \{[^}]*cursor: pointer;/);
 });
+
+test("the portfolio palette keeps blue as an accent on neutral surfaces", () => {
+  assert.doesNotMatch(styles, /#f3c969|#ffad9f/i);
+  assert.match(styles, /\.evidence-warning \{ background: var\(--surface\); border-left: 4px solid var\(--blue-deep\); color: var\(--ink\);/);
+  assert.match(styles, /\.dossier-status \{[^}]*background: var\(--surface\); border-left: 4px solid var\(--blue-deep\); color: var\(--ink\);/);
+  assert.match(styles, /\.dossier-missing \{[^}]*background: var\(--surface\); border-left: 4px solid var\(--blue-deep\); color: var\(--ink\);/);
+  assert.match(styles, /\.field-pilot-status \{ background: var\(--surface\); border-left: 4px solid var\(--blue-deep\); color: var\(--ink\);/);
+});

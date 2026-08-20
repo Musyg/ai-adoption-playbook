@@ -6,20 +6,20 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 
 - Repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `main`
-- Working branch: `feat/ai-use-patterns-ch-eu`
+- Delivery branch: `agent/github-pages`
 - Release prepared: `0.2.1`
 - Visibility: public
-- Repository website field: empty
-- Public website URL: none
-- Static hosting: disabled
+- Approved public website: `https://musyg.github.io/ai-adoption-playbook/`
+- Static hosting: GitHub Pages through `.github/workflows/pages.yml`
 - Canonical application source: `site/`
 - Provider-neutral static client: `site/static-client/`
 - Generated static output: `site/static-dist/`, ignored by Git
 - Validation workflow: `.github/workflows/validate.yml`
+- Deployment workflow: `.github/workflows/pages.yml`
 - Dependency updates: `.github/dependabot.yml`
 
-Repository publication is complete. Any future host selection remains a
-separate owner decision.
+Repository publication is complete. The owner approved GitHub Pages on
+2026-08-20. Deployment remains gated on a successful validation run for `main`.
 
 ## What is ready
 
@@ -80,21 +80,23 @@ the publication contract. Public third-party studies inform pilot design but do
 not satisfy that first-party admission rule. This remains the only open 0.3
 roadmap item and does not block publication of the complete 0.2.1 release.
 
-## Hosting-neutral behavior
+## GitHub Pages deployment
 
 The default server and static builds declare no production origin. They omit
 canonical links, alternate route metadata tied to an origin, `og:url`, and
 social images that require an absolute URL. The static export also omits a
 sitemap and ships with `noindex, nofollow`.
 
-Only after the owner approves a host may a deployment configure:
+The owner approved GitHub Pages as the public host. The deployment workflow
+runs only after the validation workflow succeeds on `main`, then configures:
 
 - `PUBLIC_SITE_URL`, the approved absolute canonical origin;
 - `STATIC_BASE_PATH`, if the application is served below the origin root.
 
-With `PUBLIC_SITE_URL` set, the static finalizer can generate canonical links,
-alternate routes, `og:url`, absolute social images, and the sitemap. This
-capability is build-time configuration, not a current deployment.
+With these values set, the static finalizer generates canonical links,
+alternate routes, `og:url`, absolute social images, the sitemap, and
+`.nojekyll`. A dedicated hosted-export test verifies the 14 routes and prevents
+paths from escaping the project base. Local exports remain provider neutral.
 
 ## Validation contract
 
@@ -112,7 +114,7 @@ Latest local verification on 2026-08-20:
 - TypeScript 6.0.3: pass
 - server and static builds: pass
 - Node tests: 21/21 pass
-- Playwright: 27/27 pass across both routes, desktop light, desktop dark, and
+- Playwright: 30/30 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
 - repository validation: 108 Markdown files and 45 paired documents pass
@@ -121,12 +123,12 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 21 Node tests for accessibility semantics, decision logic, rendered HTML,
+- 22 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 27 Playwright checks across both routes, desktop light, desktop dark, and
+- 30 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
-- responsive overflow, language, interaction, and hosting-neutrality checks;
+- responsive overflow, route selection, interaction, palette, and neutral local-export checks;
 - repository structure, paired documents, links, register contracts, crosswalk
   references, and forbidden historical hosting origins;
 - npm dependency audit at the moderate threshold in continuous integration.
@@ -165,6 +167,6 @@ public and do not deploy the application.
 The owner authorized public visibility on 2026-08-20. The incomplete
 field-feedback objective remains visible and is not presented as implemented.
 
-Do not declare a website URL, enable static hosting, deploy a mirror, or submit
-a sitemap without a separate explicit instruction. Public repository visibility
-does not authorize hosting.
+The owner separately authorized GitHub Pages hosting on 2026-08-20. Publish only
+through the gated workflow, preserve the neutral local export, and verify the
+live URL, metadata, routes, assets, sitemap, and palette after each deployment.

@@ -196,9 +196,16 @@ IGNORED_PARTS = {
     "work",
 }
 FORBIDDEN_HOSTING_SUFFIXES = (
-    ".".join(("github", "io")),
     ".".join(("chatgpt", "site")),
 )
+GITHUB_PAGES_SUFFIX = ".".join(("github", "io"))
+APPROVED_PAGES_ORIGIN = "https://" + ".".join(("musyg", "github", "io")) + "/ai-adoption-playbook"
+APPROVED_HOST_REFERENCE_FILES = {
+    "HANDOFF.md",
+    "README.fr.md",
+    "README.md",
+    "site/tests/hosted-export.check.mjs",
+}
 CONTROL_ID = re.compile(r"^AAP-[A-Z]{3}-[0-9]{3}$")
 EVIDENCE_ID = re.compile(r"^EV-[A-Z0-9-]+$")
 ORGANIZATION_TYPES = {"independent", "tpe", "pme", "nonprofit", "public"}
@@ -291,10 +298,29 @@ def check_markdown(errors: list[str]) -> None:
                     )
 
 
-def check_hosting_neutrality(errors: list[str]) -> None:
-    forbidden_workflow = ROOT / ".github" / "workflows" / "pages.yml"
-    if forbidden_workflow.exists():
-        errors.append("provider-specific Pages workflow must not be present")
+def check_hosting_contract(errors: list[str]) -> None:
+    pages_workflow = ROOT / ".github" / "workflows" / "pages.yml"
+    if not pages_workflow.is_file():
+        errors.append("missing owner-approved GitHub Pages workflow")
+    else:
+        workflow = pages_workflow.read_text(encoding="utf-8")
+        required_workflow_contract = (
+            'workflows: ["Validate playbook"]',
+            "github.event.workflow_run.event == 'push'",
+            "github.event.workflow_run.conclusion == 'success'",
+            "actions/configure-pages@v6",
+            "actions/upload-pages-artifact@v5",
+            "actions/deploy-pages@v5",
+            "pages: read",
+            "pages: write",
+            "id-token: write",
+            "PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}",
+            "STATIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}",
+            "npm run test:hosted",
+        )
+        for marker in required_workflow_contract:
+            if marker not in workflow:
+                errors.append(f"GitHub Pages workflow contract missing: {marker}")
 
     text_suffixes = {
         ".html",
@@ -314,9 +340,14 @@ def check_hosting_neutrality(errors: list[str]) -> None:
         if is_ignored_repo_path(path):
             continue
         text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(ROOT).as_posix()
         for suffix in FORBIDDEN_HOSTING_SUFFIXES:
             if suffix in text:
                 errors.append(f"provider-specific hosting origin: {path.relative_to(ROOT)}")
+        if GITHUB_PAGES_SUFFIX in text:
+            unapproved = text.replace(APPROVED_PAGES_ORIGIN, "")
+            if relative not in APPROVED_HOST_REFERENCE_FILES or GITHUB_PAGES_SUFFIX in unapproved:
+                errors.append(f"unapproved GitHub Pages origin: {path.relative_to(ROOT)}")
 
 
 def check_register(errors: list[str]) -> None:
@@ -600,7 +631,7 @@ def main() -> int:
     check_translation_parity(errors)
     check_non_agentic_cases(errors)
     check_markdown(errors)
-    check_hosting_neutrality(errors)
+    check_hosting_contract(errors)
     check_register(errors)
     check_field_notes(errors)
     check_crosswalk(errors)

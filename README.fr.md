@@ -2,7 +2,7 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
+[Guide interactif](https://musyg.github.io/ai-adoption-playbook/fr/) · [Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
@@ -34,7 +34,7 @@ une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
 [assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
 Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.1**, dépôt public, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
+> État : version **0.2.1**, dépôt public, photographie au **20 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
 **Preuves et extensions 0.3 :** la
 [revue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
@@ -156,7 +156,8 @@ L’export statique reste neutre vis-à-vis de l’hébergeur et utilise `noinde
 défaut. Il ne produit ni origine canonique ni sitemap tant que
 `PUBLIC_SITE_URL` n’est pas défini pour un hébergeur explicitement approuvé.
 `STATIC_BASE_PATH` permet ensuite de servir l’application sous un sous-chemin.
-Aucun de ces réglages n’est configuré dans ce dépôt.
+Le workflow GitHub Pages fournit ces deux valeurs au moment du build pour l’URL
+publique approuvée, sans modifier l’export local neutre.
 
 ## Périmètre et limites
 
