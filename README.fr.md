@@ -2,17 +2,20 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
+[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
-L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
-copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
-convertir en protocole de pilote préenregistré ; saisir les preuves observées ; puis
-prendre une décision de gate bornée et générer une fiche d’exploitation réversible avec
-surveillance, suspension, rollback et réévaluation datée ; enfin, exporter toute la chaîne
-dans un dossier de décision Markdown révisable. Les guides Markdown restent la source
-opérationnelle de référence.
+L’édition visuelle bilingue commence par un guide court en cinq étapes. Elle
+demande qui vous êtes, ce que l’IA doit faire, jusqu’où elle peut agir, quelle
+route juridique s’applique et quel premier pilote est raisonnable. Une seule
+question apparaît à la fois. Des bulles simples expliquent les choix moins
+familiers, tandis que la méthode détaillée reste rangée dans trois chapitres
+fermés jusqu’à leur ouverture. Chaque chapitre n’affiche ensuite qu’un sujet
+choisi, et la bibliothèque présente un seul cas d’école à la fois. Le résultat
+mène au plan de test, aux contrôles, aux cas comparables et au dossier de
+décision Markdown. Les guides Markdown restent la source opérationnelle de
+référence.
 
 **Nouveau :** comparez les cas synthétiques complets d’un
 [copilote pour indépendant](examples/fr/independant-suivi-client.md), d’une
@@ -23,8 +26,15 @@ opérationnelle de référence.
 [agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
+Quatre cas non agentiques supplémentaires montrent pourquoi une faible autonomie
+n’implique pas un contrat d’évaluation unique : un
+[assistant RAG de procédures en lecture seule](examples/fr/assistant-rag-procedures.md),
+une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
+[chatbot client externe](examples/fr/chatbot-client-externe.md) et un
+[assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
+Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.0**, dépôt privé, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
+> État : version **0.2.1**, dépôt public, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
 **Preuves et extensions 0.3 :** la
 [revue bilingue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
@@ -91,6 +101,12 @@ Trois règles ne se négocient pas :
 
 On commence au niveau le plus bas capable de résoudre le problème. On ne monte que si les évaluations justifient la complexité supplémentaire :
 
+Commencer par identifier le [mode d’usage de l’IA](docs/ai-use-patterns.fr.md).
+Type de tâche, interaction, source de connaissance, déploiement, impact et
+autonomie sont des dimensions séparées. Un assistant documentaire et un
+classifieur prédictif peuvent partager une autonomie A1 tout en exigeant des
+preuves différentes.
+
 1. processus manuel documenté ;
 2. règle déterministe ou automatisation classique ;
 3. appel de modèle unique avec sortie structurée ;
@@ -111,10 +127,13 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 ## Ce que contient le playbook
 
 - un cycle de vie universel avec preuves de sortie ;
+- une taxonomie bilingue des modes génération, recherche augmentée,
+  classification, prédiction, conversation, multimodal et agentique ;
 - une classification risque × autonomie ;
 - cinq parcours d’adoption adaptés à la structure ;
 - quatre extensions pour la santé, l’éducation, la finance et les infrastructures critiques ;
-- des guides d’évaluation, de sécurité et d’orientation juridique ;
+- des profils d’évaluation et de sécurité propres au mode, avec routage juridique
+  séparé pour la Suisse et l’Union européenne ;
 - des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
 - un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;
@@ -137,7 +156,7 @@ L’export statique reste neutre vis-à-vis de l’hébergeur et utilise `noinde
 défaut. Il ne produit ni origine canonique ni sitemap tant que
 `PUBLIC_SITE_URL` n’est pas défini pour un hébergeur explicitement approuvé.
 `STATIC_BASE_PATH` permet ensuite de servir l’application sous un sous-chemin.
-Aucun de ces réglages n’est configuré dans ce dépôt privé.
+Aucun de ces réglages n’est configuré dans ce dépôt.
 
 ## Périmètre et limites
 

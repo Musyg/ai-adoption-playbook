@@ -27,6 +27,8 @@ for (const [pathname, language, title] of [
 
     const html = await response.text();
     const renderedText = html.replaceAll("<!-- -->", "");
+    if (language === "fr") assert.match(html, /<div lang="fr">/);
+    if (language === "en") assert.match(html, /<html lang="en">/);
     assert.match(html, new RegExp(title, "i"));
     assert.match(html, /Evidence before autonomy|La preuve avant l’autonomie/i);
     assert.match(html, /Atelier Horizon/);
@@ -88,7 +90,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /7h 40|7 h 40/);
     assert.match(html, /×7[.,]9/);
     assert.match(html, /8\/17/);
-    assert.match(html, /A4 remains unproven|A4 reste non démontré/i);
+    assert.match(html, /A4 remains unproven|A4 reste à démontrer/i);
     assert.match(html, /Talos\/Hermes analogy|Analogie Talos\/Hermes/i);
     assert.match(html, /Calibrate before you promise|Calibrez avant de promettre/i);
     assert.match(renderedText, /5[.,]6–14 h/);
@@ -113,21 +115,52 @@ for (const [pathname, language, title] of [
     assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
     assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
     assert.match(html, /Guided decision path|Parcours de décision guidé/i);
+    assert.match(html, /id=["']guided-start["']/i);
+    assert.match(html, /Build your route, one simple choice at a time|Construisez votre parcours, un choix simple à la fois/i);
+    assert.match(html, /What kind of organization are you guiding|Quel type d’organisation accompagnez-vous/i);
+    assert.match(html, /Why ask this first|Pourquoi commencer ici/i);
+    assert.match(html, /id=["']concept-library["']/i);
+    assert.match(html, /id=["']operational-workspace["']/i);
+    assert.match(html, /id=["']implementation-library["']/i);
+    assert.match(html, /Understand the differences|Comprendre les différences/i);
+    assert.match(html, /Build and operate a pilot|Construire et exploiter un pilote/i);
+    assert.match(html, /Choose what you need now|Choisissez ce dont vous avez besoin maintenant/i);
+    assert.match(html, /Only the selected topic appears below|Seul le sujet choisi apparaît ensuite/i);
+    assert.match(html, /id=["']case-library["']/i);
+    assert.match(html, /Open one case, then compare deliberately|Ouvrez un cas, puis comparez avec méthode/i);
+    assert.match(html, /Previous topic|Sujet précédent/i);
+    assert.match(html, /Next topic|Sujet suivant/i);
+    assert.match(html, /id=["']solo-case["']/i);
+    assert.match(html, /id=["']maturity-controls["']/i);
+    assert.match(html, /id=["']use-patterns["']/i);
+    assert.match(html, /Choose the use pattern|Choisissez le mode d’usage/i);
+    assert.match(html, /Generation|Génération/i);
+    assert.match(html, /Prediction and recommendation|Prédiction et recommandation/i);
+    assert.match(html, /Agentic action|Action agentique/i);
+    assert.match(html, /Switzerland \+ EU|Suisse \+ UE/i);
+    assert.match(html, /Two routes, not one shortcut|Deux routes, aucun raccourci/i);
+    assert.match(html, /ai-use-patterns(?:\.fr)?\.md/i);
+    assert.match(html, /id=["']non-agentic-cases["']/i);
+    assert.match(html, /Same low autonomy, four different evidence contracts|Même avec une faible autonomie, quatre contrats de preuve différents/i);
+    assert.match(html, /Read-only field-procedure assistant|Assistant de procédures terrain en lecture seule/i);
+    assert.match(html, /Weekly spare-parts demand forecast|Prévision hebdomadaire de pièces/i);
+    assert.match(html, /External customer-information chatbot|Chatbot externe d’information client/i);
+    assert.match(html, /Product-catalogue accessibility assistant|Assistant d’accessibilité du catalogue/i);
+    assert.match(html, /SYNTHETIC EVIDENCE BOUNDARY|FRONTIÈRE DES PREUVES SYNTHÉTIQUES/i);
     assert.match(html, /id=["']control-crosswalk["']/i);
     assert.match(html, /Turn a risk label into controls|Transformez un niveau de risque en contrôles/i);
     assert.match(html, /candidate controls|contrôles candidats/i);
     assert.match(html, /AAP-GOV-001/);
+    assert.match(html, /AAP-GOV-003/);
     assert.match(html, /AAP-SEC-002/);
     assert.match(html, /EV-AUDIT-TRACE/);
     assert.match(html, /NIST-AI-100-1/);
     assert.match(html, /href=["']\/data\/control-crosswalk\.v1\.json["']/i);
     assert.match(html, /href=["']\/data\/control-crosswalk\.schema\.json["']/i);
     assert.match(html, /does not claim clause-level equivalence|ne constitue ni une équivalence article par article/i);
-    assert.match(html, /href=["']#calibrator["']/i);
-    assert.match(html, /href=["']#pilot-plan["']/i);
-    assert.match(html, /href=["']#decision-dossier["']/i);
+    assert.match(html, /href=["']#guided-start["']/i);
     assert.doesNotMatch(html, /property=["']og:image["']|name=["']twitter:image["']/i);
-    assert.match(html, /href=["']#integration-levels["']/i);
+    assert.match(html, /id=["']integration-levels["']/i);
     assert.match(html, /id=["']sectors["']/i);
     assert.match(html, /Healthcare|Santé/);
     assert.match(html, /Education|Éducation/);
@@ -145,7 +178,6 @@ for (const [pathname, language, title] of [
     assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);
     assert.match(html, /Download the local draft|Télécharger le brouillon local/i);
     assert.match(html, /The export always remains a draft|L’export reste toujours un brouillon/i);
-    assert.match(html, /href=["']#field-pilot["']/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);
@@ -156,6 +188,10 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
       assert.match(html, /templates\/field-feedback-report\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.md/);
+      assert.match(html, /examples\/en\/rag-policy-assistant\.md/);
+      assert.match(html, /examples\/en\/predictive-demand-forecast\.md/);
+      assert.match(html, /examples\/en\/external-customer-chatbot\.md/);
+      assert.match(html, /examples\/en\/multimodal-catalog-accessibility\.md/);
       assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
       assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
     } else {
@@ -168,6 +204,10 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
       assert.match(html, /templates\/field-feedback-report\.fr\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.fr\.md/);
+      assert.match(html, /examples\/fr\/assistant-rag-procedures\.md/);
+      assert.match(html, /examples\/fr\/prevision-demande-pieces\.md/);
+      assert.match(html, /examples\/fr\/chatbot-client-externe\.md/);
+      assert.match(html, /examples\/fr\/catalogue-multimodal-accessibilite\.md/);
     }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });

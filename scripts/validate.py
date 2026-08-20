@@ -23,6 +23,8 @@ REQUIRED_FILES = (
     "CONTRIBUTING.fr.md",
     "LICENSE",
     "docs/evaluations-and-gates.md",
+    "docs/ai-use-patterns.md",
+    "docs/ai-use-patterns.fr.md",
     "docs/field-pilot-protocol.md",
     "docs/field-pilot-protocol.fr.md",
     "docs/legal-switzerland-eu.md",
@@ -94,6 +96,7 @@ TRANSLATION_PAIRS = (
     ("CODE_OF_CONDUCT.md", "CODE_OF_CONDUCT.fr.md"),
     ("CONTRIBUTING.md", "CONTRIBUTING.fr.md"),
     ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),
+    ("docs/ai-use-patterns.md", "docs/ai-use-patterns.fr.md"),
     ("docs/field-pilot-protocol.md", "docs/field-pilot-protocol.fr.md"),
     ("docs/legal-switzerland-eu.md", "docs/legal-switzerland-eu.fr.md"),
     ("docs/maturity-model.md", "docs/maturity-model.fr.md"),
@@ -124,6 +127,23 @@ TRANSLATION_PAIRS = (
     ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
     ("field-notes/README.md", "field-notes/README.fr.md"),
     ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
+    ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
+    ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
+    ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),
+    ("examples/en/nonprofit-grant-dossier-business-agent.md", "examples/fr/association-agent-dossiers-subventions.md"),
+    ("examples/en/public-sector-planning-dossier-business-agent.md", "examples/fr/service-public-agent-dossiers-urbanisme.md"),
+    ("examples/en/sme-b2b-quote-business-agent.md", "examples/fr/pme-agent-metier-devis-b2b.md"),
+    ("examples/en/tpe-customer-requests.md", "examples/fr/tpe-demandes-clients.md"),
+    ("examples/en/rag-policy-assistant.md", "examples/fr/assistant-rag-procedures.md"),
+    ("examples/en/predictive-demand-forecast.md", "examples/fr/prevision-demande-pieces.md"),
+    ("examples/en/external-customer-chatbot.md", "examples/fr/chatbot-client-externe.md"),
+    ("examples/en/multimodal-catalog-accessibility.md", "examples/fr/catalogue-multimodal-accessibilite.md"),
+)
+NON_AGENTIC_CASES = (
+    ("retrieval", "A1", "examples/en/rag-policy-assistant.md", "examples/fr/assistant-rag-procedures.md"),
+    ("prediction", "A0", "examples/en/predictive-demand-forecast.md", "examples/fr/prevision-demande-pieces.md"),
+    ("conversation", "A1", "examples/en/external-customer-chatbot.md", "examples/fr/chatbot-client-externe.md"),
+    ("multimodal", "A1", "examples/en/multimodal-catalog-accessibility.md", "examples/fr/catalogue-multimodal-accessibilite.md"),
 )
 EXPECTED_REGISTER_COLUMNS = (
     "system_id",
@@ -132,6 +152,15 @@ EXPECTED_REGISTER_COLUMNS = (
     "owner",
     "business_process",
     "purpose",
+    "use_patterns",
+    "interaction_pattern",
+    "knowledge_source",
+    "output_modality",
+    "deployment_mode",
+    "operating_mode",
+    "model_customization",
+    "user_facing",
+    "external_effect",
     "provider",
     "model_or_version",
     "data_classes",
@@ -162,6 +191,8 @@ EVIDENCE_ID = re.compile(r"^EV-[A-Z0-9-]+$")
 ORGANIZATION_TYPES = {"independent", "tpe", "pme", "nonprofit", "public"}
 RISK_LEVELS = {"R0", "R1", "R2", "R3"}
 AUTONOMY_LEVELS = {"A0", "A1", "A2", "A3", "A4"}
+USE_PATTERNS = {"generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"}
+JURISDICTIONS = {"CH", "EU"}
 GATES = {"G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"}
 PRIORITIES = {"baseline", "strengthened", "critical"}
 
@@ -195,6 +226,21 @@ def check_translation_parity(errors: list[str]) -> None:
             )
         if ".fr.md" in english_text:
             errors.append(f"English file links to a French Markdown file: {english_relative}")
+
+
+def check_non_agentic_cases(errors: list[str]) -> None:
+    for pattern, level, english_relative, french_relative in NON_AGENTIC_CASES:
+        english_text = (ROOT / english_relative).read_text(encoding="utf-8")
+        french_text = (ROOT / french_relative).read_text(encoding="utf-8")
+        context = f"non-agentic {pattern} case"
+        if "Fictional example" not in english_text or "Exemple fictif" not in french_text:
+            errors.append(f"{context}: synthetic-evidence boundary is missing")
+        if f"Level: {level}" not in english_text or f"Niveau : {level}" not in french_text:
+            errors.append(f"{context}: expected autonomy level {level} is missing")
+        if "## 5. Decision" not in english_text or "## 5. Décision" not in french_text:
+            errors.append(f"{context}: explicit gate decision is missing")
+        if "## 7. Evidence pack" not in english_text or "## 7. Dossier de preuves" not in french_text:
+            errors.append(f"{context}: evidence pack is missing")
 
 
 def check_markdown(errors: list[str]) -> None:
@@ -352,8 +398,8 @@ def check_crosswalk(errors: list[str]) -> None:
 
     if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         errors.append("control crosswalk schema must use JSON Schema 2020-12")
-    if catalog.get("schema_version") != "1.0.0":
-        errors.append("control crosswalk schema_version must be 1.0.0")
+    if catalog.get("schema_version") != "1.1.0":
+        errors.append("control crosswalk schema_version must be 1.1.0")
     if not re.fullmatch(r"[0-9]{4}\.[0-9]{2}", str(catalog.get("catalog_version", ""))):
         errors.append("control crosswalk catalog_version must use YYYY.MM")
     expect_date(catalog, "published_on", "control crosswalk", errors)
@@ -368,6 +414,8 @@ def check_crosswalk(errors: list[str]) -> None:
             "organization_types": ORGANIZATION_TYPES,
             "risk_levels": RISK_LEVELS,
             "autonomy_levels": AUTONOMY_LEVELS,
+            "use_patterns": USE_PATTERNS,
+            "jurisdictions": JURISDICTIONS,
             "gates": GATES,
             "lifecycle_phases": set(range(12)),
         }
@@ -375,6 +423,32 @@ def check_crosswalk(errors: list[str]) -> None:
             value = axes.get(field)
             if not isinstance(value, list) or set(value) != expected or len(value) != len(expected):
                 errors.append(f"control crosswalk axes.{field} does not match the contract")
+
+    profiles = catalog.get("use_pattern_profiles")
+    if not isinstance(profiles, list) or not profiles:
+        errors.append("control crosswalk use_pattern_profiles must be a non-empty array")
+        profiles = []
+    profile_ids: set[str] = set()
+    for index, profile in enumerate(profiles):
+        context = f"control crosswalk use_pattern_profiles[{index}]"
+        if not isinstance(profile, dict):
+            errors.append(f"{context} must be an object")
+            continue
+        profile_id = profile.get("use_pattern_id")
+        if profile_id not in USE_PATTERNS:
+            errors.append(f"{context}: invalid use_pattern_id")
+        elif profile_id in profile_ids:
+            errors.append(f"duplicate use_pattern_id: {profile_id}")
+        else:
+            profile_ids.add(profile_id)
+        expect_localized(profile, "name", context, errors)
+        expect_localized(profile, "task", context, errors)
+        for field in ("evaluation_focus", "threat_focus"):
+            values = profile.get(field)
+            if not isinstance(values, list) or not values or not all(isinstance(item, str) and item for item in values) or len(values) != len(set(values)):
+                errors.append(f"{context}: {field} must be a unique non-empty string array")
+    if profile_ids != USE_PATTERNS:
+        errors.append("control crosswalk does not define every AI use pattern")
 
     sources = catalog.get("sources")
     if not isinstance(sources, list) or not sources:
@@ -463,6 +537,10 @@ def check_crosswalk(errors: list[str]) -> None:
                     errors.append(f"{context}: invalid applicability.{field}")
                 elif field == "organization_types":
                     covered_organizations.update(values)
+            for field, allowed in (("use_patterns", USE_PATTERNS), ("jurisdictions", JURISDICTIONS)):
+                values = applicability.get(field)
+                if values is not None and (not isinstance(values, list) or not values or not set(values) <= allowed or len(values) != len(set(values))):
+                    errors.append(f"{context}: invalid applicability.{field}")
             conditions = applicability.get("conditions")
             if not isinstance(conditions, list) or not conditions or not all(isinstance(item, str) and item for item in conditions):
                 errors.append(f"{context}: applicability.conditions must be a non-empty string array")
@@ -503,6 +581,7 @@ def main() -> int:
     errors: list[str] = []
     check_required_files(errors)
     check_translation_parity(errors)
+    check_non_agentic_cases(errors)
     check_markdown(errors)
     check_hosting_neutrality(errors)
     check_register(errors)

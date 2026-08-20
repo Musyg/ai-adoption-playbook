@@ -2,17 +2,19 @@
 
 **A practical, evidence-gated path from the first useful AI workflow to governed production systems.**
 
-[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md) · [Contributing](CONTRIBUTING.md) · [Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
+[Visual application source](site/README.md) · [Version française](README.fr.md) · [Start here](docs/universal-process.md) · [AI use patterns](docs/ai-use-patterns.md) · [JSON controls](controls/) · [Templates](templates/) · [Sources](references/sources.md) · [Contributing](CONTRIBUTING.md) · [Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
 
 ![AI Adoption Playbook: Evidence before autonomy](site/public/og.png)
 
-The bilingual visual edition turns the method into an interactive path: distinguish
-copilot, business-agent, and orchestrated-agency integration; calibrate a realistic
-range; turn it into a preregistered pilot protocol; enter the observed evidence; then
-make a bounded gate decision and generate a reversible operating card with monitoring,
-suspension, rollback, and dated reassessment; finally, export the complete chain as a
-reviewable Markdown decision dossier. The Markdown guides remain the operational source
-of truth.
+The bilingual visual edition starts with a short five-step guide. It asks who
+you are, what the AI must do, how much it may act, which legal route applies,
+and what a sensible first pilot looks like. One question appears at a time,
+plain-language help bubbles explain unfamiliar choices, and the detailed
+method stays inside three closed chapters until the reader opens it. Each
+chapter then shows one selected topic at a time, and the worked-case library
+opens one comparison at a time. The result links to the deeper test plan,
+evidence controls, cases, and Markdown decision dossier. The Markdown guides
+remain the operational source of truth.
 
 **New:** compare the complete synthetic cases for an
 [independent copilot](examples/en/independent-client-follow-up.md), a
@@ -23,8 +25,14 @@ of truth.
 [bounded business agent](examples/en/independent-business-agent-follow-up.md), and an
 [orchestrated agency](examples/en/independent-orchestrated-agency-diagnostic.md),
 from baseline and pre-registered thresholds to an explicit scope decision.
+Four additional non-agentic cases show why low autonomy does not imply one
+evaluation contract: a read-only [RAG procedure assistant](examples/en/rag-policy-assistant.md),
+a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
+[external customer chatbot](examples/en/external-customer-chatbot.md), and a
+[multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
+All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.0**, private repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
+> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
 **0.3 evidence and sector work:** the bilingual
 [20-source public evidence review](references/field-evidence-review-2026.md)
@@ -90,6 +98,11 @@ Three rules are non-negotiable:
 
 Start at the lowest level that can solve the problem and only move upward when evaluation evidence justifies the added complexity:
 
+First identify the [AI use pattern](docs/ai-use-patterns.md). Task type,
+interaction, knowledge source, deployment, impact, and autonomy are separate
+dimensions. A retrieval assistant and a predictive classifier can share A1
+autonomy while requiring different evidence.
+
 1. documented manual process;
 2. deterministic rule or conventional automation;
 3. single model call with structured output;
@@ -101,10 +114,13 @@ Start at the lowest level that can solve the problem and only move upward when e
 ## What is included
 
 - a universal lifecycle with explicit evidence gates;
+- a bilingual taxonomy of generation, retrieval, classification, prediction,
+  conversation, multimodal, and agentic use patterns;
 - risk × autonomy classification;
 - adoption tracks for each organization type;
 - sector overlays for healthcare, education, finance, and critical infrastructure;
-- evaluation, security and legal orientation;
+- pattern-specific evaluation and security profiles, with separate Switzerland
+  and European Union legal routing;
 - copy-ready registers, accessibility and fundamental-rights assessments, forms, and runbooks;
 - a versioned JSON crosswalk connecting controls, applicability, evidence, gates, and sources;
 - a dated register of primary sources;
@@ -125,7 +141,7 @@ The default static export is provider neutral and deliberately uses `noindex`.
 It emits no canonical origin or sitemap until `PUBLIC_SITE_URL` is configured for
 an explicitly approved host. `STATIC_BASE_PATH` can be set when that host serves
 the application below its root path. Neither setting is configured in this
-private repository.
+repository.
 
 ## Quick start
 

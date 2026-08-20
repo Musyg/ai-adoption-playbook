@@ -2,17 +2,19 @@
 
 Le fichier canonique
 [`control-crosswalk.v1.json`](../site/public/data/control-crosswalk.v1.json)
-relie les contrôles du playbook à cinq dimensions vérifiables :
+relie les contrôles du playbook à des dimensions vérifiables :
 
 1. un identifiant stable `AAP-<FAMILLE>-<NUMÉRO>` ;
-2. l’applicabilité par type d’organisation, niveau de risque, autonomie et
-   condition de déclenchement ;
-3. les phases 0–11 et gates G1–G5 ou P0–P5 concernés ;
-4. les types de preuves attendus, eux-mêmes identifiés par `EV-*` ;
-5. des sources datées et versionnées avec la nature de leur relation.
+2. un catalogue des modes génération, recherche augmentée, classification,
+   prédiction, conversation, multimodal et agentique ;
+3. l’applicabilité par type d’organisation, niveau de risque, autonomie, mode
+   d’usage, juridiction Suisse ou UE et condition de déclenchement ;
+4. les phases 0–11 et gates G1–G5 ou P0–P5 concernés ;
+5. les types de preuves attendus, eux-mêmes identifiés par `EV-*` ;
+6. des sources datées et versionnées avec la nature de leur relation.
 
 Le [schéma JSON](../site/public/data/control-crosswalk.schema.json) fixe le
-contrat de version `1.0.0`. La validation du dépôt bloque notamment les doublons,
+contrat de version `1.1.0`. La validation du dépôt bloque notamment les doublons,
 les références inconnues, les chemins de mise en œuvre absents et les axes hors
 contrat.
 
@@ -29,9 +31,8 @@ orientation juridique doit être requalifiée selon la juridiction, le secteur, 
 rôle et le cas d’usage réels.
 
 Les [surcouches sectorielles](../sectors/fr/README.md) ajoutent des gates, des
-plafonds d’autonomie et des preuves adaptées au contexte. Elles ne modifient pas
-les axes du schéma `1.0.0` et ne transforment pas ce catalogue transversal en
-preuve de conformité sectorielle.
+plafonds d’autonomie et des preuves adaptées au contexte. Elles ne transforment
+pas ce catalogue transversal en preuve de conformité sectorielle.
 
 ## Exemple de requête PowerShell
 
@@ -43,7 +44,11 @@ $catalog.controls |
   Where-Object {
     $_.applicability.organization_types -contains "public" -and
     $_.applicability.risk_levels -contains "R3" -and
-    $_.applicability.autonomy_levels -contains "A2"
+    $_.applicability.autonomy_levels -contains "A2" -and
+    (!$_.applicability.use_patterns -or
+      $_.applicability.use_patterns -contains "prediction") -and
+    (!$_.applicability.jurisdictions -or
+      $_.applicability.jurisdictions -contains "CH")
   } |
   Select-Object control_id, family, priority, gates, evidence_ids
 ```

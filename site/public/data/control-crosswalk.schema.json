@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:musyg:ai-adoption-playbook:control-crosswalk-schema:1.0.0",
+  "$id": "urn:musyg:ai-adoption-playbook:control-crosswalk-schema:1.1.0",
   "title": "AI Adoption Playbook control crosswalk",
   "type": "object",
   "additionalProperties": false,
@@ -12,13 +12,14 @@
     "scope",
     "limitations",
     "axes",
+    "use_pattern_profiles",
     "sources",
     "evidence_types",
     "controls"
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "schema_version": { "const": "1.0.0" },
+    "schema_version": { "const": "1.1.0" },
     "catalog_version": { "type": "string", "pattern": "^[0-9]{4}\\.[0-9]{2}$" },
     "published_on": { "type": "string", "format": "date" },
     "status": { "enum": ["maintained_internal_crosswalk"] },
@@ -27,7 +28,7 @@
     "axes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["organization_types", "risk_levels", "autonomy_levels", "gates", "lifecycle_phases"],
+      "required": ["organization_types", "risk_levels", "autonomy_levels", "use_patterns", "jurisdictions", "gates", "lifecycle_phases"],
       "properties": {
         "organization_types": {
           "type": "array",
@@ -44,6 +45,16 @@
           "items": { "enum": ["A0", "A1", "A2", "A3", "A4"] },
           "uniqueItems": true
         },
+        "use_patterns": {
+          "type": "array",
+          "items": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
+          "uniqueItems": true
+        },
+        "jurisdictions": {
+          "type": "array",
+          "items": { "enum": ["CH", "EU"] },
+          "uniqueItems": true
+        },
         "gates": {
           "type": "array",
           "items": { "enum": ["G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"] },
@@ -55,6 +66,11 @@
           "uniqueItems": true
         }
       }
+    },
+    "use_pattern_profiles": {
+      "type": "array",
+      "minItems": 7,
+      "items": { "$ref": "#/$defs/usePatternProfile" }
     },
     "sources": {
       "type": "array",
@@ -95,6 +111,28 @@
         "url": { "type": "string", "format": "uri" },
         "checked_on": { "type": "string", "format": "date" },
         "use_boundary": { "$ref": "#/$defs/localizedText" }
+      }
+    },
+    "usePatternProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["use_pattern_id", "name", "task", "evaluation_focus", "threat_focus"],
+      "properties": {
+        "use_pattern_id": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "task": { "$ref": "#/$defs/localizedText" },
+        "evaluation_focus": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "threat_focus": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
       }
     },
     "evidenceType": {
@@ -145,6 +183,18 @@
           "items": { "enum": ["A0", "A1", "A2", "A3", "A4"] },
           "uniqueItems": true
         },
+        "use_patterns": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
+          "uniqueItems": true
+        },
+        "jurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["CH", "EU"] },
+          "uniqueItems": true
+        },
         "conditions": {
           "type": "array",
           "items": {
@@ -157,7 +207,13 @@
               "material_human_impact",
               "mission_population",
               "public_authority",
-              "public_procurement"
+              "public_procurement",
+              "interactive_ai",
+              "synthetic_content",
+              "automated_individual_decision",
+              "article50_transparency_scope",
+              "model_customization",
+              "software_or_code_effect"
             ]
           },
           "uniqueItems": true
@@ -198,7 +254,8 @@
             "monitoring",
             "retirement",
             "mission",
-            "public_governance"
+            "public_governance",
+            "transparency"
           ]
         },
         "priority": { "enum": ["baseline", "strengthened", "critical"] },

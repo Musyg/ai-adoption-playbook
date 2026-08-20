@@ -70,7 +70,7 @@ Livrables minimaux : carte du processus actuel, [registre IA](../templates/ai-sy
 
 ## Phase 3 — Cas d’usage et priorisation
 
-Transformer chaque problème en une [fiche de cas d’usage](../templates/use-case-card.fr.md). Ne pas fusionner des décisions, utilisateurs ou niveaux de risque différents dans une seule fiche.
+Transformer chaque problème en une [fiche de cas d’usage](../templates/use-case-card.fr.md). Ne pas fusionner des décisions, utilisateurs ou niveaux de risque différents dans une seule fiche. Classer tâche IA, interaction, connaissance, déploiement et effet avec le [guide des modes d’usage](ai-use-patterns.fr.md). Ces dimensions ne remplacent ni le risque ni l’autonomie.
 
 Conserver deux scores séparés :
 
@@ -83,11 +83,12 @@ Le premier pilote est généralement un cas fréquent, mesurable, réversible, �
 
 Classer séparément :
 
-1. l’impact possible du cas d’usage ;
-2. l’autonomie technique accordée ;
-3. les données utilisées ;
-4. le rôle de l’organisation — fournisseur, intégrateur, déployeur ou utilisateur ;
-5. les juridictions et règles sectorielles applicables.
+1. les modes de tâche et d’interaction ;
+2. l’impact possible du cas d’usage ;
+3. l’autonomie technique accordée ;
+4. les données, sources de connaissance et modes de déploiement ;
+5. le rôle de l’organisation comme fournisseur, intégrateur, déployeur, responsable, sous-traitant ou utilisateur ;
+6. les juridictions et règles sectorielles applicables, avec des conclusions Suisse et UE séparées.
 
 Utiliser le guide [risque × autonomie](risk-autonomy.fr.md) et l’[orientation Suisse/UE](legal-switzerland-eu.fr.md). Une classification interne ne remplace jamais une qualification juridique.
 
@@ -107,6 +108,12 @@ Utiliser le guide [risque × autonomie](risk-autonomy.fr.md) et l’[orientation
 
 Choisir le modèle sur les cas réels, et non sur un classement général. Documenter latence, coût, région, rétention, entraînement avec les données client, sous-traitants, changements de version, export, suppression, réversibilité et responsabilité contractuelle dans le [dossier fournisseur](../templates/vendor-assessment.fr.md).
 
+Un même niveau d’intégration peut contenir plusieurs modes IA. Un assistant
+documentaire exige des preuves sur corpus et droits d’accès ; un classifieur sur
+les erreurs par classe et la dérive ; un chatbot public sur l’information et le
+transfert humain ; un système multimodal sur le consentement et la provenance.
+Appliquer chaque profil pertinent du [guide des modes d’usage](ai-use-patterns.fr.md).
+
 ## Phase 6 — Évaluations avant le produit
 
 Construire les évaluations avant d’optimiser le système. Le jeu comprend :
@@ -117,7 +124,7 @@ Construire les évaluations avant d’optimiser le système. Le jeu comprend :
 - entrées adversariales ;
 - cas où l’abstention ou le refus est la bonne réponse.
 
-Mesurer l’exactitude métier, la complétude, la fidélité aux sources, les permissions, les appels d’outils, les refus, la latence, le coût, les disparités pertinentes, les corrections humaines et le résultat métier final.
+Mesurer l’exactitude métier, la complétude, la fidélité aux sources, les permissions, les appels d’outils, les refus, la latence, le coût, les disparités pertinentes, les corrections humaines et le résultat métier final. Ajouter les mesures propres à la recherche augmentée, la classification, la prédiction, la conversation, le multimodal et l’action agentique.
 
 Préenregistrer les seuils dans le [plan d’évaluation](../templates/evaluation-plan.fr.md). Voir [Évaluations et gates](evaluations-and-gates.fr.md).
 
@@ -127,7 +134,7 @@ Aucun pilote sans seuils d’acceptation, seuils d’arrêt, méthode de compara
 
 ## Phase 7 — Sécurité et confinement
 
-Traiter au minimum : injection directe et indirecte, fuite d’informations, chaînes d’approvisionnement, empoisonnement des données ou du contexte, sorties non validées, agence excessive, consommation non bornée et exfiltration par les outils.
+Traiter au minimum : injection directe et indirecte, fuite d’informations, chaînes d’approvisionnement, empoisonnement des données ou du contexte, sorties non validées, agence excessive, consommation non bornée et exfiltration par les outils. Étendre le modèle de menace aux droits d’accès et à l’empoisonnement du corpus, à l’évasion et à la dérive prédictives, aux instructions multimodales et à l’usurpation, à l’exécution logicielle, à la mémoire persistante et aux pannes en cascade entre agents lorsque ces modes sont présents.
 
 Les contrôles de base sont : moindre privilège, lecture seule par défaut, identités distinctes, destinations autorisées, secrets hors contexte, validation déterministe, approbation humaine, budgets, journalisation, contrôle des sorties réseau, bouton d’arrêt et procédure manuelle.
 

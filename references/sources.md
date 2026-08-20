@@ -1,6 +1,6 @@
 # Registre des sources primaires
 
-Dernière vérification : **19 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
+Dernière vérification : **20 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
 
 Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu protégé des normes.
 
@@ -12,11 +12,15 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [ISO/IEC JTC 1/SC 42 catalogue](https://www.iso.org/committee/6794475/x/catalogue/) — série 5259 sur la qualité des données, incluant gouvernance et travaux 2026.
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) — AI RMF 1.0 volontaire ; révision en cours au 18 août 2026.
 - [NIST AI 600-1 — Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf) — profil intersectoriel publié en 2024.
+- [OCDE — Framework for the Classification of AI Systems](https://www.oecd.org/en/publications/oecd-framework-for-the-classification-of-ai-systems_cb6d9eca-en.html) — cinq dimensions pour décrire contexte, données, modèle, tâche et sortie ; cadre d’orientation, pas qualification juridique.
 
 ## Sécurité
 
 - [OWASP Top 10 for LLM and GenAI](https://genai.owasp.org/llm-top-10/) — édition 2025 actuellement publiée.
-- [OWASP GenAI Security Project](https://genai.owasp.org/) — projet vivant, y compris ressources agentiques 2026.
+- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) — risques propres aux agents et workflows autonomes ; orientation communautaire à adapter à l’architecture réelle.
+- [NIST AI 100-2e2025 — Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final) — taxonomie couvrant IA prédictive et générative, avec errata officiel à vérifier.
+- [NIST AI 100-4 — Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/) — méthodes et limites de détection, authentification, marquage et provenance des contenus synthétiques.
+- [C2PA 2.2 — Content Credentials](https://spec.c2pa.org/specifications/specifications/2.2/index.html) — spécification technique de provenance ; ne prouve pas à elle seule l’authenticité du contenu ni la conformité juridique.
 - [MITRE ATLAS](https://atlas.mitre.org/) — base vivante de tactiques, techniques, mitigations et cas concernant l’IA prédictive, générative et agentique.
 
 ## Droit et politiques publiques
@@ -24,6 +28,8 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 ### Suisse
 
 - [PFPDT — IA et protection des données](https://www.edoeb.admin.ch/en/ai-and-data-protection) — la LPD s’applique directement aux traitements assistés par IA.
+- [PFPDT — obligation d’informer](https://www.edoeb.admin.ch/en/duty-to-provide-information) — information sur les traitements et droits liés aux décisions individuelles automatisées selon l’article 21 LPD, avec exceptions à qualifier.
+- [PFPDT — déclaration commune sur les images générées par IA](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images) — orientation de 61 autorités sur images et vidéos réalistes de personnes identifiables ; ne remplace pas l’analyse du cas concret.
 - [PFPDT — Analyse d’impact relative à la protection des données](https://www.edoeb.admin.ch/en/data-protection-impact-assessment) — requise si le traitement est susceptible d’engendrer un risque élevé.
 - [PFPDT — Sous-traitance](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing) — le responsable reste responsable et doit encadrer le sous-traitant.
 - [Chancellerie fédérale — Réglementation de l’IA](https://www.bk.admin.ch/en/regulation) — projet à soumettre à consultation d’ici fin 2026 ; pas encore une loi générale en vigueur.
@@ -33,6 +39,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [Règlement (UE) 2024/1689 — AI Act, texte officiel](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=fr) — texte consolidé à vérifier avant qualification ; l’annexe III couvre notamment certains usages en éducation, crédit, assurance, services d’urgence et infrastructures critiques.
 - [Commission européenne — AI Omnibus en vigueur](https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force) — 27 juillet 2026 ; échéances haut risque au 2 décembre 2027 et 2 août 2028.
 - [Commission européenne — lignes directrices de transparence](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems) — article 50 applicable depuis le 2 août 2026.
+- [Commission européenne — fiche pratique article 50](https://digital-strategy.ec.europa.eu/en/factpages/quick-facts-transparency-rules-ai-systems) — synthèse officielle des obligations d’interaction et de contenu synthétique ; vérifier le texte et les exceptions avant qualification.
 - [Commission européenne — questions-réponses sur la culture IA](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers) — état post-Omnibus de l’article 4 et supervision 2026.
 - [Commission européenne — clauses contractuelles types pour l’achat public de systèmes IA](https://public-buyers-community.ec.europa.eu/communities/procurement-ai/resources/updated-eu-ai-model-contractual-clauses) — modèles à adapter au contexte juridique et au marché.
 

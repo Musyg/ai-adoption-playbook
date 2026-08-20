@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
@@ -9,6 +9,8 @@ import { geoArticlePath, geoArticles } from "./geo-content";
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type IntegrationId = "copilot" | "agent" | "agency";
+type UsePatternId = "generation" | "retrieval" | "classification" | "prediction" | "conversation" | "multimodal" | "agentic";
+type JurisdictionId = "CH" | "EU" | "BOTH";
 type FieldSectorId = "general" | "healthcare" | "education" | "finance" | "critical";
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
@@ -25,6 +27,8 @@ type CrosswalkControl = {
     organization_types: string[];
     risk_levels: string[];
     autonomy_levels: string[];
+    use_patterns?: UsePatternId[];
+    jurisdictions?: Array<"CH" | "EU">;
     conditions: string[];
   };
   lifecycle_phases: number[];
@@ -68,6 +72,12 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
     mission_population: "When mission populations or beneficiaries are affected",
     public_authority: "When public authority or public responsibility is involved",
     public_procurement: "When public procurement is involved",
+    interactive_ai: "When a person interacts directly with the AI system",
+    synthetic_content: "When synthetic or manipulated content is generated or distributed",
+    automated_individual_decision: "When a decision about a person is based exclusively on automated processing",
+    article50_transparency_scope: "When direct AI interaction or an Article 50 synthetic-content category is in scope",
+    model_customization: "When the model is fine-tuned, adapted, or materially customized",
+    software_or_code_effect: "When generated code or software can create an operational effect",
   },
   fr: {
     always: "Toujours",
@@ -79,6 +89,12 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
     mission_population: "Lorsque des bénéficiaires ou populations de mission sont concernés",
     public_authority: "Lorsqu’une autorité ou responsabilité publique est engagée",
     public_procurement: "Lorsqu’un achat public est engagé",
+    interactive_ai: "Lorsqu’une personne interagit directement avec le système IA",
+    synthetic_content: "Lorsqu’un contenu synthétique ou manipulé est généré ou diffusé",
+    automated_individual_decision: "Lorsqu’une décision concernant une personne repose exclusivement sur un traitement automatisé",
+    article50_transparency_scope: "Lorsqu’une interaction IA directe ou une catégorie de contenu synthétique de l’article 50 entre dans le périmètre",
+    model_customization: "Lorsque le modèle est affiné, adapté ou modifié de manière substantielle",
+    software_or_code_effect: "Lorsque du code ou un logiciel généré peut produire un effet opérationnel",
   },
 };
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
@@ -98,21 +114,389 @@ const operationSpecs: Record<IntegrationId, { reviewDate: string; reviewDays: nu
   agency: { reviewDate: "2026-08-25", reviewDays: 7, containment: "15 min" },
 };
 
+type UsePatternContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  labels: { task: string; evaluate: string; threat: string; jurisdiction: string };
+  guide: string;
+  patterns: Array<{ id: UsePatternId; code: string; title: string; short: string; task: string; evaluate: string; threat: string }>;
+  jurisdictionTitle: string;
+  jurisdictions: Array<{ id: JurisdictionId; label: string; note: string }>;
+  jurisdictionNotes: Record<JurisdictionId, { title: string; text: string }>;
+  crosswalkPattern: string;
+  crosswalkJurisdiction: string;
+};
+
+const usePatternContent: Record<Locale, UsePatternContent> = {
+  en: {
+    eyebrow: "FIRST AXIS · WHAT THE AI ACTUALLY DOES",
+    title: "Choose the use pattern before choosing the integration level.",
+    text: "A chatbot, a predictor, a retrieval system, and an agent can use similar models but require different evidence. Select the dominant pattern, then record every secondary pattern in the use-case card.",
+    labels: { task: "Task", evaluate: "Evaluate", threat: "Threat focus", jurisdiction: "Legal route" },
+    guide: "Open the complete classification guide",
+    patterns: [
+      { id: "generation", code: "01", title: "Generation", short: "Create a new output", task: "Create text, code, image, audio, or another new output.", evaluate: "Accepted quality, factual or source fidelity, severe errors, and human correction load.", threat: "Confabulation, sensitive-data disclosure, intellectual-property exposure, and unsafe output handling." },
+      { id: "retrieval", code: "02", title: "Retrieval", short: "Find grounded information", task: "Find and synthesize information from an authorized corpus.", evaluate: "Retrieval coverage, groundedness, citation validity, corpus freshness, and access control.", threat: "Corpus poisoning, indirect prompt injection, cross-tenant leakage, and stale indexes." },
+      { id: "classification", code: "03", title: "Extraction and classification", short: "Extract, label, or route", task: "Extract fields, assign known categories, route cases, or detect a defined condition.", evaluate: "Per-class precision and recall, critical errors, abstention, subgroup results, and drift.", threat: "Evasion, poisoned data or labels, class imbalance, and threshold manipulation." },
+      { id: "prediction", code: "04", title: "Prediction and recommendation", short: "Score, rank, or recommend", task: "Estimate an outcome, calculate a score, rank options, or recommend an action.", evaluate: "Calibration, threshold utility, error cost, subgroup results, and feedback loops.", threat: "Automation bias, proxy discrimination, model extraction, drift, and self-reinforcing feedback." },
+      { id: "conversation", code: "05", title: "Conversation", short: "Maintain a multi-turn exchange", task: "Maintain a multi-turn interaction with an internal or external user.", evaluate: "AI disclosure, task completion, human handoff, multi-turn consistency, retention, and deletion.", threat: "Impersonation, manipulation across turns, memory retention, unsafe advice, and failed handoff." },
+      { id: "multimodal", code: "06", title: "Multimodal", short: "Interpret or create media", task: "Interpret or generate image, audio, video, speech, or sensor content.", evaluate: "Consent and rights, modality quality, provenance, transformation robustness, and accessibility.", threat: "Deepfakes, voice or identity misuse, hidden multimodal instructions, and stripped metadata." },
+      { id: "agentic", code: "07", title: "Agentic action", short: "Plan and act through tools", task: "Plan steps, call tools, change systems, or coordinate specialist agents.", evaluate: "Plan and tool correctness, authorization, effect read-back, idempotency, rollback, and stopping.", threat: "Goal hijacking, tool misuse, privilege abuse, unexpected code execution, poisoned memory, and cascading failure." },
+    ],
+    jurisdictionTitle: "Where will the system operate or affect people?",
+    jurisdictions: [
+      { id: "CH", label: "Switzerland", note: "Swiss route" },
+      { id: "EU", label: "European Union", note: "EU route" },
+      { id: "BOTH", label: "Switzerland + EU", note: "Two separate analyses" },
+    ],
+    jurisdictionNotes: {
+      CH: { title: "Swiss route", text: "Apply the FADP when personal data is processed and qualify cantonal, public-law, and sector rules. Direct language-model interaction and qualifying automated individual decisions create distinct information and review duties." },
+      EU: { title: "EU route", text: "Classify the provider and deployer roles, the AI Act category, and GDPR duties separately. Article 50 transparency rules apply from 2 August 2026 to direct AI interaction and specified synthetic or manipulated content." },
+      BOTH: { title: "Two routes, not one shortcut", text: "Run the Swiss and EU analyses independently. A Swiss assessment does not establish EU compliance, and an EU classification does not replace Swiss data-protection, cantonal, public-law, or sector analysis." },
+    },
+    crosswalkPattern: "use pattern",
+    crosswalkJurisdiction: "jurisdiction route",
+  },
+  fr: {
+    eyebrow: "PREMIER AXE · CE QUE FAIT RÉELLEMENT L’IA",
+    title: "Choisissez le mode d’usage avant le niveau d’intégration.",
+    text: "Un chatbot, un prédicteur, un système de recherche et un agent peuvent utiliser des modèles proches, mais ils n’exigent pas les mêmes preuves. Sélectionnez le mode dominant, puis consignez chaque mode secondaire dans la fiche de cas d’usage.",
+    labels: { task: "Tâche", evaluate: "Évaluer", threat: "Menaces à tester", jurisdiction: "Route juridique" },
+    guide: "Ouvrir le guide complet de classification",
+    patterns: [
+      { id: "generation", code: "01", title: "Génération", short: "Créer une nouvelle sortie", task: "Créer du texte, du code, une image, de l’audio ou une autre sortie nouvelle.", evaluate: "Qualité acceptée, fidélité aux faits ou aux sources, erreurs graves et charge de correction humaine.", threat: "Affabulation, divulgation de données sensibles, propriété intellectuelle et traitement dangereux des sorties." },
+      { id: "retrieval", code: "02", title: "Recherche augmentée", short: "Trouver une information fondée", task: "Rechercher et synthétiser dans un corpus autorisé.", evaluate: "Couverture de recherche, ancrage, validité des citations, fraîcheur du corpus et contrôle d’accès.", threat: "Empoisonnement du corpus, injection indirecte, fuite entre locataires et index périmé." },
+      { id: "classification", code: "03", title: "Extraction et classification", short: "Extraire, classer ou router", task: "Extraire des champs, attribuer une catégorie connue, router un cas ou détecter une condition définie.", evaluate: "Précision et rappel par classe, erreurs critiques, abstention, résultats par groupe et dérive.", threat: "Contournement, données ou labels empoisonnés, déséquilibre de classes et manipulation des seuils." },
+      { id: "prediction", code: "04", title: "Prédiction et recommandation", short: "Noter, classer ou recommander", task: "Estimer un résultat, calculer un score, classer des options ou recommander une action.", evaluate: "Calibration, utilité des seuils, coût des erreurs, résultats par groupe et boucles de rétroaction.", threat: "Biais d’automatisation, discrimination par proxy, extraction du modèle, dérive et rétroaction auto-renforcée." },
+      { id: "conversation", code: "05", title: "Conversation", short: "Maintenir un échange", task: "Maintenir une interaction en plusieurs tours avec une personne interne ou externe.", evaluate: "Signalement de l’IA, réussite de la tâche, transfert humain, cohérence, conservation et suppression.", threat: "Usurpation, manipulation entre les tours, mémoire persistante, conseil dangereux et transfert humain défaillant." },
+      { id: "multimodal", code: "06", title: "Multimodal", short: "Interpréter ou créer un média", task: "Interpréter ou générer image, audio, vidéo, parole ou contenu de capteur.", evaluate: "Consentement et droits, qualité par modalité, provenance, robustesse aux transformations et accessibilité.", threat: "Hypertrucage, abus de voix ou d’identité, instruction multimodale cachée et suppression des métadonnées." },
+      { id: "agentic", code: "07", title: "Action agentique", short: "Planifier et agir avec des outils", task: "Planifier, appeler des outils, modifier des systèmes ou coordonner des agents spécialisés.", evaluate: "Exactitude du plan et des outils, autorisation, relecture des effets, idempotence, rollback et arrêt.", threat: "Détournement d’objectif, abus d’outils ou de privilèges, exécution de code inattendue, mémoire empoisonnée et panne en cascade." },
+    ],
+    jurisdictionTitle: "Où le système opère-t-il ou affecte-t-il des personnes ?",
+    jurisdictions: [
+      { id: "CH", label: "Suisse", note: "Route suisse" },
+      { id: "EU", label: "Union européenne", note: "Route UE" },
+      { id: "BOTH", label: "Suisse + UE", note: "Deux analyses distinctes" },
+    ],
+    jurisdictionNotes: {
+      CH: { title: "Route suisse", text: "Appliquez la LPD lorsque des données personnelles sont traitées et qualifiez les règles cantonales, de droit public et sectorielles. L’interaction directe avec un modèle de langage et certaines décisions individuelles automatisées déclenchent des obligations distinctes d’information et de revue." },
+      EU: { title: "Route UE", text: "Qualifiez séparément les rôles de fournisseur et de déployeur, la catégorie de l’AI Act et les obligations du RGPD. Les règles de transparence de l’article 50 s’appliquent depuis le 2 août 2026 aux interactions directes et à certains contenus synthétiques ou manipulés." },
+      BOTH: { title: "Deux routes, aucun raccourci", text: "Menez séparément les analyses suisse et européenne. Une analyse suisse ne prouve pas la conformité UE, et une classification UE ne remplace pas l’analyse suisse en matière de données, de droit cantonal, de droit public ou de règles sectorielles." },
+    },
+    crosswalkPattern: "mode d’usage",
+    crosswalkJurisdiction: "route juridique",
+  },
+};
+
+type NonAgenticCaseContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  labels: { scope: string; proof: string; gate: string; open: string };
+  boundary: string;
+  cases: Array<{
+    code: string;
+    pattern: string;
+    title: string;
+    organization: string;
+    scope: string;
+    proof: string[];
+    gate: string;
+    file: string;
+  }>;
+};
+
+const nonAgenticCaseContent: Record<Locale, NonAgenticCaseContent> = {
+  en: {
+    eyebrow: "FOUR SYNTHETIC CASES · ZERO AUTONOMOUS ACTIONS",
+    title: "Same low autonomy, four different evidence contracts.",
+    text: "RAG, prediction, an external chatbot, and a multimodal assistant can all remain at A0 or A1. Their data, failure modes, legal triggers, and acceptance metrics are still fundamentally different.",
+    labels: { scope: "Bounded scope", proof: "Frozen proof contract", gate: "Decision", open: "Open the complete case" },
+    boundary: "Every number below is fictional. These cases demonstrate how to preregister a decision; they are not field evidence, vendor benchmarks, or promised gains.",
+    cases: [
+      { code: "RAG", pattern: "Retrieval + generation · A1 · R1", title: "Read-only field-procedure assistant", organization: "Helvetia Facilities · internal", scope: "Retrieves current authorized passages and drafts a cited answer. No ticket, email, work order, or equipment access.", proof: ["80 frozen questions", "20 access-boundary tests", "0 write tools"], gate: "Authorize 30 shadow cases only", file: "examples/en/rag-policy-assistant.md" },
+      { code: "PRED", pattern: "Prediction · A0 · R1", title: "Weekly spare-parts demand forecast", organization: "Léman Pièces · internal batch", scope: "Produces forecasts and intervals for a planner. New products use a manual rule; no supplier order can be created.", proof: ["26 frozen weeks", "5 product segments", "0 automatic orders"], gate: "Shadow established products only", file: "examples/en/predictive-demand-forecast.md" },
+      { code: "CHAT", pattern: "Conversation + retrieval · A1 · R2", title: "External customer-information chatbot", organization: "Alpina Outdoor · CH + EU", scope: "Answers approved public questions, identifies itself as AI, and hands off. No account, payment, refund, or warranty access.", proof: ["160 conversations", "4 languages", "24 required handoffs"], gate: "Fix and rerun handoff before external use", file: "examples/en/external-customer-chatbot.md" },
+      { code: "MM", pattern: "Multimodal + generation · A1 · R1", title: "Product-catalogue accessibility assistant", organization: "Asteria Home · CH + EU", scope: "Reads authorized images and packaging, drafts alt text, and flags mismatches. It cannot edit an asset or publish.", proof: ["140 image sets", "16 planted mismatches", "0 publishing rights"], gate: "Authorize 60 shadow sets only", file: "examples/en/multimodal-catalog-accessibility.md" },
+    ],
+  },
+  fr: {
+    eyebrow: "QUATRE CAS SYNTHÉTIQUES · AUCUNE ACTION AUTONOME",
+    title: "Même avec une faible autonomie, quatre contrats de preuve différents.",
+    text: "Un RAG, une prédiction, un chatbot externe et un assistant multimodal peuvent tous rester en A0 ou A1. Leurs données, échecs, déclencheurs juridiques et métriques d’acceptation restent pourtant très différents.",
+    labels: { scope: "Périmètre borné", proof: "Contrat de preuve figé", gate: "Décision", open: "Ouvrir le cas complet" },
+    boundary: "Tous les chiffres ci-dessous sont fictifs. Ces cas montrent comment préenregistrer une décision ; ils ne constituent ni preuve terrain, ni référence fournisseur, ni promesse de gain.",
+    cases: [
+      { code: "RAG", pattern: "Recherche + génération · A1 · R1", title: "Assistant de procédures terrain en lecture seule", organization: "Helvetia Facilities · interne", scope: "Retrouve les passages actuels et autorisés, puis prépare une réponse citée. Aucun accès aux tickets, e-mails, ordres de travail ou équipements.", proof: ["80 questions figées", "20 tests de frontière d’accès", "0 outil d’écriture"], gate: "Autoriser uniquement 30 cas en mode observation", file: "examples/fr/assistant-rag-procedures.md" },
+      { code: "PRÉD", pattern: "Prédiction · A0 · R1", title: "Prévision hebdomadaire de pièces", organization: "Léman Pièces · traitement par lot interne", scope: "Produit prévisions et intervalles pour un planificateur. Les nouveaux produits restent manuels et aucune commande fournisseur n’est créée.", proof: ["26 semaines figées", "5 segments produit", "0 commande automatique"], gate: "Mode observation sur les produits établis", file: "examples/fr/prevision-demande-pieces.md" },
+      { code: "CHAT", pattern: "Conversation + recherche · A1 · R2", title: "Chatbot externe d’information client", organization: "Alpina Outdoor · CH + UE", scope: "Répond depuis les pages publiques, s’identifie comme IA et transfère. Aucun accès aux comptes, paiements, remboursements ou garanties.", proof: ["160 conversations", "4 langues", "24 transferts obligatoires"], gate: "Corriger et rejouer le transfert avant usage", file: "examples/fr/chatbot-client-externe.md" },
+      { code: "MM", pattern: "Multimodal + génération · A1 · R1", title: "Assistant d’accessibilité du catalogue", organization: "Asteria Home · CH + UE", scope: "Lit images et emballages autorisés, prépare le texte alternatif et signale les écarts. Il ne peut ni modifier un média ni publier.", proof: ["140 jeux d’images", "16 incohérences provoquées", "0 droit de publication"], gate: "Autoriser uniquement 60 lots en mode observation", file: "examples/fr/catalogue-multimodal-accessibilite.md" },
+    ],
+  },
+};
+
+type GuidedContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  progress: string[];
+  stepLabel: string;
+  steps: Array<{ eyebrow: string; title: string; text: string; helpLabel: string; help: string }>;
+  levels: Array<{ id: IntegrationId; code: string; title: string; text: string; recommendation: string; autonomy: number }>;
+  proofByPattern: Record<UsePatternId, string>;
+  buttons: { back: string; next: string; result: string; restart: string; workspace: string; cases: string };
+  result: { eyebrow: string; title: string; intro: string; pilot: string; measure: string; safeguards: string; selection: string };
+  chapters: Array<{ id: string; number: string; title: string; text: string }>;
+};
+
+type ConceptPanelId = "geo-library" | "use-patterns" | "non-agentic-cases" | "integration-levels";
+type OperationalPanelId = "calibrator" | "pilot-plan" | "evidence-gate" | "operations" | "decision-dossier" | "field-pilot";
+type ImplementationPanelId = "paths" | "sectors" | "method" | "case-library" | "maturity-controls" | "control-crosswalk" | "toolkit";
+type CasePanelId = "case" | "sme-case" | "mission-case" | "public-case" | "solo-case" | "agent-case" | "agency-case";
+type ChapterItem<T extends string> = { id: T; number: string; title: string; text: string };
+type ChapterNavigationContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  current: string;
+  conceptLabel: string;
+  operationalLabel: string;
+  implementationLabel: string;
+  casesEyebrow: string;
+  casesTitle: string;
+  casesText: string;
+  casesLabel: string;
+  previous: string;
+  next: string;
+  position: string;
+  concept: Array<ChapterItem<ConceptPanelId>>;
+  operational: Array<ChapterItem<OperationalPanelId>>;
+  implementation: Array<ChapterItem<ImplementationPanelId>>;
+  cases: Array<ChapterItem<CasePanelId>>;
+};
+
+const guidedContent: Record<Locale, GuidedContent> = {
+  en: {
+    eyebrow: "GUIDED START · ABOUT 3 MINUTES",
+    title: "Build your route, one simple choice at a time.",
+    text: "Answer four short questions. The guide will explain each idea before showing the technical label. Nothing entered here is sent anywhere.",
+    progress: ["Your situation", "The AI task", "Its right to act", "Territory", "Starting plan"],
+    stepLabel: "Step",
+    steps: [
+      { eyebrow: "START WITH YOUR REALITY", title: "What kind of organization are you guiding?", text: "This changes ownership, timing, and the first safeguards. It does not change the core method.", helpLabel: "Why ask this first?", help: "An independent professional can decide and correct alone. A public service must involve more roles, formal authority, accessibility, and recourse. The useful first pilot is therefore different." },
+      { eyebrow: "NAME THE JOB", title: "What should the AI mainly do?", text: "Choose the dominant task. Similar models can create very different risks depending on the job they perform.", helpLabel: "What is a use pattern?", help: "A use pattern describes the job performed by the AI, such as finding information, predicting demand, holding a conversation, or taking action. It is not the same as autonomy." },
+      { eyebrow: "SET THE ACTION BOUNDARY", title: "How far may the system act?", text: "Choose the simplest level that can solve the problem. More autonomy is not automatically better.", helpLabel: "What is autonomy?", help: "Autonomy means how far the system can proceed without a person carrying the work. Preparing a draft is low autonomy. Changing a system or coordinating tools is higher autonomy." },
+      { eyebrow: "KEEP THE LEGAL ROUTES SEPARATE", title: "Where will it operate or affect people?", text: "This is an orientation, not a legal conclusion. Switzerland and the European Union require separate checks.", helpLabel: "Why two routes?", help: "A Swiss analysis does not prove compliance in the European Union, and an EU classification does not replace Swiss data-protection, public-law, cantonal, or sector checks." },
+      { eyebrow: "YOUR STARTING POINT", title: "A small first step, with clear limits.", text: "This recommendation combines your four choices. It is a starting hypothesis to test, not an authorization or a promised gain.", helpLabel: "What is an evidence contract?", help: "Before the pilot, write what will be tested, on which cases, what counts as success, what stops the test, and which records must remain. That written agreement is the evidence contract." },
+    ],
+    levels: [
+      { id: "copilot", code: "A0–A1", title: "It prepares, you act", text: "The system searches, extracts, or drafts. A person checks the result and performs every external action.", recommendation: "Begin with a read-only or draft-only test. Keep every send, publication, approval, and system change human.", autonomy: 1 },
+      { id: "agent", code: "A2–A3", title: "It executes a bounded process", text: "The system handles approved steps and tools for eligible cases. A person approves or owns exceptions.", recommendation: "Freeze eligibility, permissions, approval, and stop rules before connecting write tools.", autonomy: 2 },
+      { id: "agency", code: "A3", title: "It coordinates specialists", text: "An orchestrator distributes work across specialist agents under one policy and a shared evidence trail.", recommendation: "Prove that orchestration beats one simpler agent on accepted outcomes before expanding scope.", autonomy: 3 },
+    ],
+    proofByPattern: {
+      generation: "The output is useful, factually or source-correct, and needs an acceptable amount of human correction.",
+      retrieval: "The right current sources are found and cited without crossing access boundaries.",
+      classification: "The right fields or categories are produced, including on rare and important cases.",
+      prediction: "The forecast beats the current method without hiding weak products, groups, or periods.",
+      conversation: "People know they are speaking with AI, receive supported answers, and can reach a person when needed.",
+      multimodal: "Media rights are clear, visible facts are captured correctly, and accessibility is not degraded.",
+      agentic: "Every planned action is authorized, traceable, reversible, and stopped safely when the case is outside scope.",
+    },
+    buttons: { back: "Back", next: "Continue", result: "See my starting plan", restart: "Start again", workspace: "Build the test plan", cases: "Explore comparable cases" },
+    result: { eyebrow: "GUIDED RECOMMENDATION", title: "Your first test should remain smaller than your ambition.", intro: "The guide recommends this bounded starting point from the choices above.", pilot: "First pilot", measure: "What to prove", safeguards: "Safeguards from day one", selection: "Your choices" },
+    chapters: [
+      { id: "concept-library", number: "01", title: "Understand the differences", text: "Use patterns, non-agentic cases, integration levels, and the public evidence review." },
+      { id: "operational-workspace", number: "02", title: "Build and operate a pilot", text: "Scenario, test plan, observed evidence, operating card, handoff, and field draft." },
+      { id: "implementation-library", number: "03", title: "Explore cases and controls", text: "Organization paths, sectors, eleven cases, risk orientation, controls, and templates." },
+    ],
+  },
+  fr: {
+    eyebrow: "DÉPART GUIDÉ · ENVIRON 3 MINUTES",
+    title: "Construisez votre parcours, un choix simple à la fois.",
+    text: "Répondez à quatre questions courtes. Le guide explique chaque idée avant d’afficher son code technique. Rien de ce qui est saisi ici n’est transmis.",
+    progress: ["Votre situation", "La tâche de l’IA", "Son droit d’agir", "Le territoire", "Point de départ"],
+    stepLabel: "Étape",
+    steps: [
+      { eyebrow: "PARTIR DE VOTRE RÉALITÉ", title: "Quel type d’organisation accompagnez-vous ?", text: "Ce choix modifie les responsabilités, le rythme et les premières protections. La méthode centrale reste la même.", helpLabel: "Pourquoi commencer ici ?", help: "Un indépendant peut décider et corriger seul. Un service public doit réunir davantage de rôles, un mandat formel, l’accessibilité et une voie de recours. Le premier pilote utile n’est donc pas le même." },
+      { eyebrow: "NOMMER LE TRAVAIL", title: "Que doit principalement faire l’IA ?", text: "Choisissez la tâche dominante. Des modèles proches créent des risques différents selon le travail demandé.", helpLabel: "Qu’est-ce qu’un mode d’usage ?", help: "Le mode d’usage décrit le travail confié à l’IA : trouver une information, prévoir une demande, tenir une conversation ou agir. Il ne décrit pas encore son autonomie." },
+      { eyebrow: "POSER LA LIMITE D’ACTION", title: "Jusqu’où le système peut-il agir ?", text: "Choisissez le niveau le plus simple capable de résoudre le problème. Davantage d’autonomie n’est pas automatiquement préférable.", helpLabel: "Qu’est-ce que l’autonomie ?", help: "L’autonomie indique jusqu’où le système avance sans qu’une personne transporte le travail. Préparer un brouillon reste peu autonome. Modifier un système ou coordonner des outils l’est davantage." },
+      { eyebrow: "SÉPARER LES ROUTES JURIDIQUES", title: "Où opérera-t-il ou affectera-t-il des personnes ?", text: "Il s’agit d’une orientation, pas d’une conclusion juridique. La Suisse et l’Union européenne exigent des vérifications séparées.", helpLabel: "Pourquoi deux routes ?", help: "Une analyse suisse ne prouve pas la conformité dans l’Union européenne. Une classification européenne ne remplace pas les vérifications suisses sur les données, le droit public, les cantons ou le secteur." },
+      { eyebrow: "VOTRE POINT DE DÉPART", title: "Un premier pas modeste, avec des limites claires.", text: "Cette recommandation combine vos quatre choix. C’est une hypothèse à tester, pas une autorisation ni une promesse de gain.", helpLabel: "Qu’est-ce qu’un contrat de preuve ?", help: "Avant le pilote, écrivez ce qui sera testé, sur quels cas, ce qui compte comme réussite, ce qui arrête le test et quelles traces doivent rester. Cet accord écrit constitue le contrat de preuve." },
+    ],
+    levels: [
+      { id: "copilot", code: "A0–A1", title: "Elle prépare, vous agissez", text: "Le système recherche, extrait ou rédige. Une personne vérifie puis réalise chaque action externe.", recommendation: "Commencez en lecture seule ou avec des brouillons. Chaque envoi, publication, validation et modification reste humain.", autonomy: 1 },
+      { id: "agent", code: "A2–A3", title: "Elle exécute un processus borné", text: "Le système utilise les étapes et outils autorisés pour les cas éligibles. Une personne approuve ou traite les exceptions.", recommendation: "Figez les cas éligibles, les permissions, l’approbation et les règles d’arrêt avant de connecter des outils d’écriture.", autonomy: 2 },
+      { id: "agency", code: "A3", title: "Elle coordonne des spécialistes", text: "Un orchestrateur distribue le travail à plusieurs agents spécialisés sous une même politique et une trace commune.", recommendation: "Prouvez que l’orchestration surpasse un agent plus simple sur les résultats acceptés avant d’élargir le périmètre.", autonomy: 3 },
+    ],
+    proofByPattern: {
+      generation: "La sortie est utile, fidèle aux faits ou aux sources et demande une quantité acceptable de corrections humaines.",
+      retrieval: "Les bonnes sources, actuelles et autorisées, sont retrouvées et citées sans franchir les droits d’accès.",
+      classification: "Les bons champs ou catégories sont produits, y compris pour les cas rares et importants.",
+      prediction: "La prévision surpasse la méthode actuelle sans masquer les produits, groupes ou périodes faibles.",
+      conversation: "Les personnes savent qu’elles parlent à une IA, reçoivent une réponse fondée et peuvent joindre un humain si nécessaire.",
+      multimodal: "Les droits sur les médias sont clairs, les faits visibles sont correctement repris et l’accessibilité ne recule pas.",
+      agentic: "Chaque action prévue est autorisée, traçable, réversible et arrêtée proprement lorsque le cas sort du périmètre.",
+    },
+    buttons: { back: "Retour", next: "Continuer", result: "Voir mon point de départ", restart: "Recommencer", workspace: "Construire le plan de test", cases: "Explorer des cas comparables" },
+    result: { eyebrow: "RECOMMANDATION GUIDÉE", title: "Votre premier test doit rester plus petit que votre ambition.", intro: "Le guide propose ce point de départ borné à partir des choix précédents.", pilot: "Premier pilote", measure: "Ce qu’il faut prouver", safeguards: "Protections dès le premier jour", selection: "Vos choix" },
+    chapters: [
+      { id: "concept-library", number: "01", title: "Comprendre les différences", text: "Modes d’usage, cas non agentiques, niveaux d’intégration et revue des preuves publiques." },
+      { id: "operational-workspace", number: "02", title: "Construire et exploiter un pilote", text: "Scénario, plan de test, preuves observées, fiche d’exploitation, transmission et brouillon terrain." },
+      { id: "implementation-library", number: "03", title: "Explorer les cas et contrôles", text: "Parcours par structure, secteurs, onze cas, orientation du risque, contrôles et modèles." },
+    ],
+  },
+};
+
+const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
+  en: {
+    eyebrow: "ONE TOPIC AT A TIME",
+    title: "Choose what you need now.",
+    text: "Only the selected topic appears below. Your previous choices stay available while you explore.",
+    current: "Open now",
+    conceptLabel: "Understanding topics",
+    operationalLabel: "Pilot workspace topics",
+    implementationLabel: "Implementation topics",
+    casesEyebrow: "COMPARABLE EXAMPLES",
+    casesTitle: "Open one case, then compare deliberately.",
+    casesText: "Each case has a different organization, task, autonomy boundary, and proof contract. Select the closest comparison, not the biggest number.",
+    casesLabel: "Worked cases",
+    previous: "Previous topic",
+    next: "Next topic",
+    position: "Current position",
+    concept: [
+      { id: "geo-library", number: "01", title: "Practical questions", text: "Short answers about adoption, agents, evidence, and the Swiss or EU context." },
+      { id: "use-patterns", number: "02", title: "What job does the AI do?", text: "Separate generation, retrieval, prediction, conversation, multimodal work, and action." },
+      { id: "non-agentic-cases", number: "03", title: "Low-autonomy examples", text: "See why RAG, prediction, a chatbot, and multimodal work need different tests." },
+      { id: "integration-levels", number: "04", title: "How much work does it carry?", text: "Compare a copilot, one business agent, and an orchestrated agency without mixing their gains." },
+    ],
+    operational: [
+      { id: "calibrator", number: "01", title: "Test a realistic range", text: "Turn volume, eligible work, setup, and a low or high effect into an editable scenario." },
+      { id: "pilot-plan", number: "02", title: "Build the test plan", text: "Freeze the cases, thresholds, safeguards, and possible decisions before the live pilot." },
+      { id: "evidence-gate", number: "03", title: "Enter observed results", text: "Record value, quality, safety, trace, and eligibility. The weakest critical result decides." },
+      { id: "operations", number: "04", title: "Operate within the proof", text: "Name owners, monitoring, suspension triggers, safe return, and the next review date." },
+      { id: "decision-dossier", number: "05", title: "Prepare the handoff", text: "Export the assumptions, test, decision, operating limits, and records another owner needs." },
+      { id: "field-pilot", number: "06", title: "Prepare field feedback", text: "Create a local draft for independent review without sending or publishing raw evidence." },
+    ],
+    implementation: [
+      { id: "paths", number: "01", title: "Choose the organization path", text: "Adapt ownership, pace, and safeguards for an independent, company, nonprofit, or public service." },
+      { id: "sectors", number: "02", title: "Add sector safeguards", text: "Apply healthcare, education, finance, or critical-infrastructure limits when relevant." },
+      { id: "method", number: "03", title: "Follow the full method", text: "Open the eight implementation steps and their concrete deliverables." },
+      { id: "case-library", number: "04", title: "Explore worked cases", text: "Compare eleven synthetic cases without treating their numbers as universal benchmarks." },
+      { id: "maturity-controls", number: "05", title: "Orient risk and maturity", text: "Find the minimum control depth from impact and autonomy." },
+      { id: "control-crosswalk", number: "06", title: "Filter the controls", text: "Turn organization, risk, autonomy, use pattern, and territory into a traceable control list." },
+      { id: "toolkit", number: "07", title: "Open the templates", text: "Use the mandate, risk, evaluation, incident, accessibility, rights, and field templates." },
+    ],
+    cases: [
+      { id: "case", number: "01", title: "Small-business copilot", text: "A shared inbox with human review and no automatic send." },
+      { id: "sme-case", number: "02", title: "SME quote agent", text: "A bounded B2B quote process with approval on every price." },
+      { id: "mission-case", number: "03", title: "Foundation dossier agent", text: "Administrative preparation without deciding who receives funding." },
+      { id: "public-case", number: "04", title: "Public-service agent", text: "Completeness support without replacing public judgment or appeal." },
+      { id: "solo-case", number: "05", title: "Independent copilot", text: "Draft-only client follow-up with every action kept human." },
+      { id: "agent-case", number: "06", title: "Independent business agent", text: "The same follow-up carried end to end after explicit approval." },
+      { id: "agency-case", number: "07", title: "Orchestrated agency", text: "Several specialists coordinated for one bounded diagnostic service." },
+    ],
+  },
+  fr: {
+    eyebrow: "UN SUJET À LA FOIS",
+    title: "Choisissez ce dont vous avez besoin maintenant.",
+    text: "Seul le sujet choisi apparaît ensuite. Vos choix précédents restent disponibles pendant l’exploration.",
+    current: "Ouvert maintenant",
+    conceptLabel: "Sujets pour comprendre",
+    operationalLabel: "Sujets de l’espace pilote",
+    implementationLabel: "Sujets de mise en œuvre",
+    casesEyebrow: "EXEMPLES COMPARABLES",
+    casesTitle: "Ouvrez un cas, puis comparez avec méthode.",
+    casesText: "Chaque cas possède sa structure, sa tâche, sa limite d’autonomie et son contrat de preuve. Choisissez le cas le plus proche, pas le chiffre le plus élevé.",
+    casesLabel: "Cas d’école",
+    previous: "Sujet précédent",
+    next: "Sujet suivant",
+    position: "Position actuelle",
+    concept: [
+      { id: "geo-library", number: "01", title: "Questions pratiques", text: "Des réponses courtes sur l’adoption, les agents, les preuves et le contexte suisse ou européen." },
+      { id: "use-patterns", number: "02", title: "Quel travail fait l’IA ?", text: "Séparez génération, recherche, prévision, conversation, multimodal et action." },
+      { id: "non-agentic-cases", number: "03", title: "Exemples peu autonomes", text: "Voyez pourquoi RAG, prévision, chatbot et multimodal exigent des tests différents." },
+      { id: "integration-levels", number: "04", title: "Quelle part du travail porte-t-elle ?", text: "Comparez copilote, agent métier et agence orchestrée sans mélanger leurs gains." },
+    ],
+    operational: [
+      { id: "calibrator", number: "01", title: "Tester une fourchette réaliste", text: "Transformez volume, part éligible, préparation et effet bas ou haut en scénario modifiable." },
+      { id: "pilot-plan", number: "02", title: "Construire le plan de test", text: "Figez les cas, seuils, protections et décisions possibles avant le pilote réel." },
+      { id: "evidence-gate", number: "03", title: "Saisir les résultats observés", text: "Notez valeur, qualité, sécurité, traces et éligibilité. Le résultat critique le plus faible décide." },
+      { id: "operations", number: "04", title: "Exploiter dans les limites prouvées", text: "Nommez responsables, suivi, arrêts, retour sûr et prochaine date de revue." },
+      { id: "decision-dossier", number: "05", title: "Préparer la transmission", text: "Exportez hypothèses, test, décision, limites d’exploitation et traces utiles au prochain responsable." },
+      { id: "field-pilot", number: "06", title: "Préparer le retour terrain", text: "Créez un brouillon local pour revue indépendante sans envoyer ni publier les preuves brutes." },
+    ],
+    implementation: [
+      { id: "paths", number: "01", title: "Choisir le parcours de la structure", text: "Adaptez responsabilités, rythme et protections à l’indépendant, l’entreprise, l’association ou le service public." },
+      { id: "sectors", number: "02", title: "Ajouter les protections du secteur", text: "Ajoutez les limites santé, éducation, finance ou infrastructure critique lorsqu’elles s’appliquent." },
+      { id: "method", number: "03", title: "Suivre toute la méthode", text: "Ouvrez les huit étapes de mise en œuvre et leurs livrables concrets." },
+      { id: "case-library", number: "04", title: "Explorer les cas d’école", text: "Comparez onze cas synthétiques sans transformer leurs chiffres en références universelles." },
+      { id: "maturity-controls", number: "05", title: "Orienter risque et maturité", text: "Trouvez la profondeur minimale de contrôle selon l’impact et l’autonomie." },
+      { id: "control-crosswalk", number: "06", title: "Filtrer les contrôles", text: "Transformez structure, risque, autonomie, mode d’usage et territoire en liste traçable." },
+      { id: "toolkit", number: "07", title: "Ouvrir les modèles", text: "Utilisez mandat, risque, évaluation, incident, accessibilité, droits et retour terrain." },
+    ],
+    cases: [
+      { id: "case", number: "01", title: "Copilote de petite entreprise", text: "Une boîte partagée avec revue humaine et aucun envoi automatique." },
+      { id: "sme-case", number: "02", title: "Agent de devis pour PME", text: "Un processus B2B borné avec approbation humaine de chaque prix." },
+      { id: "mission-case", number: "03", title: "Agent de dossiers pour fondation", text: "Une préparation administrative sans décider qui reçoit un financement." },
+      { id: "public-case", number: "04", title: "Agent de service public", text: "Un contrôle de complétude sans remplacer le jugement public ni le recours." },
+      { id: "solo-case", number: "05", title: "Copilote pour indépendant", text: "Un suivi client en brouillon, avec chaque action conservée par la personne." },
+      { id: "agent-case", number: "06", title: "Agent métier pour indépendant", text: "Le même suivi réalisé de bout en bout après une approbation explicite." },
+      { id: "agency-case", number: "07", title: "Agence orchestrée", text: "Plusieurs spécialistes coordonnés pour un seul service de diagnostic borné." },
+    ],
+  },
+};
+
+const conceptTargetMap: Partial<Record<string, ConceptPanelId>> = {
+  "geo-library": "geo-library",
+  "use-patterns": "use-patterns",
+  "non-agentic-cases": "non-agentic-cases",
+  "integration-levels": "integration-levels",
+};
+const operationalTargetMap: Partial<Record<string, OperationalPanelId>> = {
+  calibrator: "calibrator",
+  "pilot-plan": "pilot-plan",
+  "evidence-gate": "evidence-gate",
+  operations: "operations",
+  "decision-dossier": "decision-dossier",
+  "field-pilot": "field-pilot",
+};
+const implementationTargetMap: Partial<Record<string, ImplementationPanelId>> = {
+  paths: "paths",
+  sectors: "sectors",
+  method: "method",
+  "case-library": "case-library",
+  "maturity-controls": "maturity-controls",
+  controls: "maturity-controls",
+  "control-crosswalk": "control-crosswalk",
+  toolkit: "toolkit",
+};
+const caseTargetMap: Partial<Record<string, CasePanelId>> = {
+  case: "case",
+  "sme-case": "sme-case",
+  "mission-case": "mission-case",
+  "public-case": "public-case",
+  "solo-case": "solo-case",
+  "agent-case": "agent-case",
+  "agency-case": "agency-case",
+};
+
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
-    nav: ["Integration levels", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
+    nav: ["Use patterns", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
     methodCta: "See the method",
     fieldPilotHero: "Prepare a field pilot",
-    rule: "THE RELEASE RULE",
-    gates: [["No owner or baseline", "No project"], ["No acceptance thresholds", "No pilot"], ["No separate evidence", "No production"]],
-    stats: [["5", "organization paths"], ["8", "ordered steps"], ["3", "non-negotiable gates"]],
+    rule: "THREE CHECKS BEFORE MOVING ON",
+    gates: [["No owner or starting point", "No project"], ["No success criteria", "No pilot"], ["No verifiable results", "No live use"]],
+    stats: [["5", "organization paths"], ["8", "ordered steps"], ["3", "safety checks"]],
     summaryEyebrow: "WHAT THIS PLAYBOOK HELPS YOU DECIDE",
     summaryTitle: "Choose the smallest AI system that can improve a real workflow.",
-    summaryText: "This guide helps an independent professional, small business, nonprofit, or public service choose between a copilot, a bounded business agent, and an orchestrated agency. It then turns that choice into a measurable pilot, an evidence-based decision, and clear controls before production.",
+    summaryText: "The guide separates three questions that are often confused: the job given to the AI, what it may do without you, and the rules that apply where it operates. It then turns those choices into a small, measurable first test.",
     integrationEyebrow: "NAME THE SYSTEM BEFORE QUOTING THE GAIN",
     integrationTitle: "Copilot, business agent, and orchestrated agency are not the same integration.",
     integrationText: "They move different amounts of work, require different permissions, and must be measured with different outcomes. A percentage without its level is misleading.",
@@ -435,9 +819,9 @@ const copy = {
     orientation: "Recommended control baseline",
     orientations: ["Owner, data rules, business tests, and a change log.", "Qualified approval, output validation, full logging, and rollback.", "Threat model, least privilege, limits, monitoring, and adversarial tests.", "Formal legal and impact assessment, governance, independent review, and human recourse.", "Executive exception, proof that lower autonomy is insufficient, reinforced containment, and independent audit."],
     crosswalkOpen: "Open the matched control set",
-    crosswalkEyebrow: "VERSIONED CONTROL CROSSWALK · JSON 1.0",
+    crosswalkEyebrow: "VERSIONED CONTROL CROSSWALK · JSON 1.1",
     crosswalkTitle: "Turn a risk label into controls that leave evidence.",
-    crosswalkText: "The selected organization, impact, and autonomy now resolve to stable control IDs. Each row exposes its trigger, evidence, decision gates, lifecycle phases, and dated source references.",
+    crosswalkText: "Organization, impact, autonomy, use pattern, and jurisdiction resolve to stable control IDs. Each row exposes its trigger, evidence, decision gates, lifecycle phases, and dated source references.",
     crosswalkMatched: "candidate controls",
     crosswalkOrganization: "organization",
     crosswalkProfile: "active profile",
@@ -465,20 +849,20 @@ const copy = {
   },
   fr: {
     meta: "GUIDE DE TERRAIN · AOÛT 2026",
-    nav: ["Niveaux d’intégration", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
+    nav: ["Modes d’usage", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
     methodCta: "Voir la méthode",
     fieldPilotHero: "Préparer un pilote terrain",
-    rule: "LA RÈGLE DE PASSAGE",
-    gates: [["Sans responsable ni baseline", "Pas de projet"], ["Sans seuils d’acceptation", "Pas de pilote"], ["Sans preuves séparées", "Pas de production"]],
-    stats: [["5", "parcours par structure"], ["8", "étapes ordonnées"], ["3", "gates non négociables"]],
+    rule: "TROIS VÉRIFICATIONS AVANT D’AVANCER",
+    gates: [["Sans responsable ni situation de départ", "Pas de projet"], ["Sans critères de réussite", "Pas de pilote"], ["Sans résultats vérifiables", "Pas de mise en service"]],
+    stats: [["5", "parcours par structure"], ["8", "étapes ordonnées"], ["3", "règles de prudence"]],
     summaryEyebrow: "CE QUE CE PLAYBOOK VOUS AIDE À DÉCIDER",
     summaryTitle: "Choisir le système IA le plus simple qui améliore vraiment le travail.",
-    summaryText: "Ce guide aide un indépendant, une TPE, une PME, une association ou un service public à choisir entre copilote, agent métier borné et agence orchestrée. Il transforme ensuite ce choix en pilote mesurable, en décision fondée sur les preuves et en contrôles clairs avant la production.",
+    summaryText: "Le guide sépare trois questions souvent confondues : le travail confié à l’IA, ce qu’elle peut faire sans vous et les règles du territoire où elle opère. Il transforme ensuite ces choix en un premier test petit et mesurable.",
     integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
-    integrationTitle: "Copilote, agent métier et agence orchestrée ne sont pas la même intégration.",
+    integrationTitle: "Copilote, agent métier et agence orchestrée correspondent à trois niveaux d’intégration différents.",
     integrationText: "Ils déplacent des volumes de travail différents, exigent des permissions différentes et se mesurent par des résultats différents. Un pourcentage sans son niveau induit en erreur.",
     integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Ancrage dans les preuves publiques", flow: "Preuve de bout en bout" },
     integrationLevels: [
@@ -504,7 +888,7 @@ const copy = {
     ],
     researchReview: "Lire la revue complète de 20 sources",
     calibratorEyebrow: "CALIBREZ AVANT DE PROMETTRE",
-    calibratorTitle: "Transformez les fourchettes en scénario testable pour votre propre workflow.",
+    calibratorTitle: "Transformez vos fourchettes en un scénario testable pour votre propre processus.",
     calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible, hypothèses d’effet basse et haute et effort initial. Le résultat est une enveloppe de stress, pas une prévision.",
     calibratorLevel: "Niveau d’intégration",
     calibratorLevels: [{ id: "copilot", label: "Copilote · A0–A1", note: "Une étape assistée" }, { id: "agent", label: "Agent métier · A2–A3", note: "Un workflow borné" }, { id: "agency", label: "Agence orchestrée · A3", note: "Spécialistes sous une politique" }],
@@ -578,9 +962,9 @@ const copy = {
     operationRetire: "À la date de revue, comparez au processus manuel actuel plutôt qu’à la démonstration d’origine. Continuez, réduisez, remplacez ou retirez. Préservez export, suppression, sortie fournisseur, révocation des accès et processus manuel.",
     operationCopy: "Copier la fiche d’exploitation",
     operationCopied: "Fiche d’exploitation copiée",
-    operationRunbook: "Ouvrir le runbook d’incident",
+    operationRunbook: "Ouvrir la procédure d’incident",
     dossierEyebrow: "TRANSMETTRE LA DÉCISION · PAS LA DÉMO",
-    dossierTitle: "Rassemblez toute la chaîne de preuves dans un dossier de décision révisable.",
+    dossierTitle: "Rassemblez toute la chaîne de preuves dans un dossier de décision vérifiable.",
     dossierText: "Un futur responsable doit pouvoir reconstruire hypothèses, protocole, résultat observé, périmètre autorisé et rollback sans dépendre d’une mémoire orale ou d’un diaporama.",
     dossierArtifacts: [["01", "Scénario calibré", "Volume, baseline manuelle, part éligible, fourchette de planification et hypothèse de mise en place."], ["02", "Protocole préenregistré", "Niveau, horizon, jeu figé, échantillon réel borné, seuils et décisions possibles."], ["03", "Décision de gate", "Valeur, qualité, sécurité, trace, éligibilité et dénominateur observés, puis prochaine action autorisée."], ["04", "Fiche d’exploitation", "Responsables nommés, périmètre, surveillance, arrêts, rollback, gestion du changement et date de revue."]],
     dossierStatuses: { ready: "PRÊT", recorded: "CONSIGNÉ", incomplete: "À COMPLÉTER" },
@@ -692,7 +1076,7 @@ const copy = {
     missionAgent: ["État du dossier et extraction reliée aux sources", "Checklist de complétude publiée", "Projet de demande de pièce", "Paquet pseudonymisé pour les évaluateurs", "Écritures et attribution après approbation"],
     missionHumanTitle: "LES PERSONNES GARDENT",
     missionHuman: ["Accompagnement et canaux hors ligne", "Interprétation de la mission et du contexte", "Mérite, besoin, montant, attribution et refus", "Résolution des conflits d’intérêts", "Explication, contestation et responsabilité du conseil"],
-    missionRangeTitle: "Capacité administrative, pas impact de mission.",
+    missionRangeTitle: "Capacité administrative, pas effet sur la mission.",
     missionRangeText: "60 demandes × part workflow × 96 minutes initiales × réduction. Mise en place : 12 000 CHF ; coût récurrent : 750 CHF par mois.",
     missionRange: [["BAS", "23,8 h", "55 % workflow · −45 % · retour 16,6 mois"], ["CENTRAL", "40,3 h", "70 % workflow · −60 % · retour 6,9 mois"], ["HAUT", "53,8 h", "80 % workflow · −70 % · retour 4,6 mois"]],
     missionMetrics: [["96 → 39 min", "temps humain médian par paquet accepté"], ["×2,46", "débit théorique de paquets par heure humaine"], ["58/86", "prêts pour les évaluateurs sans correction"], ["≈ −39 %", "plafond portefeuille sur les 120 demandes"], ["100 %", "décisions de financement prises par des personnes"]],
@@ -727,7 +1111,7 @@ const copy = {
     publicEvidenceTitle: "Résultat terrain, borne haute de tâche, analogue de gouvernance",
     publicEvidence: [["PILOTE TERRAIN", "60–80 %", "À Milton Keynes, les collaborateurs déclarent une validation plus rapide ; le délai réception-validation passe de 15,8 à 7,6 jours. Ce cas fournisseur de trois mois n’est pas une preuve causale pour tout un service.", "https://www.local.gov.uk/case-studies/milton-keynes-city-council-and-valon-streamlining-planning-ai"], ["BORNE HAUTE DE TÂCHE", "18,5 h → 16 min", "Cambridge rapporte 16 minutes pour les résumés PlanAI contre 18,5 heures humaines. Les urbanistes lisent toujours chaque contribution ; ce ratio étroit ne chiffre pas un workflow de dossier.", "https://www.cambridge.gov.uk/news/2025/07/21/harnessing-the-power-of-ai-to-transform-planning-consultations"], ["ANALOGUE DE GOUVERNANCE", "6 000+", "Leeds traite plus de 6 000 demandes par an et associe six mois de co-conception à analyses d’impact, sources visibles, approbation, audit trail et fiche ATRS publique.", "https://www.local.gov.uk/case-studies/leeds-city-council-and-xylo-transforming-planning-ai"]],
     publicLegalNote: "Frontière suisse : il n’existe pas encore de loi transversale propre à l’IA, tandis que sécurité de l’information, protection des données, procédure administrative et droit sectoriel restent applicables. Le PFPDT est un repère fédéral ; une commune doit qualifier le droit cantonal et public pertinent. Toute décision publique reste ici humaine par conception.",
-    publicDecision: "Autoriser l’A2 administratif six mois. Garder le pouvoir public humain.",
+    publicDecision: "Autoriser l’A2 administratif pendant six mois. Maintenir le pouvoir de décision humain.",
     publicDecisionText: "L’observation normalisée indique 76,4 heures de capacité mensuelle, environ 2 757 CHF nets du coût récurrent et un retour simple proche de 17,4 mois. Le cas bas échoue au gate économique. Analyse de conformité, motifs, priorité ou changement de modèle fournisseur renvoient le système à P0.",
     publicCta: "Ouvrir le cas service public complet et ses preuves",
     soloEyebrow: "CAS COPILOTE · INDÉPENDANT · A1",
@@ -780,7 +1164,7 @@ const copy = {
     agencyEligibilityTitle: "Le dénominateur reste visible",
     agencyEligibilityText: "Seules 12 des 17 demandes live entrent dans la population A3. Cinq sont exclues avant exécution : deux nouveaux prix, une modification contractuelle, un jeu de données RH et une identité client contradictoire. Le résultat de 8/12 de bout en bout représente donc 8/17 de toutes les demandes, pas 67 % de toute l’activité.",
     agencyPhases: [["JOURS 01–10", "Décomposer le service", "Séparer rôles, entrées, sorties, permissions, frontières de panne, preuves des effets et situations qui doivent rester humaines."], ["JOURS 11–25", "Geler la comparaison", "Faire passer 60 cas par les conditions manuel, copilote, agent unique et agence orchestrée ; mesurer la sortie acceptée, pas l’activité des agents."], ["JOURS 26–40", "Observer l’agence", "Exécuter les spécialistes en parallèle sans effet réel. Injecter désaccord, mémoire périmée, panne d’outil, événement dupliqué et source empoisonnée."], ["JOURS 41–60", "Exploiter A3 borné", "N’autoriser que les effets catalogués à faible risque sur les cas éligibles. Veto du gardien, limites de coût, rollback et escalade humaine restent actifs."]],
-    agencyDecision: "A3 passe pour un service standard. A4 reste non démontré.",
+    agencyDecision: "A3 est validé pour un service standard. A4 reste à démontrer.",
     agencyDecisionText: "L’agence peut continuer pour le diagnostic défini et ses effets catalogués. Elle ne peut choisir de nouveaux services, prix, contrats, clients, classes de données ou permissions. L’autonomie large multi-systèmes exige un mandat distinct, un audit indépendant et des preuves sur plusieurs workflows.",
     agencyTalosNote: "Analogie Talos/Hermes, pas résultat Talos/Hermes",
     agencyTalosText: "L’architecture reprend orchestrateur, spécialistes, état partagé, outils, gardien et observabilité. Les chiffres appartiennent uniquement à ce cas synthétique ; le dépôt public Talos ne publie pas encore de benchmark de productivité reproductible.",
@@ -799,9 +1183,9 @@ const copy = {
     orientation: "Socle de contrôle recommandé",
     orientations: ["Responsable, règles de données, tests métier et journal des changements.", "Approbation qualifiée, validation des sorties, journal complet et rollback.", "Modèle de menace, moindre privilège, limites, surveillance et tests adversariaux.", "Qualification juridique et analyse d’impact formelles, gouvernance, revue indépendante et recours humain.", "Exception de direction, preuve qu’une autonomie inférieure ne suffit pas, confinement renforcé et audit indépendant."],
     crosswalkOpen: "Ouvrir les contrôles correspondants",
-    crosswalkEyebrow: "RÉFÉRENTIEL VERSIONNÉ · JSON 1.0",
+    crosswalkEyebrow: "RÉFÉRENTIEL VERSIONNÉ · JSON 1.1",
     crosswalkTitle: "Transformez un niveau de risque en contrôles qui laissent des preuves.",
-    crosswalkText: "L’organisation, l’impact et l’autonomie sélectionnés conduisent maintenant à des identifiants de contrôle stables. Chaque ligne expose son déclencheur, ses preuves, ses gates, ses phases et ses sources datées.",
+    crosswalkText: "La structure, l’impact, l’autonomie, le mode d’usage et la juridiction conduisent à des identifiants de contrôle stables. Chaque ligne expose son déclencheur, ses preuves, ses gates, ses phases et ses sources datées.",
     crosswalkMatched: "contrôles candidats",
     crosswalkOrganization: "organisation",
     crosswalkProfile: "profil actif",
@@ -821,7 +1205,7 @@ const copy = {
     toolkitEyebrow: "UTILISEZ LE PLAYBOOK",
     toolkitTitle: "Commencez par une décision vide, pas par une page blanche.",
     toolkitText: "Copiez les modèles opérationnels, franchissez le premier gate et conservez les preuves avec le projet.",
-    tools: [["Mandat", "Responsable, baseline, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Runbook d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"], ["Évaluation d’accessibilité", "Tâches complètes, technologies d’assistance et canal équivalent sans IA.", "templates/accessibility-assessment.fr.md"], ["Analyse des droits fondamentaux", "Groupes affectés, droits, garanties, recours et impact résiduel.", "templates/fundamental-rights-impact-assessment.fr.md"], ["Rapport de retour terrain", "Preuves observées, revue d’anonymisation et limites de transfert explicites.", "templates/field-feedback-report.fr.md"]],
+    tools: [["Mandat", "Responsable, situation de départ, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Procédure d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"], ["Évaluation d’accessibilité", "Tâches complètes, technologies d’assistance et canal équivalent sans IA.", "templates/accessibility-assessment.fr.md"], ["Analyse des droits fondamentaux", "Groupes affectés, droits, garanties, recours et impact résiduel.", "templates/fundamental-rights-impact-assessment.fr.md"], ["Rapport de retour terrain", "Preuves observées, revue d’anonymisation et limites de transfert explicites.", "templates/field-feedback-report.fr.md"]],
     sourceTitle: "Un socle daté, fondé sur des sources primaires.",
     sourceText: "Le playbook renvoie vers le catalogue ISO, le NIST AI RMF, OWASP GenAI, MITRE ATLAS, les autorités suisses et les ressources actuelles de l’AI Act. C’est une aide à la mise en œuvre, pas une certification ni un avis juridique.",
     sources: "Consulter le registre des sources",
@@ -838,11 +1222,11 @@ const audiences: Record<Locale, Audience[]> = {
     { id: "public", number: "05", title: "Public service", short: "Formal evidence gates", horizon: "Stage-gated", objective: "A lawful, proportionate, accessible service with audit and human recourse.", roles: "Administrative authority, service owner, legal, privacy, security, procurement, and archives.", pilot: "A bounded support function with no unauthorized legal effect.", controls: ["Legal mandate", "Impact assessment", "Auditable procurement", "Human appeal and continuity"], phases: phase([["P0–P1", "Prove public legitimacy", "Document the mandate, non-AI alternatives, affected population, and required impact reviews."], ["P2", "Procure for control", "Require audit, logs, change notice, export, deletion, continuity, and exit rights."], ["P3–P4", "Evaluate independently", "Test representative populations, rare cases, abuse, accessibility, and oversight."], ["P5", "Operate accountably", "Register the system, enable recourse, archive evidence, monitor, and plan retirement."]]), file: "tracks/en/public-sector.md" },
   ],
   fr: [
-    { id: "independent", number: "01", title: "Indépendant", short: "Un workflow réversible", horizon: "14 jours", objective: "Un workflow peu risqué, mesuré et doté d’une procédure manuelle.", roles: "Le propriétaire du processus prend aussi la décision finale.", pilot: "Brouillon, extraction structurée ou comparaison de fournisseurs avec validation humaine.", controls: ["Registre IA simple", "Règles de données", "Tests réutilisables", "Revue mensuelle valeur/erreurs"], phases: phase([["Jours 1–2", "Choisir le problème", "Mesurer cinq tâches répétitives et exclure les décisions à fort impact."], ["Jours 3–7", "Poser les limites", "Choisir l’outil le plus simple et construire 20 à 50 tests représentatifs."], ["Jours 8–10", "Travailler en shadow", "Produire sans envoyer, publier ou modifier quoi que ce soit."], ["Jours 11–14", "Décider", "Continuer, corriger ou arrêter selon le seuil écrit."]]), file: "tracks/fr/independent.md" },
-    { id: "tpe", number: "02", title: "TPE", short: "Un processus partagé", horizon: "30 jours", objective: "Un processus d’équipe avec responsable, règles communes et capacité d’incident.", roles: "Responsable IA, propriétaire métier et responsable d’incident joignable.", pilot: "Un workflow client ou opérationnel réversible avec approbation explicite.", controls: ["Comptes individuels", "Lecture seule par défaut", "Revue fournisseur", "Retour manuel testé"], phases: phase([["Semaine 1", "Rendre les usages visibles", "Inventorier l’IA officielle et informelle, publier une règle d’une page et mesurer."], ["Semaine 2", "Choisir et qualifier", "Comparer trois cas et évaluer fournisseur, données, rôles et permissions."], ["Semaine 3", "Tester en shadow", "Utiliser 30 à 100 cas, avec données manquantes, attaques et indisponibilités."], ["Semaine 4", "Piloter et décider", "Former chaque rôle, exécuter un copilote borné et tenir la revue de gate."]]), file: "tracks/fr/tpe.md" },
-    { id: "pme", number: "03", title: "PME", short: "Portefeuille et plateforme", horizon: "90 jours", objective: "Un portefeuille priorisé, des contrôles communs et un premier pilote gouverné.", roles: "Sponsor, responsable de portefeuille, métier, IT/sécurité, données et protection des données.", pilot: "Un à trois cas distincts capables de prouver les besoins réellement communs.", controls: ["Gates de portefeuille", "Identité et journaux communs", "Évaluations par segment", "Revue de concentration fournisseur"], phases: phase([["Jours 1–30", "Gouverner et découvrir", "Inventorier la shadow AI, cartographier le travail et constituer le portefeuille."], ["Jours 31–60", "Construire les preuves", "Choisir les pilotes, créer les tests et déployer identités, journaux et limites."], ["Jours 61–75", "Exécuter les copilotes", "Mesurer résultats, corrections, incidents et contournements."], ["Jours 76–90", "Industrialiser avec sélection", "Versionner les contrôles communs prouvés et planifier les revues."]]), file: "tracks/fr/pme.md" },
-    { id: "nonprofit", number: "04", title: "Association / fondation", short: "Adoption alignée sur la mission", horizon: "60 jours", objective: "Une adoption utile qui protège mission, bénéficiaires, donateurs et confiance.", roles: "Propriétaire métier, garant de la mission, terrain et responsable données/vie privée.", pilot: "Recherche, traduction, synthèse interne ou tri administratif contrôlé.", controls: ["Gate mission", "Tests langue/accessibilité", "Voie de plainte", "Aucune décision d’aide non autorisée"], phases: phase([["Jours 1–15", "S’aligner sur la mission", "Consulter le terrain et définir valeur et dommages au-delà de l’argent."], ["Jours 16–30", "Protéger l’accès", "Vérifier données, langues, accessibilité, fournisseur et escalade humaine."], ["Jours 31–45", "Évaluer équitablement", "Mesurer par langue et groupe pertinent, y compris stigmatisation et divulgation."], ["Jours 46–60", "Piloter avec redevabilité", "Passer du shadow au copilote et présenter la décision à la surveillance."]]), file: "tracks/fr/nonprofit-foundation.md" },
-    { id: "public", number: "05", title: "Service public", short: "Gates formels", horizon: "Par gates", objective: "Un service légal, proportionné, accessible, auditable et contestable humainement.", roles: "Autorité administrative, métier, juridique, données, sécurité, achats et archives.", pilot: "Une fonction de soutien bornée sans effet juridique non autorisé.", controls: ["Mandat légal", "Analyse d’impact", "Achat auditable", "Recours humain et continuité"], phases: phase([["P0–P1", "Prouver la légitimité publique", "Documenter mandat, options non-IA, population et analyses d’impact nécessaires."], ["P2", "Acheter pour garder le contrôle", "Exiger audit, journaux, changements, export, suppression, continuité et sortie."], ["P3–P4", "Évaluer indépendamment", "Tester populations, cas rares, abus, accessibilité et supervision."], ["P5", "Exploiter avec redevabilité", "Inscrire le système, ouvrir le recours, archiver, surveiller et préparer le retrait."]]), file: "tracks/fr/public-sector.md" },
+    { id: "independent", number: "01", title: "Indépendant", short: "Un processus réversible", horizon: "14 jours", objective: "Un processus peu risqué, mesuré et doté d’une procédure manuelle.", roles: "Le propriétaire du processus prend aussi la décision finale.", pilot: "Brouillon, extraction structurée ou comparaison de fournisseurs avec validation humaine.", controls: ["Registre IA simple", "Règles de données", "Tests réutilisables", "Revue mensuelle valeur/erreurs"], phases: phase([["Jours 1–2", "Choisir le problème", "Mesurer cinq tâches répétitives et exclure les décisions à fort impact."], ["Jours 3–7", "Poser les limites", "Choisir l’outil le plus simple et construire 20 à 50 tests représentatifs."], ["Jours 8–10", "Observer en parallèle", "Produire sans envoyer, publier ou modifier quoi que ce soit."], ["Jours 11–14", "Décider", "Continuer, corriger ou arrêter selon le seuil écrit."]]), file: "tracks/fr/independent.md" },
+    { id: "tpe", number: "02", title: "TPE", short: "Un processus partagé", horizon: "30 jours", objective: "Un processus d’équipe avec responsable, règles communes et capacité d’incident.", roles: "Responsable IA, propriétaire métier et responsable d’incident joignable.", pilot: "Un processus client ou opérationnel réversible avec approbation explicite.", controls: ["Comptes individuels", "Lecture seule par défaut", "Revue fournisseur", "Procédure manuelle testée"], phases: phase([["Semaine 1", "Rendre les usages visibles", "Inventorier l’IA officielle et informelle, publier une règle d’une page et mesurer."], ["Semaine 2", "Choisir et qualifier", "Comparer trois cas et évaluer fournisseur, données, rôles et permissions."], ["Semaine 3", "Observer en parallèle", "Utiliser 30 à 100 cas, avec données manquantes, attaques et indisponibilités."], ["Semaine 4", "Piloter et décider", "Former chaque rôle, exécuter un copilote borné et tenir le point de décision."]]), file: "tracks/fr/tpe.md" },
+    { id: "pme", number: "03", title: "PME", short: "Portefeuille et plateforme", horizon: "90 jours", objective: "Un portefeuille priorisé, des contrôles communs et un premier pilote gouverné.", roles: "Sponsor, responsable de portefeuille, métier, IT/sécurité, données et protection des données.", pilot: "Un à trois cas distincts capables de prouver les besoins réellement communs.", controls: ["Points de décision du portefeuille", "Identité et journaux communs", "Évaluations par segment", "Revue de concentration fournisseur"], phases: phase([["Jours 1–30", "Gouverner et découvrir", "Inventorier les usages IA informels, cartographier le travail et constituer le portefeuille."], ["Jours 31–60", "Construire les preuves", "Choisir les pilotes, créer les tests et déployer identités, journaux et limites."], ["Jours 61–75", "Exécuter les copilotes", "Mesurer résultats, corrections, incidents et contournements."], ["Jours 76–90", "Industrialiser avec sélection", "Versionner les contrôles communs prouvés et planifier les revues."]]), file: "tracks/fr/pme.md" },
+    { id: "nonprofit", number: "04", title: "Association / fondation", short: "Adoption alignée sur la mission", horizon: "60 jours", objective: "Une adoption utile qui protège mission, bénéficiaires, donateurs et confiance.", roles: "Propriétaire métier, garant de la mission, terrain et responsable données/vie privée.", pilot: "Recherche, traduction, synthèse interne ou tri administratif contrôlé.", controls: ["Point de décision lié à la mission", "Tests langue/accessibilité", "Voie de plainte", "Aucune décision d’aide non autorisée"], phases: phase([["Jours 1–15", "S’aligner sur la mission", "Consulter le terrain et définir valeur et dommages au-delà de l’argent."], ["Jours 16–30", "Protéger l’accès", "Vérifier données, langues, accessibilité, fournisseur et escalade humaine."], ["Jours 31–45", "Évaluer équitablement", "Mesurer par langue et groupe pertinent, y compris stigmatisation et divulgation."], ["Jours 46–60", "Piloter avec redevabilité", "Passer de l’observation en parallèle au copilote et présenter la décision à la surveillance."]]), file: "tracks/fr/nonprofit-foundation.md" },
+    { id: "public", number: "05", title: "Service public", short: "Décisions formelles", horizon: "Par étapes", objective: "Un service légal, proportionné, accessible, auditable et contestable humainement.", roles: "Autorité administrative, métier, juridique, données, sécurité, achats et archives.", pilot: "Une fonction de soutien bornée sans effet juridique non autorisé.", controls: ["Mandat légal", "Analyse d’impact", "Achat auditable", "Recours humain et continuité"], phases: phase([["P0–P1", "Prouver la légitimité publique", "Documenter mandat, options non-IA, population et analyses d’impact nécessaires."], ["P2", "Acheter pour garder le contrôle", "Exiger audit, journaux, changements, export, suppression, continuité et sortie."], ["P3–P4", "Évaluer indépendamment", "Tester populations, cas rares, abus, accessibilité et supervision."], ["P5", "Exploiter avec redevabilité", "Inscrire le système, ouvrir le recours, archiver, surveiller et préparer le retrait."]]), file: "tracks/fr/public-sector.md" },
   ],
 };
 
@@ -854,9 +1238,97 @@ function controlIndex(risk: number, autonomy: number) {
   return 0;
 }
 
+function ConceptTip({ label, text }: { label: string; text: string }) {
+  return (
+    <details className="concept-tip">
+      <summary aria-label={label}>?</summary>
+      <div role="note"><strong>{label}</strong><p>{text}</p></div>
+    </details>
+  );
+}
+
+function ChapterNavigator<T extends string>({
+  active,
+  ariaLabel,
+  content,
+  items,
+  onSelect,
+  routerId,
+  variant = "chapter",
+}: {
+  active: T;
+  ariaLabel: string;
+  content: ChapterNavigationContent;
+  items: Array<ChapterItem<T>>;
+  onSelect: (id: T) => void;
+  routerId: string;
+  variant?: "chapter" | "cases";
+}) {
+  const selectedItem = items.find((item) => item.id === active) ?? items[0];
+  const isCases = variant === "cases";
+  return (
+    <section className={`chapter-router ${isCases ? "case-router" : ""}`} aria-label={ariaLabel} id={routerId}>
+      <div className="chapter-router-head">
+        <p className="eyebrow">{isCases ? content.casesEyebrow : content.eyebrow}</p>
+        <h3>{isCases ? content.casesTitle : content.title}</h3>
+        <p>{isCases ? content.casesText : content.text}</p>
+      </div>
+      <nav aria-label={ariaLabel}>
+        {items.map((item) => (
+          <button aria-pressed={active === item.id} key={item.id} onClick={() => onSelect(item.id)} type="button">
+            <span>{item.number}</span><strong>{item.title}</strong><small>{item.text}</small>
+          </button>
+        ))}
+      </nav>
+      <div className="chapter-current" aria-live="polite">
+        <span>{content.current}</span><strong>{selectedItem.title}</strong><p>{selectedItem.text}</p>
+      </div>
+    </section>
+  );
+}
+
+function ChapterStepper<T extends string>({
+  active,
+  ariaLabel,
+  content,
+  items,
+  onSelect,
+  routerId,
+}: {
+  active: T;
+  ariaLabel: string;
+  content: ChapterNavigationContent;
+  items: Array<ChapterItem<T>>;
+  onSelect: (id: T) => void;
+  routerId: string;
+}) {
+  const currentIndex = Math.max(0, items.findIndex((item) => item.id === active));
+  const current = items[currentIndex];
+  const previous = items[currentIndex - 1];
+  const next = items[currentIndex + 1];
+  const move = (item: ChapterItem<T> | undefined) => {
+    if (!item) return;
+    onSelect(item.id);
+    window.requestAnimationFrame(() => document.getElementById(routerId)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+  return (
+    <nav className="chapter-stepper" aria-label={`${ariaLabel} · ${content.position}`}>
+      <button disabled={!previous} onClick={() => move(previous)} type="button"><span>← {content.previous}</span><strong>{previous?.title ?? content.previous}</strong></button>
+      <p><span>{content.position}</span><strong>{currentIndex + 1}/{items.length}</strong><small>{current.title}</small></p>
+      <button disabled={!next} onClick={() => move(next)} type="button"><span>{content.next} →</span><strong>{next?.title ?? content.next}</strong></button>
+    </nav>
+  );
+}
+
 export function Playbook({ locale }: { locale: Locale }) {
   const t = copy[locale];
+  const patternCopy = usePatternContent[locale];
+  const nonAgenticCopy = nonAgenticCaseContent[locale];
+  const guideCopy = guidedContent[locale];
+  const chapterCopy = chapterNavigationContent[locale];
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
+  const [usePattern, setUsePattern] = useState<UsePatternId>("retrieval");
+  const [jurisdiction, setJurisdiction] = useState<JurisdictionId>("BOTH");
   const [risk, setRisk] = useState(1);
   const [autonomy, setAutonomy] = useState(1);
   const [calibrationLevel, setCalibrationLevel] = useState<IntegrationId>("agent");
@@ -889,12 +1361,23 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [fieldUnsupported, setFieldUnsupported] = useState("");
   const [fieldEvidenceConfirmed, setFieldEvidenceConfirmed] = useState(false);
   const [fieldReviewChecks, setFieldReviewChecks] = useState<boolean[]>(() => t.fieldPilotChecklist.map(() => false));
+  const [guideStep, setGuideStep] = useState(0);
+  const [guideFurthestStep, setGuideFurthestStep] = useState(0);
+  const [conceptPanel, setConceptPanel] = useState<ConceptPanelId>("use-patterns");
+  const [operationalPanel, setOperationalPanel] = useState<OperationalPanelId>("calibrator");
+  const [implementationPanel, setImplementationPanel] = useState<ImplementationPanelId>("paths");
+  const [casePanel, setCasePanel] = useState<CasePanelId>("case");
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
+  const selectedUsePattern = useMemo(() => patternCopy.patterns.find((item) => item.id === usePattern) ?? patternCopy.patterns[0], [patternCopy.patterns, usePattern]);
+  const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
+  const selectedGuideLevel = useMemo(() => guideCopy.levels.find((item) => item.id === calibrationLevel) ?? guideCopy.levels[0], [calibrationLevel, guideCopy.levels]);
   const applicableControls = useMemo(() => controlCatalog.filter((control) => (
     control.applicability.organization_types.includes(selected.id)
     && control.applicability.risk_levels.includes(`R${risk}`)
     && control.applicability.autonomy_levels.includes(`A${autonomy}`)
-  )), [selected.id, risk, autonomy]);
+    && (!control.applicability.use_patterns || control.applicability.use_patterns.includes(usePattern))
+    && (!control.applicability.jurisdictions || jurisdiction === "BOTH" || control.applicability.jurisdictions.includes(jurisdiction))
+  )), [selected.id, risk, autonomy, usePattern, jurisdiction]);
   const applicableSourceCount = useMemo(() => new Set(applicableControls.flatMap((control) => control.source_refs.map((source) => source.source_id))).size, [applicableControls]);
   const deploymentBase = typeof window !== "undefined"
     && (window.location.pathname === githubPagesBase || window.location.pathname.startsWith(`${githubPagesBase}/`))
@@ -905,9 +1388,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const langHref = sitePath(locale === "en" ? "/fr/" : "/");
   const langLabel = locale === "en" ? "FR" : "EN";
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
-  const journeySteps = locale === "en"
-    ? [["calibrator", "Calibrate"], ["pilot-plan", "Pilot"], ["evidence-gate", "Decide"], ["operations", "Operate"], ["decision-dossier", "Hand off"], ["field-pilot", "Field test"]]
-    : [["calibrator", "Calibrer"], ["pilot-plan", "Piloter"], ["evidence-gate", "Décider"], ["operations", "Exploiter"], ["decision-dossier", "Transmettre"], ["field-pilot", "Terrain"]];
+  const journeySteps = guideCopy.progress;
   const selectCalibrationLevel = (level: IntegrationId) => {
     const spec = calibrationSpecs[level];
     setCalibrationLevel(level);
@@ -918,6 +1399,34 @@ export function Playbook({ locale }: { locale: Locale }) {
     setOperationCopied(false);
     setDossierCopied(false);
     setFieldEvidenceConfirmed(false);
+  };
+  const selectGuideLevel = (level: GuidedContent["levels"][number]) => {
+    selectCalibrationLevel(level.id);
+    setAutonomy(level.autonomy);
+  };
+  const goToGuideStep = (step: number) => {
+    const boundedStep = Math.max(0, Math.min(guideCopy.steps.length - 1, step));
+    setGuideStep(boundedStep);
+    setGuideFurthestStep((current) => Math.max(current, boundedStep));
+  };
+  const selectChapterTarget = useCallback((targetId: string) => {
+    const conceptTarget = conceptTargetMap[targetId];
+    const operationalTarget = operationalTargetMap[targetId];
+    const implementationTarget = implementationTargetMap[targetId];
+    const caseTarget = caseTargetMap[targetId];
+    if (conceptTarget) setConceptPanel(conceptTarget);
+    if (operationalTarget) setOperationalPanel(operationalTarget);
+    if (implementationTarget) setImplementationPanel(implementationTarget);
+    if (caseTarget) {
+      setImplementationPanel("case-library");
+      setCasePanel(caseTarget);
+    }
+  }, []);
+  const openChapter = (chapterId: string, targetId: string) => {
+    selectChapterTarget(targetId);
+    const chapter = document.getElementById(chapterId) as HTMLDetailsElement | null;
+    if (chapter) chapter.open = true;
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" })));
   };
   const calibration = useMemo(() => {
     const spec = calibrationSpecs[calibrationLevel];
@@ -950,8 +1459,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
   const pilotCollectionWeeks = pilotSpec.live / Math.max(calibration.eligibleCases, 0.01) * 4.35;
   const pilotBrief = locale === "en"
-    ? [`AI PILOT BRIEF`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
-    : [`BRIEF DE PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
+    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
   const samplePass = observedCases >= pilotSpec.live;
   const valuePass = observedTimeReduction >= pilotSpec.valueFloor;
   const qualityPass = observedQuality >= 90;
@@ -1046,6 +1555,8 @@ export function Playbook({ locale }: { locale: Locale }) {
     `- ${t.fieldPilotLabels.alias}: ${fieldAlias.trim() || "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.organization}: ${selected.title}`,
     `- ${t.fieldPilotLabels.sector}: ${fieldSector.label}`,
+    `- ${locale === "en" ? "Use pattern" : "Mode d’usage"}: ${selectedUsePattern.title}`,
+    `- ${locale === "en" ? "Jurisdiction route" : "Route juridique"}: ${selectedJurisdiction.label}`,
     `- ${t.fieldPilotLabels.integration}: ${pilotLevelLabel}`,
     `- ${t.fieldPilotLabels.version}: ${fieldVersion.trim() || "[TO COMPLETE]"}`,
     `- ${locale === "en" ? "Observation period" : "Période d’observation"}: ${fieldStart || "[TO COMPLETE]"} → ${fieldEnd || "[TO COMPLETE]"}`,
@@ -1119,6 +1630,20 @@ export function Playbook({ locale }: { locale: Locale }) {
   };
 
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
+  useEffect(() => {
+    const revealHashTarget = () => {
+      if (!window.location.hash) return;
+      const targetId = decodeURIComponent(window.location.hash.slice(1));
+      selectChapterTarget(targetId);
+      const target = document.getElementById(targetId);
+      const chapter = target?.closest("details.guide-chapter") as HTMLDetailsElement | null;
+      if (chapter) chapter.open = true;
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => target?.scrollIntoView({ block: "start" })));
+    };
+    revealHashTarget();
+    window.addEventListener("hashchange", revealHashTarget);
+    return () => window.removeEventListener("hashchange", revealHashTarget);
+  }, [selectChapterTarget]);
 
   return (
     <div className="page-shell">
@@ -1126,18 +1651,18 @@ export function Playbook({ locale }: { locale: Locale }) {
       <header className="site-header">
         <a className="brand" href="#top"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
-          <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#sectors">{t.nav[2]}</a><a href="#method">{t.nav[3]}</a><a href="#case">{t.nav[4]}</a><a href="#controls">{t.nav[5]}</a><a href="#toolkit">{t.nav[6]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
+          <a href="#guided-start">{locale === "en" ? "Guided start" : "Départ guidé"}</a><a href="#concept-library">{locale === "en" ? "Understand" : "Comprendre"}</a><a href="#operational-workspace">{locale === "en" ? "Pilot workspace" : "Espace pilote"}</a><a href="#implementation-library">{locale === "en" ? "Library" : "Bibliothèque"}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
       </header>
 
       <nav className="journey-nav" aria-label={locale === "en" ? "Guided decision path" : "Parcours de décision guidé"}>
         <strong>{journeyLabel}</strong>
-        {journeySteps.map(([id, label], index) => <a href={`#${id}`} key={id}><span>0{index + 1}</span><b>{label}</b></a>)}
+        {journeySteps.map((label, index) => <button aria-current={guideStep === index ? "step" : undefined} disabled={index > guideFurthestStep} key={label} onClick={() => { goToGuideStep(index); document.getElementById("guided-start")?.scrollIntoView({ behavior: "smooth" }); }} type="button"><span>0{index + 1}</span><b>{label}</b></button>)}
       </nav>
 
       <main id="main">
         <section className="hero" id="top">
-          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#integration-levels">{t.start}</a><a className="button secondary" href="#field-pilot">{t.fieldPilotHero}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
+          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#guided-start">{t.start}</a><a className="button secondary" href="#operational-workspace">{locale === "en" ? "Open the expert workspace" : "Ouvrir l’espace expert"}</a></div></div>
           <aside className="hero-rule" aria-label={t.rule}><p className="rule-label">{t.rule}</p><ol>{t.gates.map(([condition, decision], index) => <li key={condition}><span>0{index + 1}</span><strong>{condition}</strong><em>{decision}</em></li>)}</ol></aside>
         </section>
 
@@ -1149,10 +1674,63 @@ export function Playbook({ locale }: { locale: Locale }) {
           <p>{t.summaryText}</p>
         </section>
 
-        <section className="geo-library" aria-labelledby="geo-library-title">
+        <section className="guided-start" id="guided-start" aria-labelledby="guided-start-title">
+          <div className="guided-intro">
+            <p className="eyebrow">{guideCopy.eyebrow}</p>
+            <h2 id="guided-start-title">{guideCopy.title}</h2>
+            <p>{guideCopy.text}</p>
+          </div>
+          <div className="guided-shell">
+            <nav className="guided-progress" aria-label={locale === "en" ? "Guide progress" : "Progression du guide"}>
+              <ol>{guideCopy.progress.map((label, index) => <li data-current={guideStep === index} data-complete={index < guideFurthestStep} key={label}><button disabled={index > guideFurthestStep} onClick={() => goToGuideStep(index)} type="button"><span>0{index + 1}</span><strong>{label}</strong></button></li>)}</ol>
+              <p><strong>{guideFurthestStep + 1}/5</strong><span>{locale === "en" ? "steps available" : "étapes accessibles"}</span></p>
+            </nav>
+            <div className="guided-panel" aria-live="polite">
+              <header className="guided-step-head">
+                <div><p className="eyebrow">{guideCopy.steps[guideStep].eyebrow}</p><span>{guideCopy.stepLabel} {guideStep + 1}/5</span></div>
+                <ConceptTip label={guideCopy.steps[guideStep].helpLabel} text={guideCopy.steps[guideStep].help} />
+                <h3>{guideCopy.steps[guideStep].title}</h3>
+                <p>{guideCopy.steps[guideStep].text}</p>
+              </header>
+
+              {guideStep === 0 && <div className="guide-choice-grid guide-audiences">{audiences[locale].map((audience) => <button aria-pressed={audienceId === audience.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span>{audience.number}</span><strong>{audience.title}</strong><small>{audience.short}</small><em>{audience.horizon}</em></button>)}</div>}
+
+              {guideStep === 1 && <div className="guide-choice-grid guide-patterns">{patternCopy.patterns.map((pattern) => <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => setUsePattern(pattern.id)} type="button"><span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small></button>)}</div>}
+
+              {guideStep === 2 && <div className="guide-choice-grid guide-levels">{guideCopy.levels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => selectGuideLevel(level)} type="button"><span>{level.code}</span><strong>{level.title}</strong><small>{level.text}</small></button>)}</div>}
+
+              {guideStep === 3 && <div className="guide-choice-grid guide-jurisdictions">{patternCopy.jurisdictions.map((option) => <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => setJurisdiction(option.id)} type="button"><span>{option.id}</span><strong>{option.label}</strong><small>{option.note}</small></button>)}</div>}
+
+              {guideStep === 4 && <div className="guided-result">
+                <div className="guided-result-lead"><p className="eyebrow">{guideCopy.result.eyebrow}</p><h3>{guideCopy.result.title}</h3><p>{guideCopy.result.intro}</p><strong>{selectedGuideLevel.recommendation}</strong></div>
+                <div className="guided-selection" aria-label={guideCopy.result.selection}><span>{selected.title}</span><span>{selectedUsePattern.title}</span><span>{selectedGuideLevel.title} · {selectedGuideLevel.code}</span><span>{selectedJurisdiction.label}</span></div>
+                <div className="guided-result-grid">
+                  <article><span>01</span><strong>{guideCopy.result.pilot}</strong><p>{selected.pilot}</p></article>
+                  <article><span>02</span><strong>{guideCopy.result.measure}</strong><p>{guideCopy.proofByPattern[usePattern]}</p></article>
+                  <article><span>03</span><strong>{guideCopy.result.safeguards}</strong><ul>{selected.controls.slice(0, 3).map((control) => <li key={control}>{control}</li>)}</ul></article>
+                </div>
+                <div className="guided-result-actions"><button className="button primary" onClick={() => openChapter("operational-workspace", "pilot-plan")} type="button">{guideCopy.buttons.workspace}</button><button className="button secondary" onClick={() => openChapter("concept-library", "non-agentic-cases")} type="button">{guideCopy.buttons.cases}</button></div>
+              </div>}
+
+              <div className="guided-controls">
+                <button className="guide-back" disabled={guideStep === 0} onClick={() => goToGuideStep(guideStep - 1)} type="button">← {guideCopy.buttons.back}</button>
+                {guideStep < 4 ? <button className="guide-next" onClick={() => goToGuideStep(guideStep + 1)} type="button">{guideStep === 3 ? guideCopy.buttons.result : guideCopy.buttons.next} →</button> : <button className="guide-restart" onClick={() => { setGuideStep(0); setGuideFurthestStep(0); }} type="button">{guideCopy.buttons.restart}</button>}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="chapter-stack" aria-label={locale === "en" ? "Detailed playbook chapters" : "Chapitres détaillés du playbook"}>
+        <details className="guide-chapter" id="concept-library">
+          <summary><span>{guideCopy.chapters[0].number}</span><div><strong>{guideCopy.chapters[0].title}</strong><small>{guideCopy.chapters[0].text}</small></div><b aria-hidden="true">+</b></summary>
+          <div className="guide-chapter-content">
+
+        <ChapterNavigator active={conceptPanel} ariaLabel={chapterCopy.conceptLabel} content={chapterCopy} items={chapterCopy.concept} onSelect={setConceptPanel} routerId="concept-router" />
+
+        <section className="geo-library" hidden={conceptPanel !== "geo-library"} id="geo-library" aria-labelledby="geo-library-title">
           <div className="section-heading">
             <p className="eyebrow">{locale === "en" ? "PRACTICAL ANSWERS" : "RÉPONSES PRATIQUES"}</p>
-            <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Approfondissez les questions qui font la décision."}</h2>
+            <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Explorez les questions qui éclairent la décision."}</h2>
             <p>{locale === "en" ? "Each guide gives a direct answer, a comparison, a realistic example, and the sources that limit the claim." : "Chaque guide apporte une réponse directe, une comparaison, un exemple réaliste et les sources qui bornent la conclusion."}</p>
           </div>
           <div className="geo-library-grid">
@@ -1164,7 +1742,85 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="integration-guide section-light" id="integration-levels" aria-labelledby="integration-title">
+        <section className="use-patterns section-light" hidden={conceptPanel !== "use-patterns"} id="use-patterns" aria-labelledby="use-patterns-title">
+          <div className="section-heading">
+            <p className="eyebrow">{patternCopy.eyebrow}</p>
+            <h2 id="use-patterns-title">{patternCopy.title}</h2>
+            <p>{patternCopy.text}</p>
+          </div>
+          <div className="use-pattern-shell">
+            <fieldset className="use-pattern-picker">
+              <legend>{locale === "en" ? "Dominant use pattern" : "Mode d’usage dominant"}</legend>
+              <div className="use-pattern-grid">
+                {patternCopy.patterns.map((pattern) => (
+                  <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => setUsePattern(pattern.id)} type="button">
+                    <span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <output className="use-pattern-detail" aria-live="polite">
+              <p className="eyebrow">{selectedUsePattern.code} · {selectedUsePattern.title}</p>
+              <dl>
+                <div><dt>{patternCopy.labels.task}</dt><dd>{selectedUsePattern.task}</dd></div>
+                <div><dt>{patternCopy.labels.evaluate}</dt><dd>{selectedUsePattern.evaluate}</dd></div>
+                <div><dt>{patternCopy.labels.threat}</dt><dd>{selectedUsePattern.threat}</dd></div>
+              </dl>
+              <a href={`${repositorySource}/docs/ai-use-patterns${locale === "fr" ? ".fr" : ""}.md`}>{patternCopy.guide} ↗</a>
+            </output>
+            <fieldset className="jurisdiction-picker">
+              <legend>{patternCopy.jurisdictionTitle}</legend>
+              <div className="jurisdiction-options">
+                {patternCopy.jurisdictions.map((option) => (
+                  <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => setJurisdiction(option.id)} type="button">
+                    <strong>{option.label}</strong><span>{option.note}</span>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <aside className="jurisdiction-note" aria-live="polite">
+              <span>{patternCopy.labels.jurisdiction}</span><strong>{patternCopy.jurisdictionNotes[jurisdiction].title}</strong><p>{patternCopy.jurisdictionNotes[jurisdiction].text}</p>
+            </aside>
+          </div>
+        </section>
+
+        <section className="non-agentic-cases section-light" hidden={conceptPanel !== "non-agentic-cases"} id="non-agentic-cases" aria-labelledby="non-agentic-cases-title">
+          <div className="section-heading">
+            <p className="eyebrow">{nonAgenticCopy.eyebrow}</p>
+            <h2 id="non-agentic-cases-title">{nonAgenticCopy.title}</h2>
+            <p>{nonAgenticCopy.text}</p>
+          </div>
+          <div className="non-agentic-grid">
+            {nonAgenticCopy.cases.map((item) => (
+              <article key={item.code}>
+                <div className="non-agentic-head">
+                  <span>{item.code}</span>
+                  <small>{item.pattern}</small>
+                </div>
+                <h3>{item.title}</h3>
+                <p className="non-agentic-org">{item.organization}</p>
+                <div className="non-agentic-scope">
+                  <strong>{nonAgenticCopy.labels.scope}</strong>
+                  <p>{item.scope}</p>
+                </div>
+                <div className="non-agentic-proof">
+                  <strong>{nonAgenticCopy.labels.proof}</strong>
+                  <ul>{item.proof.map((signal) => <li key={signal}>{signal}</li>)}</ul>
+                </div>
+                <div className="non-agentic-footer">
+                  <div><span>{nonAgenticCopy.labels.gate}</span><strong>{item.gate}</strong></div>
+                  <a href={`${repositorySource}/${item.file}`}>{nonAgenticCopy.labels.open} ↗</a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <aside className="non-agentic-boundary">
+            <strong>{locale === "en" ? "SYNTHETIC EVIDENCE BOUNDARY" : "FRONTIÈRE DES PREUVES SYNTHÉTIQUES"}</strong>
+            <p>{nonAgenticCopy.boundary}</p>
+          </aside>
+        </section>
+
+        <section className="integration-guide section-light" hidden={conceptPanel !== "integration-levels"} id="integration-levels" aria-labelledby="integration-title">
           <div className="section-heading"><p className="eyebrow">{t.integrationEyebrow}</p><h2 id="integration-title">{t.integrationTitle}</h2><p>{t.integrationText}</p></div>
           <div className="integration-grid">
             {t.integrationLevels.map((level, index) => <article className={`integration-card level-${index + 1}`} key={level.title}>
@@ -1191,7 +1847,18 @@ export function Playbook({ locale }: { locale: Locale }) {
           </section>
         </section>
 
-        <section className="calibrator section-blue" id="calibrator" aria-labelledby="calibrator-title">
+        <ChapterStepper active={conceptPanel} ariaLabel={chapterCopy.conceptLabel} content={chapterCopy} items={chapterCopy.concept} onSelect={setConceptPanel} routerId="concept-router" />
+
+          </div>
+        </details>
+
+        <details className="guide-chapter" id="operational-workspace">
+          <summary><span>{guideCopy.chapters[1].number}</span><div><strong>{guideCopy.chapters[1].title}</strong><small>{guideCopy.chapters[1].text}</small></div><b aria-hidden="true">+</b></summary>
+          <div className="guide-chapter-content">
+
+        <ChapterNavigator active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
+
+        <section className="calibrator section-blue" hidden={operationalPanel !== "calibrator"} id="calibrator" aria-labelledby="calibrator-title">
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <div className="calibrator-shell">
             <div className="calibrator-controls">
@@ -1221,7 +1888,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
         </section>
 
-        <section className="pilot-planner section-light" id="pilot-plan" aria-labelledby="pilot-plan-title">
+        <section className="pilot-planner section-light" hidden={operationalPanel !== "pilot-plan"} id="pilot-plan" aria-labelledby="pilot-plan-title">
           <div className="section-heading"><p className="eyebrow">{t.pilotPlannerEyebrow}</p><h2 id="pilot-plan-title">{t.pilotPlannerTitle}</h2><p>{t.pilotPlannerText}</p></div>
           <ol className="pilot-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 1} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="pilot-specs" aria-live="polite">
@@ -1254,7 +1921,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section className="evidence-gate section-blue" id="evidence-gate" aria-labelledby="evidence-gate-title">
+        <section className="evidence-gate section-blue" hidden={operationalPanel !== "evidence-gate"} id="evidence-gate" aria-labelledby="evidence-gate-title">
           <div className="section-heading"><p className="eyebrow">{t.evidenceEyebrow}</p><h2 id="evidence-gate-title">{t.evidenceTitle}</h2><p>{t.evidenceText}</p></div>
           <ol className="pilot-roadmap evidence-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 2} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="evidence-shell">
@@ -1284,7 +1951,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="evidence-footer"><p>{t.evidenceRule}</p><button className="button primary" onClick={() => void copyEvidenceMemo()} type="button">{evidenceCopied ? t.evidenceCopied : t.evidenceCopy}</button></div>
         </section>
 
-        <section className="operations section-light" id="operations" aria-labelledby="operations-title">
+        <section className="operations section-light" hidden={operationalPanel !== "operations"} id="operations" aria-labelledby="operations-title">
           <div className="section-heading"><p className="eyebrow">{t.operationsEyebrow}</p><h2 id="operations-title">{t.operationsTitle}</h2><p>{t.operationsText}</p></div>
           <ol className="pilot-roadmap operations-roadmap" aria-label={locale === "en" ? "Adoption decision sequence" : "Séquence de décision d’adoption"}>{t.pilotRoadmap.map((item, index) => <li data-current={index === 4} key={item}><span>0{index + 1}</span><strong>{item}</strong></li>)}</ol>
           <div className="operation-contract">
@@ -1309,7 +1976,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only with named people, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’avec des personnes nommées, un fallback joignable, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repositorySource}/templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`}>{t.operationRunbook} ↗</a></div></div>
         </section>
 
-        <section className="decision-dossier section-dark" id="decision-dossier" aria-labelledby="decision-dossier-title">
+        <section className="decision-dossier section-dark" hidden={operationalPanel !== "decision-dossier"} id="decision-dossier" aria-labelledby="decision-dossier-title">
           <div className="section-heading"><p className="eyebrow">{t.dossierEyebrow}</p><h2 id="decision-dossier-title">{t.dossierTitle}</h2><p>{t.dossierText}</p></div>
           <div className="dossier-status" data-ready={dossierReady}><div><span>{locale === "en" ? "CURRENT PACKAGE STATE" : "ÉTAT ACTUEL DU DOSSIER"}</span><strong>{dossierReady ? t.dossierReady : t.dossierDraft}</strong></div><p><strong>{dossierMissingItems.length}</strong><span>{t.dossierMissing}</span></p></div>
           <div className="dossier-artifacts">{t.dossierArtifacts.map(([number, title, text], index) => <article data-status={dossierArtifactStatuses[index]} key={number}><div><span>{number}</span><em>{t.dossierStatuses[dossierArtifactStatuses[index]]}</em></div><h3>{title}</h3><p>{text}</p></article>)}</div>
@@ -1321,7 +1988,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
         </section>
 
-        <section className="field-pilot section-blue" id="field-pilot" aria-labelledby="field-pilot-title">
+        <section className="field-pilot section-blue" hidden={operationalPanel !== "field-pilot"} id="field-pilot" aria-labelledby="field-pilot-title">
           <div className="section-heading"><p className="eyebrow">{t.fieldPilotEyebrow}</p><h2 id="field-pilot-title">{t.fieldPilotTitle}</h2><p>{t.fieldPilotText}</p></div>
           <ol className="field-pilot-flow">{t.fieldPilotFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="field-pilot-shell">
@@ -1351,7 +2018,18 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
-        <section className="paths section-dark" id="paths" aria-labelledby="paths-title">
+        <ChapterStepper active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
+
+          </div>
+        </details>
+
+        <details className="guide-chapter" id="implementation-library">
+          <summary><span>{guideCopy.chapters[2].number}</span><div><strong>{guideCopy.chapters[2].title}</strong><small>{guideCopy.chapters[2].text}</small></div><b aria-hidden="true">+</b></summary>
+          <div className="guide-chapter-content">
+
+        <ChapterNavigator active={implementationPanel} ariaLabel={chapterCopy.implementationLabel} content={chapterCopy} items={chapterCopy.implementation} onSelect={setImplementationPanel} routerId="implementation-router" />
+
+        <section className="paths section-dark" hidden={implementationPanel !== "paths"} id="paths" aria-labelledby="paths-title">
           <div className="section-heading"><p className="eyebrow">{t.pathsEyebrow}</p><h2 id="paths-title">{t.pathsTitle}</h2><p>{t.pathsText}</p></div>
           <div className="path-grid">
             {audiences[locale].map((audience) => <button aria-pressed={audience.id === selected.id} className="path-card" data-active={audience.id === selected.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span className="path-number">{audience.number}</span><span className="path-title">{audience.title}</span><span className="path-copy">{audience.short}</span><span className="path-horizon">{audience.horizon} →</span></button>)}
@@ -1363,26 +2041,29 @@ export function Playbook({ locale }: { locale: Locale }) {
           </article>
         </section>
 
-        <section className="sector-lenses section-blue" id="sectors" aria-labelledby="sectors-title">
+        <section className="sector-lenses section-blue" hidden={implementationPanel !== "sectors"} id="sectors" aria-labelledby="sectors-title">
           <div className="section-heading"><p className="eyebrow">{t.sectorEyebrow}</p><h2 id="sectors-title">{t.sectorTitle}</h2><p>{t.sectorText}</p></div>
           <ol className="sector-flow">{t.sectorFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="sector-grid">{t.sectors.map((sector, index) => <a href={`${repositorySource}/${sector.file}`} key={sector.code}><header><span>{sector.code}</span><small>0{index + 1}</small></header><h3>{sector.title}</h3><dl><div><dt>{t.sectorLabels.trigger}</dt><dd>{sector.trigger}</dd></div><div className="sector-veto"><dt>{t.sectorLabels.veto}</dt><dd>{sector.veto}</dd></div><div><dt>{t.sectorLabels.evidence}</dt><dd>{sector.evidence}</dd></div></dl><b>{t.sectorGuide} ↗</b></a>)}</div>
           <p className="sector-caveat">{t.sectorCaveat}</p>
         </section>
 
-        <section className="method section-light" id="method" aria-labelledby="method-title">
+        <section className="method section-light" hidden={implementationPanel !== "method"} id="method" aria-labelledby="method-title">
           <div className="section-heading"><p className="eyebrow">{t.methodEyebrow}</p><h2 id="method-title">{t.methodTitle}</h2><p>{t.methodText}</p></div>
           <div className="process-list">{t.steps.map(([title, text, evidence], index) => <details key={title} open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><em aria-hidden="true">+</em></summary><div className="step-body"><p>{text}</p><p className="evidence"><span>{t.deliverable}</span>{evidence}</p></div></details>)}</div>
         </section>
 
-        <section className="worked-case section-dark" id="case" aria-labelledby="case-title">
+        <div className="case-library" hidden={implementationPanel !== "case-library"} id="case-library">
+        <ChapterNavigator active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" variant="cases" />
+
+        <section className="worked-case section-dark" hidden={casePanel !== "case"} id="case" aria-labelledby="case-title">
           <div className="section-heading"><p className="eyebrow">{t.caseEyebrow}</p><h2 id="case-title">{t.caseTitle}</h2><p>{t.caseText}</p></div>
           <div className="case-overview"><article><span>{t.caseBadge}</span><h3>Atelier Horizon</h3><p>{t.caseProblem}</p></article><div className="case-metrics">{t.caseMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div></div>
           <ol className="case-timeline">{t.caseTimeline.map(([label, title, text]) => <li key={label}><span>{label}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
           <div className="case-decision"><div><p className="eyebrow">GATE 03 · DECISION</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`}>{t.caseCta} ↗</a></div>
         </section>
 
-        <section className="sme-case section-light" id="sme-case" aria-labelledby="sme-case-title">
+        <section className="sme-case section-light" hidden={casePanel !== "sme-case"} id="sme-case" aria-labelledby="sme-case-title">
           <div className="section-heading"><p className="eyebrow">{t.smeEyebrow}</p><h2 id="sme-case-title">{t.smeTitle}</h2><p>{t.smeText}</p></div>
           <div className="sme-lead"><article><span>{t.smeBadge}</span><h3>Noroît Mécanique SA</h3><p>{t.smeProblem}</p></article><div className="sme-mark"><strong>A2</strong><span>{locale === "en" ? "FULL WORKFLOW · HUMAN GATE" : "WORKFLOW COMPLET · GATE HUMAINE"}</span></div></div>
           <ol className="sme-workflow" aria-label={locale === "en" ? "B2B quote workflow" : "Workflow du devis B2B"}>{t.smeWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1393,7 +2074,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="sme-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "LEVEL DECISION" : "DÉCISION DE NIVEAU"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
         </section>
 
-        <section className="mission-case section-dark" id="mission-case" aria-labelledby="mission-case-title">
+        <section className="mission-case section-dark" hidden={casePanel !== "mission-case"} id="mission-case" aria-labelledby="mission-case-title">
           <div className="section-heading"><p className="eyebrow">{t.missionEyebrow}</p><h2 id="mission-case-title">{t.missionTitle}</h2><p>{t.missionText}</p></div>
           <div className="mission-lead"><article><span>{t.missionBadge}</span><h3>Fondation Lien Local</h3><p>{t.missionProblem}</p></article><div className="mission-mark"><strong>A2</strong><span>{locale === "en" ? "ADMINISTRATION · NOT JUDGMENT" : "ADMINISTRATION · PAS DE JUGEMENT"}</span></div></div>
           <ol className="mission-workflow" aria-label={locale === "en" ? "Grant dossier administrative workflow" : "Workflow administratif des dossiers de subvention"}>{t.missionWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1407,7 +2088,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="mission-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`}>{t.missionCta} ↗</a></div>
         </section>
 
-        <section className="public-case section-blue" id="public-case" aria-labelledby="public-case-title">
+        <section className="public-case section-blue" hidden={casePanel !== "public-case"} id="public-case" aria-labelledby="public-case-title">
           <div className="section-heading"><p className="eyebrow">{t.publicEyebrow}</p><h2 id="public-case-title">{t.publicTitle}</h2><p>{t.publicText}</p></div>
           <div className="public-lead"><article><span>{t.publicBadge}</span><h3>{locale === "en" ? "City of Mont-Rive" : "Ville de Mont-Rive"}</h3><p>{t.publicProblem}</p></article><div className="public-seal"><strong>P0–P5</strong><span>{locale === "en" ? "FORMAL PUBLIC GATES" : "GATES PUBLICS FORMELS"}</span></div></div>
           <ol className="public-workflow" aria-label={locale === "en" ? "Public planning dossier workflow" : "Workflow public des dossiers d’urbanisme"}>{t.publicWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1421,7 +2102,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`}>{t.publicCta} ↗</a></div>
         </section>
 
-        <section className="solo-case section-light" aria-labelledby="solo-title">
+        <section className="solo-case section-light" hidden={casePanel !== "solo-case"} id="solo-case" aria-labelledby="solo-title">
           <div className="section-heading"><p className="eyebrow">{t.soloEyebrow}</p><h2 id="solo-title">{t.soloTitle}</h2><p>{t.soloText}</p></div>
           <div className="solo-board">
             <div className="solo-clock"><span>{locale === "en" ? "PILOT" : "PILOTE"}</span><strong>14</strong><em>{locale === "en" ? "DAYS" : "JOURS"}</em><small>{t.soloBadge}</small></div>
@@ -1433,7 +2114,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="solo-decision"><div><p className="eyebrow">GATE 02 · {locale === "en" ? "BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repository}/blob/${caseRevision}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
         </section>
 
-        <section className="agent-case section-dark" id="agent-case" aria-labelledby="agent-case-title">
+        <section className="agent-case section-dark" hidden={casePanel !== "agent-case"} id="agent-case" aria-labelledby="agent-case-title">
           <div className="section-heading"><p className="eyebrow">{t.agentEyebrow}</p><h2 id="agent-case-title">{t.agentTitle}</h2><p>{t.agentText}</p></div>
           <div className="agent-case-lead"><article><span>{t.agentBadge}</span><h3>Camille Rey · Phase 2</h3><p>{t.agentProblem}</p></article><div className="agent-mark"><strong>A2</strong><span>{locale === "en" ? "ACTION AFTER APPROVAL" : "ACTION APRÈS APPROBATION"}</span></div></div>
           <ol className="agent-flow" aria-label={locale === "en" ? "Business-agent workflow" : "Workflow de l’agent métier"}>{t.agentWorkflow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
@@ -1444,7 +2125,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agent-decision"><div><p className="eyebrow">GATE 04 · {locale === "en" ? "AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
         </section>
 
-        <section className="agency-case section-light" id="agency-case" aria-labelledby="agency-case-title">
+        <section className="agency-case section-light" hidden={casePanel !== "agency-case"} id="agency-case" aria-labelledby="agency-case-title">
           <div className="section-heading"><p className="eyebrow">{t.agencyEyebrow}</p><h2 id="agency-case-title">{t.agencyTitle}</h2><p>{t.agencyText}</p></div>
           <div className="agency-lead"><article><span>{t.agencyBadge}</span><h3>{locale === "en" ? "Camille Rey · Standard diagnostic" : "Camille Rey · Diagnostic standard"}</h3><p>{t.agencyProblem}</p></article><div className="agency-mark"><strong>A3</strong><span>{locale === "en" ? "BOUNDED AUTONOMY" : "AUTONOMIE BORNÉE"}</span></div></div>
           <div className="agency-system">
@@ -1460,19 +2141,27 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agency-decision"><div><p className="eyebrow">GATE 05 · {locale === "en" ? "SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
         </section>
 
+        <ChapterStepper active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" />
+
+        </div>
+
+        <div className="maturity-controls-panel" hidden={implementationPanel !== "maturity-controls"} id="maturity-controls">
         <section className="ladder-section section-blue" aria-labelledby="ladder-title"><div><p className="eyebrow">{t.ladderEyebrow}</p><h2 id="ladder-title">{t.ladderTitle}</h2><p>{t.ladderText}</p></div><ol className="ladder">{t.ladder.map((level, index) => <li key={level}><span>{index + 1}</span><strong>{level}</strong></li>)}</ol></section>
 
         <section className="controls section-light" id="controls" aria-labelledby="controls-title">
           <div className="section-heading"><p className="eyebrow">{t.riskEyebrow}</p><h2 id="controls-title">{t.riskTitle}</h2><p>{t.riskText}</p></div>
           <div className="control-explorer"><fieldset><legend>{t.impact}</legend><div className="choice-list">{t.impactOptions.map((label, index) => <button aria-pressed={risk === index} key={label} onClick={() => setRisk(index)} type="button">{label}</button>)}</div></fieldset><fieldset><legend>{t.autonomy}</legend><div className="choice-list">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index} key={label} onClick={() => setAutonomy(index)} type="button">{label}</button>)}</div></fieldset><output className="orientation" aria-live="polite"><span>{t.orientation}</span><strong>{t.orientations[controlIndex(risk, autonomy)]}</strong><small>R{risk} × A{autonomy}</small><a className="orientation-link" href="#control-crosswalk">{t.crosswalkOpen} ↓</a></output></div>
         </section>
+        </div>
 
-        <section className="control-crosswalk section-dark" id="control-crosswalk" aria-labelledby="control-crosswalk-title">
+        <section className="control-crosswalk section-dark" hidden={implementationPanel !== "control-crosswalk"} id="control-crosswalk" aria-labelledby="control-crosswalk-title">
           <div className="section-heading"><p className="eyebrow">{t.crosswalkEyebrow}</p><h2 id="control-crosswalk-title">{t.crosswalkTitle}</h2><p>{t.crosswalkText}</p></div>
           <div className="crosswalk-summary" aria-live="polite">
             <p><strong>{applicableControls.length}</strong><span>{t.crosswalkMatched}</span></p>
             <p><strong>{selected.title}</strong><span>{t.crosswalkOrganization}</span></p>
             <p><strong>R{risk} × A{autonomy}</strong><span>{t.crosswalkProfile}</span></p>
+            <p><strong>{selectedUsePattern.title}</strong><span>{patternCopy.crosswalkPattern}</span></p>
+            <p><strong>{selectedJurisdiction.label}</strong><span>{patternCopy.crosswalkJurisdiction}</span></p>
             <p><strong>{applicableSourceCount}</strong><span>{t.crosswalkSources}</span></p>
           </div>
           <div className="crosswalk-shell">
@@ -1482,9 +2171,13 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href={sitePath("/data/control-crosswalk.v1.json")}>{t.crosswalkDownload} ↓</a><a className="button secondary" download href={sitePath("/data/control-crosswalk.schema.json")}>{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
-        <section className="toolkit section-dark" id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
+        <section className="toolkit section-dark" hidden={implementationPanel !== "toolkit"} id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
 
-        <aside className="source-note"><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources.md`}>{t.sources} ↗</a></aside>
+        <aside className="source-note" hidden={implementationPanel !== "toolkit"}><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources.md`}>{t.sources} ↗</a></aside>
+        <ChapterStepper active={implementationPanel} ariaLabel={chapterCopy.implementationLabel} content={chapterCopy} items={chapterCopy.implementation} onSelect={setImplementationPanel} routerId="implementation-router" />
+          </div>
+        </details>
+        </div>
       </main>
       <footer><p>{t.footer}</p><a href={repository}>GitHub ↗</a></footer>
     </div>
