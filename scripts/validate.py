@@ -316,6 +316,7 @@ def check_hosting_contract(errors: list[str]) -> None:
             "id-token: write",
             "PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}",
             "STATIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}",
+            "run: npm run build:static",
             "npm run test:hosted",
         )
         for marker in required_workflow_contract:
