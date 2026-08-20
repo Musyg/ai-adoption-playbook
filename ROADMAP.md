@@ -1,12 +1,14 @@
 # Roadmap
 
-## Repository release readiness, technical snapshot 0.2.0
+## Repository release readiness, technical snapshot 0.2.1
 
 - [x] Correct TypeScript and dependency vulnerabilities.
 - [x] Correct automated accessibility findings.
 - [x] Remove provider-specific hosting configuration and origins.
 - [x] Consolidate validation workflows and add dependency update configuration.
 - [x] Add automated bilingual browser checks for desktop, dark mode, and mobile.
+- [x] Separate seven AI use patterns from integration level, autonomy, and risk.
+- [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Update version, changelog, operational documentation, and handoff.
 - [x] Complete the private repository, history, security, and community-file audit.
 - [ ] Change repository visibility to public after explicit owner approval.
@@ -17,7 +19,7 @@ Hosting is a different future project: repository publication does not select a
 host, declare a website URL, or authorize deployment.
 
 The open field-feedback item under 0.3 is an evidence-growth objective. It does
-not block publication of the complete 0.2 release, because the empty registry
+not block publication of the complete 0.2.1 release, because the empty registry
 and the absence of first-party evidence are stated explicitly.
 
 ## 0.2
@@ -25,12 +27,14 @@ and the absence of first-party evidence are stated explicitly.
 - [x] Complete English translation of the operating guides and organization tracks.
 - [x] Add worked, synthetic examples for each track.
 - [x] Add a machine-readable control crosswalk with source and version fields.
+- [x] Add use-pattern evaluation profiles and separate Swiss and EU routing.
 
 Progress: **0.2 complete.** Bilingual operating guides, templates, organization
 tracks, and worked examples now cover independent professionals, TPEs, SMEs/PMEs,
 nonprofits/foundations, and public services. The versioned JSON control crosswalk
-maps stable control and evidence IDs to organization, risk, autonomy, conditions,
-lifecycle phases, gates, sources, and implementation files.
+maps stable control and evidence IDs to organization, risk, autonomy, use pattern,
+jurisdiction, conditions, lifecycle phases, gates, sources, and implementation
+files.
 
 ## 0.3
 

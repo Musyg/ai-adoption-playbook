@@ -29,4 +29,7 @@ test("theme-aware surfaces preserve readable control contrast", () => {
   assert.match(styles, /\.sector-grid > a \{ background: var\(--surface\); border: 1px solid var\(--line\);/);
   assert.match(styles, /\.public-lead \{ background: var\(--surface\); border: 1px solid var\(--line\);/);
   assert.match(styles, /\.path-card\[data-active="true"\] :is\(\.path-number, \.path-copy, \.path-horizon\) \{ color: var\(--dark-text\); \}/);
+  assert.match(styles, /\.use-pattern-grid button:hover \{ background: var\(--surface\); box-shadow: inset 4px 0 0 var\(--blue-deep\); \}/);
+  assert.match(styles, /\.use-pattern-grid button:focus-visible, \.jurisdiction-options button:focus-visible \{ outline: 3px solid var\(--blue-deep\);/);
+  assert.match(styles, /\.use-pattern-grid button\[aria-pressed="true"\] \{ background: var\(--surface\);/);
 });

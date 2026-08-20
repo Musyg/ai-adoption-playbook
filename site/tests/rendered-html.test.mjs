@@ -113,10 +113,19 @@ for (const [pathname, language, title] of [
     assert.match(html, /ATTACH OR REFERENCE THESE SIX RECORDS|JOINDRE OU RÉFÉRENCER CES SIX ENREGISTREMENTS/i);
     assert.match(html, /Download Markdown dossier|Télécharger le dossier Markdown/i);
     assert.match(html, /Guided decision path|Parcours de décision guidé/i);
+    assert.match(html, /id=["']use-patterns["']/i);
+    assert.match(html, /Choose the use pattern|Choisissez le mode d’usage/i);
+    assert.match(html, /Generation|Génération/i);
+    assert.match(html, /Prediction and recommendation|Prédiction et recommandation/i);
+    assert.match(html, /Agentic action|Action agentique/i);
+    assert.match(html, /Switzerland \+ EU|Suisse \+ UE/i);
+    assert.match(html, /Two routes, not one shortcut|Deux routes, aucun raccourci/i);
+    assert.match(html, /ai-use-patterns(?:\.fr)?\.md/i);
     assert.match(html, /id=["']control-crosswalk["']/i);
     assert.match(html, /Turn a risk label into controls|Transformez un niveau de risque en contrôles/i);
     assert.match(html, /candidate controls|contrôles candidats/i);
     assert.match(html, /AAP-GOV-001/);
+    assert.match(html, /AAP-GOV-003/);
     assert.match(html, /AAP-SEC-002/);
     assert.match(html, /EV-AUDIT-TRACE/);
     assert.match(html, /NIST-AI-100-1/);
@@ -127,7 +136,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /href=["']#pilot-plan["']/i);
     assert.match(html, /href=["']#decision-dossier["']/i);
     assert.doesNotMatch(html, /property=["']og:image["']|name=["']twitter:image["']/i);
-    assert.match(html, /href=["']#integration-levels["']/i);
+    assert.match(html, /id=["']integration-levels["']/i);
     assert.match(html, /id=["']sectors["']/i);
     assert.match(html, /Healthcare|Santé/);
     assert.match(html, /Education|Éducation/);

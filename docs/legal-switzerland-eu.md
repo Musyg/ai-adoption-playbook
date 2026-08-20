@@ -1,6 +1,6 @@
 # Legal orientation — Switzerland and the European Union
 
-> Snapshot verified on **18 August 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
+> Snapshot verified on **20 August 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
 
 ## Switzerland
 
@@ -17,13 +17,20 @@ Control points:
 
 The controller remains accountable when processing is entrusted to a provider. In particular, it must govern instructions, confidentiality, security, subprocessors, and transfers.
 
-As of 18 August 2026, draft legislation intended in particular to implement the Council of Europe Convention was still due to enter consultation by the end of 2026. Do not describe this future proposal as law already in force.
+Operational routing by use pattern:
+
+- for direct language-model interaction, record how people learn that they are corresponding with a machine and whether their inputs are reused;
+- for an automated individual decision with legal or similarly significant effects, verify Article 21 FADP notice, the opportunity to state a point of view, review by a natural person, and the exact exceptions;
+- for synthetic faces, images, or voices of identifiable people, record clear identification, consent or other authority, privacy controls, and applicable personality, criminal, and intellectual-property rules;
+- for processing likely to create a high risk, complete and retain the data-protection impact assessment before the pilot.
+
+As of 20 August 2026, draft legislation intended in particular to implement the Council of Europe Convention was still due to enter consultation by the end of 2026. Do not describe this future proposal as law already in force.
 
 ## European Union
 
 The AI Act follows a risk-based approach. The role — provider, deployer, importer, or distributor — and the use case determine the obligations.
 
-Status verified on 18 August 2026:
+Status verified on 20 August 2026:
 
 - Article 50 transparency obligations have applied since 2 August 2026;
 - the AI Omnibus, which entered into force in July 2026, sets 2 December 2027 as the application date for Annex III high-risk rules;
@@ -32,6 +39,16 @@ Status verified on 18 August 2026:
 - national supervision of Article 4 has applied since August 2026.
 
 Prohibitions, rules for general-purpose AI models, transparency, data protection, employment law, consumer protection, intellectual property, and sector-specific rules must be assessed separately.
+
+Operational routing for Article 50:
+
+- direct interaction: determine whether the provider must design the system to inform people that they are interacting with AI;
+- synthetic content: determine whether the provider must add detectable machine-readable marking;
+- deepfakes and certain public-interest text: determine the deployer’s visible-disclosure duty and the applicable exceptions;
+- emotion recognition and biometric categorisation: determine the deployer’s information duty;
+- retain the role analysis, interface evidence, marking evidence, exceptions, and verification date.
+
+These EU duties do not replace FADP analysis when Switzerland is also in scope, and Swiss transparency does not by itself prove Article 50 compliance.
 
 ## Questions to document for every use case
 

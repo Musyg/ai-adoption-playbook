@@ -9,6 +9,8 @@ import { geoArticlePath, geoArticles } from "./geo-content";
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type IntegrationId = "copilot" | "agent" | "agency";
+type UsePatternId = "generation" | "retrieval" | "classification" | "prediction" | "conversation" | "multimodal" | "agentic";
+type JurisdictionId = "CH" | "EU" | "BOTH";
 type FieldSectorId = "general" | "healthcare" | "education" | "finance" | "critical";
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
@@ -25,6 +27,8 @@ type CrosswalkControl = {
     organization_types: string[];
     risk_levels: string[];
     autonomy_levels: string[];
+    use_patterns?: UsePatternId[];
+    jurisdictions?: Array<"CH" | "EU">;
     conditions: string[];
   };
   lifecycle_phases: number[];
@@ -68,6 +72,12 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
     mission_population: "When mission populations or beneficiaries are affected",
     public_authority: "When public authority or public responsibility is involved",
     public_procurement: "When public procurement is involved",
+    interactive_ai: "When a person interacts directly with the AI system",
+    synthetic_content: "When synthetic or manipulated content is generated or distributed",
+    automated_individual_decision: "When a decision about a person is based exclusively on automated processing",
+    article50_transparency_scope: "When direct AI interaction or an Article 50 synthetic-content category is in scope",
+    model_customization: "When the model is fine-tuned, adapted, or materially customized",
+    software_or_code_effect: "When generated code or software can create an operational effect",
   },
   fr: {
     always: "Toujours",
@@ -79,6 +89,12 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
     mission_population: "Lorsque des bénéficiaires ou populations de mission sont concernés",
     public_authority: "Lorsqu’une autorité ou responsabilité publique est engagée",
     public_procurement: "Lorsqu’un achat public est engagé",
+    interactive_ai: "Lorsqu’une personne interagit directement avec le système IA",
+    synthetic_content: "Lorsqu’un contenu synthétique ou manipulé est généré ou diffusé",
+    automated_individual_decision: "Lorsqu’une décision concernant une personne repose exclusivement sur un traitement automatisé",
+    article50_transparency_scope: "Lorsqu’une interaction IA directe ou une catégorie de contenu synthétique de l’article 50 entre dans le périmètre",
+    model_customization: "Lorsque le modèle est affiné, adapté ou modifié de manière substantielle",
+    software_or_code_effect: "Lorsque du code ou un logiciel généré peut produire un effet opérationnel",
   },
 };
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
@@ -98,10 +114,85 @@ const operationSpecs: Record<IntegrationId, { reviewDate: string; reviewDays: nu
   agency: { reviewDate: "2026-08-25", reviewDays: 7, containment: "15 min" },
 };
 
+type UsePatternContent = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  labels: { task: string; evaluate: string; threat: string; jurisdiction: string };
+  guide: string;
+  patterns: Array<{ id: UsePatternId; code: string; title: string; short: string; task: string; evaluate: string; threat: string }>;
+  jurisdictionTitle: string;
+  jurisdictions: Array<{ id: JurisdictionId; label: string; note: string }>;
+  jurisdictionNotes: Record<JurisdictionId, { title: string; text: string }>;
+  crosswalkPattern: string;
+  crosswalkJurisdiction: string;
+};
+
+const usePatternContent: Record<Locale, UsePatternContent> = {
+  en: {
+    eyebrow: "FIRST AXIS · WHAT THE AI ACTUALLY DOES",
+    title: "Choose the use pattern before choosing the integration level.",
+    text: "A chatbot, a predictor, a retrieval system, and an agent can use similar models but require different evidence. Select the dominant pattern, then record every secondary pattern in the use-case card.",
+    labels: { task: "Task", evaluate: "Evaluate", threat: "Threat focus", jurisdiction: "Legal route" },
+    guide: "Open the complete classification guide",
+    patterns: [
+      { id: "generation", code: "01", title: "Generation", short: "Create a new output", task: "Create text, code, image, audio, or another new output.", evaluate: "Accepted quality, factual or source fidelity, severe errors, and human correction load.", threat: "Confabulation, sensitive-data disclosure, intellectual-property exposure, and unsafe output handling." },
+      { id: "retrieval", code: "02", title: "Retrieval", short: "Find grounded information", task: "Find and synthesize information from an authorized corpus.", evaluate: "Retrieval coverage, groundedness, citation validity, corpus freshness, and access control.", threat: "Corpus poisoning, indirect prompt injection, cross-tenant leakage, and stale indexes." },
+      { id: "classification", code: "03", title: "Extraction and classification", short: "Extract, label, or route", task: "Extract fields, assign known categories, route cases, or detect a defined condition.", evaluate: "Per-class precision and recall, critical errors, abstention, subgroup results, and drift.", threat: "Evasion, poisoned data or labels, class imbalance, and threshold manipulation." },
+      { id: "prediction", code: "04", title: "Prediction and recommendation", short: "Score, rank, or recommend", task: "Estimate an outcome, calculate a score, rank options, or recommend an action.", evaluate: "Calibration, threshold utility, error cost, subgroup results, and feedback loops.", threat: "Automation bias, proxy discrimination, model extraction, drift, and self-reinforcing feedback." },
+      { id: "conversation", code: "05", title: "Conversation", short: "Maintain a multi-turn exchange", task: "Maintain a multi-turn interaction with an internal or external user.", evaluate: "AI disclosure, task completion, human handoff, multi-turn consistency, retention, and deletion.", threat: "Impersonation, manipulation across turns, memory retention, unsafe advice, and failed handoff." },
+      { id: "multimodal", code: "06", title: "Multimodal", short: "Interpret or create media", task: "Interpret or generate image, audio, video, speech, or sensor content.", evaluate: "Consent and rights, modality quality, provenance, transformation robustness, and accessibility.", threat: "Deepfakes, voice or identity misuse, hidden multimodal instructions, and stripped metadata." },
+      { id: "agentic", code: "07", title: "Agentic action", short: "Plan and act through tools", task: "Plan steps, call tools, change systems, or coordinate specialist agents.", evaluate: "Plan and tool correctness, authorization, effect read-back, idempotency, rollback, and stopping.", threat: "Goal hijacking, tool misuse, privilege abuse, unexpected code execution, poisoned memory, and cascading failure." },
+    ],
+    jurisdictionTitle: "Where will the system operate or affect people?",
+    jurisdictions: [
+      { id: "CH", label: "Switzerland", note: "Swiss route" },
+      { id: "EU", label: "European Union", note: "EU route" },
+      { id: "BOTH", label: "Switzerland + EU", note: "Two separate analyses" },
+    ],
+    jurisdictionNotes: {
+      CH: { title: "Swiss route", text: "Apply the FADP when personal data is processed and qualify cantonal, public-law, and sector rules. Direct language-model interaction and qualifying automated individual decisions create distinct information and review duties." },
+      EU: { title: "EU route", text: "Classify the provider and deployer roles, the AI Act category, and GDPR duties separately. Article 50 transparency rules apply from 2 August 2026 to direct AI interaction and specified synthetic or manipulated content." },
+      BOTH: { title: "Two routes, not one shortcut", text: "Run the Swiss and EU analyses independently. A Swiss assessment does not establish EU compliance, and an EU classification does not replace Swiss data-protection, cantonal, public-law, or sector analysis." },
+    },
+    crosswalkPattern: "use pattern",
+    crosswalkJurisdiction: "jurisdiction route",
+  },
+  fr: {
+    eyebrow: "PREMIER AXE · CE QUE FAIT RÉELLEMENT L’IA",
+    title: "Choisissez le mode d’usage avant le niveau d’intégration.",
+    text: "Un chatbot, un prédicteur, un système de recherche et un agent peuvent utiliser des modèles proches, mais ils n’exigent pas les mêmes preuves. Sélectionnez le mode dominant, puis consignez chaque mode secondaire dans la fiche de cas d’usage.",
+    labels: { task: "Tâche", evaluate: "Évaluer", threat: "Menaces à tester", jurisdiction: "Route juridique" },
+    guide: "Ouvrir le guide complet de classification",
+    patterns: [
+      { id: "generation", code: "01", title: "Génération", short: "Créer une nouvelle sortie", task: "Créer du texte, du code, une image, de l’audio ou une autre sortie nouvelle.", evaluate: "Qualité acceptée, fidélité aux faits ou aux sources, erreurs graves et charge de correction humaine.", threat: "Affabulation, divulgation de données sensibles, propriété intellectuelle et traitement dangereux des sorties." },
+      { id: "retrieval", code: "02", title: "Recherche augmentée", short: "Trouver une information fondée", task: "Rechercher et synthétiser dans un corpus autorisé.", evaluate: "Couverture de recherche, ancrage, validité des citations, fraîcheur du corpus et contrôle d’accès.", threat: "Empoisonnement du corpus, injection indirecte, fuite entre locataires et index périmé." },
+      { id: "classification", code: "03", title: "Extraction et classification", short: "Extraire, classer ou router", task: "Extraire des champs, attribuer une catégorie connue, router un cas ou détecter une condition définie.", evaluate: "Précision et rappel par classe, erreurs critiques, abstention, résultats par groupe et dérive.", threat: "Contournement, données ou labels empoisonnés, déséquilibre de classes et manipulation des seuils." },
+      { id: "prediction", code: "04", title: "Prédiction et recommandation", short: "Noter, classer ou recommander", task: "Estimer un résultat, calculer un score, classer des options ou recommander une action.", evaluate: "Calibration, utilité des seuils, coût des erreurs, résultats par groupe et boucles de rétroaction.", threat: "Biais d’automatisation, discrimination par proxy, extraction du modèle, dérive et rétroaction auto-renforcée." },
+      { id: "conversation", code: "05", title: "Conversation", short: "Maintenir un échange", task: "Maintenir une interaction en plusieurs tours avec une personne interne ou externe.", evaluate: "Signalement de l’IA, réussite de la tâche, transfert humain, cohérence, conservation et suppression.", threat: "Usurpation, manipulation entre les tours, mémoire persistante, conseil dangereux et transfert humain défaillant." },
+      { id: "multimodal", code: "06", title: "Multimodal", short: "Interpréter ou créer un média", task: "Interpréter ou générer image, audio, vidéo, parole ou contenu de capteur.", evaluate: "Consentement et droits, qualité par modalité, provenance, robustesse aux transformations et accessibilité.", threat: "Hypertrucage, abus de voix ou d’identité, instruction multimodale cachée et suppression des métadonnées." },
+      { id: "agentic", code: "07", title: "Action agentique", short: "Planifier et agir avec des outils", task: "Planifier, appeler des outils, modifier des systèmes ou coordonner des agents spécialisés.", evaluate: "Exactitude du plan et des outils, autorisation, relecture des effets, idempotence, rollback et arrêt.", threat: "Détournement d’objectif, abus d’outils ou de privilèges, exécution de code inattendue, mémoire empoisonnée et panne en cascade." },
+    ],
+    jurisdictionTitle: "Où le système opère-t-il ou affecte-t-il des personnes ?",
+    jurisdictions: [
+      { id: "CH", label: "Suisse", note: "Route suisse" },
+      { id: "EU", label: "Union européenne", note: "Route UE" },
+      { id: "BOTH", label: "Suisse + UE", note: "Deux analyses distinctes" },
+    ],
+    jurisdictionNotes: {
+      CH: { title: "Route suisse", text: "Appliquez la LPD lorsque des données personnelles sont traitées et qualifiez les règles cantonales, de droit public et sectorielles. L’interaction directe avec un modèle de langage et certaines décisions individuelles automatisées déclenchent des obligations distinctes d’information et de revue." },
+      EU: { title: "Route UE", text: "Qualifiez séparément les rôles de fournisseur et de déployeur, la catégorie de l’AI Act et les obligations du RGPD. Les règles de transparence de l’article 50 s’appliquent depuis le 2 août 2026 aux interactions directes et à certains contenus synthétiques ou manipulés." },
+      BOTH: { title: "Deux routes, aucun raccourci", text: "Menez séparément les analyses suisse et européenne. Une analyse suisse ne prouve pas la conformité UE, et une classification UE ne remplace pas l’analyse suisse en matière de données, de droit cantonal, de droit public ou de règles sectorielles." },
+    },
+    crosswalkPattern: "mode d’usage",
+    crosswalkJurisdiction: "route juridique",
+  },
+};
+
 const copy = {
   en: {
     meta: "FIELD GUIDE · AUGUST 2026",
-    nav: ["Integration levels", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
+    nav: ["Use patterns", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
     start: "Find my starting point",
@@ -112,7 +203,7 @@ const copy = {
     stats: [["5", "organization paths"], ["8", "ordered steps"], ["3", "non-negotiable gates"]],
     summaryEyebrow: "WHAT THIS PLAYBOOK HELPS YOU DECIDE",
     summaryTitle: "Choose the smallest AI system that can improve a real workflow.",
-    summaryText: "This guide helps an independent professional, small business, nonprofit, or public service choose between a copilot, a bounded business agent, and an orchestrated agency. It then turns that choice into a measurable pilot, an evidence-based decision, and clear controls before production.",
+    summaryText: "This guide first identifies what the AI does: generation, retrieval, classification, prediction, conversation, multimodal work, or agentic action. It then separates that use pattern from integration level, risk, autonomy, and jurisdiction before turning the choice into a measurable pilot.",
     integrationEyebrow: "NAME THE SYSTEM BEFORE QUOTING THE GAIN",
     integrationTitle: "Copilot, business agent, and orchestrated agency are not the same integration.",
     integrationText: "They move different amounts of work, require different permissions, and must be measured with different outcomes. A percentage without its level is misleading.",
@@ -435,9 +526,9 @@ const copy = {
     orientation: "Recommended control baseline",
     orientations: ["Owner, data rules, business tests, and a change log.", "Qualified approval, output validation, full logging, and rollback.", "Threat model, least privilege, limits, monitoring, and adversarial tests.", "Formal legal and impact assessment, governance, independent review, and human recourse.", "Executive exception, proof that lower autonomy is insufficient, reinforced containment, and independent audit."],
     crosswalkOpen: "Open the matched control set",
-    crosswalkEyebrow: "VERSIONED CONTROL CROSSWALK · JSON 1.0",
+    crosswalkEyebrow: "VERSIONED CONTROL CROSSWALK · JSON 1.1",
     crosswalkTitle: "Turn a risk label into controls that leave evidence.",
-    crosswalkText: "The selected organization, impact, and autonomy now resolve to stable control IDs. Each row exposes its trigger, evidence, decision gates, lifecycle phases, and dated source references.",
+    crosswalkText: "Organization, impact, autonomy, use pattern, and jurisdiction resolve to stable control IDs. Each row exposes its trigger, evidence, decision gates, lifecycle phases, and dated source references.",
     crosswalkMatched: "candidate controls",
     crosswalkOrganization: "organization",
     crosswalkProfile: "active profile",
@@ -465,7 +556,7 @@ const copy = {
   },
   fr: {
     meta: "GUIDE DE TERRAIN · AOÛT 2026",
-    nav: ["Niveaux d’intégration", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
+    nav: ["Modes d’usage", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
     start: "Trouver mon point de départ",
@@ -476,7 +567,7 @@ const copy = {
     stats: [["5", "parcours par structure"], ["8", "étapes ordonnées"], ["3", "gates non négociables"]],
     summaryEyebrow: "CE QUE CE PLAYBOOK VOUS AIDE À DÉCIDER",
     summaryTitle: "Choisir le système IA le plus simple qui améliore vraiment le travail.",
-    summaryText: "Ce guide aide un indépendant, une TPE, une PME, une association ou un service public à choisir entre copilote, agent métier borné et agence orchestrée. Il transforme ensuite ce choix en pilote mesurable, en décision fondée sur les preuves et en contrôles clairs avant la production.",
+    summaryText: "Ce guide identifie d’abord ce que fait l’IA : génération, recherche, classification, prédiction, conversation, multimodal ou action agentique. Il sépare ensuite ce mode d’usage du niveau d’intégration, du risque, de l’autonomie et de la juridiction avant d’en faire un pilote mesurable.",
     integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
     integrationTitle: "Copilote, agent métier et agence orchestrée ne sont pas la même intégration.",
     integrationText: "Ils déplacent des volumes de travail différents, exigent des permissions différentes et se mesurent par des résultats différents. Un pourcentage sans son niveau induit en erreur.",
@@ -799,9 +890,9 @@ const copy = {
     orientation: "Socle de contrôle recommandé",
     orientations: ["Responsable, règles de données, tests métier et journal des changements.", "Approbation qualifiée, validation des sorties, journal complet et rollback.", "Modèle de menace, moindre privilège, limites, surveillance et tests adversariaux.", "Qualification juridique et analyse d’impact formelles, gouvernance, revue indépendante et recours humain.", "Exception de direction, preuve qu’une autonomie inférieure ne suffit pas, confinement renforcé et audit indépendant."],
     crosswalkOpen: "Ouvrir les contrôles correspondants",
-    crosswalkEyebrow: "RÉFÉRENTIEL VERSIONNÉ · JSON 1.0",
+    crosswalkEyebrow: "RÉFÉRENTIEL VERSIONNÉ · JSON 1.1",
     crosswalkTitle: "Transformez un niveau de risque en contrôles qui laissent des preuves.",
-    crosswalkText: "L’organisation, l’impact et l’autonomie sélectionnés conduisent maintenant à des identifiants de contrôle stables. Chaque ligne expose son déclencheur, ses preuves, ses gates, ses phases et ses sources datées.",
+    crosswalkText: "La structure, l’impact, l’autonomie, le mode d’usage et la juridiction conduisent à des identifiants de contrôle stables. Chaque ligne expose son déclencheur, ses preuves, ses gates, ses phases et ses sources datées.",
     crosswalkMatched: "contrôles candidats",
     crosswalkOrganization: "organisation",
     crosswalkProfile: "profil actif",
@@ -856,7 +947,10 @@ function controlIndex(risk: number, autonomy: number) {
 
 export function Playbook({ locale }: { locale: Locale }) {
   const t = copy[locale];
+  const patternCopy = usePatternContent[locale];
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
+  const [usePattern, setUsePattern] = useState<UsePatternId>("retrieval");
+  const [jurisdiction, setJurisdiction] = useState<JurisdictionId>("BOTH");
   const [risk, setRisk] = useState(1);
   const [autonomy, setAutonomy] = useState(1);
   const [calibrationLevel, setCalibrationLevel] = useState<IntegrationId>("agent");
@@ -890,11 +984,15 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [fieldEvidenceConfirmed, setFieldEvidenceConfirmed] = useState(false);
   const [fieldReviewChecks, setFieldReviewChecks] = useState<boolean[]>(() => t.fieldPilotChecklist.map(() => false));
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
+  const selectedUsePattern = useMemo(() => patternCopy.patterns.find((item) => item.id === usePattern) ?? patternCopy.patterns[0], [patternCopy.patterns, usePattern]);
+  const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
   const applicableControls = useMemo(() => controlCatalog.filter((control) => (
     control.applicability.organization_types.includes(selected.id)
     && control.applicability.risk_levels.includes(`R${risk}`)
     && control.applicability.autonomy_levels.includes(`A${autonomy}`)
-  )), [selected.id, risk, autonomy]);
+    && (!control.applicability.use_patterns || control.applicability.use_patterns.includes(usePattern))
+    && (!control.applicability.jurisdictions || jurisdiction === "BOTH" || control.applicability.jurisdictions.includes(jurisdiction))
+  )), [selected.id, risk, autonomy, usePattern, jurisdiction]);
   const applicableSourceCount = useMemo(() => new Set(applicableControls.flatMap((control) => control.source_refs.map((source) => source.source_id))).size, [applicableControls]);
   const deploymentBase = typeof window !== "undefined"
     && (window.location.pathname === githubPagesBase || window.location.pathname.startsWith(`${githubPagesBase}/`))
@@ -950,8 +1048,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
   const pilotCollectionWeeks = pilotSpec.live / Math.max(calibration.eligibleCases, 0.01) * 4.35;
   const pilotBrief = locale === "en"
-    ? [`AI PILOT BRIEF`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
-    : [`BRIEF DE PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
+    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse workflow : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Gate de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Gates critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
   const samplePass = observedCases >= pilotSpec.live;
   const valuePass = observedTimeReduction >= pilotSpec.valueFloor;
   const qualityPass = observedQuality >= 90;
@@ -1046,6 +1144,8 @@ export function Playbook({ locale }: { locale: Locale }) {
     `- ${t.fieldPilotLabels.alias}: ${fieldAlias.trim() || "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.organization}: ${selected.title}`,
     `- ${t.fieldPilotLabels.sector}: ${fieldSector.label}`,
+    `- ${locale === "en" ? "Use pattern" : "Mode d’usage"}: ${selectedUsePattern.title}`,
+    `- ${locale === "en" ? "Jurisdiction route" : "Route juridique"}: ${selectedJurisdiction.label}`,
     `- ${t.fieldPilotLabels.integration}: ${pilotLevelLabel}`,
     `- ${t.fieldPilotLabels.version}: ${fieldVersion.trim() || "[TO COMPLETE]"}`,
     `- ${locale === "en" ? "Observation period" : "Période d’observation"}: ${fieldStart || "[TO COMPLETE]"} → ${fieldEnd || "[TO COMPLETE]"}`,
@@ -1126,7 +1226,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       <header className="site-header">
         <a className="brand" href="#top"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
-          <a href="#integration-levels">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#sectors">{t.nav[2]}</a><a href="#method">{t.nav[3]}</a><a href="#case">{t.nav[4]}</a><a href="#controls">{t.nav[5]}</a><a href="#toolkit">{t.nav[6]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
+          <a href="#use-patterns">{t.nav[0]}</a><a href="#paths">{t.nav[1]}</a><a href="#sectors">{t.nav[2]}</a><a href="#method">{t.nav[3]}</a><a href="#case">{t.nav[4]}</a><a href="#controls">{t.nav[5]}</a><a href="#toolkit">{t.nav[6]}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"}>{langLabel}</a>
         </nav>
       </header>
 
@@ -1137,7 +1237,7 @@ export function Playbook({ locale }: { locale: Locale }) {
 
       <main id="main">
         <section className="hero" id="top">
-          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#integration-levels">{t.start}</a><a className="button secondary" href="#field-pilot">{t.fieldPilotHero}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
+          <div className="hero-copy"><p className="eyebrow">{t.meta}</p><h1>{t.heroTitle}</h1><p className="lede">{t.heroText}</p><div className="hero-actions"><a className="button primary" href="#use-patterns">{t.start}</a><a className="button secondary" href="#field-pilot">{t.fieldPilotHero}</a><a className="button secondary" href="#method">{t.methodCta}</a></div></div>
           <aside className="hero-rule" aria-label={t.rule}><p className="rule-label">{t.rule}</p><ol>{t.gates.map(([condition, decision], index) => <li key={condition}><span>0{index + 1}</span><strong>{condition}</strong><em>{decision}</em></li>)}</ol></aside>
         </section>
 
@@ -1161,6 +1261,48 @@ export function Playbook({ locale }: { locale: Locale }) {
                 <span>0{index + 1}</span><small>{guide.eyebrow}</small><strong>{guide.title}</strong><p>{guide.description}</p>
               </a>
             ))}
+          </div>
+        </section>
+
+        <section className="use-patterns section-light" id="use-patterns" aria-labelledby="use-patterns-title">
+          <div className="section-heading">
+            <p className="eyebrow">{patternCopy.eyebrow}</p>
+            <h2 id="use-patterns-title">{patternCopy.title}</h2>
+            <p>{patternCopy.text}</p>
+          </div>
+          <div className="use-pattern-shell">
+            <fieldset className="use-pattern-picker">
+              <legend>{locale === "en" ? "Dominant use pattern" : "Mode d’usage dominant"}</legend>
+              <div className="use-pattern-grid">
+                {patternCopy.patterns.map((pattern) => (
+                  <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => setUsePattern(pattern.id)} type="button">
+                    <span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <output className="use-pattern-detail" aria-live="polite">
+              <p className="eyebrow">{selectedUsePattern.code} · {selectedUsePattern.title}</p>
+              <dl>
+                <div><dt>{patternCopy.labels.task}</dt><dd>{selectedUsePattern.task}</dd></div>
+                <div><dt>{patternCopy.labels.evaluate}</dt><dd>{selectedUsePattern.evaluate}</dd></div>
+                <div><dt>{patternCopy.labels.threat}</dt><dd>{selectedUsePattern.threat}</dd></div>
+              </dl>
+              <a href={`${repositorySource}/docs/ai-use-patterns${locale === "fr" ? ".fr" : ""}.md`}>{patternCopy.guide} ↗</a>
+            </output>
+            <fieldset className="jurisdiction-picker">
+              <legend>{patternCopy.jurisdictionTitle}</legend>
+              <div className="jurisdiction-options">
+                {patternCopy.jurisdictions.map((option) => (
+                  <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => setJurisdiction(option.id)} type="button">
+                    <strong>{option.label}</strong><span>{option.note}</span>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <aside className="jurisdiction-note" aria-live="polite">
+              <span>{patternCopy.labels.jurisdiction}</span><strong>{patternCopy.jurisdictionNotes[jurisdiction].title}</strong><p>{patternCopy.jurisdictionNotes[jurisdiction].text}</p>
+            </aside>
           </div>
         </section>
 
@@ -1473,6 +1615,8 @@ export function Playbook({ locale }: { locale: Locale }) {
             <p><strong>{applicableControls.length}</strong><span>{t.crosswalkMatched}</span></p>
             <p><strong>{selected.title}</strong><span>{t.crosswalkOrganization}</span></p>
             <p><strong>R{risk} × A{autonomy}</strong><span>{t.crosswalkProfile}</span></p>
+            <p><strong>{selectedUsePattern.title}</strong><span>{patternCopy.crosswalkPattern}</span></p>
+            <p><strong>{selectedJurisdiction.label}</strong><span>{patternCopy.crosswalkJurisdiction}</span></p>
             <p><strong>{applicableSourceCount}</strong><span>{t.crosswalkSources}</span></p>
           </div>
           <div className="crosswalk-shell">

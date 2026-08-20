@@ -2,12 +2,13 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
 
-[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
+[Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
-L’édition visuelle bilingue transforme la méthode en parcours interactif : distinguer
-copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
+L’édition visuelle bilingue transforme la méthode en parcours interactif : identifier
+génération, recherche augmentée, classification, prédiction, conversation, multimodal et
+action agentique ; distinguer copilote, agent métier et agence orchestrée ; calibrer une fourchette réaliste ; la
 convertir en protocole de pilote préenregistré ; saisir les preuves observées ; puis
 prendre une décision de gate bornée et générer une fiche d’exploitation réversible avec
 surveillance, suspension, rollback et réévaluation datée ; enfin, exporter toute la chaîne
@@ -24,7 +25,7 @@ opérationnelle de référence.
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
 de la baseline jusqu’à une décision explicite de périmètre.
 
-> État : version **0.2.0**, dépôt privé, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
+> État : version **0.2.1**, dépôt privé, photographie au **20 août 2026**. Aucun hébergement public ni aucune URL de site ne sont déclarés.
 
 **Preuves et extensions 0.3 :** la
 [revue bilingue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
@@ -91,6 +92,12 @@ Trois règles ne se négocient pas :
 
 On commence au niveau le plus bas capable de résoudre le problème. On ne monte que si les évaluations justifient la complexité supplémentaire :
 
+Commencer par identifier le [mode d’usage de l’IA](docs/ai-use-patterns.fr.md).
+Type de tâche, interaction, source de connaissance, déploiement, impact et
+autonomie sont des dimensions séparées. Un assistant documentaire et un
+classifieur prédictif peuvent partager une autonomie A1 tout en exigeant des
+preuves différentes.
+
 1. processus manuel documenté ;
 2. règle déterministe ou automatisation classique ;
 3. appel de modèle unique avec sortie structurée ;
@@ -111,10 +118,13 @@ On commence au niveau le plus bas capable de résoudre le problème. On ne monte
 ## Ce que contient le playbook
 
 - un cycle de vie universel avec preuves de sortie ;
+- une taxonomie bilingue des modes génération, recherche augmentée,
+  classification, prédiction, conversation, multimodal et agentique ;
 - une classification risque × autonomie ;
 - cinq parcours d’adoption adaptés à la structure ;
 - quatre extensions pour la santé, l’éducation, la finance et les infrastructures critiques ;
-- des guides d’évaluation, de sécurité et d’orientation juridique ;
+- des profils d’évaluation et de sécurité propres au mode, avec routage juridique
+  séparé pour la Suisse et l’Union européenne ;
 - des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
 - un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
 - un registre daté de sources primaires ;

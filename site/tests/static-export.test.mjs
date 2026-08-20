@@ -22,7 +22,9 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /\/favicon\.svg/);
     assert.match(html, /data-prerendered="true"/);
     assert.match(html, /data-prerendered="true"><div class="page-shell"/);
+    assert.match(html, /id="use-patterns"/);
     assert.match(html, /id="integration-levels"/);
+    assert.match(html, /Switzerland \+ EU|Suisse \+ UE/);
     assert.match(html, new RegExp(visibleCopy));
     assert.match(html, /Atelier Horizon/);
     assert.doesNotMatch(html, /Loading the interactive|Chargement du playbook/);

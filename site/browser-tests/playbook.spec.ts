@@ -38,6 +38,22 @@ test("audience selection updates the active decision path", async ({ page }) => 
   expect(await cards.evaluateAll((items) => items.filter((item) => item.getAttribute("aria-pressed") === "true").length)).toBe(1);
 });
 
+test("use pattern and jurisdiction update the evidence profile", async ({ page }) => {
+  await page.goto("/");
+
+  await page.locator(".use-pattern-grid button").first().click();
+  await expect(page.locator(".use-pattern-detail")).toContainText("Accepted quality");
+  await page.locator(".jurisdiction-options button").first().click();
+  await expect(page.locator(".crosswalk-summary p").nth(3)).toContainText("Generation");
+  await expect(page.locator(".crosswalk-summary p").nth(4)).toContainText("Switzerland");
+  await expect(page.locator(".crosswalk-controls details")).toHaveCount(19);
+  await expect(page.getByText("AAP-TRN-004", { exact: true })).toHaveCount(0);
+
+  await page.locator(".jurisdiction-options button").nth(1).click();
+  await expect(page.locator(".crosswalk-controls details")).toHaveCount(20);
+  await expect(page.getByText("AAP-TRN-004", { exact: true })).toHaveCount(1);
+});
+
 test("calibrator treats low and high effects as editable hypotheses", async ({ page }) => {
   await page.goto("/");
 

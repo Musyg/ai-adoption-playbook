@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.2.1, 2026-08-20
+
+- Added a bilingual seven-pattern AI-use classification for generation,
+  retrieval, classification, prediction, conversation, multimodal systems, and
+  agentic action. The classification stays separate from integration level,
+  autonomy, deployment, and organizational risk.
+- Added mode-specific evaluation and threat profiles to the operating guides,
+  security guidance, templates, AI-system register, and interactive pilot
+  exports.
+- Added separate Swiss and EU routing for information duties, automated
+  individual decisions, AI interaction, and synthetic content. Neither route
+  is presented as satisfying the other.
+- Upgraded the machine-readable control crosswalk to schema 1.1.0 with seven
+  use-pattern profiles, jurisdiction axes, seven new controls, and dated primary
+  sources.
+- Added an accessible visual selector with explicit hover and focus states. Its
+  pattern and jurisdiction choices filter the evidence controls on desktop and
+  mobile.
 - Added a bilingual review of 20 public field studies, deployments, benchmarks,
   and negative results, with evidence classes and explicit transfer limits.
 - Removed universal productivity bands from the visual integration guide and

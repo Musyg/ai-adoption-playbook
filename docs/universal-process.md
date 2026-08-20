@@ -70,7 +70,7 @@ Minimum deliverables: a current-process map, [AI system register](../templates/a
 
 ## Phase 3 — Use cases and prioritization
 
-Turn each problem into a [use-case card](../templates/use-case-card.md). Do not combine different decisions, users, or risk levels in one card.
+Turn each problem into a [use-case card](../templates/use-case-card.md). Do not combine different decisions, users, or risk levels in one card. Classify the AI task, interaction, knowledge, deployment, and effect using the [AI use-pattern guide](ai-use-patterns.md). These dimensions do not replace risk or autonomy.
 
 Keep two scores separate:
 
@@ -83,11 +83,12 @@ The first pilot is generally frequent, measurable, reversible, high-value, and c
 
 Classify separately:
 
-1. the potential impact of the use case;
-2. the technical autonomy granted;
-3. the data used;
-4. the organization’s role — provider, integrator, deployer, or user;
-5. applicable jurisdictions and sector rules.
+1. the task and interaction patterns;
+2. the potential impact of the use case;
+3. the technical autonomy granted;
+4. the data, knowledge sources, and deployment mode;
+5. the organization’s role as provider, integrator, deployer, controller, processor, or user;
+6. applicable jurisdictions and sector rules, with separate Switzerland and EU conclusions.
 
 Use the [risk × autonomy guide](risk-autonomy.md) and [Switzerland/EU legal orientation](legal-switzerland-eu.md). An internal classification never replaces legal qualification.
 
@@ -107,6 +108,12 @@ Evaluate options in this order:
 
 Choose the model on real cases, not on a general leaderboard. Document latency, cost, region, retention, training on customer data, subprocessors, version changes, export, deletion, reversibility, and contractual liability in the [supplier assessment](../templates/vendor-assessment.md).
 
+The same integration level can contain different AI patterns. A retrieval
+assistant needs corpus and access-control evidence; a classifier needs per-class
+error and drift evidence; a public chatbot needs disclosure and handoff; a
+multimodal system needs consent and provenance. Apply every relevant profile in
+the [AI use-pattern guide](ai-use-patterns.md).
+
 ## Phase 6 — Evaluations before product
 
 Build evaluations before optimizing the system. The set includes:
@@ -117,7 +124,7 @@ Build evaluations before optimizing the system. The set includes:
 - adversarial inputs;
 - cases where abstention or refusal is correct.
 
-Measure domain accuracy, completeness, source fidelity, permissions, tool calls, refusals, latency, cost, relevant disparities, human corrections, and the final business outcome.
+Measure domain accuracy, completeness, source fidelity, permissions, tool calls, refusals, latency, cost, relevant disparities, human corrections, and the final business outcome. Add pattern-specific measures for retrieval, classification, prediction, conversation, multimodal content, and agentic action.
 
 Preregister thresholds in the [evaluation plan](../templates/evaluation-plan.md). See [Evaluations and gates](evaluations-and-gates.md).
 
@@ -127,7 +134,7 @@ No pilot without acceptance thresholds, stop thresholds, a comparison method, an
 
 ## Phase 7 — Security and containment
 
-Address at least direct and indirect injection, information leakage, supply chains, data or context poisoning, unvalidated outputs, excessive agency, unbounded consumption, and exfiltration through tools.
+Address at least direct and indirect injection, information leakage, supply chains, data or context poisoning, unvalidated outputs, excessive agency, unbounded consumption, and exfiltration through tools. Extend the threat model for retrieval access and poisoning, predictive-model evasion and drift, multimodal instructions and impersonation, software execution, persistent memory, and inter-agent cascading failures whenever those patterns are present.
 
 Baseline controls are least privilege, read-only access by default, distinct identities, authorized destinations, secrets outside context, deterministic validation, human approval, budgets, logging, outbound-network controls, a kill switch, and a manual procedure.
 

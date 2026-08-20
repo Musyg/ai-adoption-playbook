@@ -18,8 +18,8 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-`npm run verify` checks lint, TypeScript, both production builds, 18 Node tests,
-and 12 Playwright checks across English, French, desktop, dark mode, and mobile.
+`npm run verify` checks lint, TypeScript, both production builds, 20 Node tests,
+and 18 Playwright checks across English, French, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 
@@ -47,5 +47,6 @@ orchestrated-agency analogy.
 
 The control explorer is backed by a public, versioned JSON crosswalk and schema
 under `public/data/`. It filters stable controls by the selected organization,
-risk, and autonomy while preserving conditions, evidence IDs, gate mappings,
-source versions, and implementation references.
+risk, autonomy, AI use pattern, and Swiss or EU route while preserving
+conditions, evidence IDs, gate mappings, source versions, and implementation
+references.

@@ -6,11 +6,14 @@
 - Evaluator(s):
 - Date and next review:
 - Jurisdictions / sectors:
+- Switzerland scope and FADP role:
+- EU scope and AI Act role:
 
 ## Classification
 
 - Impact R0–R3 and rationale:
 - Autonomy A0–A4 and rationale:
+- AI task, interaction, knowledge, and deployment profile:
 - Organization’s role in the AI value chain:
 - Categories of affected people:
 - Scale and frequency:
@@ -24,6 +27,15 @@
 - Retention / deletion:
 - Subprocessors:
 - Reuse for training or improvement:
+
+## Transparency and affected-person rights
+
+- How people learn they are interacting with AI:
+- How synthetic content is identified and its provenance retained:
+- Human channel, challenge, and recourse:
+- Automated individual decision and natural-person review:
+- Switzerland-specific conclusion and source date:
+- EU-specific conclusion and source date:
 
 ## Harm scenarios
 

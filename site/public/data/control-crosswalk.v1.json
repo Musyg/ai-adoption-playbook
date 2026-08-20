@@ -1,8 +1,8 @@
 {
   "$schema": "./control-crosswalk.schema.json",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "catalog_version": "2026.08",
-  "published_on": "2026-08-19",
+  "published_on": "2026-08-20",
   "status": "maintained_internal_crosswalk",
   "scope": {
     "en": "A minimum operational control set for selecting, piloting, operating, changing, and retiring bounded AI systems across the five playbook organization types.",
@@ -16,9 +16,62 @@
     "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"],
     "risk_levels": ["R0", "R1", "R2", "R3"],
     "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"],
+    "use_patterns": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"],
+    "jurisdictions": ["CH", "EU"],
     "gates": ["G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"],
     "lifecycle_phases": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
   },
+  "use_pattern_profiles": [
+    {
+      "use_pattern_id": "generation",
+      "name": { "en": "Generation", "fr": "Génération" },
+      "task": { "en": "Create text, code, image, audio, or another new output.", "fr": "Créer texte, code, image, audio ou une autre sortie nouvelle." },
+      "evaluation_focus": ["accepted_quality", "factual_or_source_fidelity", "severe_content_error", "human_correction"],
+      "threat_focus": ["confabulation", "sensitive_information_disclosure", "intellectual_property", "unsafe_output_handling"]
+    },
+    {
+      "use_pattern_id": "retrieval",
+      "name": { "en": "Retrieval", "fr": "Recherche augmentée" },
+      "task": { "en": "Find and synthesize information from an authorized corpus.", "fr": "Rechercher et synthétiser dans un corpus autorisé." },
+      "evaluation_focus": ["retrieval_coverage", "groundedness", "citation_validity", "corpus_freshness", "access_control"],
+      "threat_focus": ["corpus_poisoning", "indirect_prompt_injection", "cross_tenant_leakage", "stale_index"]
+    },
+    {
+      "use_pattern_id": "classification",
+      "name": { "en": "Extraction and classification", "fr": "Extraction et classification" },
+      "task": { "en": "Extract fields, label, route, or detect a known category.", "fr": "Extraire des champs, classer, router ou détecter une catégorie connue." },
+      "evaluation_focus": ["per_class_precision_recall", "critical_false_positive_negative", "abstention", "subgroup_results", "drift"],
+      "threat_focus": ["evasion", "data_or_label_poisoning", "class_imbalance", "threshold_manipulation"]
+    },
+    {
+      "use_pattern_id": "prediction",
+      "name": { "en": "Prediction and recommendation", "fr": "Prédiction et recommandation" },
+      "task": { "en": "Estimate an outcome, score, rank, or recommended action.", "fr": "Estimer un résultat, score, rang ou action recommandée." },
+      "evaluation_focus": ["calibration", "threshold_utility", "false_positive_negative_cost", "subgroup_results", "feedback_loops"],
+      "threat_focus": ["automation_bias", "proxy_discrimination", "model_extraction", "drift", "self_reinforcing_feedback"]
+    },
+    {
+      "use_pattern_id": "conversation",
+      "name": { "en": "Conversation", "fr": "Conversation" },
+      "task": { "en": "Maintain a multi-turn interaction with an internal or external user.", "fr": "Maintenir une interaction en plusieurs tours avec une personne interne ou externe." },
+      "evaluation_focus": ["ai_disclosure", "task_completion", "human_handoff", "multi_turn_consistency", "retention_deletion"],
+      "threat_focus": ["impersonation", "multi_turn_manipulation", "memory_retention", "unsafe_advice", "failed_handoff"]
+    },
+    {
+      "use_pattern_id": "multimodal",
+      "name": { "en": "Multimodal", "fr": "Multimodal" },
+      "task": { "en": "Interpret or generate image, audio, video, speech, or sensor content.", "fr": "Interpréter ou générer image, audio, vidéo, parole ou contenu de capteur." },
+      "evaluation_focus": ["consent_and_rights", "modality_quality", "content_provenance", "transformation_robustness", "accessibility"],
+      "threat_focus": ["deepfake", "voice_or_identity_misuse", "hidden_multimodal_instruction", "metadata_stripping"]
+    },
+    {
+      "use_pattern_id": "agentic",
+      "name": { "en": "Agentic action", "fr": "Action agentique" },
+      "task": { "en": "Plan steps, call tools, change systems, or coordinate agents.", "fr": "Planifier, appeler des outils, modifier des systèmes ou coordonner des agents." },
+      "evaluation_focus": ["plan_and_tool_correctness", "authorization", "effect_readback", "idempotency", "rollback", "stopping"],
+      "threat_focus": ["goal_hijack", "tool_misuse", "identity_privilege_abuse", "unexpected_code_execution", "memory_poisoning", "cascading_failure"]
+    }
+  ],
   "sources": [
     {
       "source_id": "AAP-PROCESS-02",
@@ -112,6 +165,71 @@
       }
     },
     {
+      "source_id": "OECD-AI-CLASSIFICATION-2022",
+      "title": "OECD Framework for the Classification of AI Systems",
+      "publisher": "OECD",
+      "version": "Digital Economy Papers No. 323 · 2022-02-22",
+      "status": "voluntary_framework",
+      "url": "https://www.oecd.org/en/publications/oecd-framework-for-the-classification-of-ai-systems_cb6d9eca-en.html",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Classification orientation across context, data, model, task, and output; not a legal qualification.",
+        "fr": "Orientation de classification par contexte, données, modèle, tâche et sortie ; pas une qualification juridique."
+      }
+    },
+    {
+      "source_id": "NIST-AI-100-2E2025",
+      "title": "Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations",
+      "publisher": "NIST",
+      "version": "NIST AI 100-2e2025 · 2025-03",
+      "status": "voluntary_framework",
+      "url": "https://csrc.nist.gov/pubs/ai/100/2/e2025/final",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Threat-taxonomy support for predictive and generative AI; consult the official errata.",
+        "fr": "Appui de taxonomie des menaces pour IA prédictive et générative ; consulter l’errata officiel."
+      }
+    },
+    {
+      "source_id": "NIST-AI-100-4",
+      "title": "Reducing Risks Posed by Synthetic Content",
+      "publisher": "NIST",
+      "version": "NIST AI 100-4 · 2024-04 · revised 2025-04",
+      "status": "voluntary_framework",
+      "url": "https://airc.nist.gov/technical-reports/",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Technical orientation on detection, authentication, labelling, and provenance, including their limitations.",
+        "fr": "Orientation technique sur détection, authentification, marquage et provenance, avec leurs limites."
+      }
+    },
+    {
+      "source_id": "OWASP-AGENTIC-TOP10-2026",
+      "title": "OWASP Top 10 for Agentic Applications for 2026",
+      "publisher": "OWASP GenAI Security Project",
+      "version": "2026 edition · published 2025-12-09",
+      "status": "community_guidance",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Security orientation for autonomous and tool-using systems; tailor controls and tests to the actual architecture.",
+        "fr": "Orientation sécurité pour systèmes autonomes et outillés ; adapter contrôles et tests à l’architecture réelle."
+      }
+    },
+    {
+      "source_id": "C2PA-2-2",
+      "title": "C2PA Specifications",
+      "publisher": "Coalition for Content Provenance and Authenticity",
+      "version": "2.2",
+      "status": "published_standard",
+      "url": "https://spec.c2pa.org/specifications/specifications/2.2/index.html",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Technical provenance specification; a credential does not by itself prove truth or legal compliance.",
+        "fr": "Spécification technique de provenance ; un justificatif ne prouve à lui seul ni vérité ni conformité juridique."
+      }
+    },
+    {
       "source_id": "CH-FDPIC-AI-DP",
       "title": "AI and data protection",
       "publisher": "Swiss Federal Data Protection and Information Commissioner",
@@ -122,6 +240,45 @@
       "use_boundary": {
         "en": "Federal orientation for data protection. Public bodies must separately qualify the public and cantonal law applicable to them.",
         "fr": "Orientation fédérale en protection des données. Les autorités publiques doivent qualifier séparément le droit public et cantonal qui leur est applicable."
+      }
+    },
+    {
+      "source_id": "CH-FDPIC-INFORMATION-DUTY",
+      "title": "Duty to provide information",
+      "publisher": "Swiss Federal Data Protection and Information Commissioner",
+      "version": "official FADP guidance · checked 2026-08-20",
+      "status": "official_guidance",
+      "url": "https://www.edoeb.admin.ch/en/duty-to-provide-information",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Federal data-protection orientation, including Article 21 automated individual decisions and exceptions; not sector advice.",
+        "fr": "Orientation fédérale en protection des données, incluant l’article 21 sur les décisions individuelles automatisées et ses exceptions ; pas un avis sectoriel."
+      }
+    },
+    {
+      "source_id": "CH-FDPIC-SYNTHETIC-IMAGES-2026",
+      "title": "Joint statement on AI-generated images",
+      "publisher": "Swiss Federal Data Protection and Information Commissioner",
+      "version": "joint authority statement · 2026",
+      "status": "official_guidance",
+      "url": "https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Privacy orientation for realistic synthetic images and videos of identifiable people; qualify the concrete use and applicable law.",
+        "fr": "Orientation de protection des données pour images et vidéos synthétiques réalistes de personnes identifiables ; qualifier l’usage et le droit applicables."
+      }
+    },
+    {
+      "source_id": "EU-AI-ACT-ARTICLE50-2026",
+      "title": "Guidelines on transparency obligations for providers and deployers of AI systems",
+      "publisher": "European Commission",
+      "version": "Article 50 guidelines · published 2026-07-20",
+      "status": "official_guidance",
+      "url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems",
+      "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Official Article 50 implementation guidance; verify the AI Act text, role, scope, exceptions, and any later update.",
+        "fr": "Lignes directrices officielles pour l’article 50 ; vérifier le texte de l’AI Act, le rôle, le champ, les exceptions et toute mise à jour."
       }
     },
     {
@@ -148,7 +305,7 @@
     {
       "evidence_id": "EV-SYSTEM-REGISTER",
       "name": { "en": "Versioned AI system register entry", "fr": "Entrée versionnée du registre IA" },
-      "minimum_record": ["system_id", "owner", "purpose", "provider", "model_or_version", "risk_level", "autonomy_level", "review_date"],
+      "minimum_record": ["system_id", "owner", "purpose", "use_patterns", "interaction_pattern", "knowledge_source", "deployment_mode", "provider", "model_or_version", "risk_level", "autonomy_level", "jurisdictions", "review_date"],
       "template": "templates/ai-system-register.csv"
     },
     {
@@ -160,7 +317,7 @@
     {
       "evidence_id": "EV-RISK-ASSESSMENT",
       "name": { "en": "Risk and autonomy assessment", "fr": "Évaluation risque et autonomie" },
-      "minimum_record": ["impact_level", "autonomy_level", "affected_people", "harm_scenarios", "residual_risk_owner", "review_date"],
+      "minimum_record": ["use_patterns", "interaction_pattern", "deployment_mode", "impact_level", "autonomy_level", "jurisdictions", "affected_people", "harm_scenarios", "residual_risk_owner", "review_date"],
       "template": "templates/fundamental-rights-impact-assessment.fr.md"
     },
     {
@@ -178,7 +335,7 @@
     {
       "evidence_id": "EV-EVALUATION-PLAN",
       "name": { "en": "Preregistered evaluation plan", "fr": "Plan d’évaluation préenregistré" },
-      "minimum_record": ["decision_gate", "test_population", "critical_segments", "acceptance_thresholds", "stop_thresholds", "judge", "frozen_version"],
+      "minimum_record": ["decision_gate", "use_patterns", "pattern_specific_metrics", "test_population", "critical_segments", "acceptance_thresholds", "stop_thresholds", "judge", "frozen_version"],
       "template": "templates/evaluation-plan.fr.md"
     },
     {
@@ -514,6 +671,97 @@
       "evidence_ids": ["EV-PUBLIC-PROCUREMENT", "EV-SYSTEM-REGISTER", "EV-APPROVAL-RECOURSE", "EV-AUDIT-TRACE", "EV-RETIREMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "EU-AI-PROCUREMENT-MCC", "relation": "contextual" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
       "implementation_refs": ["tracks/fr/public-sector.md", "templates/vendor-assessment.fr.md", "templates/ai-system-register.csv"]
+    },
+    {
+      "control_id": "AAP-GOV-003",
+      "family": "governance",
+      "priority": "baseline",
+      "title": { "en": "Explicit AI use and deployment profile", "fr": "Profil explicite d’usage et de déploiement IA" },
+      "objective": { "en": "Record task, interaction, knowledge, modality, deployment, operating mode, effect, and jurisdiction separately from impact and autonomy before selecting a system.", "fr": "Documenter séparément tâche, interaction, connaissance, modalité, déploiement, mode opératoire, effet et juridiction avant de choisir un système." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"], "jurisdictions": ["CH", "EU"], "conditions": ["always"] },
+      "lifecycle_phases": [2, 3, 4, 5, 10],
+      "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
+      "evidence_ids": ["EV-SYSTEM-REGISTER", "EV-RISK-ASSESSMENT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OECD-AI-CLASSIFICATION-2022", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
+      "implementation_refs": ["docs/ai-use-patterns.fr.md", "templates/use-case-card.fr.md", "templates/ai-system-register.csv"]
+    },
+    {
+      "control_id": "AAP-EVA-003",
+      "family": "evaluation",
+      "priority": "baseline",
+      "title": { "en": "Evaluation matched to the AI use pattern", "fr": "Évaluation adaptée au mode d’usage IA" },
+      "objective": { "en": "Add retrieval, classification, prediction, conversation, multimodal, or agentic measures and stop rules whenever those patterns are present.", "fr": "Ajouter mesures et règles d’arrêt propres à la recherche, classification, prédiction, conversation, au multimodal ou à l’agentique lorsque ces modes sont présents." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"], "jurisdictions": ["CH", "EU"], "conditions": ["always"] },
+      "lifecycle_phases": [3, 6, 8, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }, { "source_id": "NIST-AI-100-2E2025", "relation": "supports" }],
+      "implementation_refs": ["docs/ai-use-patterns.fr.md", "templates/evaluation-plan.fr.md"]
+    },
+    {
+      "control_id": "AAP-SEC-003",
+      "family": "security",
+      "priority": "strengthened",
+      "title": { "en": "Threat model matched to the AI use pattern", "fr": "Modèle de menace adapté au mode d’usage IA" },
+      "objective": { "en": "Extend the threat model for retrieval, predictive models, conversation, multimodal inputs, code execution, persistent memory, and inter-agent communication as applicable.", "fr": "Étendre le modèle de menace à la recherche, au prédictif, à la conversation, au multimodal, à l’exécution de code, à la mémoire persistante et aux communications inter-agents selon le cas." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"], "jurisdictions": ["CH", "EU"], "conditions": ["always"] },
+      "lifecycle_phases": [5, 6, 7, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P2", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-THREAT-MODEL", "EV-SECURITY-TESTS"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "OWASP-AGENTIC-TOP10-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-2E2025", "relation": "supports" }],
+      "implementation_refs": ["docs/security.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-TRN-001",
+      "family": "transparency",
+      "priority": "baseline",
+      "title": { "en": "Identifiable AI interaction and usable human channel", "fr": "Interaction IA identifiable et canal humain utilisable" },
+      "objective": { "en": "Inform people when they interact directly with AI when required, explain data reuse and limits, and provide an accessible human handoff or recourse channel.", "fr": "Informer les personnes lorsqu’elles interagissent directement avec une IA lorsque requis, expliquer réutilisation et limites, et fournir un transfert ou recours humain accessible." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["conversation", "agentic"], "jurisdictions": ["CH", "EU"], "conditions": ["interactive_ai"] },
+      "lifecycle_phases": [3, 4, 6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }],
+      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-TRN-002",
+      "family": "transparency",
+      "priority": "strengthened",
+      "title": { "en": "Synthetic-content identification and provenance", "fr": "Identification et provenance du contenu synthétique" },
+      "objective": { "en": "Assess consent and rights, retain available provenance, apply machine-readable and visible disclosures when required, and test whether transformations remove them.", "fr": "Évaluer consentement et droits, conserver la provenance disponible, appliquer les informations lisibles par machine et visibles lorsque requis, puis tester leur résistance aux transformations." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["generation", "multimodal"], "jurisdictions": ["CH", "EU"], "conditions": ["synthetic_content"] },
+      "lifecycle_phases": [3, 4, 5, 6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P1", "P2", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT", "EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-SYNTHETIC-IMAGES-2026", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-4", "relation": "supports" }, { "source_id": "C2PA-2-2", "relation": "contextual" }],
+      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/evaluation-plan.fr.md"]
+    },
+    {
+      "control_id": "AAP-TRN-003",
+      "family": "transparency",
+      "priority": "critical",
+      "title": { "en": "Swiss automated individual decision notice and review", "fr": "Information et revue suisses des décisions individuelles automatisées" },
+      "objective": { "en": "When Article 21 FADP is triggered, document notice, the opportunity to state a point of view, review by a natural person, and the exact exception analysis.", "fr": "Lorsque l’article 21 LPD est déclenché, documenter information, possibilité d’exprimer son point de vue, revue par une personne physique et analyse exacte des exceptions." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["classification", "prediction", "agentic"], "jurisdictions": ["CH"], "conditions": ["automated_individual_decision", "material_human_impact"] },
+      "lifecycle_phases": [3, 4, 6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-INFORMATION-DUTY", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
+      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+    },
+    {
+      "control_id": "AAP-TRN-004",
+      "family": "transparency",
+      "priority": "critical",
+      "title": { "en": "EU Article 50 role-based transparency", "fr": "Transparence UE de l’article 50 selon le rôle" },
+      "objective": { "en": "Separate provider and deployer duties for direct AI interaction, machine-readable synthetic-content marking, deepfakes, public-interest text, emotion recognition, and biometric categorisation.", "fr": "Séparer les obligations du fournisseur et du déployeur pour interaction IA, marquage du contenu synthétique, deepfakes, texte d’intérêt public, reconnaissance des émotions et catégorisation biométrique." },
+      "applicability": { "organization_types": ["independent", "tpe", "pme", "nonprofit", "public"], "risk_levels": ["R0", "R1", "R2", "R3"], "autonomy_levels": ["A0", "A1", "A2", "A3", "A4"], "use_patterns": ["generation", "conversation", "multimodal", "agentic"], "jurisdictions": ["EU"], "conditions": ["article50_transparency_scope"] },
+      "lifecycle_phases": [3, 4, 5, 6, 8, 9, 10],
+      "gates": ["G2", "G3", "G4", "G5", "P1", "P2", "P3", "P4", "P5"],
+      "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT", "EV-AUDIT-TRACE"],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }],
+      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md", "templates/evaluation-plan.fr.md"]
     }
   ]
 }

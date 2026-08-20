@@ -6,7 +6,8 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 
 - Repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `main`
-- Release prepared: `0.2.0`
+- Working branch: `feat/ai-use-patterns-ch-eu`
+- Release prepared: `0.2.1`
 - Visibility: private
 - Repository website field: empty
 - Public website URL: none
@@ -22,8 +23,13 @@ selection is a separate owner decision.
 
 ## What is ready
 
-The repository contains a bilingual, interactive decision path from integration
-choice to a bounded operating handoff. It keeps three systems distinct:
+The repository contains a bilingual, interactive decision path from use-pattern
+classification to a bounded operating handoff. It first distinguishes seven
+ways of using AI: generation, retrieval, extraction and classification,
+prediction and recommendation, conversation, multimodal systems, and agentic
+action.
+
+It then keeps three integration levels distinct:
 
 1. a copilot, where a person operates every cycle;
 2. a bounded business agent, where the system completes eligible cases and
@@ -31,12 +37,22 @@ choice to a bounded operating handoff. It keeps three systems distinct:
 3. an orchestrated agency, where specialist agents coordinate under shared
    controls and must outperform a simpler design.
 
-The visual application includes editable low/high challenge hypotheses, six
+Use pattern, interaction, knowledge source, deployment, integration level,
+autonomy, risk, and jurisdiction are separate dimensions. The visual application
+includes editable low/high challenge hypotheses, six
 primary-evidence reality checks, seven synthetic worked cases, pilot
 preregistration, evidence gates, reversible operations, decision-dossier
 export, field-pilot preparation, five organization paths, four sector overlays,
-and a versioned control crosswalk. The Markdown guides and templates remain the
-operational source of truth.
+and a versioned control crosswalk. The selected use pattern and jurisdiction
+feed the control filter and exported pilot records. The Markdown guides and
+templates remain the operational source of truth.
+
+Swiss and EU routes are evaluated separately. The Swiss route covers FADP data
+processing, direct language-model interaction, qualifying automated individual
+decisions, and applicable cantonal, public-law, and sector rules. The EU route
+covers provider/deployer roles, AI Act classification, Article 50 transparency,
+and separate GDPR or high-risk duties. Neither route is evidence of compliance
+with the other.
 
 The 0.3 research pass adds a bilingual review of 20 public studies,
 deployments, benchmarks, official evaluations, and negative results. It removes
@@ -48,7 +64,7 @@ Synthetic examples are not field evidence. `field-notes/index.json` remains
 empty until a genuine, independently reviewed and sanitized submission meets
 the publication contract. Public third-party studies inform pilot design but do
 not satisfy that first-party admission rule. This remains the only open 0.3
-roadmap item and does not block publication of the complete 0.2 release.
+roadmap item and does not block publication of the complete 0.2.1 release.
 
 ## Hosting-neutral behavior
 
@@ -82,19 +98,19 @@ Latest local verification on 2026-08-20:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 18/18 pass
-- Playwright: 15/15 pass across English, French, desktop light, desktop dark,
+- Node tests: 20/20 pass
+- Playwright: 18/18 pass across English, French, desktop light, desktop dark,
   and mobile light
 - automated axe checks: zero violations
-- repository validation: 98 Markdown files and 33 bilingual pairs pass
+- repository validation: 100 Markdown files and 34 bilingual pairs pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 18 Node tests for accessibility semantics, decision logic, rendered HTML,
+- 20 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 15 Playwright checks across English, French, desktop light, desktop dark, and
+- 18 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, language, interaction, and hosting-neutrality checks;
@@ -117,6 +133,8 @@ public and do not deploy the application.
 ## Boundaries that must remain explicit
 
 - Planning ranges are not forecasts or confidence intervals.
+- Use pattern is not integration level, and integration level is not autonomy.
+- Swiss and EU legal routes must be qualified independently.
 - Percentages apply only to eligible work, not automatically to a whole role or
   organization.
 - Incomplete evidence is `unknown`, not a pass and not a failure.

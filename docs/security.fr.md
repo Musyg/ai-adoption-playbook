@@ -15,6 +15,16 @@ Le modèle n’est qu’un composant. Le périmètre de sécurité inclut les do
 - consommation non bornée ;
 - exfiltration ou destruction par appel d’outil.
 
+## Menaces supplémentaires par mode d’usage
+
+| Mode | À ajouter au modèle de menace |
+|---|---|
+| Recherche augmentée | empoisonnement du corpus, sources obsolètes ou falsifiées, accès entre utilisateurs ou locataires, instructions malveillantes récupérées |
+| Classification / prédiction | évasion, empoisonnement des données et labels, extraction de modèle, manipulation des seuils, dérive et boucles de rétroaction |
+| Conversation | usurpation, manipulation sur plusieurs tours, conservation en mémoire, conseil dangereux, échec du transfert humain |
+| Multimodal | instructions cachées dans image ou audio, abus de deepfake et de voix, retrait des métadonnées, documents malveillants |
+| Code et action agentique | détournement d’objectif, abus d’outil ou d’identité, exécution inattendue de code, mémoire empoisonnée, messages inter-agents non sûrs, pannes en cascade |
+
 Un RAG, un prompt système ou un fine-tuning ne supprime pas l’injection.
 
 ## Architecture de contrôle minimale
@@ -41,7 +51,7 @@ Un RAG, un prompt système ou un fine-tuning ne supprime pas l’injection.
 - échec partiel, réponse vide, délai dépassé et état incohérent ;
 - tentative de désactiver les logs, contrôles ou approbations.
 
-Mapper les scénarios pertinents sur [OWASP GenAI](../references/sources.md#sécurité) et [MITRE ATLAS](../references/sources.md#sécurité), puis conserver les preuves et les limites des tests.
+Mapper les scénarios pertinents sur [OWASP GenAI](../references/sources.md#sécurité), le Top 10 OWASP des applications agentiques lorsque des outils ou agents sont présents, les recommandations adversariales du NIST pour les systèmes prédictifs et [MITRE ATLAS](../references/sources.md#sécurité). Conserver les preuves et les limites des tests.
 
 ## Incident
 
