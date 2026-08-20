@@ -27,6 +27,8 @@ for (const [pathname, language, title] of [
 
     const html = await response.text();
     const renderedText = html.replaceAll("<!-- -->", "");
+    if (language === "fr") assert.match(html, /<div lang="fr">/);
+    if (language === "en") assert.match(html, /<html lang="en">/);
     assert.match(html, new RegExp(title, "i"));
     assert.match(html, /Evidence before autonomy|La preuve avant l’autonomie/i);
     assert.match(html, /Atelier Horizon/);
@@ -88,7 +90,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /7h 40|7 h 40/);
     assert.match(html, /×7[.,]9/);
     assert.match(html, /8\/17/);
-    assert.match(html, /A4 remains unproven|A4 reste non démontré/i);
+    assert.match(html, /A4 remains unproven|A4 reste à démontrer/i);
     assert.match(html, /Talos\/Hermes analogy|Analogie Talos\/Hermes/i);
     assert.match(html, /Calibrate before you promise|Calibrez avant de promettre/i);
     assert.match(renderedText, /5[.,]6–14 h/);
@@ -139,7 +141,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /Two routes, not one shortcut|Deux routes, aucun raccourci/i);
     assert.match(html, /ai-use-patterns(?:\.fr)?\.md/i);
     assert.match(html, /id=["']non-agentic-cases["']/i);
-    assert.match(html, /Same low autonomy, four different evidence contracts|Même faible autonomie, quatre contrats de preuve différents/i);
+    assert.match(html, /Same low autonomy, four different evidence contracts|Même avec une faible autonomie, quatre contrats de preuve différents/i);
     assert.match(html, /Read-only field-procedure assistant|Assistant de procédures terrain en lecture seule/i);
     assert.match(html, /Weekly spare-parts demand forecast|Prévision hebdomadaire de pièces/i);
     assert.match(html, /External customer-information chatbot|Chatbot externe d’information client/i);

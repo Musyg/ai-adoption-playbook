@@ -26,9 +26,16 @@ test("publishes six paired GEO intents with bounded evidence", () => {
   for (const article of articles) {
     const pair = articles.find((candidate) => candidate.id === article.id && candidate.locale !== article.locale);
     assert.ok(pair, `missing alternate for ${article.id}/${article.locale}`);
+    assert.match(article.title, /\?$/, `GEO title is not phrased as a direct question for ${article.slug}`);
     assert.ok(article.answer.split(/\s+/).length >= 45, `answer is too short for ${article.slug}`);
     assert.equal(article.sources.length, 3, `source count differs for ${article.slug}`);
     assert.equal(article.relatedIds.length, 3, `related count differs for ${article.slug}`);
+    assert.equal(article.takeaways.length, pair.takeaways.length, `takeaway count differs for ${article.id}`);
+    assert.equal(article.sections.length, pair.sections.length, `section count differs for ${article.id}`);
+    assert.equal(article.comparison.rows.length, pair.comparison.rows.length, `comparison row count differs for ${article.id}`);
+    assert.deepEqual(article.sources.map((source) => source.url), pair.sources.map((source) => source.url), `source set differs for ${article.id}`);
+    if (article.locale === "fr") assert.match(article.readingTime, /^\d+ min de lecture$/);
+    if (article.locale === "en") assert.match(article.readingTime, /^\d+ minute read$/);
     assert.doesNotMatch(JSON.stringify(article), /\u2014/);
   }
 });

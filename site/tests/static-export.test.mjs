@@ -18,6 +18,7 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /<meta name="robots" content="noindex, nofollow"/);
     assert.match(html, /type="application\/ld\+json"/);
     assert.match(html, /"@type": "CreativeWork"/);
+    assert.match(html, /"dateModified": "2026-08-20"/);
     assert.match(html, /\/assets\//);
     assert.match(html, /\/favicon\.svg/);
     assert.match(html, /data-prerendered="true"/);
@@ -43,6 +44,21 @@ for (const [relative, language, title, visibleCopy] of [
     assert.doesNotMatch(html, /\/_next\//);
   });
 }
+
+test("keeps the English and French heading hierarchies aligned", async () => {
+  const extractHeadings = (html) => [...html.matchAll(/<h([1-3])\b[^>]*>[\s\S]*?<\/h\1>/gi)].map((match) => match[1]);
+  const english = await readFile(path.join(staticRoot, "index.html"), "utf8");
+  const french = await readFile(path.join(staticRoot, "fr", "index.html"), "utf8");
+  const englishHeadings = extractHeadings(english);
+  const frenchHeadings = extractHeadings(french);
+
+  assert.ok(englishHeadings.length >= 90);
+  assert.deepEqual(frenchHeadings, englishHeadings);
+  assert.match(english, /Move from AI interest to a system you can trust\./);
+  assert.doesNotMatch(english, /Passez de l’intérêt pour l’IA/);
+  assert.match(french, /Passez de l’intérêt pour l’IA à un système digne de confiance\./);
+  assert.doesNotMatch(french, /Move from AI interest to a system you can trust\./);
+});
 
 test("copies public assets and ships the provider-neutral interactive client", async () => {
   const rootHtml = await readFile(path.join(staticRoot, "index.html"), "utf8");

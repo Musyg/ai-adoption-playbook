@@ -32,7 +32,7 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.1**, publication-ready repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
+> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application source are available in English and French. No public hosting URL is declared.
 
 **0.3 evidence and sector work:** the bilingual
 [20-source public evidence review](references/field-evidence-review-2026.md)

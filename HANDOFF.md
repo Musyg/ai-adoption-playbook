@@ -8,7 +8,7 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 - Canonical branch: `main`
 - Working branch: `feat/ai-use-patterns-ch-eu`
 - Release prepared: `0.2.1`
-- Publication status: ready after validation on `main`
+- Visibility: public
 - Repository website field: empty
 - Public website URL: none
 - Static hosting: disabled
@@ -18,8 +18,8 @@ Snapshot: 2026-08-20 (Europe/Zurich)
 - Validation workflow: `.github/workflows/validate.yml`
 - Dependency updates: `.github/dependabot.yml`
 
-Repository publication preparation is authorized. The final visibility change
-and any future host selection remain separate owner decisions.
+Repository publication is complete. Any future host selection remains a
+separate owner decision.
 
 ## What is ready
 
@@ -112,7 +112,7 @@ Latest local verification on 2026-08-20:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 20/20 pass
+- Node tests: 21/21 pass
 - Playwright: 27/27 pass across English, French, desktop light, desktop dark,
   and mobile light
 - automated axe checks: zero violations
@@ -122,7 +122,7 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 20 Node tests for accessibility semantics, decision logic, rendered HTML,
+- 21 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
 - 27 Playwright checks across English, French, desktop light, desktop dark, and
   mobile light profiles;
@@ -163,11 +163,9 @@ public and do not deploy the application.
 
 ## Publication decision
 
-After this release-preparation change is merged and `main` is green, the
-repository is technically ready for the owner to decide whether to change its
-visibility. The incomplete field-feedback objective remains visible and is not
-presented as implemented.
+The owner authorized public visibility on 2026-08-20. The incomplete
+field-feedback objective remains visible and is not presented as implemented.
 
-Do not change visibility, declare a website URL, enable static hosting, deploy a
-mirror, or submit a sitemap without a separate explicit instruction. Making the
-repository public would not authorize hosting.
+Do not declare a website URL, enable static hosting, deploy a mirror, or submit
+a sitemap without a separate explicit instruction. Public repository visibility
+does not authorize hosting.

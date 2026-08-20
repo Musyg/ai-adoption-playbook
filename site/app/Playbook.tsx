@@ -223,15 +223,15 @@ const nonAgenticCaseContent: Record<Locale, NonAgenticCaseContent> = {
   },
   fr: {
     eyebrow: "QUATRE CAS SYNTHÉTIQUES · AUCUNE ACTION AUTONOME",
-    title: "Même faible autonomie, quatre contrats de preuve différents.",
+    title: "Même avec une faible autonomie, quatre contrats de preuve différents.",
     text: "Un RAG, une prédiction, un chatbot externe et un assistant multimodal peuvent tous rester en A0 ou A1. Leurs données, échecs, déclencheurs juridiques et métriques d’acceptation restent pourtant très différents.",
     labels: { scope: "Périmètre borné", proof: "Contrat de preuve figé", gate: "Décision", open: "Ouvrir le cas complet" },
-    boundary: "Tous les chiffres ci-dessous sont fictifs. Ces cas montrent comment préenregistrer une décision ; ils ne constituent ni preuve terrain, ni benchmark fournisseur, ni promesse de gain.",
+    boundary: "Tous les chiffres ci-dessous sont fictifs. Ces cas montrent comment préenregistrer une décision ; ils ne constituent ni preuve terrain, ni référence fournisseur, ni promesse de gain.",
     cases: [
-      { code: "RAG", pattern: "Recherche + génération · A1 · R1", title: "Assistant de procédures terrain en lecture seule", organization: "Helvetia Facilities · interne", scope: "Retrouve les passages actuels et autorisés, puis prépare une réponse citée. Aucun accès aux tickets, e-mails, ordres de travail ou équipements.", proof: ["80 questions figées", "20 tests de frontière d’accès", "0 outil d’écriture"], gate: "Autoriser seulement 30 cas en shadow", file: "examples/fr/assistant-rag-procedures.md" },
-      { code: "PRÉD", pattern: "Prédiction · A0 · R1", title: "Prévision hebdomadaire de pièces", organization: "Léman Pièces · batch interne", scope: "Produit prévisions et intervalles pour un planificateur. Les nouveaux produits restent manuels et aucune commande fournisseur n’est créée.", proof: ["26 semaines figées", "5 segments produit", "0 commande automatique"], gate: "Shadow mode sur produits établis", file: "examples/fr/prevision-demande-pieces.md" },
+      { code: "RAG", pattern: "Recherche + génération · A1 · R1", title: "Assistant de procédures terrain en lecture seule", organization: "Helvetia Facilities · interne", scope: "Retrouve les passages actuels et autorisés, puis prépare une réponse citée. Aucun accès aux tickets, e-mails, ordres de travail ou équipements.", proof: ["80 questions figées", "20 tests de frontière d’accès", "0 outil d’écriture"], gate: "Autoriser uniquement 30 cas en mode observation", file: "examples/fr/assistant-rag-procedures.md" },
+      { code: "PRÉD", pattern: "Prédiction · A0 · R1", title: "Prévision hebdomadaire de pièces", organization: "Léman Pièces · traitement par lot interne", scope: "Produit prévisions et intervalles pour un planificateur. Les nouveaux produits restent manuels et aucune commande fournisseur n’est créée.", proof: ["26 semaines figées", "5 segments produit", "0 commande automatique"], gate: "Mode observation sur les produits établis", file: "examples/fr/prevision-demande-pieces.md" },
       { code: "CHAT", pattern: "Conversation + recherche · A1 · R2", title: "Chatbot externe d’information client", organization: "Alpina Outdoor · CH + UE", scope: "Répond depuis les pages publiques, s’identifie comme IA et transfère. Aucun accès aux comptes, paiements, remboursements ou garanties.", proof: ["160 conversations", "4 langues", "24 transferts obligatoires"], gate: "Corriger et rejouer le transfert avant usage", file: "examples/fr/chatbot-client-externe.md" },
-      { code: "MM", pattern: "Multimodal + génération · A1 · R1", title: "Assistant d’accessibilité du catalogue", organization: "Asteria Home · CH + UE", scope: "Lit images et emballages autorisés, prépare le texte alternatif et signale les écarts. Il ne peut ni modifier un média ni publier.", proof: ["140 jeux d’images", "16 incohérences provoquées", "0 droit de publication"], gate: "Autoriser seulement 60 lots en shadow", file: "examples/fr/catalogue-multimodal-accessibilite.md" },
+      { code: "MM", pattern: "Multimodal + génération · A1 · R1", title: "Assistant d’accessibilité du catalogue", organization: "Asteria Home · CH + UE", scope: "Lit images et emballages autorisés, prépare le texte alternatif et signale les écarts. Il ne peut ni modifier un média ni publier.", proof: ["140 jeux d’images", "16 incohérences provoquées", "0 droit de publication"], gate: "Autoriser uniquement 60 lots en mode observation", file: "examples/fr/catalogue-multimodal-accessibilite.md" },
     ],
   },
 };
@@ -862,7 +862,7 @@ const copy = {
     summaryTitle: "Choisir le système IA le plus simple qui améliore vraiment le travail.",
     summaryText: "Le guide sépare trois questions souvent confondues : le travail confié à l’IA, ce qu’elle peut faire sans vous et les règles du territoire où elle opère. Il transforme ensuite ces choix en un premier test petit et mesurable.",
     integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
-    integrationTitle: "Copilote, agent métier et agence orchestrée ne sont pas la même intégration.",
+    integrationTitle: "Copilote, agent métier et agence orchestrée correspondent à trois niveaux d’intégration différents.",
     integrationText: "Ils déplacent des volumes de travail différents, exigent des permissions différentes et se mesurent par des résultats différents. Un pourcentage sans son niveau induit en erreur.",
     integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Ancrage dans les preuves publiques", flow: "Preuve de bout en bout" },
     integrationLevels: [
@@ -888,7 +888,7 @@ const copy = {
     ],
     researchReview: "Lire la revue complète de 20 sources",
     calibratorEyebrow: "CALIBREZ AVANT DE PROMETTRE",
-    calibratorTitle: "Transformez les fourchettes en scénario testable pour votre propre workflow.",
+    calibratorTitle: "Transformez vos fourchettes en un scénario testable pour votre propre processus.",
     calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible, hypothèses d’effet basse et haute et effort initial. Le résultat est une enveloppe de stress, pas une prévision.",
     calibratorLevel: "Niveau d’intégration",
     calibratorLevels: [{ id: "copilot", label: "Copilote · A0–A1", note: "Une étape assistée" }, { id: "agent", label: "Agent métier · A2–A3", note: "Un workflow borné" }, { id: "agency", label: "Agence orchestrée · A3", note: "Spécialistes sous une politique" }],
@@ -962,9 +962,9 @@ const copy = {
     operationRetire: "À la date de revue, comparez au processus manuel actuel plutôt qu’à la démonstration d’origine. Continuez, réduisez, remplacez ou retirez. Préservez export, suppression, sortie fournisseur, révocation des accès et processus manuel.",
     operationCopy: "Copier la fiche d’exploitation",
     operationCopied: "Fiche d’exploitation copiée",
-    operationRunbook: "Ouvrir le runbook d’incident",
+    operationRunbook: "Ouvrir la procédure d’incident",
     dossierEyebrow: "TRANSMETTRE LA DÉCISION · PAS LA DÉMO",
-    dossierTitle: "Rassemblez toute la chaîne de preuves dans un dossier de décision révisable.",
+    dossierTitle: "Rassemblez toute la chaîne de preuves dans un dossier de décision vérifiable.",
     dossierText: "Un futur responsable doit pouvoir reconstruire hypothèses, protocole, résultat observé, périmètre autorisé et rollback sans dépendre d’une mémoire orale ou d’un diaporama.",
     dossierArtifacts: [["01", "Scénario calibré", "Volume, baseline manuelle, part éligible, fourchette de planification et hypothèse de mise en place."], ["02", "Protocole préenregistré", "Niveau, horizon, jeu figé, échantillon réel borné, seuils et décisions possibles."], ["03", "Décision de gate", "Valeur, qualité, sécurité, trace, éligibilité et dénominateur observés, puis prochaine action autorisée."], ["04", "Fiche d’exploitation", "Responsables nommés, périmètre, surveillance, arrêts, rollback, gestion du changement et date de revue."]],
     dossierStatuses: { ready: "PRÊT", recorded: "CONSIGNÉ", incomplete: "À COMPLÉTER" },
@@ -1076,7 +1076,7 @@ const copy = {
     missionAgent: ["État du dossier et extraction reliée aux sources", "Checklist de complétude publiée", "Projet de demande de pièce", "Paquet pseudonymisé pour les évaluateurs", "Écritures et attribution après approbation"],
     missionHumanTitle: "LES PERSONNES GARDENT",
     missionHuman: ["Accompagnement et canaux hors ligne", "Interprétation de la mission et du contexte", "Mérite, besoin, montant, attribution et refus", "Résolution des conflits d’intérêts", "Explication, contestation et responsabilité du conseil"],
-    missionRangeTitle: "Capacité administrative, pas impact de mission.",
+    missionRangeTitle: "Capacité administrative, pas effet sur la mission.",
     missionRangeText: "60 demandes × part workflow × 96 minutes initiales × réduction. Mise en place : 12 000 CHF ; coût récurrent : 750 CHF par mois.",
     missionRange: [["BAS", "23,8 h", "55 % workflow · −45 % · retour 16,6 mois"], ["CENTRAL", "40,3 h", "70 % workflow · −60 % · retour 6,9 mois"], ["HAUT", "53,8 h", "80 % workflow · −70 % · retour 4,6 mois"]],
     missionMetrics: [["96 → 39 min", "temps humain médian par paquet accepté"], ["×2,46", "débit théorique de paquets par heure humaine"], ["58/86", "prêts pour les évaluateurs sans correction"], ["≈ −39 %", "plafond portefeuille sur les 120 demandes"], ["100 %", "décisions de financement prises par des personnes"]],
@@ -1111,7 +1111,7 @@ const copy = {
     publicEvidenceTitle: "Résultat terrain, borne haute de tâche, analogue de gouvernance",
     publicEvidence: [["PILOTE TERRAIN", "60–80 %", "À Milton Keynes, les collaborateurs déclarent une validation plus rapide ; le délai réception-validation passe de 15,8 à 7,6 jours. Ce cas fournisseur de trois mois n’est pas une preuve causale pour tout un service.", "https://www.local.gov.uk/case-studies/milton-keynes-city-council-and-valon-streamlining-planning-ai"], ["BORNE HAUTE DE TÂCHE", "18,5 h → 16 min", "Cambridge rapporte 16 minutes pour les résumés PlanAI contre 18,5 heures humaines. Les urbanistes lisent toujours chaque contribution ; ce ratio étroit ne chiffre pas un workflow de dossier.", "https://www.cambridge.gov.uk/news/2025/07/21/harnessing-the-power-of-ai-to-transform-planning-consultations"], ["ANALOGUE DE GOUVERNANCE", "6 000+", "Leeds traite plus de 6 000 demandes par an et associe six mois de co-conception à analyses d’impact, sources visibles, approbation, audit trail et fiche ATRS publique.", "https://www.local.gov.uk/case-studies/leeds-city-council-and-xylo-transforming-planning-ai"]],
     publicLegalNote: "Frontière suisse : il n’existe pas encore de loi transversale propre à l’IA, tandis que sécurité de l’information, protection des données, procédure administrative et droit sectoriel restent applicables. Le PFPDT est un repère fédéral ; une commune doit qualifier le droit cantonal et public pertinent. Toute décision publique reste ici humaine par conception.",
-    publicDecision: "Autoriser l’A2 administratif six mois. Garder le pouvoir public humain.",
+    publicDecision: "Autoriser l’A2 administratif pendant six mois. Maintenir le pouvoir de décision humain.",
     publicDecisionText: "L’observation normalisée indique 76,4 heures de capacité mensuelle, environ 2 757 CHF nets du coût récurrent et un retour simple proche de 17,4 mois. Le cas bas échoue au gate économique. Analyse de conformité, motifs, priorité ou changement de modèle fournisseur renvoient le système à P0.",
     publicCta: "Ouvrir le cas service public complet et ses preuves",
     soloEyebrow: "CAS COPILOTE · INDÉPENDANT · A1",
@@ -1164,7 +1164,7 @@ const copy = {
     agencyEligibilityTitle: "Le dénominateur reste visible",
     agencyEligibilityText: "Seules 12 des 17 demandes live entrent dans la population A3. Cinq sont exclues avant exécution : deux nouveaux prix, une modification contractuelle, un jeu de données RH et une identité client contradictoire. Le résultat de 8/12 de bout en bout représente donc 8/17 de toutes les demandes, pas 67 % de toute l’activité.",
     agencyPhases: [["JOURS 01–10", "Décomposer le service", "Séparer rôles, entrées, sorties, permissions, frontières de panne, preuves des effets et situations qui doivent rester humaines."], ["JOURS 11–25", "Geler la comparaison", "Faire passer 60 cas par les conditions manuel, copilote, agent unique et agence orchestrée ; mesurer la sortie acceptée, pas l’activité des agents."], ["JOURS 26–40", "Observer l’agence", "Exécuter les spécialistes en parallèle sans effet réel. Injecter désaccord, mémoire périmée, panne d’outil, événement dupliqué et source empoisonnée."], ["JOURS 41–60", "Exploiter A3 borné", "N’autoriser que les effets catalogués à faible risque sur les cas éligibles. Veto du gardien, limites de coût, rollback et escalade humaine restent actifs."]],
-    agencyDecision: "A3 passe pour un service standard. A4 reste non démontré.",
+    agencyDecision: "A3 est validé pour un service standard. A4 reste à démontrer.",
     agencyDecisionText: "L’agence peut continuer pour le diagnostic défini et ses effets catalogués. Elle ne peut choisir de nouveaux services, prix, contrats, clients, classes de données ou permissions. L’autonomie large multi-systèmes exige un mandat distinct, un audit indépendant et des preuves sur plusieurs workflows.",
     agencyTalosNote: "Analogie Talos/Hermes, pas résultat Talos/Hermes",
     agencyTalosText: "L’architecture reprend orchestrateur, spécialistes, état partagé, outils, gardien et observabilité. Les chiffres appartiennent uniquement à ce cas synthétique ; le dépôt public Talos ne publie pas encore de benchmark de productivité reproductible.",
@@ -1205,7 +1205,7 @@ const copy = {
     toolkitEyebrow: "UTILISEZ LE PLAYBOOK",
     toolkitTitle: "Commencez par une décision vide, pas par une page blanche.",
     toolkitText: "Copiez les modèles opérationnels, franchissez le premier gate et conservez les preuves avec le projet.",
-    tools: [["Mandat", "Responsable, baseline, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Runbook d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"], ["Évaluation d’accessibilité", "Tâches complètes, technologies d’assistance et canal équivalent sans IA.", "templates/accessibility-assessment.fr.md"], ["Analyse des droits fondamentaux", "Groupes affectés, droits, garanties, recours et impact résiduel.", "templates/fundamental-rights-impact-assessment.fr.md"], ["Rapport de retour terrain", "Preuves observées, revue d’anonymisation et limites de transfert explicites.", "templates/field-feedback-report.fr.md"]],
+    tools: [["Mandat", "Responsable, situation de départ, résultat et limites.", "templates/mandate.fr.md"], ["Fiche de cas d’usage", "Valeur et difficulté restent séparées.", "templates/use-case-card.fr.md"], ["Évaluation du risque", "Scénarios, contrôles et risque résiduel.", "templates/risk-assessment.fr.md"], ["Plan d’évaluation", "Métriques, segments, seuils et critères d’arrêt.", "templates/evaluation-plan.fr.md"], ["Décision de pilote", "Valeur, fiabilité et risque jugés séparément.", "templates/pilot-decision.fr.md"], ["Procédure d’incident", "Contenir, qualifier, rétablir et apprendre.", "templates/incident-runbook.fr.md"], ["Évaluation d’accessibilité", "Tâches complètes, technologies d’assistance et canal équivalent sans IA.", "templates/accessibility-assessment.fr.md"], ["Analyse des droits fondamentaux", "Groupes affectés, droits, garanties, recours et impact résiduel.", "templates/fundamental-rights-impact-assessment.fr.md"], ["Rapport de retour terrain", "Preuves observées, revue d’anonymisation et limites de transfert explicites.", "templates/field-feedback-report.fr.md"]],
     sourceTitle: "Un socle daté, fondé sur des sources primaires.",
     sourceText: "Le playbook renvoie vers le catalogue ISO, le NIST AI RMF, OWASP GenAI, MITRE ATLAS, les autorités suisses et les ressources actuelles de l’AI Act. C’est une aide à la mise en œuvre, pas une certification ni un avis juridique.",
     sources: "Consulter le registre des sources",
@@ -1730,7 +1730,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         <section className="geo-library" hidden={conceptPanel !== "geo-library"} id="geo-library" aria-labelledby="geo-library-title">
           <div className="section-heading">
             <p className="eyebrow">{locale === "en" ? "PRACTICAL ANSWERS" : "RÉPONSES PRATIQUES"}</p>
-            <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Approfondissez les questions qui font la décision."}</h2>
+            <h2 id="geo-library-title">{locale === "en" ? "Explore the questions behind the decision." : "Explorez les questions qui éclairent la décision."}</h2>
             <p>{locale === "en" ? "Each guide gives a direct answer, a comparison, a realistic example, and the sources that limit the claim." : "Chaque guide apporte une réponse directe, une comparaison, un exemple réaliste et les sources qui bornent la conclusion."}</p>
           </div>
           <div className="geo-library-grid">

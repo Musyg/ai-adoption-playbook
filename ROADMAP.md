@@ -14,13 +14,15 @@
 - [x] Separate seven AI use patterns from integration level, autonomy, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Update version, changelog, operational documentation, and handoff.
-- [x] Complete the private repository, history, security, and community-file audit.
-- [ ] Change repository visibility to public after explicit owner approval.
+- [x] Complete the repository, history, security, and community-file audit.
+- [x] Audit the 95 paired content headings, browser titles, language metadata,
+  and six paired GEO intents.
+- [x] Change repository visibility to public after explicit owner approval.
 
-The final visibility item is intentionally outside this release preparation.
-The repository remains private and must be reviewed before that state change.
-Hosting is a different future project: repository publication does not select a
-host, declare a website URL, or authorize deployment.
+Public visibility was explicitly authorized on 2026-08-20 after the security,
+language, translation, title, accessibility, and browser audits. Hosting remains
+a different future project: repository publication does not select a host,
+declare a website URL, or authorize deployment.
 
 The open field-feedback item under 0.3 is an evidence-growth objective. It does
 not block publication of the complete 0.2.1 release, because the empty registry

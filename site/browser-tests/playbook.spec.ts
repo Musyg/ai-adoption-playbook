@@ -2,8 +2,8 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const locales = [
-  { path: "/", lang: "en", heading: "Move from AI interest to a system you can trust." },
-  { path: "/fr/", lang: "fr", heading: "Passez de l’intérêt pour l’IA à un système digne de confiance." },
+  { path: "/", lang: "en", title: "AI Adoption Playbook: pilots, agents and governance", heading: "Move from AI interest to a system you can trust." },
+  { path: "/fr/", lang: "fr", title: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance", heading: "Passez de l’intérêt pour l’IA à un système digne de confiance." },
 ] as const;
 
 for (const locale of locales) {
@@ -11,6 +11,7 @@ for (const locale of locales) {
     await page.goto(locale.path);
 
     await expect(page.locator("html")).toHaveAttribute("lang", locale.lang);
+    await expect(page).toHaveTitle(locale.title);
     await expect(page.getByRole("heading", { level: 1 })).toContainText(locale.heading);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);

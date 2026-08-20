@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Completed a bilingual editorial audit of the 95 paired content headings,
+  browser titles, language metadata, and six paired GEO intents. Rephrased key
+  French titles and summaries for clarity and added structural translation
+  checks to the automated test suite.
+- Recorded the owner-authorized change to public repository visibility while
+  keeping website hosting, canonical URLs, and sitemap publication disabled.
+
 ## 0.2.1, 2026-08-20
 
 - Rebuilt the visual entry experience as a five-step bilingual guide that
