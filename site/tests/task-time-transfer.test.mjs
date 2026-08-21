@@ -210,8 +210,10 @@ test("blocks the net range when no case is eligible and setup cannot be allocate
   assert.equal(manual.calculable, false);
   assert.equal(net.calculable, false);
   assert.equal(net.unavailable_reason, "no_eligible_cases");
-  assert.equal(net.scenarios.central.reduction_fraction, 0);
-  assert.equal(net.scenarios.central.human_hours_saved_per_month, 0);
+  assert.equal(net.scenarios.central.recurring_reduction_fraction, (60 - net.scenarios.central.operating_human_minutes) / 60);
+  assert.equal(net.scenarios.central.amortized_setup_minutes_per_case, null);
+  assert.equal(net.scenarios.central.reduction_fraction, null);
+  assert.equal(net.scenarios.central.human_hours_saved_per_month, null);
   assert.equal(planning.calculable, false);
   assert.deepEqual([planning.low, planning.central, planning.high], [0, 0, 0]);
 });

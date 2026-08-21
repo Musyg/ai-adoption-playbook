@@ -136,6 +136,20 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
 });
 
+test("zero eligibility keeps the recurring assumption separate from unavailable setup allocation", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  await page.getByLabel("Share genuinely eligible").fill("0");
+
+  await expect(page.locator(".task-time-mode-effect")).toContainText("33 min");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("45%");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("Setup per case and the net result remain unavailable");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"] strong')).toHaveText("33 min");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-gain"] strong')).toHaveText("45%");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="setup"] strong')).toHaveText("n/a");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"] strong')).toHaveText("n/a");
+});
+
 test("whole-workload result uses total observed human time and rejects a positive gain at zero accepted outputs", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
@@ -143,11 +157,40 @@ test("whole-workload result uses total observed human time and rejects a positiv
   await page.getByLabel("Total baseline human time for every observed case").fill("1200");
   await page.getByLabel("Total human time with AI for every observed case").fill("600");
   await page.getByLabel("Outputs accepted after defined review").fill("0");
-  await expect(page.locator("#evidence-gate .evidence-impact p").first().locator("strong")).toHaveText("0%");
-  await expect(page.locator("#evidence-gate .evidence-impact p").nth(2).locator("strong")).toHaveText("0 h");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="raw-whole-load"] strong')).toHaveText("50%");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="decision-whole-load"] strong')).toHaveText("0%");
+  await expect(page.locator("#evidence-gate .evidence-ledger li").filter({ hasText: "Value on accepted cases" })).toContainText("n/a");
+  await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Human hours projected" }).locator("strong")).toHaveText("0 h");
   await page.getByLabel("Outputs accepted after defined review").fill("93");
-  await expect(page.locator("#evidence-gate .evidence-impact p").first().locator("strong")).toHaveText("50%");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="decision-whole-load"] strong')).toHaveText("50%");
 });
+
+for (const zeroAcceptanceLocale of [
+  { path: "/", plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for every observed case", ai: "Total human time with AI for every observed case", quality: "Outputs accepted after defined review", panel: /Prepare field feedback/, download: "Download the local draft", raw: "Raw calculation: (1200 − 600) / 1200 = 50%", adjusted: "Decision-adjusted whole-workload reduction: 0%", reason: "capped at 0% because no output was accepted" },
+  { path: "/fr/", plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour tous les cas observés", ai: "Temps humain total avec IA pour tous les cas observés", quality: "Sorties acceptées après la revue définie", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", raw: "Calcul brut: (1200 − 600) / 1200 = 50%", adjusted: "Réduction sur toute la charge retenue pour la décision: 0%", reason: "plafonnée à 0 %, car aucune sortie n’a été acceptée" },
+] as const) {
+  test(`${zeroAcceptanceLocale.path} export separates raw time change from the zero-acceptance decision result`, async ({ page }) => {
+    await page.goto(zeroAcceptanceLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: zeroAcceptanceLocale.plan }).click();
+    await page.getByRole("button", { name: zeroAcceptanceLocale.freeze }).click();
+    await router.getByRole("button", { name: zeroAcceptanceLocale.evidence }).click();
+    await page.getByLabel(zeroAcceptanceLocale.baseline).fill("1200");
+    await page.getByLabel(zeroAcceptanceLocale.ai).fill("600");
+    await page.getByLabel(zeroAcceptanceLocale.quality).fill("0");
+    await router.getByRole("button", { name: zeroAcceptanceLocale.panel }).click();
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: zeroAcceptanceLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(zeroAcceptanceLocale.raw);
+    expect(report).toContain(zeroAcceptanceLocale.adjusted);
+    expect(report).toContain(zeroAcceptanceLocale.reason);
+  });
+}
 
 test("field comparison remains locked to v1 and a changed plan requires a separate recalibration snapshot", async ({ page }) => {
   await page.goto("/");
@@ -233,6 +276,50 @@ for (const fieldLocale of [
     expect(report).toContain("1.0.0 · 2026-08-21");
   });
 }
+
+test("any field-report mutation invalidates confirmation and all six publication checks", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+
+  await page.getByLabel("Non-identifying project alias").fill("Workshop North");
+  await page.getByLabel("System + workflow version").fill("Workflow 1.2");
+  await page.getByLabel("Exact workflow observed").fill("One bounded request from intake to reviewed output.");
+  await page.getByLabel("Observation start").fill("2026-08-01");
+  await page.getByLabel("Observation end").fill("2026-08-21");
+  await page.getByLabel("Why observation differs from the hypothesis").fill("The measured case mix had more exceptions than the planning sample.");
+  await page.getByLabel("Hypothesis and decision after observation").fill("Retain v1; no recalibration required.");
+  await page.getByLabel("Where the result may transfer").fill("Same bounded workflow, permissions, review gate, and operator profile.");
+  await page.getByLabel("What this result does not prove").fill("It does not prove gains for another workflow, model, or autonomy level.");
+  await page.locator(".field-pilot-evidence-confirm input").check();
+  const reviewChecks = page.locator(".field-pilot-checklist input");
+  for (let index = 0; index < 6; index += 1) await reviewChecks.nth(index).check();
+  await expect(page.locator(".field-pilot-status")).toContainText("READY FOR INDEPENDENT REVIEW");
+  await expect(page.locator(".field-pilot-status strong")).toHaveText("16/16");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download the local draft" }).click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  expect(path).not.toBeNull();
+  const readyReport = await readFile(path!, "utf8");
+  expect(readyReport).not.toContain("[TO COMPLETE]");
+  expect(readyReport).toContain("No v2 snapshot frozen. Recorded decision: Retain v1; no recalibration required.");
+
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("Total baseline human time for every observed case").fill("1300");
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expect(page.locator(".field-pilot-evidence-confirm input")).not.toBeChecked();
+  await expect(reviewChecks).toHaveCount(6);
+  for (let index = 0; index < 6; index += 1) await expect(reviewChecks.nth(index)).not.toBeChecked();
+
+  await page.locator(".field-pilot-evidence-confirm input").check();
+  await expect(page.locator(".field-pilot-status")).not.toContainText("READY FOR INDEPENDENT REVIEW");
+  await expect(page.locator(".field-pilot-status strong")).toHaveText("10/16");
+});
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {
   await page.goto("/");

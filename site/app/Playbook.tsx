@@ -596,7 +596,8 @@ const copy = {
       unknown: { label: "NO DECISION YET", text: "The live sample or effect trace is incomplete. Collect the missing evidence under the current boundary; do not count this as a failure or a success." },
       stop: { label: "STOP + ROLLBACK", text: "A critical or unauthorized effect occurred. Stop live operation, return to the safe process, contain the incident, and preserve the complete evidence." },
     },
-    evidenceObserved: "Observed whole-workload reduction",
+    evidenceRaw: "Raw whole-workload time change",
+    evidenceObserved: "Decision-adjusted whole-workload reduction",
     evidencePlanned: "Planning envelope",
     evidenceFreed: "Human hours projected / month from observed rates",
     evidenceEligibilityWarning: "Observed eligibility is more than 10 points below the assumption. The technical result may pass, but the economic case must be recalibrated.",
@@ -956,7 +957,8 @@ const copy = {
       unknown: { label: "PAS ENCORE DE DÉCISION", text: "L’échantillon réel ou la trace des effets est incomplet. Recueillir les preuves manquantes dans le périmètre actuel ; ne compter cela ni comme un échec ni comme une réussite." },
       stop: { label: "ARRÊTER ET REVENIR EN ARRIÈRE", text: "Un effet critique ou non autorisé s’est produit. Arrêter l’exploitation réelle, revenir au processus sûr, contenir l’incident et préserver toutes les preuves." },
     },
-    evidenceObserved: "Réduction observée sur toute la charge",
+    evidenceRaw: "Variation brute du temps sur toute la charge",
+    evidenceObserved: "Réduction sur toute la charge retenue pour la décision",
     evidencePlanned: "Enveloppe de planification",
     evidenceFreed: "Heures humaines projetées / mois selon les taux observés",
     evidenceEligibilityWarning: "L’éligibilité observée est inférieure de plus de 10 points à l’hypothèse. Le résultat technique peut passer, mais le dossier économique doit être recalibré.",
@@ -1403,6 +1405,10 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [operationalPanel, setOperationalPanel] = useState<OperationalPanelId>("calibrator");
   const [implementationPanel, setImplementationPanel] = useState<ImplementationPanelId>("paths");
   const [casePanel, setCasePanel] = useState<CasePanelId>("case");
+  const invalidateFieldReview = useCallback(() => {
+    setFieldEvidenceConfirmed(false);
+    setFieldReviewChecks((current) => current.some(Boolean) ? current.map(() => false) : current);
+  }, []);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const selectedUsePattern = useMemo(() => patternCopy.patterns.find((item) => item.id === usePattern) ?? patternCopy.patterns[0], [patternCopy.patterns, usePattern]);
   const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
@@ -1427,17 +1433,15 @@ export function Playbook({ locale }: { locale: Locale }) {
   const journeySteps = guideCopy.progress;
   const acceptPlanningRange = useCallback((nextRange: TaskTimePlanningRange) => {
     setPlanningRange(nextRange);
-    setFieldEvidenceConfirmed(false);
-    setFieldReviewChecks((current) => current.some(Boolean) ? current.map(() => false) : current);
-  }, []);
+    invalidateFieldReview();
+  }, [invalidateFieldReview]);
   const selectCalibrationLevel = (level: IntegrationId) => {
     setCalibrationLevel(level);
     setSetupHours(setupPresets[level]);
     setReviewDate(operationSpecs[level].reviewDate);
     setOperationCopied(false);
     setDossierCopied(false);
-    setFieldEvidenceConfirmed(false);
-    setFieldReviewChecks((current) => current.some(Boolean) ? current.map(() => false) : current);
+    invalidateFieldReview();
   };
   const restoreLifecycleContext = useCallback((context: {
     audienceId: string;
@@ -1469,9 +1473,9 @@ export function Playbook({ locale }: { locale: Locale }) {
     setReviewDate(operationSpecs[level].reviewDate);
     setOperationCopied(false);
     setDossierCopied(false);
-    setFieldEvidenceConfirmed(false);
+    invalidateFieldReview();
     return true;
-  }, []);
+  }, [invalidateFieldReview]);
   const selectGuideLevel = (level: GuidedContent["levels"][number]) => {
     selectCalibrationLevel(level.id);
     setAutonomy(level.autonomy);
@@ -1563,8 +1567,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       },
     };
     setPlanningSnapshots((current) => [...current, snapshot]);
-    setFieldEvidenceConfirmed(false);
-    setFieldReviewChecks((current) => current.map(() => false));
+    invalidateFieldReview();
   };
   const pilotCollectionWeeks = planningRange.calculable && calibration.eligibleCases > 0
     ? pilotSpec.live / calibration.eligibleCases * 4.35
@@ -1573,25 +1576,26 @@ export function Playbook({ locale }: { locale: Locale }) {
     ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning basis: ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "local human-time hypothesis"}`, `Transfer contract: ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.integration_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "initial local hypothesis"}`, `Net method: greater of source residual and local human-work floor, plus amortized setup`, `Human-work floor: ${formatNumber(planningRange.human_work.preparation_minutes)} prep + ${formatNumber(planningRange.human_work.supervision_minutes)} supervision + ${formatNumber(planningRange.human_work.verification_minutes)} verification + ${formatNumber(planningRange.human_work.correction_minutes)} correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} expected exceptions = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/case`, `Exception assumption: ${formatNumber(planningRange.human_work.exception_rate_percent)}% of eligible cases · ${formatNumber(planningRange.human_work.exception_minutes)} min each`, `Setup allocation: ${formatNumber(planningRange.setup.setup_hours)} h over ${formatNumber(planningRange.setup.amortization_months)} months · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/eligible case` : "unavailable at zero eligible cases"}`, planningRange.calculable ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Net planning range: unavailable until at least one case is eligible`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
     : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Base de planification : ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "hypothèse locale de temps humain"}`, `Contrat de transfert : ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.integration_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "hypothèse locale initiale"}`, `Méthode nette : plus grand temps entre le résiduel de la source et le plancher de travail humain, puis mise en place amortie`, `Plancher de travail humain : ${formatNumber(planningRange.human_work.preparation_minutes)} de préparation + ${formatNumber(planningRange.human_work.supervision_minutes)} de supervision + ${formatNumber(planningRange.human_work.verification_minutes)} de vérification + ${formatNumber(planningRange.human_work.correction_minutes)} de correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} d’exceptions attendues = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/dossier`, `Hypothèse d’exception : ${formatNumber(planningRange.human_work.exception_rate_percent)} % des cas éligibles · ${formatNumber(planningRange.human_work.exception_minutes)} min chacun`, `Répartition de la mise en place : ${formatNumber(planningRange.setup.setup_hours)} h sur ${formatNumber(planningRange.setup.amortization_months)} mois · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/cas éligible` : "indisponible sans cas éligible"}`, planningRange.calculable ? `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée` : `Fourchette nette : indisponible tant qu’aucun cas n’est éligible`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
   const samplePass = observedCases >= pilotSpec.live;
-  const valuePass = observedTimeReduction >= pilotSpec.valueFloor;
+  const hasAcceptedOutputs = observedQuality > 0;
+  const valuePass = hasAcceptedOutputs && observedTimeReduction >= pilotSpec.valueFloor;
   const qualityPass = observedQuality >= 90;
   const safetyPass = criticalEffects === 0;
   const tracePass = traceCompleteness === 100;
   const rawObservedWholeReduction = observedBaselineTotalMinutes > 0
     ? (observedBaselineTotalMinutes - observedAiTotalMinutes) / observedBaselineTotalMinutes * 100
     : 0;
-  const observedWholeReduction = observedQuality === 0 ? Math.min(0, rawObservedWholeReduction) : rawObservedWholeReduction;
-  const observedHumanMinutesSaved = observedQuality === 0
+  const decisionAdjustedWholeReduction = observedQuality === 0 ? Math.min(0, rawObservedWholeReduction) : rawObservedWholeReduction;
+  const decisionAdjustedHumanMinutesSaved = observedQuality === 0
     ? Math.min(0, observedBaselineTotalMinutes - observedAiTotalMinutes)
     : observedBaselineTotalMinutes - observedAiTotalMinutes;
   const observedFreedHours = observedCases > 0
-    ? observedHumanMinutesSaved / observedCases * monthlyCases / 60
+    ? decisionAdjustedHumanMinutesSaved / observedCases * monthlyCases / 60
     : 0;
   const eligibilityWarning = observedEligibility < eligibleShare - 10;
   const evidenceDecision: EvidenceDecision = decideEvidence({ samplePass, valuePass, qualityPass, safetyPass, tracePass });
   const evidenceRows: Array<{ code: string; label: string; observed: string; status: EvidenceStatus }> = [
     { code: "N", label: t.evidenceMatrix.sample, observed: `${observedCases}/${pilotSpec.live}`, status: samplePass ? "pass" : "incomplete" },
-    { code: "V", label: t.evidenceMatrix.value, observed: `${observedTimeReduction}% / ≥ ${pilotSpec.valueFloor}%`, status: valuePass ? "pass" : "fail" },
+    { code: "V", label: t.evidenceMatrix.value, observed: hasAcceptedOutputs ? `${observedTimeReduction}% / ≥ ${pilotSpec.valueFloor}%` : `n/a / ≥ ${pilotSpec.valueFloor}%`, status: valuePass ? "pass" : hasAcceptedOutputs ? "fail" : "incomplete" },
     { code: "Q", label: t.evidenceMatrix.quality, observed: `${observedQuality}% / ≥ 90%`, status: qualityPass ? "pass" : "fail" },
     { code: "S", label: t.evidenceMatrix.safety, observed: `${criticalEffects} / 0`, status: safetyPass ? "pass" : "fail" },
     { code: "T", label: t.evidenceMatrix.trace, observed: `${traceCompleteness}% / 100%`, status: tracePass ? "pass" : "incomplete" },
@@ -1602,8 +1606,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const operationState = t.operationStates[evidenceDecision];
   const reviewDateLabel = new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${reviewDate}T12:00:00Z`));
   const evidenceMemo = locale === "en"
-    ? [`AI PILOT GATE DECISION`, `Level: ${pilotLevelLabel}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} bounded live cases`, `Value: ${observedTimeReduction}% human active-time reduction on accepted outputs · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${observedEligibility}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Whole-workload reduction: ${formatNumber(observedWholeReduction)}% · ${formatNumber(observedFreedHours)} human hours/month projected from the observed per-case difference`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
-    : [`DÉCISION DU PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas réels bornés`, `Valeur : ${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${observedEligibility} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Réduction sur toute la charge : ${formatNumber(observedWholeReduction)} % · ${formatNumber(observedFreedHours)} heures humaines/mois projetées selon l’écart observé par cas`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
+    ? [`AI PILOT GATE DECISION`, `Level: ${pilotLevelLabel}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} bounded live cases`, `Value: ${hasAcceptedOutputs ? `${observedTimeReduction}% human active-time reduction on accepted outputs` : "n/a because no output was accepted"} · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${observedEligibility}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Raw whole-workload time change: ${formatNumber(rawObservedWholeReduction)}%`, `Decision-adjusted whole-workload reduction: ${formatNumber(decisionAdjustedWholeReduction)}%${hasAcceptedOutputs ? "" : " · capped at 0% because no output was accepted"}`, `Projected capacity: ${formatNumber(observedFreedHours)} human hours/month from the decision-adjusted result`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
+    : [`DÉCISION DU PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas réels bornés`, `Valeur : ${hasAcceptedOutputs ? `${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées` : "n/a, car aucune sortie n’a été acceptée"} · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${observedEligibility} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Variation brute du temps sur toute la charge : ${formatNumber(rawObservedWholeReduction)} %`, `Réduction sur toute la charge retenue pour la décision : ${formatNumber(decisionAdjustedWholeReduction)} %${hasAcceptedOutputs ? "" : " · plafonnée à 0 %, car aucune sortie n’a été acceptée"}`, `Capacité projetée : ${formatNumber(observedFreedHours)} heures humaines/mois selon le résultat retenu pour la décision`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
   const fieldPlanningRange = preregisteredPlanning?.planningRange.calculable
     ? `${formatNumber(preregisteredPlanning.wholeWorkloadRange.low)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.central)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.high)}%`
     : "n/a";
@@ -1611,9 +1615,9 @@ export function Playbook({ locale }: { locale: Locale }) {
   const fieldComparisonReady = Boolean(preregisteredPlanning?.planningRange.calculable && samplePass && qualityPass && tracePass && observedBaselineTotalMinutes > 0);
   const fieldComparisonKey = !fieldComparisonReady
     ? "unavailable"
-    : roundForDisplay(observedWholeReduction) < roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.low)
+    : roundForDisplay(decisionAdjustedWholeReduction) < roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.low)
       ? "below"
-      : roundForDisplay(observedWholeReduction) > roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.high)
+      : roundForDisplay(decisionAdjustedWholeReduction) > roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.high)
         ? "above"
         : "within";
   const fieldComparisonLabel = t.fieldPilotComparison[fieldComparisonKey];
@@ -1721,8 +1725,10 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     `## ${locale === "en" ? "Observation and recalibration" : "Observation et recalibrage"}`,
     ``,
-    `- ${locale === "en" ? "Observed whole-workload reduction" : "Réduction observée sur toute la charge"}: ${formatNumber(observedWholeReduction)}%`,
-    `- ${locale === "en" ? "Observed calculation" : "Calcul observé"}: (${observedBaselineTotalMinutes} − ${observedAiTotalMinutes}) / ${observedBaselineTotalMinutes || "n/a"} = ${formatNumber(observedWholeReduction)}%`,
+    `- ${locale === "en" ? "Raw whole-workload time change" : "Variation brute du temps sur toute la charge"}: ${formatNumber(rawObservedWholeReduction)}%`,
+    `- ${locale === "en" ? "Raw calculation" : "Calcul brut"}: (${observedBaselineTotalMinutes} − ${observedAiTotalMinutes}) / ${observedBaselineTotalMinutes || "n/a"} = ${formatNumber(rawObservedWholeReduction)}%`,
+    `- ${locale === "en" ? "Decision-adjusted whole-workload reduction" : "Réduction sur toute la charge retenue pour la décision"}: ${formatNumber(decisionAdjustedWholeReduction)}%`,
+    `- ${locale === "en" ? "Decision adjustment" : "Ajustement de décision"}: ${hasAcceptedOutputs ? (locale === "en" ? "no zero-acceptance cap applied" : "aucun plafonnement lié à une acceptation nulle") : (locale === "en" ? "capped at 0% because no output was accepted; faster failed attempts are not an accepted gain" : "plafonnée à 0 %, car aucune sortie n’a été acceptée ; des tentatives infructueuses plus rapides ne constituent pas un gain accepté")}`,
     `- ${locale === "en" ? "Observed denominator rule" : "Règle du dénominateur observé"}: ${locale === "en" ? "both totals include accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases" : "les deux totaux incluent les cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants"}`,
     `- ${locale === "en" ? "Position against the preregistered range" : "Position par rapport à la fourchette préenregistrée"}: ${fieldComparisonLabel}`,
     `- ${locale === "en" ? "Comparison precision" : "Précision de comparaison"}: ${locale === "en" ? "the observed result and both boundaries are compared at the displayed precision of one decimal" : "le résultat observé et les deux bornes sont comparés à la précision affichée d’une décimale"}`,
@@ -1731,7 +1737,9 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     `### ${locale === "en" ? "Recalibrated planning snapshot" : "Photographie de planification recalibrée"}`,
     ``,
-    ...planningSnapshotLines(recalibratedPlanning),
+    ...(recalibratedPlanning
+      ? planningSnapshotLines(recalibratedPlanning)
+      : [`- ${locale === "en" ? "Snapshot" : "Photographie"}: ${locale === "en" ? "No v2 snapshot frozen. Recorded decision" : "Aucune photographie v2 figée. Décision consignée"}: ${fieldRecalibrationDecision.trim() || "[TO COMPLETE]"}`]),
     ``,
     fieldEvidenceConfirmed ? evidenceMemo : `[${locale === "en" ? "TO COMPLETE: confirm that demonstration values were replaced with observed evidence" : "À COMPLÉTER : confirmer que les valeurs de démonstration ont été remplacées par des preuves observées"}]`,
     ``,
@@ -2087,20 +2095,21 @@ export function Playbook({ locale }: { locale: Locale }) {
               <p className="eyebrow">{t.evidenceInputsTitle}</p>
               <h3>{pilotLevelLabel}</h3>
               <div>
-                <label><span>{t.evidenceInputs.cases}</span><div><input aria-label={t.evidenceInputs.cases} max="2000" min="0" onChange={(event) => { setObservedCases(Math.min(2000, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedCases} /><small>{t.evidenceUnits.cases}</small></div></label>
-                <label><span>{t.evidenceInputs.time}</span><div><input aria-label={t.evidenceInputs.time} max="100" min="0" onChange={(event) => { setObservedTimeReduction(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedTimeReduction} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.quality}</span><div><input aria-label={t.evidenceInputs.quality} max="100" min="0" onChange={(event) => { setObservedQuality(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedQuality} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.baselineTotal}</span><div><input aria-label={t.evidenceInputs.baselineTotal} max="10000000" min="1" onChange={(event) => { setObservedBaselineTotalMinutes(Math.min(10000000, Math.max(1, Number(event.target.value) || 1))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedBaselineTotalMinutes} /><small>{t.evidenceUnits.minutes}</small></div></label>
-                <label><span>{t.evidenceInputs.aiTotal}</span><div><input aria-label={t.evidenceInputs.aiTotal} max="10000000" min="0" onChange={(event) => { setObservedAiTotalMinutes(Math.min(10000000, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedAiTotalMinutes} /><small>{t.evidenceUnits.minutes}</small></div></label>
-                <label><span>{t.evidenceInputs.critical}</span><div><input aria-label={t.evidenceInputs.critical} max="99" min="0" onChange={(event) => { setCriticalEffects(Math.min(99, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={criticalEffects} /><small>{t.evidenceUnits.events}</small></div></label>
-                <label><span>{t.evidenceInputs.trace}</span><div><input aria-label={t.evidenceInputs.trace} max="100" min="0" onChange={(event) => { setTraceCompleteness(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={traceCompleteness} /><small>{t.evidenceUnits.percent}</small></div></label>
-                <label><span>{t.evidenceInputs.eligibility}</span><div><input aria-label={t.evidenceInputs.eligibility} max="100" min="0" onChange={(event) => { setObservedEligibility(Math.min(100, Math.max(0, Number(event.target.value) || 0))); setFieldEvidenceConfirmed(false); }} step="1" type="number" value={observedEligibility} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.cases}</span><div><input aria-label={t.evidenceInputs.cases} max="2000" min="0" onChange={(event) => { setObservedCases(Math.min(2000, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={observedCases} /><small>{t.evidenceUnits.cases}</small></div></label>
+                <label><span>{t.evidenceInputs.time}</span><div><input aria-label={t.evidenceInputs.time} max="100" min="0" onChange={(event) => { setObservedTimeReduction(Math.min(100, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={observedTimeReduction} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.quality}</span><div><input aria-label={t.evidenceInputs.quality} max="100" min="0" onChange={(event) => { setObservedQuality(Math.min(100, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={observedQuality} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.baselineTotal}</span><div><input aria-label={t.evidenceInputs.baselineTotal} max="10000000" min="1" onChange={(event) => { setObservedBaselineTotalMinutes(Math.min(10000000, Math.max(1, Number(event.target.value) || 1))); invalidateFieldReview(); }} step="1" type="number" value={observedBaselineTotalMinutes} /><small>{t.evidenceUnits.minutes}</small></div></label>
+                <label><span>{t.evidenceInputs.aiTotal}</span><div><input aria-label={t.evidenceInputs.aiTotal} max="10000000" min="0" onChange={(event) => { setObservedAiTotalMinutes(Math.min(10000000, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={observedAiTotalMinutes} /><small>{t.evidenceUnits.minutes}</small></div></label>
+                <label><span>{t.evidenceInputs.critical}</span><div><input aria-label={t.evidenceInputs.critical} max="99" min="0" onChange={(event) => { setCriticalEffects(Math.min(99, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={criticalEffects} /><small>{t.evidenceUnits.events}</small></div></label>
+                <label><span>{t.evidenceInputs.trace}</span><div><input aria-label={t.evidenceInputs.trace} max="100" min="0" onChange={(event) => { setTraceCompleteness(Math.min(100, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={traceCompleteness} /><small>{t.evidenceUnits.percent}</small></div></label>
+                <label><span>{t.evidenceInputs.eligibility}</span><div><input aria-label={t.evidenceInputs.eligibility} max="100" min="0" onChange={(event) => { setObservedEligibility(Math.min(100, Math.max(0, Number(event.target.value) || 0))); invalidateFieldReview(); }} step="1" type="number" value={observedEligibility} /><small>{t.evidenceUnits.percent}</small></div></label>
               </div>
             </div>
             <output className="evidence-result" data-decision={evidenceDecision} aria-live="polite">
               <div className="evidence-verdict"><span>{locale === "en" ? "AUTHORIZED NEXT ACTION" : "PROCHAINE ACTION AUTORISÉE"}</span><strong>{evidenceDecisionCopy.label}</strong><p>{evidenceDecisionCopy.text}</p></div>
               <div className="evidence-impact">
-                <p><span>{t.evidenceObserved}</span><strong>{formatNumber(observedWholeReduction)}%</strong></p>
+                <p data-metric="raw-whole-load"><span>{t.evidenceRaw}</span><strong>{formatNumber(rawObservedWholeReduction)}%</strong></p>
+                <p data-metric="decision-whole-load"><span>{t.evidenceObserved}</span><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></p>
                 <p><span>{t.evidencePlanned}</span><strong>{planningRange.calculable ? `${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}%` : "n/a"}</strong></p>
                 <p><span>{t.evidenceFreed}</span><strong>{formatNumber(observedFreedHours)} h</strong></p>
               </div>
@@ -2164,25 +2173,25 @@ export function Playbook({ locale }: { locale: Locale }) {
             <div className="field-pilot-form">
               <p className="field-pilot-privacy"><strong>{locale === "en" ? "PRIVACY BOUNDARY" : "FRONTIÈRE DE CONFIDENTIALITÉ"}</strong>{t.fieldPilotPrivacy}</p>
               <div className="field-pilot-selects">
-                <label><span>{t.fieldPilotLabels.organization}</span><select onChange={(event) => { setAudienceId(event.target.value as AudienceId); setFieldEvidenceConfirmed(false); }} value={audienceId}>{audiences[locale].map((audience) => <option key={audience.id} value={audience.id}>{audience.title}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.organization}</span><select onChange={(event) => { setAudienceId(event.target.value as AudienceId); invalidateFieldReview(); }} value={audienceId}>{audiences[locale].map((audience) => <option key={audience.id} value={audience.id}>{audience.title}</option>)}</select></label>
                 <label><span>{t.fieldPilotLabels.integration}</span><select onChange={(event) => selectCalibrationLevel(event.target.value as IntegrationId)} value={calibrationLevel}>{t.calibratorLevels.map((level) => <option key={level.id} value={level.id}>{level.label}</option>)}</select></label>
-                <label><span>{t.fieldPilotLabels.sector}</span><select onChange={(event) => { setFieldSectorId(event.target.value as FieldSectorId); setFieldEvidenceConfirmed(false); }} value={fieldSectorId}>{t.fieldPilotSectors.map((sector) => <option key={sector.id} value={sector.id}>{sector.label}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.sector}</span><select onChange={(event) => { setFieldSectorId(event.target.value as FieldSectorId); invalidateFieldReview(); }} value={fieldSectorId}>{t.fieldPilotSectors.map((sector) => <option key={sector.id} value={sector.id}>{sector.label}</option>)}</select></label>
               </div>
               <div className="field-pilot-fields">
-                <label><span>{t.fieldPilotLabels.alias}</span><input maxLength={80} onChange={(event) => setFieldAlias(event.target.value)} placeholder={locale === "en" ? "Example: Workshop North" : "Exemple : Atelier Nord"} type="text" value={fieldAlias} /></label>
-                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => setFieldVersion(event.target.value)} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} type="text" value={fieldVersion} /></label>
-                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.workflow}</span><textarea maxLength={360} onChange={(event) => setFieldWorkflow(event.target.value)} placeholder={locale === "en" ? "Describe one bounded input-to-accepted-outcome workflow." : "Décrivez un seul processus borné, de l’entrée au résultat accepté."} rows={3} value={fieldWorkflow} /></label>
-                <label><span>{t.fieldPilotLabels.start}</span><input onChange={(event) => setFieldStart(event.target.value)} type="date" value={fieldStart} /></label>
-                <label><span>{t.fieldPilotLabels.end}</span><input min={fieldStart || undefined} onChange={(event) => setFieldEnd(event.target.value)} type="date" value={fieldEnd} /></label>
-                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.gap}</span><textarea maxLength={520} onChange={(event) => setFieldGapExplanation(event.target.value)} placeholder={locale === "en" ? "Explain volume, eligibility, acceptance, exception, setup, or measurement differences." : "Expliquez les écarts de volume, d’éligibilité, d’acceptation, d’exception, de mise en place ou de mesure."} rows={3} value={fieldGapExplanation} /></label>
-                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.recalibration}</span><textarea maxLength={520} onChange={(event) => setFieldRecalibrationDecision(event.target.value)} placeholder={locale === "en" ? "Retain, narrow, widen, or remove the hypothesis, then name the authorized next action." : "Conserver, resserrer, élargir ou retirer l’hypothèse, puis nommer la prochaine action autorisée."} rows={3} value={fieldRecalibrationDecision} /></label>
-                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.transfer}</span><textarea maxLength={420} onChange={(event) => setFieldTransfer(event.target.value)} placeholder={locale === "en" ? "Name the represented population, workflow, permissions, and conditions." : "Nommez la population, le processus, les permissions et les conditions représentés."} rows={3} value={fieldTransfer} /></label>
-                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.unsupported}</span><textarea maxLength={420} onChange={(event) => setFieldUnsupported(event.target.value)} placeholder={locale === "en" ? "Example: does not prove gains for other sectors, versions, or autonomy levels." : "Exemple : ne démontre aucun gain pour d’autres secteurs, versions ou niveaux d’autonomie."} rows={3} value={fieldUnsupported} /></label>
+                <label><span>{t.fieldPilotLabels.alias}</span><input maxLength={80} onChange={(event) => { setFieldAlias(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Example: Workshop North" : "Exemple : Atelier Nord"} type="text" value={fieldAlias} /></label>
+                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => { setFieldVersion(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} type="text" value={fieldVersion} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.workflow}</span><textarea maxLength={360} onChange={(event) => { setFieldWorkflow(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Describe one bounded input-to-accepted-outcome workflow." : "Décrivez un seul processus borné, de l’entrée au résultat accepté."} rows={3} value={fieldWorkflow} /></label>
+                <label><span>{t.fieldPilotLabels.start}</span><input onChange={(event) => { setFieldStart(event.target.value); invalidateFieldReview(); }} type="date" value={fieldStart} /></label>
+                <label><span>{t.fieldPilotLabels.end}</span><input min={fieldStart || undefined} onChange={(event) => { setFieldEnd(event.target.value); invalidateFieldReview(); }} type="date" value={fieldEnd} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.gap}</span><textarea maxLength={520} onChange={(event) => { setFieldGapExplanation(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Explain volume, eligibility, acceptance, exception, setup, or measurement differences." : "Expliquez les écarts de volume, d’éligibilité, d’acceptation, d’exception, de mise en place ou de mesure."} rows={3} value={fieldGapExplanation} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.recalibration}</span><textarea maxLength={520} onChange={(event) => { setFieldRecalibrationDecision(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Retain, narrow, widen, or remove the hypothesis, then name the authorized next action." : "Conserver, resserrer, élargir ou retirer l’hypothèse, puis nommer la prochaine action autorisée."} rows={3} value={fieldRecalibrationDecision} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.transfer}</span><textarea maxLength={420} onChange={(event) => { setFieldTransfer(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Name the represented population, workflow, permissions, and conditions." : "Nommez la population, le processus, les permissions et les conditions représentés."} rows={3} value={fieldTransfer} /></label>
+                <label className="field-pilot-wide"><span>{t.fieldPilotLabels.unsupported}</span><textarea maxLength={420} onChange={(event) => { setFieldUnsupported(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Example: does not prove gains for other sectors, versions, or autonomy levels." : "Exemple : ne démontre aucun gain pour d’autres secteurs, versions ou niveaux d’autonomie."} rows={3} value={fieldUnsupported} /></label>
               </div>
             </div>
             <aside className="field-pilot-review">
               <output className="field-pilot-status" data-ready={fieldReadyForReview} aria-live="polite"><span>{fieldReadyForReview ? t.fieldPilotState.review : t.fieldPilotState.draft}</span><strong>{fieldCompleted}/{fieldRequirements.length}</strong><small>{fieldReadyForReview ? t.fieldPilotState.completed : `${fieldRequirements.length - fieldCompleted} ${t.fieldPilotState.remaining}`}</small></output>
-              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(observedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{observedTimeReduction}%</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!preregisteredPlanning ? (locale === "en" ? "Freeze the hypothesis in the test plan before comparing observations." : "Figez l’hypothèse dans le plan de test avant de comparer les observations.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to preregistered v${preregisteredPlanning.version}.` : `Comparaison verrouillée sur la version préenregistrée v${preregisteredPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!preregisteredPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
+              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></span><span><small>{locale === "en" ? "RAW TIME CHANGE" : "VARIATION BRUTE"}</small><strong>{formatNumber(rawObservedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{hasAcceptedOutputs ? `${observedTimeReduction}%` : "n/a"}</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!preregisteredPlanning ? (locale === "en" ? "Freeze the hypothesis in the test plan before comparing observations." : "Figez l’hypothèse dans le plan de test avant de comparer les observations.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to preregistered v${preregisteredPlanning.version}.` : `Comparaison verrouillée sur la version préenregistrée v${preregisteredPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!preregisteredPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>

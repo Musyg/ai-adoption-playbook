@@ -119,15 +119,15 @@ export type NetPlanningRangePoint = {
   local_operating_floor_minutes: number;
   binding_floor: "source" | "local";
   operating_human_minutes: number;
-  amortized_setup_minutes_per_case: number;
-  human_time_with_ai_minutes: number;
-  human_time_saved_per_case: number;
+  amortized_setup_minutes_per_case: number | null;
+  human_time_with_ai_minutes: number | null;
+  human_time_saved_per_case: number | null;
   recurring_reduction_fraction: number;
   recurring_human_hours_saved_per_month: number;
-  reduction_fraction: number;
-  whole_workload_reduction_fraction: number;
-  human_hours_saved_per_month: number;
-  human_hours_saved_per_year: number;
+  reduction_fraction: number | null;
+  whole_workload_reduction_fraction: number | null;
+  human_hours_saved_per_month: number | null;
+  human_hours_saved_per_year: number | null;
   setup_payback_months: number | null;
 };
 export type NetPlanningRange = {

@@ -147,21 +147,22 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
     ? localOperatingFloorMinutes
     : Math.max(sourceImpliedHumanMinutes, localOperatingFloorMinutes);
   if (!humanScenario.calculable) {
+    const recurringTimeSavedPerCase = baselineMinutes - operatingHumanMinutes;
     return {
       source_reduction_fraction: evidencePoint?.reduction_fraction ?? null,
       source_implied_human_minutes: sourceImpliedHumanMinutes,
       local_operating_floor_minutes: localOperatingFloorMinutes,
       binding_floor: sourceImpliedHumanMinutes != null && sourceImpliedHumanMinutes >= localOperatingFloorMinutes ? "source" : "local",
       operating_human_minutes: operatingHumanMinutes,
-      amortized_setup_minutes_per_case: 0,
-      human_time_with_ai_minutes: 0,
-      human_time_saved_per_case: 0,
-      recurring_reduction_fraction: 0,
+      amortized_setup_minutes_per_case: null,
+      human_time_with_ai_minutes: null,
+      human_time_saved_per_case: null,
+      recurring_reduction_fraction: recurringTimeSavedPerCase / baselineMinutes,
       recurring_human_hours_saved_per_month: 0,
-      reduction_fraction: 0,
-      whole_workload_reduction_fraction: 0,
-      human_hours_saved_per_month: 0,
-      human_hours_saved_per_year: 0,
+      reduction_fraction: null,
+      whole_workload_reduction_fraction: null,
+      human_hours_saved_per_month: null,
+      human_hours_saved_per_year: null,
       setup_payback_months: null,
     };
   }

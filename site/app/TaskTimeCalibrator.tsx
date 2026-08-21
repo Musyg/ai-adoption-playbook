@@ -120,6 +120,7 @@ const content = {
     modeEffectNet: "Before setup allocation, that assumption represents",
     modeEffectNetSuffix: "less human time. The net result then adds",
     modeEffectSetupSuffix: "per case during amortization.",
+    modeEffectSetupUnavailable: "Setup per case and the net result remain unavailable until at least one case is eligible.",
     evidenceRange: "Unadjusted source range on the comparable task",
     evidenceBlocked: "This source does not produce a transferable range for the selected contract.",
     negative: "A negative value means the scenario consumes more human time than the current process.",
@@ -182,6 +183,7 @@ const content = {
     modeEffectNet: "Hors répartition de la mise en place, cette hypothèse représente",
     modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
     modeEffectSetupSuffix: "par cas pendant l’amortissement.",
+    modeEffectSetupUnavailable: "La mise en place par cas et le résultat net restent indisponibles tant qu’aucun cas n’est éligible.",
     evidenceRange: "Plage brute de la source pour la tâche comparable",
     evidenceBlocked: "Cette source ne produit aucune plage transférable pour le contrat sélectionné.",
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
@@ -334,28 +336,28 @@ export function TaskTimeCalibrator({
           </div></details>
           <div className="task-time-mode-effect" data-mode={integrationMode}>
             <strong>{t.modeEffect}</strong>
-            <p>{t.modeEffectLead} {t.modeEffectRecurring} <b>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</b>. {t.modeEffectNet} <b>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</b> {t.modeEffectNetSuffix} <b>{formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min</b> {t.modeEffectSetupSuffix}</p>
+            <p>{t.modeEffectLead} {t.modeEffectRecurring} <b>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</b>. {t.modeEffectNet} <b>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</b> {netCalculable ? <>{t.modeEffectNetSuffix} <b>{formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min</b> {t.modeEffectSetupSuffix}</> : t.modeEffectSetupUnavailable}</p>
           </div>
         </div>
 
         <output className="calibrator-results" aria-live="polite">
-          <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
+          <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
           <div className="calibrator-result-grid">
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
-            <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} min` : "n/a"}</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
-            <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
-            <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} + ${formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min` : t.results.planningUnavailable}</small></p>
+            <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
+            <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
+            <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} + ${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : t.results.planningUnavailable}</small></p>
             {transferableRange ? <>
-              <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-              <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-              <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{t.results.noRange}</small></p>}
+              <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{t.results.noRange}</small></p>}
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
-          {netCalculable ? <p className="calibrator-equation">max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min</strong> {locale === "en" ? "net in the central case" : "nettes dans le cas central"}</p> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
-          {netCalculable && netScenarios.low.reduction_fraction < 0 && <p className="task-time-negative">{t.negative}</p>}
+          {netCalculable ? <p className="calibrator-equation">max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong> {locale === "en" ? "net in the central case" : "nettes dans le cas central"}</p> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
+          {netCalculable && (netScenarios.low.reduction_fraction ?? 0) < 0 && <p className="task-time-negative">{t.negative}</p>}
         </output>
       </div>
       <aside className="calibrator-note"><strong>{locale === "en" ? "HOW THE NET RANGE IS BUILT" : "COMMENT LA FOURCHETTE NETTE EST CONSTRUITE"}</strong><p>{t.boundary}</p></aside>
