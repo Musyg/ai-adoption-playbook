@@ -121,6 +121,8 @@ export function calculateHumanTimeScenario(input) {
       amortized_setup_minutes_per_case: amortizedSetupMinutesPerCase,
     },
     operating_human_minutes: operatingHumanMinutes,
+    setup_hours: setupHours,
+    amortization_months: amortizationMonths,
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
     human_time_saved_per_case: humanTimeSavedPerCase,
     reduction_fraction: reductionFraction,
@@ -132,23 +134,63 @@ export function calculateHumanTimeScenario(input) {
   };
 }
 
-export function derivePlanningRange(evidenceTransfer, humanScenario) {
-  if (evidenceTransfer?.ok) {
-    return {
-      source: "external_evidence",
-      low: evidenceTransfer.scenarios.low.reduction_fraction,
-      central: evidenceTransfer.scenarios.central.reduction_fraction,
-      high: evidenceTransfer.scenarios.high.reduction_fraction,
-      compatibility: evidenceTransfer.compatibility.status,
-      evidence_id: evidenceTransfer.evidence_id,
-    };
-  }
+function calculateNetRangePoint(evidencePoint, humanScenario) {
+  const baselineMinutes = humanScenario.baseline_human_minutes;
+  const eligibleCases = humanScenario.eligible_cases;
+  const localOperatingFloorMinutes = humanScenario.operating_human_minutes;
+  const sourceImpliedHumanMinutes = evidencePoint?.human_time_with_ai_minutes ?? null;
+  const operatingHumanMinutes = sourceImpliedHumanMinutes == null
+    ? localOperatingFloorMinutes
+    : Math.max(sourceImpliedHumanMinutes, localOperatingFloorMinutes);
+  const amortizedSetupMinutesPerCase = humanScenario.components.amortized_setup_minutes_per_case;
+  const humanTimeWithAiMinutes = operatingHumanMinutes + amortizedSetupMinutesPerCase;
+  const humanTimeSavedPerCase = baselineMinutes - humanTimeWithAiMinutes;
+  const recurringTimeSavedPerCase = baselineMinutes - operatingHumanMinutes;
+  const humanHoursSavedPerMonth = humanTimeSavedPerCase * eligibleCases / 60;
+  const recurringHumanHoursSavedPerMonth = recurringTimeSavedPerCase * eligibleCases / 60;
+
   return {
-    source: "local_hypothesis",
-    low: humanScenario.reduction_fraction,
-    central: humanScenario.reduction_fraction,
-    high: humanScenario.reduction_fraction,
-    compatibility: "not_available",
-    evidence_id: null,
+    source_reduction_fraction: evidencePoint?.reduction_fraction ?? null,
+    source_implied_human_minutes: sourceImpliedHumanMinutes,
+    local_operating_floor_minutes: localOperatingFloorMinutes,
+    binding_floor: sourceImpliedHumanMinutes != null && sourceImpliedHumanMinutes >= localOperatingFloorMinutes ? "source" : "local",
+    operating_human_minutes: operatingHumanMinutes,
+    amortized_setup_minutes_per_case: amortizedSetupMinutesPerCase,
+    human_time_with_ai_minutes: humanTimeWithAiMinutes,
+    human_time_saved_per_case: humanTimeSavedPerCase,
+    reduction_fraction: humanTimeSavedPerCase / baselineMinutes,
+    whole_workload_reduction_fraction: humanScenario.eligible_share * humanTimeSavedPerCase / baselineMinutes,
+    human_hours_saved_per_month: humanHoursSavedPerMonth,
+    human_hours_saved_per_year: humanHoursSavedPerMonth * 12,
+    setup_payback_months: recurringHumanHoursSavedPerMonth > 0
+      ? humanScenario.setup_hours / recurringHumanHoursSavedPerMonth
+      : null,
+  };
+}
+
+export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
+  const evidenceScenarios = evidenceTransfer?.ok ? evidenceTransfer.scenarios : null;
+  return {
+    source: evidenceScenarios ? "external_evidence" : "local_hypothesis",
+    compatibility: evidenceScenarios ? evidenceTransfer.compatibility.status : "not_available",
+    evidence_id: evidenceScenarios ? evidenceTransfer.evidence_id : null,
+    method: "greater_residual_plus_amortized_setup",
+    scenarios: {
+      low: calculateNetRangePoint(evidenceScenarios?.low, humanScenario),
+      central: calculateNetRangePoint(evidenceScenarios?.central, humanScenario),
+      high: calculateNetRangePoint(evidenceScenarios?.high, humanScenario),
+    },
+  };
+}
+
+export function derivePlanningRange(evidenceTransfer, humanScenario) {
+  const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario);
+  return {
+    source: netRange.source,
+    low: netRange.scenarios.low.reduction_fraction,
+    central: netRange.scenarios.central.reduction_fraction,
+    high: netRange.scenarios.high.reduction_fraction,
+    compatibility: netRange.compatibility,
+    evidence_id: netRange.evidence_id,
   };
 }

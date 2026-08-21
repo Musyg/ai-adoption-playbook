@@ -84,7 +84,7 @@ test("non-agentic cases expose four distinct evidence contracts", async ({ page 
   await expect(caseLinks.nth(3)).toHaveAttribute("href", /examples\/en\/multimodal-catalog-accessibility\.md$/);
 });
 
-test("task-time calibrator separates transferable evidence from the human-time account", async ({ page }) => {
+test("task-time calibrator turns transferable evidence and human work into a net range", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
 
@@ -96,6 +96,8 @@ test("task-time calibrator separates transferable evidence from the human-time a
   await page.getByRole("button", { name: /Copilot A0–A1/ }).click();
   await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2023-NOY-ZHANG-WRITING");
   await expect(page.locator(".task-time-source-range")).toContainText("40–40–40%");
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("37.6%");
+  await expect(page.locator('.calibrator-result-grid p[data-range="central"]')).toContainText("37.6%");
 
   await page.locator(".task-time-components > summary").click();
   await page.getByLabel("Verification").fill("70");

@@ -189,8 +189,10 @@ first-party admission contract.
 3. The progressive calculator exposes one task, one evidence anchor, and one
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
-4. Source-informed low, central, and high ranges remain visually separate from
-   the local human-time calculation. Neither is presented as pilot evidence.
+4. The engine now produces a net low, central, and high range. For each source
+   point it retains the greater of source-implied residual human time and the
+   declared local human-work floor, then adds amortized setup. The unadjusted
+   source range remains visible and neither result is presented as pilot evidence.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.
@@ -198,8 +200,9 @@ first-party admission contract.
    currently persisted or exported, so an additive schema migration would add
    complexity without preserving any user-authorized record.
 7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
-   palette, and browser checks pass locally. An independent external review is
-   still required before assigning a 0.6 release date.
+   palette, and browser checks pass locally for the previous layer. The net
+   range change must pass the same checks and an independent external review
+   before assigning a 0.6 release date.
 
 This work is a new quantitative evidence and transfer layer. It is not a new
 organization track, it does not require rebuilding the playbook, and it does

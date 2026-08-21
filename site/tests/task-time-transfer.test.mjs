@@ -5,6 +5,7 @@ import test from "node:test";
 import {
   assessEvidenceCompatibility,
   buildEvidenceTransfer,
+  buildNetPlanningRange,
   calculateHumanTimeScenario,
   derivePlanningRange,
   listEvidenceOptions,
@@ -132,7 +133,7 @@ test("accounts for every human component, exceptions, and amortized setup", () =
   assert.ok(Math.abs(scenario.whole_workload_reduction_fraction - 0.23833333333333334) < 1e-12);
 });
 
-test("uses measured compatible evidence for the planning range and otherwise keeps the local hypothesis", () => {
+test("produces a net evidence range after the local human floor and amortized setup", () => {
   const target = { task_profile_id: "knowledge_analysis", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
   const options = listEvidenceOptions(registry, target);
   assert.equal(options[0].record.evidence_id, "TT-2026-BCG-JAGGED-FRONTIER");
@@ -151,15 +152,76 @@ test("uses measured compatible evidence for the planning range and otherwise kee
     amortization_months: 12,
   });
   const evidence = buildEvidenceTransfer(options[0].record, target, { baseline_human_minutes: 60, monthly_cases: 40, eligible_share: 70 });
+  const net = buildNetPlanningRange(evidence, manual);
+  assert.equal(net.method, "greater_residual_plus_amortized_setup");
+  assert.equal(net.scenarios.low.binding_floor, "source");
+  assert.ok(Math.abs(net.scenarios.low.human_time_with_ai_minutes - 53.642857142857146) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.central.reduction_fraction - 0.13195238095238093) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.high.human_hours_saved_per_month - 4.394666666666667) < 1e-12);
   assert.deepEqual(derivePlanningRange(evidence, manual), {
     source: "external_evidence",
-    low: 0.225,
-    central: 0.251,
-    high: 0.276,
+    low: 0.1059523809523809,
+    central: 0.13195238095238093,
+    high: 0.15695238095238093,
     compatibility: "compatible",
     evidence_id: "TT-2026-BCG-JAGGED-FRONTIER",
   });
   assert.equal(derivePlanningRange({ ok: false }, manual).source, "local_hypothesis");
+});
+
+test("uses the declared human work as a floor without adding it twice", () => {
+  const target = { task_profile_id: "software_greenfield", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" };
+  const evidence = buildEvidenceTransfer(record("TT-2023-GITHUB-COPILOT-HTTP"), target, {
+    baseline_human_minutes: 120,
+    monthly_cases: 10,
+    eligible_share: 100,
+  });
+  const manual = calculateHumanTimeScenario({
+    baseline_human_minutes: 120,
+    monthly_cases: 10,
+    eligible_share: 100,
+    preparation_minutes: 20,
+    supervision_minutes: 20,
+    verification_minutes: 30,
+    correction_minutes: 20,
+    exception_rate: 50,
+    exception_minutes: 20,
+    setup_hours: 0,
+    amortization_months: 12,
+  });
+  const net = buildNetPlanningRange(evidence, manual);
+  assert.equal(manual.operating_human_minutes, 100);
+  assert.equal(net.scenarios.low.binding_floor, "local");
+  assert.equal(net.scenarios.low.human_time_with_ai_minutes, 100);
+  assert.equal(net.scenarios.central.human_time_with_ai_minutes, 100);
+  assert.equal(net.scenarios.high.human_time_with_ai_minutes, 100);
+  assert.ok(Math.abs(net.scenarios.central.reduction_fraction - (1 / 6)) < 1e-12);
+});
+
+test("keeps an evidence-backed slowdown negative after local costs and setup", () => {
+  const target = { task_profile_id: "software_mature_repo", integration_mode: "copilot", quality_gate: "production", expertise_level: "experienced" };
+  const evidence = buildEvidenceTransfer(record("TT-2025-METR-MATURE-REPOS"), target, {
+    baseline_human_minutes: 120,
+    monthly_cases: 10,
+    eligible_share: 100,
+  });
+  const manual = calculateHumanTimeScenario({
+    baseline_human_minutes: 120,
+    monthly_cases: 10,
+    eligible_share: 100,
+    preparation_minutes: 5,
+    supervision_minutes: 5,
+    verification_minutes: 10,
+    correction_minutes: 5,
+    exception_rate: 0,
+    exception_minutes: 0,
+    setup_hours: 12,
+    amortization_months: 12,
+  });
+  const net = buildNetPlanningRange(evidence, manual);
+  assert.ok(net.scenarios.low.reduction_fraction < -0.39);
+  assert.ok(net.scenarios.central.reduction_fraction < -0.19);
+  assert.ok(net.scenarios.high.reduction_fraction < -0.02);
 });
 
 test("publishes a strict schema for the registry", async () => {

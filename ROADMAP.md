@@ -95,8 +95,8 @@ remain open.
   state, and operator experience, preserves negative findings, and blocks
   context-only values from automatic calculation.
 - [x] Replace the integration-level productivity bands with a progressive
-  calculator that keeps source ranges separate from the local human-time
-  account.
+  calculator that converts source ranges into a net low, central, and high
+  range constrained by the local human-work floor and amortized setup.
 - [x] Normalize the eleven worked cases against the task profiles and audit
   every quantitative value as measured evidence, a named hypothesis, or a
   value to remove.
