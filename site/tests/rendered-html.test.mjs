@@ -190,6 +190,8 @@ for (const [pathname, language, title] of [
     assert.match(html, /Turn answers into records people can operate|Transformer les réponses en documents réellement exploitables/i);
     assert.match(html, /AI system register|Registre du système IA/i);
     assert.match(html, /Implementation checklist|Liste de mise en œuvre/i);
+    assert.match(html, /See what changed before yesterday’s decision|Voir ce qui a changé avant qu’une ancienne décision/i);
+    assert.match(html, /No reference dossier loaded|Aucun dossier de référence chargé/i);
     assert.match(html, /href=["']\/data\/project-dossier\.schema\.json["']/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);

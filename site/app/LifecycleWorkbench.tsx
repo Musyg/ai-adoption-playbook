@@ -7,9 +7,11 @@ import {
   parseProjectDossier,
   PROJECT_DOSSIER_STORAGE_KEY,
 } from "./project-dossier.mjs";
-import type { ProjectArtifacts } from "./project-dossier.mjs";
+import type { ProjectArtifacts, ProjectChangeReview } from "./project-dossier.mjs";
 import { createEmptyProjectArtifacts, materializeProjectArtifacts } from "./project-artifacts.mjs";
+import { createProjectSnapshot, materializeProjectChangeReview } from "./project-change-review.mjs";
 import { ProjectArtifactsWorkbench } from "./ProjectArtifactsWorkbench";
+import { ProjectChangeReviewWorkbench } from "./ProjectChangeReview";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -152,7 +154,7 @@ const dossierUi = {
     imported: "Dossier imported and guide context restored.",
     removed: "Local copy removed. A new blank dossier is ready.",
     invalid: "This file is not a compatible project dossier. Your current work was not changed.",
-    tooLarge: "This file is too large. Project dossiers must stay below 1 MB.",
+    tooLarge: "This file is too large. Project dossiers must stay below 2 MB.",
     export: "Export JSON",
     import: "Import JSON",
     remove: "Start a new dossier",
@@ -172,7 +174,7 @@ const dossierUi = {
     imported: "Dossier importé et contexte du guide restauré.",
     removed: "Copie locale supprimée. Un nouveau dossier vide est prêt.",
     invalid: "Ce fichier n’est pas un dossier projet compatible. Votre travail actuel n’a pas été modifié.",
-    tooLarge: "Ce fichier est trop volumineux. Un dossier projet doit rester inférieur à 1 Mo.",
+    tooLarge: "Ce fichier est trop volumineux. Un dossier projet doit rester inférieur à 2 Mo.",
     export: "Exporter le JSON",
     import: "Importer un JSON",
     remove: "Créer un nouveau dossier",
@@ -204,6 +206,7 @@ export function LifecycleWorkbench(props: Props) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [checkedControls, setCheckedControls] = useState<Record<string, boolean>>({});
   const [artifacts, setArtifacts] = useState<ProjectArtifacts>(() => createEmptyProjectArtifacts());
+  const [changeReview, setChangeReview] = useState<ProjectChangeReview | null>(null);
   const [copied, setCopied] = useState(false);
   const [dossierId, setDossierId] = useState("");
   const [createdAt, setCreatedAt] = useState("");
@@ -253,6 +256,7 @@ export function LifecycleWorkbench(props: Props) {
       setValues(parsed.value.fields);
       setCheckedControls(parsed.value.conditioned_controls);
       setArtifacts(parsed.value.artifacts);
+      setChangeReview(parsed.value.change_review);
       setHasLocalCopy(true);
       setDossierNotice(parsed.migratedFrom ? dossierUi[locale].migrated : dossierUi[locale].resumed);
       setStorageReady(true);
@@ -337,6 +341,23 @@ export function LifecycleWorkbench(props: Props) {
     security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
   }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, securityControlKey, values]);
+  const currentSnapshot = useMemo(() => createProjectSnapshot({
+    context: {
+      organization_type: props.audienceId,
+      use_pattern: props.usePatternId,
+      jurisdiction: props.jurisdictionId,
+      integration_level: props.integrationId,
+      autonomy_level: props.autonomy,
+      risk_level: derivedRisk,
+    },
+    fields: values,
+    conditioned_controls: conditionedControls,
+    matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
+    completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
+    artifacts: resolvedArtifacts,
+  }), [completedPhaseKey, conditionedControls, derivedRisk, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, values]);
+  const resolvedChangeReview = useMemo(() => materializeProjectChangeReview(changeReview, currentSnapshot), [changeReview, currentSnapshot]);
+  const fieldCatalog = useMemo(() => Object.fromEntries(phases.flatMap((phase, phaseIndex) => phase.fields.map((item) => [item.id, { label: item.label, phase: phaseIndex }]))), [phases]);
   const current = phases[activePhase];
   const controlsForPhase = props.matchedControls.filter((control) => control.phases.includes(activePhase));
 
@@ -363,6 +384,7 @@ export function LifecycleWorkbench(props: Props) {
         matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
         completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
         artifacts: resolvedArtifacts,
+        change_review: resolvedChangeReview,
       });
       try {
         window.localStorage.setItem(PROJECT_DOSSIER_STORAGE_KEY, JSON.stringify(dossier));
@@ -373,7 +395,7 @@ export function LifecycleWorkbench(props: Props) {
       }
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, storageReady, values]);
+  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, resolvedChangeReview, storageReady, values]);
 
   const update = (id: string, value: string) => {
     setValues((previous) => ({ ...previous, [id]: value }));
@@ -406,6 +428,7 @@ export function LifecycleWorkbench(props: Props) {
     matched_control_ids: props.matchedControls.map((control) => control.id),
     completed_phases: completedPhases,
     artifacts: resolvedArtifacts,
+    change_review: resolvedChangeReview,
   });
 
   const exportDossier = () => {
@@ -423,7 +446,7 @@ export function LifecycleWorkbench(props: Props) {
   const importDossier = async (file: File | undefined) => {
     if (!file) return;
     try {
-      if (file.size > 1_000_000) {
+      if (file.size > 2_000_000) {
         setDossierNotice(dossierLabels.tooLarge);
         return;
       }
@@ -451,6 +474,7 @@ export function LifecycleWorkbench(props: Props) {
       setValues(parsed.value.fields);
       setCheckedControls(parsed.value.conditioned_controls);
       setArtifacts(parsed.value.artifacts);
+      setChangeReview(parsed.value.change_review);
       setHasLocalCopy(true);
       setDossierNotice(parsed.migratedFrom ? dossierLabels.migrated : dossierLabels.imported);
       setSaveFailed(false);
@@ -471,6 +495,7 @@ export function LifecycleWorkbench(props: Props) {
     setValues({});
     setCheckedControls({});
     setArtifacts(createEmptyProjectArtifacts());
+    setChangeReview(null);
     setHasLocalCopy(false);
     setSaveFailed(false);
     setCopied(false);
@@ -551,6 +576,20 @@ export function LifecycleWorkbench(props: Props) {
         securityControls={securityControls.map((control) => ({ ...control, checked: conditionedControls[control.id] }))}
         usePatternId={props.usePatternId}
         usePatternLabel={props.usePatternLabel}
+      />
+
+      <ProjectChangeReviewWorkbench
+        currentSnapshot={currentSnapshot}
+        dossierId={dossierId}
+        fieldCatalog={fieldCatalog}
+        locale={locale}
+        matchedControls={props.matchedControls}
+        onChange={setChangeReview}
+        onDirty={() => { setHasLocalCopy(true); setDossierNotice(""); }}
+        onOpenPhase={(phase) => { selectPhase(phase); window.requestAnimationFrame(() => document.querySelector(".lifecycle-phase")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}
+        phaseTitles={phases.map((phase) => phase.title)}
+        review={resolvedChangeReview}
+        securityControls={securityControls}
       />
 
       <section aria-labelledby="project-dossier-title" className="project-dossier-manager" data-dossier-state={saveFailed ? "error" : hasLocalCopy ? "saved" : "new"}>

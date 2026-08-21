@@ -222,6 +222,10 @@ const patternGuidance: Record<Locale, Record<string, string>> = {
   },
 };
 
+export function getProjectArtifactFieldLabel(locale: Locale, artifactId: FieldArtifactId, fieldId: string) {
+  return artifactDefinitions[locale].find((artifact) => artifact.id === artifactId)?.fields?.find((field) => field.id === fieldId)?.label ?? fieldId;
+}
+
 export function ProjectArtifactsWorkbench(props: Props) {
   const { artifacts, locale } = props;
   const labels = copy[locale];

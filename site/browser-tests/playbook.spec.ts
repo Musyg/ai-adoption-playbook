@@ -2,8 +2,8 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const locales = [
-  { path: "/", lang: "en", title: "AI Adoption Playbook: pilots, agents and governance", heading: "Move from AI interest to a system you can trust." },
-  { path: "/fr/", lang: "fr", title: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance", heading: "Passez de l’intérêt pour l’IA à un système digne de confiance." },
+  { path: "/", lang: "en", title: "AI Adoption Playbook: pilots, agents and governance", heading: "Move from AI interest to a system you can trust.", changeHeading: "See what changed before yesterday’s decision becomes today’s assumption.", emptyReference: "No reference dossier loaded" },
+  { path: "/fr/", lang: "fr", title: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance", heading: "Passez de l’intérêt pour l’IA à un système digne de confiance.", changeHeading: "Voir ce qui a changé avant qu’une ancienne décision devienne une hypothèse silencieuse.", emptyReference: "Aucun dossier de référence chargé" },
 ] as const;
 
 for (const locale of locales) {
@@ -13,6 +13,8 @@ for (const locale of locales) {
     await expect(page.locator("html")).toHaveAttribute("lang", locale.lang);
     await expect(page).toHaveTitle(locale.title);
     await expect(page.getByRole("heading", { level: 1 })).toContainText(locale.heading);
+    await expect(page.locator("#change-review-title")).toHaveText(locale.changeHeading);
+    await expect(page.locator(".change-review-empty")).toContainText(locale.emptyReference);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     await expect(page.locator('link[rel="sitemap"]')).toHaveCount(0);
@@ -269,7 +271,7 @@ test("connected project records stay linked, editable, and persistent", async ({
       taskStatus: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status,
       taskMode: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status_mode,
     };
-  }, storageKey)).toEqual({ schema: "0.2.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
+  }, storageKey)).toEqual({ schema: "0.3.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
 
   await page.reload();
   await openWorkbench();
@@ -336,7 +338,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
     active_phase: 0,
     fields: { ...stored.fields, project: "Imported public assistant" },
   };
-  await workbench.locator(".dossier-file-input").setInputFiles({
+  await workbench.locator(".project-dossier-manager .dossier-file-input").setInputFiles({
     name: "project-dossier.json",
     mimeType: "application/json",
     buffer: Buffer.from(JSON.stringify(imported)),
@@ -348,11 +350,11 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
 
   const legacyDossier = { ...imported };
-  delete legacyDossier.artifacts;
-  await workbench.locator(".dossier-file-input").setInputFiles({
+  delete legacyDossier.change_review;
+  await workbench.locator(".project-dossier-manager .dossier-file-input").setInputFiles({
     name: "legacy-project-dossier.json",
     mimeType: "application/json",
-    buffer: Buffer.from(JSON.stringify({ ...legacyDossier, schema_version: "0.1.0" })),
+    buffer: Buffer.from(JSON.stringify({ ...legacyDossier, schema_version: "0.2.0" })),
   });
   await expect(workbench.getByText("Older dossier updated to the current project-record format.")).toBeVisible();
   await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
@@ -364,13 +366,13 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
       artifactGroups: Object.keys(dossier?.artifacts ?? {}).sort(),
     };
   }, storageKey)).toEqual({
-    schema: "0.2.0",
+    schema: "0.3.0",
     project: "Imported public assistant",
     artifactGroups: ["evaluation_plan", "implementation_checklist", "risk_assessment", "system_register"],
   });
 
   const invalid = { ...imported, schema_version: "9.0.0", fields: { project: "Must not replace current work" } };
-  await workbench.locator(".dossier-file-input").setInputFiles({
+  await workbench.locator(".project-dossier-manager .dossier-file-input").setInputFiles({
     name: "invalid.json",
     mimeType: "application/json",
     buffer: Buffer.from(JSON.stringify(invalid)),
@@ -382,6 +384,78 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   await expect(workbench.locator('[name="project"]')).toHaveValue("");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), storageKey)).toBeNull();
   await expect(workbench.locator(".project-dossier-manager")).toHaveAttribute("data-dossier-state", "new");
+});
+
+test("change review compares one dossier version and reopens stale decisions", async ({ page }) => {
+  test.setTimeout(60_000);
+  const storageKey = "ai-adoption-playbook:project-dossier:v1";
+  const openWorkbench = async () => {
+    await page.locator("#implementation-library > summary").click();
+    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).evaluate((element) => (element as HTMLButtonElement).click());
+    await expect(page.locator("#lifecycle-workbench")).toBeVisible();
+  };
+
+  await page.goto("/");
+  await page.evaluate((key) => localStorage.removeItem(key), storageKey);
+  await page.reload();
+  await openWorkbench();
+  let workbench = page.locator("#lifecycle-workbench");
+  await workbench.locator('[name="project"]').fill("Reference service assistant");
+  await workbench.locator('[name="owner"]').fill("Service owner");
+  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.fields?.project, storageKey)).toBe("Reference service assistant");
+  const baseline = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null"), storageKey);
+
+  await workbench.locator('[name="project"]').fill("Current service assistant");
+  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.fields?.project, storageKey)).toBe("Current service assistant");
+  const review = workbench.locator(".change-review-workbench");
+  await review.locator(".dossier-file-input").setInputFiles({
+    name: "reference-project-dossier.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(baseline)),
+  });
+  await expect(review.getByText("Reference loaded. Review every changed decision before closing the comparison.")).toBeVisible();
+  await review.locator('button[data-change="lifecycle:project"]').evaluate((element) => (element as HTMLButtonElement).click());
+  let change = review.locator('article[data-change="lifecycle:project"]');
+  await expect(change.locator(".change-values section").nth(0)).toContainText("Reference service assistant");
+  await expect(change.locator(".change-values section").nth(1)).toContainText("Current service assistant");
+  await change.getByRole("combobox", { name: /Project decision:/ }).selectOption("accepted");
+  await change.getByRole("textbox", { name: /Owner:/ }).fill("Programme owner");
+  await change.getByLabel(/Due date:/).fill("2026-10-01");
+  await change.getByRole("textbox", { name: /Evidence reference:/ }).fill("CHANGE-001");
+  await change.getByRole("textbox", { name: /Decision note:/ }).fill("Name change only; scope unchanged.");
+
+  await expect.poll(() => page.evaluate((key) => {
+    const dossier = JSON.parse(localStorage.getItem(key) ?? "null");
+    return {
+      schema: dossier?.schema_version,
+      baseline: dossier?.change_review?.baseline?.dossier_id,
+      decision: dossier?.change_review?.items?.["lifecycle:project"]?.decision,
+      evidence: dossier?.change_review?.items?.["lifecycle:project"]?.evidence_ref,
+    };
+  }, storageKey)).toEqual({ schema: "0.3.0", baseline: baseline.dossier_id, decision: "accepted", evidence: "CHANGE-001" });
+
+  await page.reload();
+  await openWorkbench();
+  workbench = page.locator("#lifecycle-workbench");
+  const restoredReview = workbench.locator(".change-review-workbench");
+  await restoredReview.locator('button[data-change="lifecycle:project"]').evaluate((element) => (element as HTMLButtonElement).click());
+  change = restoredReview.locator('article[data-change="lifecycle:project"]');
+  await expect(change.getByRole("combobox", { name: /Project decision:/ })).toHaveValue("accepted");
+  await expect(change.getByRole("textbox", { name: /Evidence reference:/ })).toHaveValue("CHANGE-001");
+
+  await workbench.locator('[name="project"]').fill("Current service assistant v2");
+  await expect(change.getByRole("combobox", { name: /Project decision:/ })).toHaveValue("pending");
+  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.change_review?.items?.["lifecycle:project"]?.decision, storageKey)).toBe("pending");
+
+  await restoredReview.locator(".dossier-file-input").setInputFiles({
+    name: "different-project.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({ ...baseline, dossier_id: "AAP-other-0001" })),
+  });
+  await expect(restoredReview.getByText("Choose an earlier export with the same dossier ID. A different project cannot be treated as a version.")).toBeVisible();
+  await expect(restoredReview.locator('article[data-change="lifecycle:project"]')).toBeVisible();
+  const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(horizontalOverflow).toBeLessThanOrEqual(1);
 });
 
 test("rendered page has no automatic axe violations", async ({ page }) => {

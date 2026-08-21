@@ -1019,6 +1019,66 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .checklist-task-layout > article > footer p { margin: 0; }
 .checklist-task-layout > article > footer button { background: transparent; border: 0; color: var(--blue-deep); cursor: pointer; font: 700 9px "Courier New", monospace; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
 .artifact-panel > footer { background: transparent; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.5; margin-top: 28px; padding: 18px 0 0; }
+.change-review-workbench { background: var(--surface); border-top: 1px solid var(--line); color: var(--ink); padding: 40px 30px; }
+.change-review-workbench > header { align-items: start; display: grid; gap: 30px; grid-template-columns: 1fr auto; }
+.change-review-workbench > header h4 { font-size: clamp(28px, 4vw, 46px); letter-spacing: -.04em; line-height: 1.03; margin: 10px 0 0; max-width: 850px; }
+.change-review-workbench > header > div > p:not(.eyebrow) { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 16px 0 0; max-width: 760px; }
+.change-review-workbench > header output { border-left: 3px solid var(--blue-deep); display: flex; flex-direction: column; min-width: 180px; padding-left: 18px; }
+.change-review-workbench > header output strong { font: 700 34px "Courier New", monospace; }
+.change-review-workbench > header output span, .change-review-workbench > header output small { color: var(--muted); font-size: 10px; margin-top: 7px; }
+.change-review-empty { align-items: center; border: 1px solid var(--line); display: grid; gap: 30px; grid-template-columns: 1fr auto; margin-top: 28px; padding: 24px; }
+.change-review-empty strong { font-size: 16px; }
+.change-review-empty p { color: var(--muted); font-size: 11px; line-height: 1.55; margin: 8px 0 0; max-width: 680px; }
+.change-review-meta { border: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr auto; margin-top: 28px; }
+.change-review-meta > p { border-right: 1px solid var(--line); display: flex; flex-direction: column; margin: 0; min-height: 96px; padding: 18px; }
+.change-review-meta > p span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.change-review-meta > p strong { font-size: 12px; margin-top: 12px; }
+.change-review-meta > p small { color: var(--muted); font: 700 9px "Courier New", monospace; margin-top: 7px; overflow-wrap: anywhere; }
+.change-review-meta > div { align-content: center; display: grid; gap: 8px; min-width: 230px; padding: 16px; }
+.change-review-meta .button { text-align: center; }
+.change-review-clear { background: transparent; border: 0; color: var(--muted); cursor: pointer; font-size: 10px; padding: 4px; text-decoration: underline; text-underline-offset: 3px; }
+.change-review-clear:hover { color: var(--ink); }
+.change-review-body { margin-top: 24px; }
+.change-domain-router { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.change-domain-router button { align-items: center; background: var(--paper); border: 1px solid var(--line); border-bottom: 0; border-left: 0; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; min-height: 48px; padding: 12px; text-align: left; }
+.change-domain-router button:nth-child(4n+1) { border-left: 1px solid var(--line); }
+.change-domain-router button:nth-child(n+5) { border-top: 0; }
+.change-domain-router button:hover { box-shadow: inset 0 -3px var(--blue-deep); }
+.change-domain-router button[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.change-domain-router strong { font-size: 10px; }
+.change-domain-router span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; }
+.change-domain-router button[aria-current="page"] span { color: var(--blue); }
+.change-item-layout { border: 1px solid var(--line); display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+.change-item-layout > nav { border-right: 1px solid var(--line); max-height: 640px; overflow-y: auto; }
+.change-item-layout > nav button { background: var(--paper); border: 0; border-top: 1px solid var(--line); color: var(--ink); cursor: pointer; display: grid; gap: 5px 10px; grid-template-columns: 20px 1fr; padding: 14px; text-align: left; width: 100%; }
+.change-item-layout > nav button:first-child { border-top: 0; }
+.change-item-layout > nav button:hover { background: rgb(7 16 24 / 5%); }
+.change-item-layout > nav button[aria-current="step"] { background: var(--ink); color: var(--paper); }
+.change-item-layout > nav button > span { color: var(--blue-deep); font: 700 11px "Courier New", monospace; grid-row: 1 / span 2; }
+.change-item-layout > nav button[aria-current="step"] > span { color: var(--blue); }
+.change-item-layout > nav button > strong { font-size: 10px; line-height: 1.35; }
+.change-item-layout > nav button > small { color: var(--muted); font-size: 8px; }
+.change-item-layout > nav button[aria-current="step"] > small { color: var(--dark-muted); }
+.change-item-layout > article { background: var(--paper); min-width: 0; padding: 26px; }
+.change-item-layout > article > header { align-items: start; display: flex; gap: 20px; justify-content: space-between; }
+.change-item-layout > article > header span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.change-item-layout > article > header h5 { font-size: 20px; margin: 8px 0 0; }
+.change-item-layout > article > header button { background: transparent; border: 0; color: var(--blue-deep); cursor: pointer; font: 700 9px "Courier New", monospace; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+.change-values { display: grid; grid-template-columns: 1fr 1fr; margin-top: 22px; }
+.change-values section { border: 1px solid var(--line); min-width: 0; padding: 18px; }
+.change-values section + section { border-left: 0; }
+.change-values span, .change-item-layout aside > span, .change-decision-fields label > span { color: var(--muted); font: 700 8px "Courier New", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.change-values p { font-size: 12px; line-height: 1.5; margin: 12px 0 0; max-height: 150px; overflow-y: auto; overflow-wrap: anywhere; white-space: pre-wrap; }
+.change-item-layout aside { border-left: 4px solid var(--blue-deep); margin-top: 18px; padding: 16px 18px; }
+.change-item-layout aside strong { display: block; font-size: 14px; margin-top: 8px; }
+.change-item-layout aside p { color: var(--muted); font-size: 11px; line-height: 1.5; margin: 9px 0 0; }
+.change-item-layout aside p b { color: var(--ink); }
+.change-decision-fields { display: grid; gap: 12px; grid-template-columns: 1.2fr 1fr .8fr 1.2fr; margin-top: 22px; }
+.change-decision-fields label { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.change-decision-fields input, .change-decision-fields select, .change-decision-fields textarea { background: var(--surface); border: 1px solid var(--line); border-radius: 0; color: var(--ink); font-family: inherit; font-size: 11px; min-width: 0; padding: 10px; width: 100%; }
+.change-note { grid-column: 1 / -1; }
+.change-review-notice { border-left: 4px solid var(--blue-deep); color: var(--ink); font-size: 11px; line-height: 1.5; margin: 20px 0 0; padding: 12px 16px; }
+.change-review-workbench > footer { background: transparent; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.5; margin-top: 24px; padding: 18px 0 0; }
 .project-dossier-manager { background: var(--dark); color: var(--dark-text); padding: 30px; }
 .project-dossier-manager > header { align-items: start; display: grid; gap: 28px; grid-template-columns: 1fr auto; }
 .project-dossier-manager > header h4 { font-size: clamp(22px, 3vw, 34px); letter-spacing: -.025em; margin: 8px 0 0; }
@@ -2100,6 +2160,24 @@ footer a { color: var(--blue); }
   .checklist-task-layout > nav button:first-child { border-left: 0; }
   .checklist-task-layout > article { padding: 18px; }
   .checklist-task-layout > article > header { grid-template-columns: 1fr; }
+  .change-review-workbench { padding: 30px 22px; }
+  .change-review-workbench > header, .change-review-empty, .change-review-meta { align-items: stretch; grid-template-columns: 1fr; }
+  .change-review-workbench > header output { min-width: 0; }
+  .change-review-empty .button { text-align: center; }
+  .change-review-meta > p { border-bottom: 1px solid var(--line); border-right: 0; }
+  .change-review-meta > div { min-width: 0; }
+  .change-domain-router { display: flex; overflow-x: auto; }
+  .change-domain-router button, .change-domain-router button:nth-child(4n+1), .change-domain-router button:nth-child(n+5) { border: 1px solid var(--line); border-right: 0; flex: 0 0 145px; }
+  .change-domain-router button:last-child { border-right: 1px solid var(--line); }
+  .change-item-layout { grid-template-columns: 1fr; }
+  .change-item-layout > nav { border-bottom: 1px solid var(--line); border-right: 0; display: flex; max-height: none; overflow-x: auto; }
+  .change-item-layout > nav button { border-left: 1px solid var(--line); border-top: 0; flex: 0 0 165px; }
+  .change-item-layout > nav button:first-child { border-left: 0; }
+  .change-item-layout > article { padding: 18px; }
+  .change-item-layout > article > header { align-items: flex-start; flex-direction: column; }
+  .change-values, .change-decision-fields { grid-template-columns: 1fr; }
+  .change-values section + section { border-left: 1px solid var(--line); border-top: 0; }
+  .change-note { grid-column: auto; }
   :is(.sme-range-bar, .mission-range-bar, .public-range-bar, .agency-bar) i { background: #34414c; border-left: 4px solid var(--blue); }
   .tool-grid { grid-template-columns: 1fr; }
   .tool-grid a, .tool-grid a:nth-child(3n), .tool-grid a:last-child { border-bottom: 0; border-right: 1px solid var(--dark-line); }
