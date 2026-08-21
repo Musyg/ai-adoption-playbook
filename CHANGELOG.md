@@ -9,6 +9,10 @@
   workbench covering phases 0 to 11. It keeps one phase visible, derives local
   orientation for priority, risk, and architecture, conditions security
   controls on the selected design, and copies a non-identifying working plan.
+- Added a persistent local project dossier to the lifecycle workbench. It saves
+  answers and conditioned controls in the current browser, restores the guide
+  context, exports and imports a strictly validated JSON draft, and publishes
+  an experimental `0.1.0` schema without transmitting project data.
 
 ## 0.2.2, 2026-08-21
 

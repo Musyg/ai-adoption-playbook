@@ -1401,6 +1401,41 @@ export function Playbook({ locale }: { locale: Locale }) {
     setDossierCopied(false);
     setFieldEvidenceConfirmed(false);
   };
+  const restoreLifecycleContext = useCallback((context: {
+    audienceId: string;
+    usePatternId: string;
+    jurisdictionId: string;
+    integrationId: string;
+    autonomy: number;
+    risk: number;
+  }) => {
+    const audienceIds: AudienceId[] = ["independent", "tpe", "pme", "nonprofit", "public"];
+    const usePatternIds: UsePatternId[] = ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"];
+    const jurisdictionIds: JurisdictionId[] = ["CH", "EU", "BOTH"];
+    const integrationIds: IntegrationId[] = ["copilot", "agent", "agency"];
+    if (!audienceIds.includes(context.audienceId as AudienceId)
+      || !usePatternIds.includes(context.usePatternId as UsePatternId)
+      || !jurisdictionIds.includes(context.jurisdictionId as JurisdictionId)
+      || !integrationIds.includes(context.integrationId as IntegrationId)
+      || !Number.isInteger(context.autonomy) || context.autonomy < 0 || context.autonomy > 4
+      || !Number.isInteger(context.risk) || context.risk < 0 || context.risk > 3) return false;
+
+    const level = context.integrationId as IntegrationId;
+    setAudienceId(context.audienceId as AudienceId);
+    setUsePattern(context.usePatternId as UsePatternId);
+    setJurisdiction(context.jurisdictionId as JurisdictionId);
+    setCalibrationLevel(level);
+    setAutonomy(context.autonomy);
+    setRisk(context.risk);
+    setImpactLow(calibrationSpecs[level].low * 100);
+    setImpactHigh(calibrationSpecs[level].high * 100);
+    setSetupHours(calibrationSpecs[level].setup);
+    setReviewDate(operationSpecs[level].reviewDate);
+    setOperationCopied(false);
+    setDossierCopied(false);
+    setFieldEvidenceConfirmed(false);
+    return true;
+  }, []);
   const selectGuideLevel = (level: GuidedContent["levels"][number]) => {
     selectCalibrationLevel(level.id);
     setAutonomy(level.autonomy);
@@ -2071,7 +2106,9 @@ export function Playbook({ locale }: { locale: Locale }) {
             jurisdictionLabel={selectedJurisdiction.label}
             locale={locale}
             matchedControls={applicableControls.map((control) => ({ family: control.family, id: control.control_id, phases: control.lifecycle_phases, priority: t.crosswalkPriority[control.priority], title: control.title[locale] }))}
+            onContextImport={restoreLifecycleContext}
             onRiskChange={setRisk}
+            schemaHref={sitePath("/data/project-dossier.schema.json")}
             usePatternId={usePattern}
             usePatternLabel={selectedUsePattern.title}
           />

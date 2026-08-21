@@ -186,6 +186,8 @@ for (const [pathname, language, title] of [
     assert.match(html, /Initial state|Situation initiale/i);
     assert.match(html, /Simplest sufficient system|Système suffisant le plus simple/i);
     assert.match(html, /Security controls|Contrôles de sécurité/i);
+    assert.match(html, /Resume this project later|Reprendre ce projet plus tard/i);
+    assert.match(html, /href=["']\/data\/project-dossier\.schema\.json["']/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);

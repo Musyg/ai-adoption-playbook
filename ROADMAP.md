@@ -72,11 +72,15 @@ evidence produced by this playbook. The registry remains empty.
 
 - [ ] Connect the guided decisions to editable registers, assessments, and
   implementation checklists.
-- [ ] Add local import and export for a complete project dossier without
-  transmitting client data.
+- [x] Add local persistence, import, and export for a versioned project dossier
+  without transmitting client data.
 - [ ] Add version comparison, change-impact prompts, and reassessment support.
 - [ ] Test the complete workbench with independent professionals, SMEs, public
   services, and regulated or high-impact contexts.
+
+The first 0.5 foundation is implemented with an experimental `0.1.0` dossier
+schema. Stable migration rules, artifact editing, change comparison, and field
+usability testing remain open.
 
 ## 1.0: stable public method
 

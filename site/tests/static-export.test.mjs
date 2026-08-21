@@ -36,6 +36,8 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /id="integration-levels"/);
     assert.match(html, /Switzerland \+ EU|Suisse \+ UE/);
     assert.match(html, /SYNTHETIC EVIDENCE BOUNDARY|FRONTIÈRE DES PREUVES SYNTHÉTIQUES/);
+    assert.match(html, /Resume this project later|Reprendre ce projet plus tard/);
+    assert.match(html, /project-dossier\.schema\.json/);
     assert.match(html, new RegExp(visibleCopy));
     assert.match(html, /Atelier Horizon/);
     assert.doesNotMatch(html, /Loading the interactive|Chargement du playbook/);
@@ -78,6 +80,7 @@ test("copies public assets and ships the provider-neutral interactive client", a
     access(path.join(staticRoot, "og.png")),
     access(path.join(staticRoot, "data", "control-crosswalk.v1.json")),
     access(path.join(staticRoot, "data", "control-crosswalk.schema.json")),
+    access(path.join(staticRoot, "data", "project-dossier.schema.json")),
   ]);
   await assert.rejects(access(path.join(staticRoot, ".nojekyll")));
   await assert.rejects(access(path.join(staticRoot, "sitemap.xml")));

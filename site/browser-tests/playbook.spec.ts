@@ -212,7 +212,86 @@ test("lifecycle workbench reveals one phase and derives decision guidance", asyn
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("4. Risk and legal route · COMPLETE");
 });
 
+test("local project dossier persists, exports, imports, and resets safely", async ({ page }) => {
+  test.setTimeout(60_000);
+  const storageKey = "ai-adoption-playbook:project-dossier:v1";
+  const openWorkbench = async () => {
+    await page.locator("#implementation-library > summary").click();
+    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+    await expect(page.locator("#lifecycle-workbench")).toBeVisible();
+  };
+
+  await page.goto("/");
+  await page.evaluate((key) => localStorage.removeItem(key), storageKey);
+  await page.reload();
+  await openWorkbench();
+
+  let workbench = page.locator("#lifecycle-workbench");
+  await expect(workbench.locator(".project-dossier-manager")).toHaveAttribute("data-dossier-state", "new");
+  await workbench.locator('[name="project"]').fill("Project North");
+  await workbench.locator('[name="owner"]').fill("Operations owner");
+  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.fields?.project, storageKey)).toBe("Project North");
+  await expect(workbench.locator(".project-dossier-manager")).toHaveAttribute("data-dossier-state", "saved");
+
+  await workbench.locator('.lifecycle-nav button[data-phase="4"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.active_phase, storageKey)).toBe(4);
+  await page.reload();
+  await openWorkbench();
+  workbench = page.locator("#lifecycle-workbench");
+  await expect(workbench.locator(".lifecycle-phase")).toHaveAttribute("data-phase", "4");
+  await workbench.locator('.lifecycle-nav button[data-phase="0"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(workbench.locator('[name="project"]')).toHaveValue("Project North");
+  await expect(workbench.getByText("Local dossier resumed.")).toBeVisible();
+
+  const downloadPromise = page.waitForEvent("download");
+  await workbench.getByRole("button", { name: "Export JSON" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("ai-adoption-project-project-north.json");
+
+  const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null"), storageKey);
+  const imported = {
+    ...stored,
+    dossier_id: "AAP-import-0001",
+    updated_at: new Date().toISOString(),
+    context: {
+      organization_type: "public",
+      use_pattern: "conversation",
+      jurisdiction: "EU",
+      integration_level: "copilot",
+      autonomy_level: 1,
+      risk_level: 2,
+    },
+    active_phase: 0,
+    fields: { ...stored.fields, project: "Imported public assistant" },
+  };
+  await workbench.locator(".dossier-file-input").setInputFiles({
+    name: "project-dossier.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(imported)),
+  });
+  await expect(workbench.getByText("Dossier imported and guide context restored.")).toBeVisible();
+  await expect(workbench.locator(".lifecycle-context")).toContainText("Public service");
+  await expect(workbench.locator(".lifecycle-context")).toContainText("Conversation");
+  await expect(workbench.locator(".lifecycle-context")).toContainText("European Union");
+  await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
+
+  const invalid = { ...imported, schema_version: "9.0.0", fields: { project: "Must not replace current work" } };
+  await workbench.locator(".dossier-file-input").setInputFiles({
+    name: "invalid.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(invalid)),
+  });
+  await expect(workbench.getByText("This file is not a compatible project dossier. Your current work was not changed.")).toBeVisible();
+  await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
+
+  await workbench.getByRole("button", { name: "Start a new dossier" }).click();
+  await expect(workbench.locator('[name="project"]')).toHaveValue("");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), storageKey)).toBeNull();
+  await expect(workbench.locator(".project-dossier-manager")).toHaveAttribute("data-dossier-state", "new");
+});
+
 test("rendered page has no automatic axe violations", async ({ page }) => {
+  test.setTimeout(60_000);
   await page.goto("/");
   for (const chapter of ["concept-library", "operational-workspace", "implementation-library"]) {
     await page.locator(`#${chapter} > summary`).click();
