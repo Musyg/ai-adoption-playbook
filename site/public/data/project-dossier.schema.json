@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.1.0",
+  "title": "AI Adoption Playbook local project dossier",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "playbook_version",
+    "dossier_id",
+    "created_at",
+    "updated_at",
+    "language",
+    "status",
+    "boundary",
+    "context",
+    "active_phase",
+    "fields",
+    "conditioned_controls",
+    "matched_control_ids",
+    "completed_phases"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1.0" },
+    "playbook_version": { "const": "0.2.2" },
+    "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "language": { "enum": ["en", "fr"] },
+    "status": { "const": "working_draft" },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_only", "no_raw_evidence", "not_certification"],
+      "properties": {
+        "local_only": { "const": true },
+        "no_raw_evidence": { "const": true },
+        "not_certification": { "const": true }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["organization_type", "use_pattern", "jurisdiction", "integration_level", "autonomy_level", "risk_level"],
+      "properties": {
+        "organization_type": { "enum": ["independent", "tpe", "pme", "nonprofit", "public"] },
+        "use_pattern": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
+        "jurisdiction": { "enum": ["CH", "EU", "BOTH"] },
+        "integration_level": { "enum": ["copilot", "agent", "agency"] },
+        "autonomy_level": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "risk_level": { "type": "integer", "minimum": 0, "maximum": 3 }
+      }
+    },
+    "active_phase": { "type": "integer", "minimum": 0, "maximum": 11 },
+    "fields": { "type": "object", "additionalProperties": { "type": "string" } },
+    "conditioned_controls": { "type": "object", "additionalProperties": { "type": "boolean" } },
+    "matched_control_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "completed_phases": { "type": "array", "uniqueItems": true, "items": { "type": "integer", "minimum": 0, "maximum": 11 } }
+  }
+}

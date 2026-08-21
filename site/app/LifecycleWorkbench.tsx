@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import {
+  buildProjectDossier,
+  parseProjectDossier,
+  PROJECT_DOSSIER_STORAGE_KEY,
+} from "./project-dossier.mjs";
 
 type Locale = "en" | "fr";
+type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
+type UsePatternId = "generation" | "retrieval" | "classification" | "prediction" | "conversation" | "multimodal" | "agentic";
+type JurisdictionId = "CH" | "EU" | "BOTH";
+type IntegrationId = "copilot" | "agent" | "agency";
 type Option = { value: string; label: string };
 type FieldDefinition = {
   id: string;
@@ -27,20 +37,30 @@ type MatchedControl = {
   family: string;
   phases: number[];
 };
+type RestorableContext = {
+  audienceId: AudienceId;
+  usePatternId: UsePatternId;
+  jurisdictionId: JurisdictionId;
+  integrationId: IntegrationId;
+  autonomy: number;
+  risk: number;
+};
 type Props = {
   locale: Locale;
-  audienceId: string;
+  audienceId: AudienceId;
   audienceLabel: string;
-  usePatternId: string;
+  usePatternId: UsePatternId;
   usePatternLabel: string;
-  jurisdictionId: string;
+  jurisdictionId: JurisdictionId;
   jurisdictionLabel: string;
-  integrationId: string;
+  integrationId: IntegrationId;
   integrationLabel: string;
   autonomy: number;
   initialRisk: number;
   matchedControls: MatchedControl[];
+  onContextImport: (context: RestorableContext) => boolean;
   onRiskChange: (risk: number) => void;
+  schemaHref: string;
 };
 
 const options = {
@@ -113,8 +133,49 @@ const requiredByPhase = [
 ];
 
 const ui = {
-  en: { eyebrow: "INTERACTIVE LIFECYCLE", title: "Work through phases 0 to 11 without opening everything at once.", text: "Your entries stay in this browser session. Use non-identifying working information only. The workbench guides a decision; it does not certify compliance.", complete: "phases complete", current: "Current phase", why: "Why this matters", keep: "Evidence to keep", matched: "Controls already matched", noControls: "Complete the risk questions to refine the control list.", previous: "Previous phase", next: "Next phase", done: "Review the plan", copy: "Copy the working plan", copied: "Working plan copied", incomplete: "Complete the required fields to mark this phase ready.", ready: "Minimum record complete for this phase.", priority: "Priority orientation", hours: "Current human hours per month", risk: "Risk orientation", architecture: "Smallest plausible design", routes: "Questions to verify", security: "Confirm every conditioned control", local: "Local working data only" },
-  fr: { eyebrow: "CYCLE DE VIE INTERACTIF", title: "Parcourez les phases 0 à 11 sans tout ouvrir en même temps.", text: "Vos saisies restent dans cette session du navigateur. Utilisez seulement des informations de travail non identifiantes. L’atelier guide une décision ; il ne certifie aucune conformité.", complete: "phases complètes", current: "Phase actuelle", why: "Pourquoi c’est important", keep: "Preuve à conserver", matched: "Contrôles déjà associés", noControls: "Complétez les questions de risque pour affiner la liste de contrôles.", previous: "Phase précédente", next: "Phase suivante", done: "Relire le plan", copy: "Copier le plan de travail", copied: "Plan de travail copié", incomplete: "Complétez les champs requis pour rendre cette phase prête.", ready: "Enregistrement minimal complet pour cette phase.", priority: "Orientation de priorité", hours: "Heures humaines actuelles par mois", risk: "Orientation du risque", architecture: "Architecture minimale plausible", routes: "Questions à vérifier", security: "Confirmez chaque contrôle conditionnel", local: "Données de travail locales uniquement" },
+  en: { eyebrow: "INTERACTIVE LIFECYCLE", title: "Work through phases 0 to 11 without opening everything at once.", text: "Your entries can be saved in this browser and resumed later. Use non-identifying working information only. The workbench guides a decision; it does not certify compliance.", complete: "phases complete", current: "Current phase", why: "Why this matters", keep: "Evidence to keep", matched: "Controls already matched", noControls: "Complete the risk questions to refine the control list.", previous: "Previous phase", next: "Next phase", done: "Review the plan", copy: "Copy the working plan", copied: "Working plan copied", incomplete: "Complete the required fields to mark this phase ready.", ready: "Minimum record complete for this phase.", priority: "Priority orientation", hours: "Current human hours per month", risk: "Risk orientation", architecture: "Smallest plausible design", routes: "Questions to verify", security: "Confirm every conditioned control", local: "Local project dossier" },
+  fr: { eyebrow: "CYCLE DE VIE INTERACTIF", title: "Parcourez les phases 0 à 11 sans tout ouvrir en même temps.", text: "Vos saisies peuvent être enregistrées dans ce navigateur et reprises plus tard. Utilisez seulement des informations de travail non identifiantes. L’atelier guide une décision ; il ne certifie aucune conformité.", complete: "phases complètes", current: "Phase actuelle", why: "Pourquoi c’est important", keep: "Preuve à conserver", matched: "Contrôles déjà associés", noControls: "Complétez les questions de risque pour affiner la liste de contrôles.", previous: "Phase précédente", next: "Phase suivante", done: "Relire le plan", copy: "Copier le plan de travail", copied: "Plan de travail copié", incomplete: "Complétez les champs requis pour rendre cette phase prête.", ready: "Enregistrement minimal complet pour cette phase.", priority: "Orientation de priorité", hours: "Heures humaines actuelles par mois", risk: "Orientation du risque", architecture: "Architecture minimale plausible", routes: "Questions à vérifier", security: "Confirmez chaque contrôle conditionnel", local: "Dossier projet local" },
+};
+
+const dossierUi = {
+  en: {
+    title: "Resume this project later",
+    text: "Answers and selected controls are saved only in this browser. Export the JSON file to move or back up the working dossier.",
+    saved: "Saved locally",
+    notSaved: "Not saved yet",
+    saveError: "Local save failed. Export the dossier before leaving this page.",
+    resumed: "Local dossier resumed.",
+    imported: "Dossier imported and guide context restored.",
+    removed: "Local copy removed. A new blank dossier is ready.",
+    invalid: "This file is not a compatible project dossier. Your current work was not changed.",
+    tooLarge: "This file is too large. Project dossiers must stay below 1 MB.",
+    export: "Export JSON",
+    import: "Import JSON",
+    remove: "Start a new dossier",
+    schema: "View the JSON Schema",
+    boundary: "Do not enter raw client evidence, secrets, or identifying personal data. Browser storage is not an authorized evidence repository.",
+    lastSaved: "Last local save",
+    draft: "WORKING DRAFT",
+  },
+  fr: {
+    title: "Reprendre ce projet plus tard",
+    text: "Les réponses et contrôles sélectionnés sont enregistrés uniquement dans ce navigateur. Exportez le fichier JSON pour déplacer ou sauvegarder le dossier de travail.",
+    saved: "Enregistré localement",
+    notSaved: "Pas encore enregistré",
+    saveError: "L’enregistrement local a échoué. Exportez le dossier avant de quitter cette page.",
+    resumed: "Dossier local repris.",
+    imported: "Dossier importé et contexte du guide restauré.",
+    removed: "Copie locale supprimée. Un nouveau dossier vide est prêt.",
+    invalid: "Ce fichier n’est pas un dossier projet compatible. Votre travail actuel n’a pas été modifié.",
+    tooLarge: "Ce fichier est trop volumineux. Un dossier projet doit rester inférieur à 1 Mo.",
+    export: "Exporter le JSON",
+    import: "Importer un JSON",
+    remove: "Créer un nouveau dossier",
+    schema: "Voir le schéma JSON",
+    boundary: "Ne saisissez aucune preuve client brute, aucun secret ni aucune donnée personnelle identifiante. Le stockage du navigateur n’est pas un dépôt de preuves autorisé.",
+    lastSaved: "Dernier enregistrement local",
+    draft: "BROUILLON DE TRAVAIL",
+  },
 };
 
 function number(value: string) {
@@ -122,14 +183,75 @@ function number(value: string) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function newDossierId() {
+  const suffix = typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return `AAP-${suffix}`;
+}
+
 export function LifecycleWorkbench(props: Props) {
-  const { locale, onRiskChange } = props;
+  const { locale, onContextImport, onRiskChange } = props;
   const phases = phaseDefinitions[locale];
   const labels = ui[locale];
+  const dossierLabels = dossierUi[locale];
   const [activePhase, setActivePhase] = useState(0);
   const [values, setValues] = useState<Record<string, string>>({});
   const [checkedControls, setCheckedControls] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
+  const [dossierId, setDossierId] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [savedAt, setSavedAt] = useState("");
+  const [storageReady, setStorageReady] = useState(false);
+  const [hasLocalCopy, setHasLocalCopy] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [dossierNotice, setDossierNotice] = useState("");
+  const importInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const now = new Date().toISOString();
+      const startBlank = () => {
+        setDossierId(newDossierId());
+        setCreatedAt(now);
+        setStorageReady(true);
+      };
+      const stored = window.localStorage.getItem(PROJECT_DOSSIER_STORAGE_KEY);
+      if (!stored) {
+        startBlank();
+        return;
+      }
+      const parsed = parseProjectDossier(stored);
+      if (!parsed.ok) {
+        setDossierNotice(dossierUi[locale].invalid);
+        startBlank();
+        return;
+      }
+      const accepted = onContextImport({
+        audienceId: parsed.value.context.organization_type,
+        usePatternId: parsed.value.context.use_pattern,
+        jurisdictionId: parsed.value.context.jurisdiction,
+        integrationId: parsed.value.context.integration_level,
+        autonomy: parsed.value.context.autonomy_level,
+        risk: parsed.value.context.risk_level,
+      });
+      if (!accepted) {
+        setDossierNotice(dossierUi[locale].invalid);
+        startBlank();
+        return;
+      }
+      setDossierId(parsed.value.dossier_id);
+      setCreatedAt(parsed.value.created_at);
+      setSavedAt(parsed.value.updated_at);
+      setActivePhase(parsed.value.active_phase);
+      setValues(parsed.value.fields);
+      setCheckedControls(parsed.value.conditioned_controls);
+      setHasLocalCopy(true);
+      setDossierNotice(dossierUi[locale].resumed);
+      setStorageReady(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [locale, onContextImport]);
 
   const priorityComplete = requiredByPhase[3].every((id) => values[id]);
   const priorityScore = priorityComplete
@@ -196,12 +318,143 @@ export function LifecycleWorkbench(props: Props) {
     ? securityControls.every((control) => checkedControls[control.id])
     : requiredByPhase[index].every((id) => values[id]?.trim()));
   const completedCount = phaseReady.filter(Boolean).length;
+  const completedPhases = phaseReady.flatMap((ready, index) => ready ? [index] : []);
+  const completedPhaseKey = completedPhases.join(",");
+  const matchedControlKey = [...new Set(props.matchedControls.map((control) => control.id))].sort().join(",");
   const current = phases[activePhase];
   const controlsForPhase = props.matchedControls.filter((control) => control.phases.includes(activePhase));
 
+  useEffect(() => {
+    if (!storageReady || !hasLocalCopy || !dossierId || !createdAt) return;
+    const timer = window.setTimeout(() => {
+      const updatedAt = new Date().toISOString();
+      const dossier = buildProjectDossier({
+        dossier_id: dossierId,
+        created_at: createdAt,
+        updated_at: updatedAt,
+        language: locale,
+        context: {
+          organization_type: props.audienceId,
+          use_pattern: props.usePatternId,
+          jurisdiction: props.jurisdictionId,
+          integration_level: props.integrationId,
+          autonomy_level: props.autonomy,
+          risk_level: derivedRisk,
+        },
+        active_phase: activePhase,
+        fields: values,
+        conditioned_controls: Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])),
+        matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
+        completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
+      });
+      try {
+        window.localStorage.setItem(PROJECT_DOSSIER_STORAGE_KEY, JSON.stringify(dossier));
+        setSavedAt(updatedAt);
+        setSaveFailed(false);
+      } catch {
+        setSaveFailed(true);
+      }
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [activePhase, checkedControls, completedPhaseKey, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, securityControls, storageReady, values]);
+
   const update = (id: string, value: string) => {
     setValues((previous) => ({ ...previous, [id]: value }));
+    setHasLocalCopy(true);
+    setDossierNotice("");
     setCopied(false);
+  };
+
+  const selectPhase = (phase: number) => {
+    setActivePhase(phase);
+    if (Object.keys(values).length > 0 || Object.keys(checkedControls).length > 0) setHasLocalCopy(true);
+  };
+
+  const currentDossier = () => buildProjectDossier({
+    dossier_id: dossierId || newDossierId(),
+    created_at: createdAt || new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    language: locale,
+    context: {
+      organization_type: props.audienceId,
+      use_pattern: props.usePatternId,
+      jurisdiction: props.jurisdictionId,
+      integration_level: props.integrationId,
+      autonomy_level: props.autonomy,
+      risk_level: derivedRisk,
+    },
+    active_phase: activePhase,
+    fields: values,
+    conditioned_controls: Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])),
+    matched_control_ids: props.matchedControls.map((control) => control.id),
+    completed_phases: completedPhases,
+  });
+
+  const exportDossier = () => {
+    const dossier = currentDossier();
+    const blob = new Blob([`${JSON.stringify(dossier, null, 2)}\n`], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    const projectSlug = (values.project || dossier.dossier_id).normalize("NFKD").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase().slice(0, 60) || "project";
+    anchor.href = url;
+    anchor.download = `ai-adoption-project-${projectSlug}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importDossier = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      if (file.size > 1_000_000) {
+        setDossierNotice(dossierLabels.tooLarge);
+        return;
+      }
+      const parsed = parseProjectDossier(await file.text());
+      if (!parsed.ok) {
+        setDossierNotice(dossierLabels.invalid);
+        return;
+      }
+      const accepted = onContextImport({
+        audienceId: parsed.value.context.organization_type,
+        usePatternId: parsed.value.context.use_pattern,
+        jurisdictionId: parsed.value.context.jurisdiction,
+        integrationId: parsed.value.context.integration_level,
+        autonomy: parsed.value.context.autonomy_level,
+        risk: parsed.value.context.risk_level,
+      });
+      if (!accepted) {
+        setDossierNotice(dossierLabels.invalid);
+        return;
+      }
+      setDossierId(parsed.value.dossier_id);
+      setCreatedAt(parsed.value.created_at);
+      setSavedAt(parsed.value.updated_at);
+      setActivePhase(parsed.value.active_phase);
+      setValues(parsed.value.fields);
+      setCheckedControls(parsed.value.conditioned_controls);
+      setHasLocalCopy(true);
+      setDossierNotice(dossierLabels.imported);
+      setSaveFailed(false);
+    } catch {
+      setDossierNotice(dossierLabels.invalid);
+    } finally {
+      if (importInput.current) importInput.current.value = "";
+    }
+  };
+
+  const resetDossier = () => {
+    const now = new Date().toISOString();
+    window.localStorage.removeItem(PROJECT_DOSSIER_STORAGE_KEY);
+    setDossierId(newDossierId());
+    setCreatedAt(now);
+    setSavedAt("");
+    setActivePhase(0);
+    setValues({});
+    setCheckedControls({});
+    setHasLocalCopy(false);
+    setSaveFailed(false);
+    setCopied(false);
+    setDossierNotice(dossierLabels.removed);
   };
 
   const copyPlan = async () => {
@@ -235,7 +488,7 @@ export function LifecycleWorkbench(props: Props) {
       </header>
 
       <nav aria-label={locale === "en" ? "Lifecycle phases" : "Phases du cycle de vie"} className="lifecycle-nav">
-        {phases.map((phase, index) => <button aria-current={activePhase === index ? "step" : undefined} data-complete={phaseReady[index]} data-phase={phase.code} key={phase.code} onClick={() => setActivePhase(index)} type="button"><span>{phase.code}</span><strong>{phase.title}</strong><small>{phase.short}</small></button>)}
+        {phases.map((phase, index) => <button aria-current={activePhase === index ? "step" : undefined} data-complete={phaseReady[index]} data-phase={phase.code} key={phase.code} onClick={() => selectPhase(index)} type="button"><span>{phase.code}</span><strong>{phase.title}</strong><small>{phase.short}</small></button>)}
       </nav>
 
       <div className="lifecycle-context" aria-label={locale === "en" ? "Current context" : "Contexte actuel"}>
@@ -259,14 +512,26 @@ export function LifecycleWorkbench(props: Props) {
         {activePhase === 1 && baselineHours > 0 && <output className="lifecycle-result"><span>{labels.hours}</span><strong>{baselineHours.toFixed(1)} h</strong><p>{locale === "en" ? "Keep the complete denominator when calculating any later reduction." : "Conservez le dénominateur complet pour calculer toute réduction ultérieure."}</p></output>}
         {activePhase === 4 && riskComplete && <div className="lifecycle-guidance"><output><span>{labels.risk}</span><strong>R{derivedRisk}</strong></output><div><p>{labels.routes}</p><ul>{legalRoutes.map((row) => <li key={row}>{row}</li>)}</ul></div></div>}
         {activePhase === 5 && <output className="lifecycle-result"><span>{labels.architecture}</span><strong>{props.usePatternLabel} · {props.integrationLabel}</strong><p>{architecture}</p></output>}
-        {activePhase === 7 && <fieldset className="security-builder"><legend>{labels.security}</legend>{securityControls.map((control) => <label key={control.id}><input checked={checkedControls[control.id] ?? false} name={control.id} onChange={(event) => setCheckedControls((previous) => ({ ...previous, [control.id]: event.target.checked }))} type="checkbox" /><span><strong>{control.id}</strong>{control.label}</span></label>)}</fieldset>}
+        {activePhase === 7 && <fieldset className="security-builder"><legend>{labels.security}</legend>{securityControls.map((control) => <label key={control.id}><input checked={checkedControls[control.id] ?? false} name={control.id} onChange={(event) => { setCheckedControls((previous) => ({ ...previous, [control.id]: event.target.checked })); setHasLocalCopy(true); setDossierNotice(""); }} type="checkbox" /><span><strong>{control.id}</strong>{control.label}</span></label>)}</fieldset>}
 
         <div className="lifecycle-evidence"><article><span>{labels.keep}</span><p>{current.evidence}</p></article><article><span>{labels.matched}</span>{controlsForPhase.length > 0 ? <ul>{controlsForPhase.map((control) => <li key={control.id}><strong>{control.id}</strong><span>{control.title}</span><small>{control.priority}</small></li>)}</ul> : <p>{labels.noControls}</p>}</article></div>
 
-        <footer><p data-ready={phaseReady[activePhase]}>{phaseReady[activePhase] ? labels.ready : labels.incomplete}</p><div><button disabled={activePhase === 0} onClick={() => setActivePhase((phase) => Math.max(0, phase - 1))} type="button">← {labels.previous}</button><button onClick={() => setActivePhase((phase) => Math.min(11, phase + 1))} type="button">{activePhase === 11 ? labels.done : labels.next} →</button></div></footer>
+        <footer><p data-ready={phaseReady[activePhase]}>{phaseReady[activePhase] ? labels.ready : labels.incomplete}</p><div><button disabled={activePhase === 0} onClick={() => selectPhase(Math.max(0, activePhase - 1))} type="button">← {labels.previous}</button><button onClick={() => selectPhase(Math.min(11, activePhase + 1))} type="button">{activePhase === 11 ? labels.done : labels.next} →</button></div></footer>
       </section>
 
-      <div className="lifecycle-export"><p><strong>{labels.local}</strong><span>{locale === "en" ? "Copy a non-identifying working summary. Raw evidence remains in an authorized private system." : "Copiez une synthèse de travail non identifiante. Les preuves brutes restent dans un système privé autorisé."}</span></p><button className="button primary" onClick={() => void copyPlan()} type="button">{copied ? labels.copied : labels.copy}</button></div>
+      <section aria-labelledby="project-dossier-title" className="project-dossier-manager" data-dossier-state={saveFailed ? "error" : hasLocalCopy ? "saved" : "new"}>
+        <header><div><p className="eyebrow">{labels.local}</p><h4 id="project-dossier-title">{dossierLabels.title}</h4><p>{dossierLabels.text}</p></div><output aria-live="polite"><strong>{saveFailed ? dossierLabels.saveError : hasLocalCopy ? dossierLabels.saved : dossierLabels.notSaved}</strong><span>{dossierLabels.draft}</span>{savedAt && <small>{dossierLabels.lastSaved}: <time dateTime={savedAt}>{new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(savedAt))}</time></small>}</output></header>
+        <p className="dossier-boundary">{dossierLabels.boundary}</p>
+        {dossierNotice && <p className="dossier-notice" role="status">{dossierNotice}</p>}
+        <div className="dossier-actions">
+          <button className="button primary" onClick={() => void copyPlan()} type="button">{copied ? labels.copied : labels.copy}</button>
+          <button className="button secondary" onClick={exportDossier} type="button">{dossierLabels.export} ↓</button>
+          <button className="button secondary" onClick={() => importInput.current?.click()} type="button">{dossierLabels.import} ↑</button>
+          <input accept="application/json,.json" aria-label={dossierLabels.import} className="dossier-file-input" onChange={(event) => void importDossier(event.target.files?.[0])} ref={importInput} type="file" />
+          <button className="button dossier-reset" onClick={resetDossier} type="button">{dossierLabels.remove}</button>
+        </div>
+        <a className="dossier-schema" href={props.schemaHref}>{dossierLabels.schema} ↗</a>
+      </section>
     </div>
   );
 }
