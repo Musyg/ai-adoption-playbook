@@ -117,6 +117,12 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await page.getByLabel("Share genuinely eligible").fill("0");
   await expect(page.locator(".calibrator-result-head strong")).toHaveText("n/a");
   await expect(page.locator(".calibrator-equation")).toContainText("No net range is calculated at 0% eligibility");
+
+  const operationalRouter = page.locator("#operational-router");
+  await operationalRouter.getByRole("button", { name: /Build the test plan/ }).click();
+  await expect(page.locator("#pilot-plan .pilot-specs p").filter({ hasText: "Live collection at this volume" }).locator("strong")).toHaveText("n/a");
+  await operationalRouter.getByRole("button", { name: /Enter observed results/ }).click();
+  await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
 });
 
 test("copied pilot brief preserves the human-time and setup assumptions", async ({ context, page }) => {
