@@ -219,6 +219,29 @@ test("field comparison remains locked to v1 and a changed plan requires a separa
   await expect(page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong")).toHaveText(frozenRange);
 });
 
+test("field comparison rounds negative half-values exactly as the interface displays them", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  const calibrator = page.locator("#calibrator");
+  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.getByLabel("Verification").fill("42");
+  await calibrator.getByLabel("One-off setup effort").fill("0");
+  await expect(calibrator.locator(".calibrator-result-head strong")).toHaveText("0%");
+
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("Bounded live cases observed").fill("40");
+  await page.getByLabel("Total baseline human time for every observed case").fill("2000");
+  await page.getByLabel("Total human time with AI for every observed case").fill("2001");
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+
+  const evidence = page.locator("#field-pilot .field-pilot-evidence");
+  await expect(evidence.getByText("OBSERVED WHOLE LOAD").locator("..").locator("strong")).toHaveText("-0.1%");
+  await expect(evidence.getByText("RANGE CHECK").locator("..").locator("strong")).toHaveText("BELOW");
+});
+
 test("copied pilot brief preserves the human-time and setup assumptions", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
@@ -278,6 +301,7 @@ for (const fieldLocale of [
 }
 
 test("any field-report mutation invalidates confirmation and all six publication checks", async ({ page }) => {
+  test.setTimeout(60_000);
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
@@ -294,11 +318,20 @@ test("any field-report mutation invalidates confirmation and all six publication
   await page.getByLabel("Hypothesis and decision after observation").fill("Retain v1; no recalibration required.");
   await page.getByLabel("Where the result may transfer").fill("Same bounded workflow, permissions, review gate, and operator profile.");
   await page.getByLabel("What this result does not prove").fill("It does not prove gains for another workflow, model, or autonomy level.");
-  await page.locator(".field-pilot-evidence-confirm input").check();
+  const confirmation = page.locator(".field-pilot-evidence-confirm input");
   const reviewChecks = page.locator(".field-pilot-checklist input");
-  for (let index = 0; index < 6; index += 1) await reviewChecks.nth(index).check();
-  await expect(page.locator(".field-pilot-status")).toContainText("READY FOR INDEPENDENT REVIEW");
-  await expect(page.locator(".field-pilot-status strong")).toHaveText("16/16");
+  const approveCurrentReport = async () => {
+    await confirmation.check();
+    for (let index = 0; index < 6; index += 1) await reviewChecks.nth(index).check();
+    await expect(page.locator(".field-pilot-status")).toContainText("READY FOR INDEPENDENT REVIEW");
+    await expect(page.locator(".field-pilot-status strong")).toHaveText("16/16");
+  };
+  const expectReviewInvalidated = async () => {
+    await expect(confirmation).not.toBeChecked();
+    await expect(reviewChecks).toHaveCount(6);
+    for (let index = 0; index < 6; index += 1) await expect(reviewChecks.nth(index)).not.toBeChecked();
+  };
+  await approveCurrentReport();
 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download the local draft" }).click();
@@ -309,14 +342,33 @@ test("any field-report mutation invalidates confirmation and all six publication
   expect(readyReport).not.toContain("[TO COMPLETE]");
   expect(readyReport).toContain("No v2 snapshot frozen. Recorded decision: Retain v1; no recalibration required.");
 
+  await page.locator("#concept-library > summary").click();
+  await page.locator("#use-patterns .jurisdiction-options button").first().click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await approveCurrentReport();
+
+  await page.locator("#use-patterns .use-pattern-grid button").first().click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await expect(confirmation).toBeDisabled();
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await approveCurrentReport();
+
+  await page.locator("#implementation-library > summary").click();
+  await page.locator("#paths .path-card").nth(1).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await approveCurrentReport();
+
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByLabel("Total baseline human time for every observed case").fill("1300");
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
-  await expect(page.locator(".field-pilot-evidence-confirm input")).not.toBeChecked();
-  await expect(reviewChecks).toHaveCount(6);
-  for (let index = 0; index < 6; index += 1) await expect(reviewChecks.nth(index)).not.toBeChecked();
+  await expectReviewInvalidated();
 
-  await page.locator(".field-pilot-evidence-confirm input").check();
+  await confirmation.check();
   await expect(page.locator(".field-pilot-status")).not.toContainText("READY FOR INDEPENDENT REVIEW");
   await expect(page.locator(".field-pilot-status strong")).toHaveText("10/16");
 });

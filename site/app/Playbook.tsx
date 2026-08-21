@@ -1611,7 +1611,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const fieldPlanningRange = preregisteredPlanning?.planningRange.calculable
     ? `${formatNumber(preregisteredPlanning.wholeWorkloadRange.low)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.central)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.high)}%`
     : "n/a";
-  const roundForDisplay = (value: number) => Math.round((value + Number.EPSILON) * 10) / 10;
+  const roundForDisplay = (value: number) => Number(new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, useGrouping: false }).format(value));
   const fieldComparisonReady = Boolean(preregisteredPlanning?.planningRange.calculable && samplePass && qualityPass && tracePass && observedBaselineTotalMinutes > 0);
   const fieldComparisonKey = !fieldComparisonReady
     ? "unavailable"
@@ -1869,13 +1869,13 @@ export function Playbook({ locale }: { locale: Locale }) {
                 <p>{guideCopy.steps[guideStep].text}</p>
               </header>
 
-              {guideStep === 0 && <div className="guide-choice-grid guide-audiences">{audiences[locale].map((audience) => <button aria-pressed={audienceId === audience.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span>{audience.number}</span><strong>{audience.title}</strong><small>{audience.short}</small><em>{audience.horizon}</em></button>)}</div>}
+              {guideStep === 0 && <div className="guide-choice-grid guide-audiences">{audiences[locale].map((audience) => <button aria-pressed={audienceId === audience.id} key={audience.id} onClick={() => { setAudienceId(audience.id); invalidateFieldReview(); }} type="button"><span>{audience.number}</span><strong>{audience.title}</strong><small>{audience.short}</small><em>{audience.horizon}</em></button>)}</div>}
 
-              {guideStep === 1 && <div className="guide-choice-grid guide-patterns">{patternCopy.patterns.map((pattern) => <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => setUsePattern(pattern.id)} type="button"><span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small></button>)}</div>}
+              {guideStep === 1 && <div className="guide-choice-grid guide-patterns">{patternCopy.patterns.map((pattern) => <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => { setUsePattern(pattern.id); invalidateFieldReview(); }} type="button"><span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small></button>)}</div>}
 
               {guideStep === 2 && <div className="guide-choice-grid guide-levels">{guideCopy.levels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => selectGuideLevel(level)} type="button"><span>{level.code}</span><strong>{level.title}</strong><small>{level.text}</small></button>)}</div>}
 
-              {guideStep === 3 && <div className="guide-choice-grid guide-jurisdictions">{patternCopy.jurisdictions.map((option) => <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => setJurisdiction(option.id)} type="button"><span>{option.id}</span><strong>{option.label}</strong><small>{option.note}</small></button>)}</div>}
+              {guideStep === 3 && <div className="guide-choice-grid guide-jurisdictions">{patternCopy.jurisdictions.map((option) => <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => { setJurisdiction(option.id); invalidateFieldReview(); }} type="button"><span>{option.id}</span><strong>{option.label}</strong><small>{option.note}</small></button>)}</div>}
 
               {guideStep === 4 && <div className="guided-result">
                 <div className="guided-result-lead"><p className="eyebrow">{guideCopy.result.eyebrow}</p><h3>{guideCopy.result.title}</h3><p>{guideCopy.result.intro}</p><strong>{selectedGuideLevel.recommendation}</strong></div>
@@ -1929,7 +1929,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <legend>{locale === "en" ? "Dominant use pattern" : "Mode d’usage dominant"}</legend>
               <div className="use-pattern-grid">
                 {patternCopy.patterns.map((pattern) => (
-                  <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => setUsePattern(pattern.id)} type="button">
+                  <button aria-pressed={usePattern === pattern.id} key={pattern.id} onClick={() => { setUsePattern(pattern.id); invalidateFieldReview(); }} type="button">
                     <span>{pattern.code}</span><strong>{pattern.title}</strong><small>{pattern.short}</small>
                   </button>
                 ))}
@@ -1948,7 +1948,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <legend>{patternCopy.jurisdictionTitle}</legend>
               <div className="jurisdiction-options">
                 {patternCopy.jurisdictions.map((option) => (
-                  <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => setJurisdiction(option.id)} type="button">
+                  <button aria-pressed={jurisdiction === option.id} key={option.id} onClick={() => { setJurisdiction(option.id); invalidateFieldReview(); }} type="button">
                     <strong>{option.label}</strong><span>{option.note}</span>
                   </button>
                 ))}
@@ -2212,7 +2212,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         <section className="paths section-dark" hidden={implementationPanel !== "paths"} id="paths" aria-labelledby="paths-title">
           <div className="section-heading"><p className="eyebrow">{t.pathsEyebrow}</p><h2 id="paths-title">{t.pathsTitle}</h2><p>{t.pathsText}</p></div>
           <div className="path-grid">
-            {audiences[locale].map((audience) => <button aria-pressed={audience.id === selected.id} className="path-card" data-active={audience.id === selected.id} key={audience.id} onClick={() => setAudienceId(audience.id)} type="button"><span className="path-number">{audience.number}</span><span className="path-title">{audience.title}</span><span className="path-copy">{audience.short}</span><span className="path-horizon">{audience.horizon} →</span></button>)}
+            {audiences[locale].map((audience) => <button aria-pressed={audience.id === selected.id} className="path-card" data-active={audience.id === selected.id} key={audience.id} onClick={() => { setAudienceId(audience.id); invalidateFieldReview(); }} type="button"><span className="path-number">{audience.number}</span><span className="path-title">{audience.title}</span><span className="path-copy">{audience.short}</span><span className="path-horizon">{audience.horizon} →</span></button>)}
           </div>
           <article className="selected-plan" aria-live="polite">
             <div className="plan-intro"><p className="eyebrow">{t.selected} · {selected.number}</p><h3>{selected.title}</h3><p>{selected.objective}</p><dl><div><dt>{t.roles}</dt><dd>{selected.roles}</dd></div><div><dt>{t.pilot}</dt><dd>{selected.pilot}</dd></div></dl></div>
