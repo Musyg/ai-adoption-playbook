@@ -2,8 +2,10 @@
 
 Ce dossier constitue la frontière de publication des retours terrain révisés et anonymisés. Il ne contient encore aucun rapport terrain. Un registre vide ne prouve pas que le playbook fonctionne en pratique.
 
-Commencez par le [protocole de pilote terrain](../docs/field-pilot-protocol.fr.md).
-Son assistant web crée uniquement un brouillon local ; les preuves brutes ne
+Commencez par la [présentation de la première cohorte](../docs/field-pilot-cohort.fr.md)
+et le [protocole de pilote terrain](../docs/field-pilot-protocol.fr.md). La
+cohorte vise trois rapports admis portant sur des modes d’usage et des contextes
+distincts. Son assistant web crée uniquement un brouillon local ; les preuves brutes ne
 doivent jamais être transmises dans une issue publique.
 
 Utilisez l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml)

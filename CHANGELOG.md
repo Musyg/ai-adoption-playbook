@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Opened the 0.3 field-pilot cohort for Switzerland and the European Union with
+  a three-report admission target, use-pattern-specific observations, and a
+  strict separation between public coordination and private raw evidence.
+- Replaced the static implementation-step list with a progressive lifecycle
+  workbench covering phases 0 to 11. It keeps one phase visible, derives local
+  orientation for priority, risk, and architecture, conditions security
+  controls on the selected design, and copies a non-identifying working plan.
+
 ## 0.2.2, 2026-08-21
 
 - Completed an editorial audit of the 95 paired content headings, browser

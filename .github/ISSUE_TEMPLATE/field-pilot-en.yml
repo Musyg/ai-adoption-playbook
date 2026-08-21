@@ -35,6 +35,23 @@ body:
       required: true
 
   - type: dropdown
+    id: use_pattern
+    attributes:
+      label: AI use pattern
+      description: Choose the main job the system performs. This is separate from autonomy and integration level.
+      options:
+        - Assisted generation
+        - Controlled retrieval or RAG
+        - Classification or extraction
+        - Prediction or scoring
+        - External conversation or chatbot
+        - Multimodal processing
+        - Agentic action
+        - Not decided
+    validations:
+      required: true
+
+  - type: dropdown
     id: integration
     attributes:
       label: Intended integration level
@@ -43,6 +60,18 @@ body:
         - Business agent A2–A3
         - Orchestrated agency A3–A4
         - Not decided
+    validations:
+      required: true
+
+  - type: dropdown
+    id: jurisdiction
+    attributes:
+      label: Main territory
+      description: Choose where the workflow is operated or where affected people are located.
+      options:
+        - Switzerland
+        - European Union
+        - Switzerland and European Union
     validations:
       required: true
 
@@ -56,6 +85,19 @@ body:
         - Education
         - Finance
         - Critical infrastructure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: readiness
+    attributes:
+      label: Current stage
+      options:
+        - Problem and baseline being defined
+        - Offline evaluation ready or running
+        - Shadow pilot ready or running
+        - Bounded live pilot ready or running
+        - Existing system available for retrospective review
     validations:
       required: true
 
@@ -86,4 +128,6 @@ body:
         - label: I understand this issue is coordination metadata, not evidence, approval, or a published field result.
           required: true
         - label: I will keep raw evidence in an authorized private system and submit only a separately reviewed, anonymized report if publication is appropriate.
+          required: true
+        - label: I can name a local evidence owner, an independent reviewer, and a publication authority before any report is admitted.
           required: true

@@ -58,8 +58,9 @@ as field evidence.
 
 ## Minimum first cohort
 
-The first useful cohort should seek several distinct observations rather than a
-single success story: at least one copilot, one bounded business agent, and one
-orchestrated-agency candidate, with their implementation effort and failed or
-excluded cases visible. This is a learning target, not a statistical validation
-claim.
+The [first cohort](field-pilot-cohort.md) targets at least three admitted
+reports: one non-agentic or copilot workflow, one bounded A2 business agent,
+and one distinct Swiss or EU context. An orchestrated-agency candidate is
+welcome only when a genuine system can be compared with a simpler design; it is
+not required. Implementation effort and failed or excluded cases remain
+visible. This is a learning target, not a statistical validation claim.

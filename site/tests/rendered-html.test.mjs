@@ -171,6 +171,9 @@ for (const [pathname, language, title] of [
     assert.match(html, /Fundamental-rights assessment|Analyse des droits fondamentaux/i);
     assert.match(html, /Field-feedback report|Rapport de retour terrain/i);
     assert.match(html, /id=["']field-pilot["']/i);
+    assert.match(html, /0\/3/);
+    assert.match(html, /Recruiting in Switzerland and the European Union|Recrutement en Suisse et dans l’Union européenne/i);
+    assert.match(html, /One bounded A2 business agent|Un agent métier A2 borné/i);
     assert.match(html, /Prepare one real pilot|Préparez un vrai pilote/i);
     assert.match(html, /Nothing entered here is sent|Rien de ce qui est saisi ici n’est transmis/i);
     assert.match(html, /LOCAL DRAFT · INCOMPLETE|BROUILLON LOCAL · INCOMPLET/i);
@@ -178,6 +181,11 @@ for (const [pathname, language, title] of [
     assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);
     assert.match(html, /Download the local draft|Télécharger le brouillon local/i);
     assert.match(html, /The export always remains a draft|L’export reste toujours un brouillon/i);
+    assert.match(html, /id=["']lifecycle-workbench["']/i);
+    assert.match(html, /Work through phases 0 to 11|Parcourez les phases 0 à 11/i);
+    assert.match(html, /Initial state|Situation initiale/i);
+    assert.match(html, /Simplest sufficient system|Système suffisant le plus simple/i);
+    assert.match(html, /Security controls|Contrôles de sécurité/i);
     if (language === "en") {
       assert.match(html, /templates\/mandate\.md/);
       assert.match(html, /templates\/evaluation-plan\.md/);
@@ -188,6 +196,7 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
       assert.match(html, /templates\/field-feedback-report\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.md/);
+      assert.match(html, /docs\/field-pilot-cohort\.md/);
       assert.match(html, /examples\/en\/rag-policy-assistant\.md/);
       assert.match(html, /examples\/en\/predictive-demand-forecast\.md/);
       assert.match(html, /examples\/en\/external-customer-chatbot\.md/);
@@ -204,6 +213,7 @@ for (const [pathname, language, title] of [
       assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
       assert.match(html, /templates\/field-feedback-report\.fr\.md/);
       assert.match(html, /docs\/field-pilot-protocol\.fr\.md/);
+      assert.match(html, /docs\/field-pilot-cohort\.fr\.md/);
       assert.match(html, /examples\/fr\/assistant-rag-procedures\.md/);
       assert.match(html, /examples\/fr\/prevision-demande-pieces\.md/);
       assert.match(html, /examples\/fr\/chatbot-client-externe\.md/);

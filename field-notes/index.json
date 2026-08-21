@@ -2,6 +2,13 @@
   "schema_version": "1.0.0",
   "published_on": "2026-08-19",
   "status": "accepting-reviewed-submissions",
+  "cohort": {
+    "target_admitted_reports": 3,
+    "admitted_reports": 0,
+    "recruiting_regions": ["CH", "EU"],
+    "required_profiles": ["non-agentic-or-copilot", "bounded-a2-business-agent", "distinct-context"],
+    "orchestrated_agency_required": false
+  },
   "limitations": {
     "en": "No field report has been admitted yet. Synthetic examples and published third-party cases are excluded from this registry.",
     "fr": "Aucun rapport terrain n'a encore été admis. Les cas synthétiques et les cas tiers publiés sont exclus de ce registre."
