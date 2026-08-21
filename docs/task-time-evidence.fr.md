@@ -25,19 +25,39 @@ de la réputation ou de la taille de l’organisation qui l’utilise.
 Pour un cas éligible :
 
 ```text
-temps humain avec IA = préparation + supervision + vérification
-                       + corrections + travail attendu sur les exceptions
-                       + mise en place amortie
+plancher de travail humain = préparation + supervision + vérification
+                             + corrections + travail attendu sur les exceptions
 
-temps humain gagné = temps humain initial - temps humain avec IA
+temps humain net avec IA = max(temps humain résiduel déduit de la source,
+                               plancher de travail humain)
+                           + mise en place amortie
 
-temps humain annuel gagné = temps gagné par cas
-                             * cas éligibles par mois * 12
+temps humain net gagné = temps humain initial - temps humain net avec IA
+
+temps humain net annuel gagné = temps net gagné par cas
+                                 * cas éligibles par mois * 12
 ```
 
 Le travail attendu sur les exceptions est le taux d’exception multiplié par les
 minutes humaines nécessaires pour chacune. La mise en place amortie répartit les
 heures humaines initiales sur le nombre choisi de mois et de cas éligibles.
+
+Le temps résiduel déduit de la source est le temps humain qui subsiste après
+application de sa réduction basse, centrale ou haute au temps initial local. Le
+plus grand des deux temps est conservé pour ne pas masquer le travail de revue
+déclaré. Cette règle évite aussi d’additionner le résiduel de la source au
+travail local, ce qui compterait deux fois du temps humain. La mise en place
+reste additive, car les réductions publiées n’incluent pas l’implémentation
+initiale propre à l’utilisateur.
+
+Lorsque la part éligible vaut zéro, la fourchette nette est indisponible. Aucun
+cas éligible ne permet de répartir la mise en place. Le calculateur affiche donc
+`n/a` au lieu de faire disparaître silencieusement le coût fixe. La fiche de
+pilote copiée conserve le profil de tâche, le mode opératoire, l’état du
+résultat, l’expérience de l’opérateur, les composantes du travail humain,
+l’hypothèse d’exception, les heures de mise en place, l’horizon d’amortissement,
+l’identifiant de preuve et la méthode nette nécessaires pour reproduire
+l’estimation.
 
 Le résultat peut être négatif. Un ralentissement est une preuve et ne doit pas
 être ramené à zéro. Le temps machine ne compte jamais comme temps humain gagné.
@@ -112,14 +132,17 @@ estimés par modèle n’alimentent pas automatiquement le calculateur.
 4. Saisissez le temps manuel initial, le volume mensuel et la part éligible.
 5. Ouvrez la décomposition du temps humain et saisissez préparation,
    supervision, vérification, corrections, exceptions et mise en place.
-6. Lisez séparément la plage de la source et votre décompte du temps humain.
+6. Lisez la plage brute de la source et la fourchette nette basse, centrale et
+   haute qui en résulte.
 7. Remplacez chaque paramètre de planification par une observation du pilote
    avant toute décision.
 
-N’ajoutez pas le pourcentage de la source au calcul local. La plage externe
-répond à la question de ce qui s’est produit sur une tâche comparable et
-mesurée. Le décompte humain montre ce qu’impliquent vos propres hypothèses quand
-chaque composant humain est visible.
+N’ajoutez ni le pourcentage ni le temps résiduel de la source au travail local.
+Le moteur conserve le plus grand temps entre le résiduel de la source et le
+plancher de travail humain, puis ajoute la mise en place amortie. La source
+indique toujours ce qui s’est produit sur une tâche comparable et mesurée. La
+fourchette nette montre ce qui reste après explicitation des contrôles locaux et
+de l’effort d’implémentation.
 
 ## Classement des 11 cas d’école
 

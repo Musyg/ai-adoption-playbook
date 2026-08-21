@@ -189,8 +189,13 @@ first-party admission contract.
 3. The progressive calculator exposes one task, one evidence anchor, and one
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
-4. Source-informed low, central, and high ranges remain visually separate from
-   the local human-time calculation. Neither is presented as pilot evidence.
+4. The engine now produces a net low, central, and high range. For each source
+   point it retains the greater of source-implied residual human time and the
+   declared local human-work floor, then adds amortized setup. The unadjusted
+   source range remains visible and neither result is presented as pilot evidence.
+   At zero eligible cases the net range is unavailable, source and local
+   provenance labels remain distinct, and the copied pilot brief preserves the
+   complete human-work and setup contract for reproduction.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.
@@ -198,8 +203,11 @@ first-party admission contract.
    currently persisted or exported, so an additive schema migration would add
    complexity without preserving any user-authorized record.
 7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
-   palette, and browser checks pass locally. An independent external review is
-   still required before assigning a 0.6 release date.
+   palette, and browser checks pass on commit `43256662`. A fresh-context
+   independent final review reports no P0, P1, or P2 finding. GitHub Actions run
+   `32526763108` passes 43 Node tests and 45 browser scenarios. The review loop
+   also closed zero-eligibility propagation, provenance wording, and copied
+   brief reproducibility findings before this final gate.
 
 This work is a new quantitative evidence and transfer layer. It is not a new
 organization track, it does not require rebuilding the playbook, and it does

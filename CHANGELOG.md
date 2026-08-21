@@ -9,9 +9,13 @@
   engine. It checks task profile, operating mode, output state, and experience,
   preserves measured slowdowns, and blocks context-only values from automatic
   calculation.
-- Rebuilt the calibrator as a progressive three-part guide. It keeps a source
-  range separate from preparation, supervision, verification, correction,
-  exception, and amortized setup time, with no organization-type benchmark.
+- Rebuilt the calibrator as a progressive three-part guide. Its net low,
+  central, and high range uses the greater of source-implied residual time and
+  declared local human work, then adds amortized setup. The raw source range
+  remains visible and organization type never defines the benchmark. A zero
+  eligible share blocks the net range, provenance labels distinguish external
+  evidence from local hypotheses, and copied pilot briefs retain every local
+  assumption required to reproduce the calculation.
 - Classified all eleven worked cases by task profile and operating mode in the
   machine-readable registry. Their results remain grade E planning hypotheses,
   even when an external record provides separate mechanism context.

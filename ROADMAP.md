@@ -95,17 +95,18 @@ remain open.
   state, and operator experience, preserves negative findings, and blocks
   context-only values from automatic calculation.
 - [x] Replace the integration-level productivity bands with a progressive
-  calculator that keeps source ranges separate from the local human-time
-  account.
+  calculator that converts source ranges into a net low, central, and high
+  range constrained by the local human-work floor and amortized setup.
 - [x] Normalize the eleven worked cases against the task profiles and audit
   every quantitative value as measured evidence, a named hypothesis, or a
   value to remove.
-- [ ] Complete an independent source, calculation, editorial, and usability
+- [x] Complete an independent source, calculation, editorial, and usability
   review before assigning a release date.
 
-Status: **0.6 is in development.** The registry contains external planning
-evidence only. It neither completes 0.3 nor changes the empty first-party field
-registry.
+Status: **the 0.6 implementation gate is complete.** The registry contains
+external planning evidence only. It neither completes 0.3 nor changes the
+empty first-party field registry. Version assignment remains a separate release
+decision.
 
 ## 1.0: stable public method
 

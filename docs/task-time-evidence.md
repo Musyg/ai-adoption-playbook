@@ -25,19 +25,36 @@ the reputation or size of the organization using it.
 For one eligible case:
 
 ```text
-human time with AI = preparation + supervision + verification
-                     + corrections + expected exception work
-                     + amortized setup
+local human-work floor = preparation + supervision + verification
+                         + corrections + expected exception work
 
-human time saved = baseline human time - human time with AI
+net human time with AI = max(source-implied residual human time,
+                             local human-work floor)
+                         + amortized setup
 
-annual human time saved = human time saved per case
-                          * eligible cases per month * 12
+net human time saved = baseline human time - net human time with AI
+
+annual net human time saved = net human time saved per case
+                              * eligible cases per month * 12
 ```
 
 Expected exception work is the exception rate multiplied by human minutes per
 exception. Amortized setup divides one-off human setup hours across the selected
 number of months and eligible cases.
+
+The source-implied residual is the human time that remains after applying one
+measured low, central, or high reduction to the local baseline. Taking the
+greater value prevents the calculator from hiding declared review work. It also
+avoids adding the source residual and local work together, which would count
+human time twice. Setup remains additive because the published task reductions
+do not include the user’s local one-off implementation.
+
+When the eligible share is zero, the net range is unavailable. There is no
+eligible case over which to allocate setup, so the calculator reports `n/a`
+instead of silently dropping the fixed cost. The copied pilot brief records the
+task profile, operating mode, output state, operator experience, human-work
+components, exception assumption, setup hours, amortization horizon, evidence
+identifier, and net method needed to reproduce the estimate.
 
 The result may be negative. A slowdown is evidence and must not be replaced by
 zero. Machine runtime never counts as human time saved. A turnaround moving from
@@ -111,12 +128,15 @@ figures do not enter the calculator automatically.
 4. Enter the manual baseline, monthly volume, and eligible share.
 5. Open the human-time breakdown and enter preparation, supervision,
    verification, correction, exception, and setup time.
-6. Read the source range and local human-time account separately.
+6. Read the unadjusted source range and the resulting net low, central, and high
+   range.
 7. Replace every planning input with pilot observations before a decision.
 
-Do not add the source percentage to the local calculation. The source range asks
-what happened in a comparable measured task. The human-time account asks what
-your own assumptions imply when every human component is visible.
+Do not add the source percentage or its residual minutes to the local work. The
+engine uses the source residual or the local human-work floor, whichever is
+greater, then adds amortized setup. The source still asks what happened in a
+comparable measured task. The net range shows what remains after the local
+controls and implementation effort are made explicit.
 
 ## How the 11 worked cases are classified
 

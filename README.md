@@ -35,9 +35,9 @@ All eleven cases are synthetic and label their evidence limits explicitly.
 > Status: version **0.2.2**, public repository, snapshot **2026-08-21**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
 
 **Task-time evidence:** the interactive calculator now starts from a countable
-task, shows whether a public source is comparable, and keeps the source range
-separate from the user’s own preparation, supervision, verification,
-correction, exception, and setup time. The
+task, shows whether a public source is comparable, and converts its low,
+central, and high range into a net range constrained by the user’s declared
+preparation, supervision, verification, correction, exception, and setup time. The
 [method and transfer rules](docs/task-time-evidence.md) explain why organization
 type changes context and controls but does not define the benchmark. Model
 estimates, supplier cases, and self-reported savings remain visible without

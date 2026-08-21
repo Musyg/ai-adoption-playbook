@@ -37,9 +37,9 @@ Les onze cas sont synthétiques et indiquent explicitement les limites de leurs 
 > État : version **0.2.2**, dépôt public, photographie au **21 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
 **Preuves de temps de tâche :** le calculateur interactif part maintenant d’une
-tâche comptable, indique si une source publique est comparable et sépare sa
-plage de votre propre temps de préparation, supervision, vérification,
-correction, exception et mise en place. La
+tâche comptable, indique si une source publique est comparable et transforme sa
+plage basse, centrale et haute en fourchette nette contrainte par votre temps de
+préparation, supervision, vérification, correction, exception et mise en place. La
 [méthode et les règles de transfert](docs/task-time-evidence.fr.md) expliquent
 pourquoi le type d’organisation modifie le contexte et les contrôles sans
 définir la référence. Les estimations par modèle, cas fournisseurs et gains

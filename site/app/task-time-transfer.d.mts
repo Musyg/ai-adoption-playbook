@@ -93,17 +93,17 @@ export type HumanTimeInput = WorkloadInput & {
   setup_hours: number;
   amortization_months: number;
 };
-export function assessEvidenceCompatibility(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget): { status: CompatibilityStatus; reasons: string[] };
-export function listEvidenceOptions(registry: TaskTimeRegistry, target: EvidenceTarget): Array<{ record: TaskTimeEvidenceRecord; compatibility: { status: CompatibilityStatus; reasons: string[] } }>;
-export function buildEvidenceTransfer(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget, workload: WorkloadInput): EvidenceTransferResult;
-export function calculateHumanTimeScenario(input: HumanTimeInput): {
+export type HumanTimeScenario = {
   baseline_human_minutes: number;
   monthly_cases: number;
   eligible_share: number;
   eligible_cases: number;
+  calculable: boolean;
   baseline_eligible_human_hours: number;
   components: Record<string, number>;
   operating_human_minutes: number;
+  setup_hours: number;
+  amortization_months: number;
   human_time_with_ai_minutes: number;
   human_time_saved_per_case: number;
   reduction_fraction: number;
@@ -113,11 +113,59 @@ export function calculateHumanTimeScenario(input: HumanTimeInput): {
   accepted_throughput_ratio: number | null;
   setup_payback_months: number | null;
 };
-export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>): {
+export type NetPlanningRangePoint = {
+  source_reduction_fraction: number | null;
+  source_implied_human_minutes: number | null;
+  local_operating_floor_minutes: number;
+  binding_floor: "source" | "local";
+  operating_human_minutes: number;
+  amortized_setup_minutes_per_case: number;
+  human_time_with_ai_minutes: number;
+  human_time_saved_per_case: number;
+  reduction_fraction: number;
+  whole_workload_reduction_fraction: number;
+  human_hours_saved_per_month: number;
+  human_hours_saved_per_year: number;
+  setup_payback_months: number | null;
+};
+export type NetPlanningRange = {
+  calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | null;
+  source: "external_evidence" | "local_hypothesis";
+  compatibility: string;
+  evidence_id: string | null;
+  method: "greater_residual_plus_amortized_setup";
+  scenarios: { low: NetPlanningRangePoint; central: NetPlanningRangePoint; high: NetPlanningRangePoint };
+};
+export function assessEvidenceCompatibility(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget): { status: CompatibilityStatus; reasons: string[] };
+export function listEvidenceOptions(registry: TaskTimeRegistry, target: EvidenceTarget): Array<{ record: TaskTimeEvidenceRecord; compatibility: { status: CompatibilityStatus; reasons: string[] } }>;
+export function buildEvidenceTransfer(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget, workload: WorkloadInput): EvidenceTransferResult;
+export function calculateHumanTimeScenario(input: HumanTimeInput): HumanTimeScenario;
+export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario): NetPlanningRange;
+export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null): {
+  calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;
   high: number;
   compatibility: string;
   evidence_id: string | null;
+  target: EvidenceTarget | null;
+  method: "greater_residual_plus_amortized_setup";
+  human_work: {
+    preparation_minutes: number;
+    supervision_minutes: number;
+    verification_minutes: number;
+    correction_minutes: number;
+    exception_rate_percent: number;
+    exception_minutes: number;
+    expected_exception_minutes: number;
+    operating_human_minutes: number;
+  };
+  setup: {
+    setup_hours: number;
+    amortization_months: number;
+    amortized_setup_minutes_per_case: number;
+  };
 };
