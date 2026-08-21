@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.2, 2026-08-21
+
 - Completed an editorial audit of the 95 paired content headings, browser
   titles, route metadata, and six practical guides. Rephrased unclear titles
   and summaries and added structural consistency checks to the automated test
@@ -12,6 +14,19 @@
 - Tightened the portfolio palette so large surfaces remain black or neutral
   and blue remains the accent. Replaced inherited yellow and coral states and
   added browser checks for surfaces and button hover states.
+- Separated release numbers from guided steps, lifecycle phases, autonomy
+  levels, risk levels, and decision gates throughout the public documentation.
+- Removed `0.3` labels from implemented site sections and documented that 0.3
+  remains unreleased until genuine first-party field evidence passes the
+  review, anonymization, denominator, and registry contract.
+- Corrected visible French terminology and replaced avoidable English process
+  terms with clear French equivalents.
+- Repaired stale official Educa, Swiss cyber-reporting, and Salesforce source
+  links, and aligned the package, citation, crosswalk, roadmap, and handoff on
+  version 0.2.2.
+- Extended the roadmap through 0.4, 0.5, and 1.0 with explicit completion
+  criteria for lifecycle interactivity, the implementation workbench, and a
+  stable public method.
 
 ## 0.2.1, 2026-08-20
 
@@ -50,7 +65,7 @@
   heterogeneity, agent eligibility, the activity-to-delivery gap, agency
   benchmark completion, and self-reported public-sector savings.
 - Kept the first-party field registry empty: public third-party evidence informs
-  the 0.3 pilot but does not satisfy its field-feedback admission rule.
+  future pilots but does not satisfy the field-feedback admission rule.
 - Completed the private public-readiness audit, added conduct guidance
   and a general pull-request checklist, and removed exact legacy hosting origins
   from the current validation source.
