@@ -84,6 +84,29 @@ against an earlier export of the same dossier, and recorded reassessment
 decisions. Field usability testing and the stable 1.0 compatibility freeze
 remain open.
 
+## 0.6: transferable task-time evidence
+
+- [x] Make the bounded task and accepted output the benchmark unit, with
+  organization type retained only as a context and control overlay.
+- [x] Publish a versioned registry and JSON Schema separating measured human
+  time, elapsed time, output metrics, self-reports, internal cases, and model
+  estimates through evidence grades A to E.
+- [x] Add a transfer engine that checks task profile, operating mode, output
+  state, and operator experience, preserves negative findings, and blocks
+  context-only values from automatic calculation.
+- [x] Replace the integration-level productivity bands with a progressive
+  calculator that keeps source ranges separate from the local human-time
+  account.
+- [x] Normalize the eleven worked cases against the task profiles and audit
+  every quantitative value as measured evidence, a named hypothesis, or a
+  value to remove.
+- [ ] Complete an independent source, calculation, editorial, and usability
+  review before assigning a release date.
+
+Status: **0.6 is in development.** The registry contains external planning
+evidence only. It neither completes 0.3 nor changes the empty first-party field
+registry.
+
 ## 1.0: stable public method
 
 - [ ] Close the first-party evidence requirement with explicit limitations.

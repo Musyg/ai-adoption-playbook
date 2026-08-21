@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-adoption-playbook:task-time-evidence:1.0.0",
+  "title": "AI Adoption Playbook task-time evidence registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "published_on", "boundary", "evidence_grades", "task_profiles", "records", "case_applications"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "published_on": { "type": "string", "format": "date" },
+    "boundary": { "$ref": "#/$defs/localized" },
+    "evidence_grades": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B", "C", "D", "E"],
+      "properties": {
+        "A": { "$ref": "#/$defs/localized" },
+        "B": { "$ref": "#/$defs/localized" },
+        "C": { "$ref": "#/$defs/localized" },
+        "D": { "$ref": "#/$defs/localized" },
+        "E": { "$ref": "#/$defs/localized" }
+      }
+    },
+    "task_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/taskProfile" }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceRecord" }
+    },
+    "case_applications": {
+      "type": "array",
+      "minItems": 11,
+      "items": { "$ref": "#/$defs/caseApplication" }
+    }
+  },
+  "$defs": {
+    "localized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "fr"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "fr": { "type": "string", "minLength": 1 }
+      }
+    },
+    "taskProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "label", "description", "use_patterns", "output_unit", "quality_gates"],
+      "properties": {
+        "profile_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]+$" },
+        "label": { "$ref": "#/$defs/localized" },
+        "description": { "$ref": "#/$defs/localized" },
+        "use_patterns": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] }
+        },
+        "output_unit": { "$ref": "#/$defs/localized" },
+        "quality_gates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["draft", "reviewed", "production"] }
+        }
+      }
+    },
+    "fractionRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["low", "central", "high"],
+      "properties": {
+        "low": { "type": "number", "minimum": -5, "maximum": 0.99 },
+        "central": { "type": "number", "minimum": -5, "maximum": 0.99 },
+        "high": { "type": "number", "minimum": -5, "maximum": 0.99 }
+      }
+    },
+    "reportedMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "direction"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string", "minLength": 1 },
+        "direction": { "enum": ["increase", "decrease", "mixed", "not_applicable"] }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_grade", "design", "sample_size", "time_scope", "human_active_time_measured", "machine_runtime_measured", "human_time_reduction_fraction", "absolute_saving", "outcome_change", "quality_change", "notes"],
+      "properties": {
+        "evidence_grade": { "enum": ["A", "B", "C", "D", "E"] },
+        "design": { "type": "string", "minLength": 1 },
+        "sample_size": { "type": ["integer", "null"], "minimum": 1 },
+        "time_scope": { "enum": ["per_task", "per_workday", "elapsed_turnaround", "project_estimate", "outcome_only"] },
+        "human_active_time_measured": { "type": "boolean" },
+        "machine_runtime_measured": { "type": "boolean" },
+        "human_time_reduction_fraction": { "oneOf": [{ "$ref": "#/$defs/fractionRange" }, { "type": "null" }] },
+        "absolute_saving": { "oneOf": [{ "$ref": "#/$defs/reportedMetric" }, { "type": "null" }] },
+        "outcome_change": { "oneOf": [{ "$ref": "#/$defs/reportedMetric" }, { "type": "null" }] },
+        "quality_change": { "oneOf": [{ "$ref": "#/$defs/reportedMetric" }, { "type": "null" }] },
+        "notes": { "$ref": "#/$defs/localized" }
+      }
+    },
+    "transfer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quantitative_use", "allowed_profiles", "integration_modes", "quality_gates", "expertise_levels", "preconditions", "limits"],
+      "properties": {
+        "quantitative_use": { "enum": ["usable", "context_only"] },
+        "allowed_profiles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "integration_modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["copilot", "agent", "agency"] } },
+        "quality_gates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["draft", "reviewed", "production"] } },
+        "expertise_levels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["developing", "mixed", "experienced"] } },
+        "preconditions": { "$ref": "#/$defs/localized" },
+        "limits": { "$ref": "#/$defs/localized" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url", "published", "accessed_on", "source_type"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "published": { "type": "string", "minLength": 4 },
+        "accessed_on": { "type": "string", "format": "date" },
+        "source_type": { "enum": ["peer_reviewed_paper", "working_paper", "official_evaluation", "research_report", "internal_case"] }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "title", "organization_context", "task_contract", "measurement", "transfer", "sources"],
+      "properties": {
+        "evidence_id": { "type": "string", "pattern": "^TT-[0-9]{4}-[A-Z0-9-]+$" },
+        "title": { "$ref": "#/$defs/localized" },
+        "organization_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name", "region"],
+          "properties": {
+            "kind": { "enum": ["controlled_experiment", "field_organization", "public_administration", "frontier_ai_company"] },
+            "name": { "type": "string", "minLength": 1 },
+            "region": { "type": "string", "minLength": 1 }
+          }
+        },
+        "task_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_id", "description", "integration_mode", "autonomy_levels", "output_unit", "quality_gate", "operator_expertise", "verifiability", "use_patterns"],
+          "properties": {
+            "profile_id": { "type": "string", "minLength": 1 },
+            "description": { "$ref": "#/$defs/localized" },
+            "integration_mode": { "enum": ["copilot", "agent", "agency"] },
+            "autonomy_levels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["A0", "A1", "A2", "A3", "A4"] } },
+            "output_unit": { "$ref": "#/$defs/localized" },
+            "quality_gate": { "enum": ["draft", "reviewed", "production"] },
+            "operator_expertise": { "enum": ["developing", "mixed", "experienced"] },
+            "verifiability": { "enum": ["low", "medium", "high"] },
+            "use_patterns": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] } }
+          }
+        },
+        "measurement": { "$ref": "#/$defs/measurement" },
+        "transfer": { "$ref": "#/$defs/transfer" },
+        "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } }
+      }
+    },
+    "caseApplication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "title", "profile_id", "integration_mode", "autonomy_level", "evidence_grade", "quantitative_use", "external_anchor_ids", "rationale", "example_files"],
+      "properties": {
+        "case_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+        "title": { "$ref": "#/$defs/localized" },
+        "profile_id": { "type": "string", "minLength": 1 },
+        "integration_mode": { "enum": ["copilot", "agent", "agency"] },
+        "autonomy_level": { "enum": ["A0", "A1", "A2", "A3", "A4"] },
+        "evidence_grade": { "const": "E" },
+        "quantitative_use": { "const": "planning_only" },
+        "external_anchor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^TT-[0-9]{4}-[A-Z0-9-]+$" }
+        },
+        "rationale": { "$ref": "#/$defs/localized" },
+        "example_files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["en", "fr"],
+          "properties": {
+            "en": { "type": "string", "pattern": "^examples/en/.+\\.md$" },
+            "fr": { "type": "string", "pattern": "^examples/fr/.+\\.md$" }
+          }
+        }
+      }
+    }
+  }
+}

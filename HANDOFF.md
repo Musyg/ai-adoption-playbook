@@ -46,13 +46,14 @@ It then keeps three integration levels distinct:
 
 Use pattern, interaction, knowledge source, deployment, integration level,
 autonomy, risk, and jurisdiction are separate dimensions. The visual application
-includes editable low/high challenge hypotheses, six
+includes a task-time evidence selector and full human-time account, six
 primary-evidence reality checks, eleven synthetic worked cases, pilot
 preregistration, evidence gates, reversible operations, decision-dossier
 export, field-pilot preparation, five organization paths, four sector overlays,
-and a versioned control crosswalk. The selected use pattern and jurisdiction
-feed the control filter and exported pilot records. The Markdown guides and
-templates remain the operational source of truth.
+and a versioned control crosswalk. The selected use pattern chooses the nearest
+task profile, while use pattern and jurisdiction feed the control filter and
+exported pilot records. The Markdown guides and templates remain the
+operational source of truth.
 
 Swiss and EU routes are evaluated separately. The Swiss route covers FADP data
 processing, direct language-model interaction, qualifying automated individual
@@ -82,9 +83,9 @@ anonymization, complete-denominator, transfer-limit, and registry requirements.
 This limitation does not turn public studies or synthetic cases into field
 evidence for release 0.2.2.
 
-## Frozen next decision: transferable task-time evidence
+## 0.6 implementation: transferable task-time evidence
 
-The next quantitative layer compares bounded tasks and workflows, not
+The current quantitative layer compares bounded tasks and workflows, not
 organization categories. Evidence from an AI company, research laboratory,
 university, public administration, independent practice, or small business may
 inform another context only when the task contract, automation mechanism,
@@ -92,11 +93,11 @@ prerequisites, and acceptance threshold are comparable. Organization type is a
 context overlay for scale, law, governance, data, procurement, and control
 requirements. It is not the benchmark unit.
 
-This addition must preserve the existing seven use patterns, three integration
-levels, A0 to A4 autonomy scale, R0 to R3 impact scale, Swiss and EU routing,
-progressive interface, lifecycle, controls, dossier, and worked cases. Existing
-cases are to be normalized as applications of transferable mechanisms, not
-discarded or rewritten from scratch.
+The implementation preserves the existing seven use patterns, three
+integration levels, A0 to A4 autonomy scale, R0 to R3 impact scale, Swiss and EU
+routing, progressive interface, lifecycle, controls, dossier, and worked cases.
+The cases are normalized as applications of transferable mechanisms rather
+than discarded or rewritten from scratch.
 
 The three operational modes remain distinct:
 
@@ -150,12 +151,14 @@ residual ratio = human time with AI / baseline human time
 
 The ratio may inform a target task only after checking output unit, complexity,
 quality threshold, verifiability, data and tool access, operator experience,
-exception rate, and consequence of error. The transfer result has three states:
+exception rate, and consequence of error. The transfer result has four states:
 
 1. compatible: produce a source-informed low, central, and high range;
 2. partially compatible: expose the adjustments and label the result as a
    hypothesis to test;
-3. incompatible: do not transfer the quantitative result.
+3. context only: retain the mechanism or reported outcome without transferring
+   a human-time ratio;
+4. incompatible: do not transfer the quantitative result.
 
 A percentage is never transferred merely because two organizations share a
 sector or size. Conversely, a source from a different organization type is not
@@ -175,23 +178,28 @@ Grades describe the measurement basis, not whether the result is favorable.
 Public and supplier evidence can seed planning, but it does not satisfy the 0.3
 first-party admission contract.
 
-### Authorized implementation order
+### Implementation state
 
-1. Keep `main` stable and introduce a versioned task-time evidence registry and
-   JSON Schema on a feature branch.
-2. Build a pure transfer engine that applies the compatibility gates and keeps
-   human time, machine time, elapsed time, quality, and risk separate.
-3. Evolve the current calibrator into a short interactive flow using the
-   registry, with current task duration, frequency, automation mode, and
-   verification burden as the minimum inputs.
-4. Show low, central, and high net-human-time scenarios with conditions,
-   confidence, exception cost, and the source of every assumption.
-5. Normalize the existing cases progressively and audit every current number as
-   measured evidence, a named hypothesis, or a value to remove.
-6. Add an optional `time_scenario` dossier object only if saved simulations need
-   to survive export, using an additive schema migration.
-7. Re-run content, paired-route, TypeScript, JSON Schema, accessibility, and
-   browser validation before publication.
+1. `task-time-evidence.v1.json` and its strict JSON Schema contain ten task
+   profiles, nine external evidence records, evidence grades A to E, and the
+   classification of all eleven worked cases.
+2. The pure transfer engine checks the task profile, operating mode, output
+   state, and operator experience. It keeps measured slowdowns negative and
+   blocks context-only sources from automatic transfer.
+3. The progressive calculator exposes one task, one evidence anchor, and one
+   complete human-time account. Preparation, supervision, verification,
+   corrections, expected exception work, and amortized setup remain editable.
+4. Source-informed low, central, and high ranges remain visually separate from
+   the local human-time calculation. Neither is presented as pilot evidence.
+5. Every worked-case result is explicitly classified as a grade E planning
+   hypothesis. External records may remain attached as separate context without
+   upgrading the synthetic result.
+6. No `time_scenario` was added to the project dossier. The calculator is not
+   currently persisted or exported, so an additive schema migration would add
+   complexity without preserving any user-authorized record.
+7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
+   palette, and browser checks pass locally. An independent external review is
+   still required before assigning a 0.6 release date.
 
 This work is a new quantitative evidence and transfer layer. It is not a new
 organization track, it does not require rebuilding the playbook, and it does
@@ -230,18 +238,18 @@ Latest local verification on 2026-08-21:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 29/29 pass
+- Node tests: 40/40 pass
 - Playwright: 42/42 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 112 Markdown files and 47 paired documents pass
+- repository validation: 114 Markdown files and 48 paired documents pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 29 Node tests for accessibility semantics, decision logic, rendered HTML,
-  controls, GEO content, and all 14 exported routes;
+- 40 Node tests for accessibility semantics, decision logic, task-time transfer,
+  rendered HTML, controls, GEO content, and all 14 exported routes;
 - 42 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;

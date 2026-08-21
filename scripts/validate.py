@@ -46,6 +46,8 @@ REQUIRED_FILES = (
     "docs/maturity-model.md",
     "docs/risk-autonomy.md",
     "docs/security.md",
+    "docs/task-time-evidence.md",
+    "docs/task-time-evidence.fr.md",
     "docs/universal-process.md",
     "docs/universal-process.fr.md",
     "sectors/en/README.md",
@@ -97,6 +99,8 @@ REQUIRED_FILES = (
     "site/public/data/control-crosswalk.schema.json",
     "site/public/data/control-crosswalk.v1.json",
     "site/public/data/project-dossier.schema.json",
+    "site/public/data/task-time-evidence.schema.json",
+    "site/public/data/task-time-evidence.v1.json",
     ".github/ISSUE_TEMPLATE/correction.yml",
     ".github/ISSUE_TEMPLATE/correction-fr.yml",
     ".github/ISSUE_TEMPLATE/field-pilot-en.yml",
@@ -120,6 +124,7 @@ TRANSLATION_PAIRS = (
     ("docs/maturity-model.md", "docs/maturity-model.fr.md"),
     ("docs/risk-autonomy.md", "docs/risk-autonomy.fr.md"),
     ("docs/security.md", "docs/security.fr.md"),
+    ("docs/task-time-evidence.md", "docs/task-time-evidence.fr.md"),
     ("docs/universal-process.md", "docs/universal-process.fr.md"),
     ("templates/evaluation-plan.md", "templates/evaluation-plan.fr.md"),
     ("templates/incident-runbook.md", "templates/incident-runbook.fr.md"),
@@ -220,6 +225,24 @@ USE_PATTERNS = {"generation", "retrieval", "classification", "prediction", "conv
 JURISDICTIONS = {"CH", "EU"}
 GATES = {"G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"}
 PRIORITIES = {"baseline", "strengthened", "critical"}
+INTEGRATION_MODES = {"copilot", "agent", "agency"}
+QUALITY_GATES = {"draft", "reviewed", "production"}
+EXPERTISE_LEVELS = {"developing", "mixed", "experienced"}
+EVIDENCE_GRADES = {"A", "B", "C", "D", "E"}
+TASK_TIME_ID = re.compile(r"^TT-[0-9]{4}-[A-Z0-9-]+$")
+EXPECTED_CASE_APPLICATION_FILES = {
+    ("examples/en/tpe-customer-requests.md", "examples/fr/tpe-demandes-clients.md"),
+    ("examples/en/sme-b2b-quote-business-agent.md", "examples/fr/pme-agent-metier-devis-b2b.md"),
+    ("examples/en/nonprofit-grant-dossier-business-agent.md", "examples/fr/association-agent-dossiers-subventions.md"),
+    ("examples/en/public-sector-planning-dossier-business-agent.md", "examples/fr/service-public-agent-dossiers-urbanisme.md"),
+    ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
+    ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
+    ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),
+    ("examples/en/rag-policy-assistant.md", "examples/fr/assistant-rag-procedures.md"),
+    ("examples/en/predictive-demand-forecast.md", "examples/fr/prevision-demande-pieces.md"),
+    ("examples/en/external-customer-chatbot.md", "examples/fr/chatbot-client-externe.md"),
+    ("examples/en/multimodal-catalog-accessibility.md", "examples/fr/catalogue-multimodal-accessibilite.md"),
+}
 
 
 def is_ignored_repo_path(path: Path) -> bool:
@@ -427,6 +450,200 @@ def check_field_notes(errors: list[str]) -> None:
         report_path = report.get("report_path")
         if isinstance(report_path, str) and not (ROOT / report_path).is_file():
             errors.append(f"{context}: missing report_path: {report_path}")
+
+
+def check_task_time_registry(errors: list[str]) -> None:
+    relative = "site/public/data/task-time-evidence.v1.json"
+    registry = load_json(relative, errors)
+    if not isinstance(registry, dict):
+        return
+    if registry.get("schema_version") != "1.0.0":
+        errors.append("task-time registry schema_version must be 1.0.0")
+    expect_date(registry, "published_on", "task-time registry", errors)
+    expect_localized(registry, "boundary", "task-time registry", errors)
+
+    grades = registry.get("evidence_grades")
+    if not isinstance(grades, dict) or set(grades) != EVIDENCE_GRADES:
+        errors.append("task-time registry must define evidence grades A to E")
+    else:
+        for grade in sorted(EVIDENCE_GRADES):
+            expect_localized(grades, grade, "task-time evidence grades", errors)
+
+    profiles = registry.get("task_profiles")
+    if not isinstance(profiles, list) or not profiles:
+        errors.append("task-time registry task_profiles must be a non-empty array")
+        profiles = []
+    profile_ids: set[str] = set()
+    for index, profile in enumerate(profiles):
+        context = f"task-time task_profiles[{index}]"
+        if not isinstance(profile, dict):
+            errors.append(f"{context} must be an object")
+            continue
+        profile_id = profile.get("profile_id")
+        if not isinstance(profile_id, str) or not re.fullmatch(r"[a-z][a-z0-9_]+", profile_id):
+            errors.append(f"{context}: invalid profile_id")
+        elif profile_id in profile_ids:
+            errors.append(f"duplicate task-time profile_id: {profile_id}")
+        else:
+            profile_ids.add(profile_id)
+        for field in ("label", "description", "output_unit"):
+            expect_localized(profile, field, context, errors)
+        patterns = profile.get("use_patterns")
+        if not isinstance(patterns, list) or not patterns or not set(patterns) <= USE_PATTERNS or len(patterns) != len(set(patterns)):
+            errors.append(f"{context}: invalid use_patterns")
+        quality_gates = profile.get("quality_gates")
+        if not isinstance(quality_gates, list) or not quality_gates or not set(quality_gates) <= QUALITY_GATES or len(quality_gates) != len(set(quality_gates)):
+            errors.append(f"{context}: invalid quality_gates")
+
+    records = registry.get("records")
+    if not isinstance(records, list) or not records:
+        errors.append("task-time registry records must be a non-empty array")
+        records = []
+    evidence_ids: set[str] = set()
+    has_negative_measurement = False
+    has_context_only_frontier_case = False
+    for index, record in enumerate(records):
+        context = f"task-time records[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{context} must be an object")
+            continue
+        evidence_id = record.get("evidence_id")
+        if not isinstance(evidence_id, str) or not TASK_TIME_ID.fullmatch(evidence_id):
+            errors.append(f"{context}: invalid evidence_id")
+        elif evidence_id in evidence_ids:
+            errors.append(f"duplicate task-time evidence_id: {evidence_id}")
+        else:
+            evidence_ids.add(evidence_id)
+        expect_localized(record, "title", context, errors)
+
+        task_contract = record.get("task_contract")
+        if not isinstance(task_contract, dict):
+            errors.append(f"{context}: task_contract must be an object")
+        else:
+            if task_contract.get("profile_id") not in profile_ids:
+                errors.append(f"{context}: task_contract references a missing profile")
+            if task_contract.get("integration_mode") not in INTEGRATION_MODES:
+                errors.append(f"{context}: invalid task_contract integration_mode")
+            if task_contract.get("quality_gate") not in QUALITY_GATES:
+                errors.append(f"{context}: invalid task_contract quality_gate")
+            if task_contract.get("operator_expertise") not in EXPERTISE_LEVELS:
+                errors.append(f"{context}: invalid task_contract operator_expertise")
+            for field in ("description", "output_unit"):
+                expect_localized(task_contract, field, context, errors)
+
+        measurement = record.get("measurement")
+        if not isinstance(measurement, dict):
+            errors.append(f"{context}: measurement must be an object")
+            measurement = {}
+        grade = measurement.get("evidence_grade")
+        if grade not in EVIDENCE_GRADES:
+            errors.append(f"{context}: invalid evidence_grade")
+        time_range = measurement.get("human_time_reduction_fraction")
+        if time_range is not None:
+            if not isinstance(time_range, dict) or set(time_range) != {"low", "central", "high"}:
+                errors.append(f"{context}: invalid human_time_reduction_fraction")
+            else:
+                values = [time_range.get(key) for key in ("low", "central", "high")]
+                if not all(isinstance(value, (int, float)) and -5 <= value <= 0.99 for value in values):
+                    errors.append(f"{context}: task-time range values are out of bounds")
+                elif values != sorted(values):
+                    errors.append(f"{context}: task-time range must be ordered low to high")
+                elif values[0] < 0:
+                    has_negative_measurement = True
+
+        transfer = record.get("transfer")
+        if not isinstance(transfer, dict):
+            errors.append(f"{context}: transfer must be an object")
+            transfer = {}
+        quantitative_use = transfer.get("quantitative_use")
+        if quantitative_use not in {"usable", "context_only"}:
+            errors.append(f"{context}: invalid quantitative_use")
+        if "organization_types" in transfer:
+            errors.append(f"{context}: organization_types must not define task-time compatibility")
+        allowed_profiles = transfer.get("allowed_profiles")
+        if not isinstance(allowed_profiles, list) or not allowed_profiles or not set(allowed_profiles) <= profile_ids:
+            errors.append(f"{context}: invalid transfer allowed_profiles")
+        if quantitative_use == "usable":
+            if grade not in {"A", "B"} or measurement.get("human_active_time_measured") is not True or time_range is None:
+                errors.append(f"{context}: usable transfer requires measured grade A or B human time")
+        organization_context = record.get("organization_context")
+        if quantitative_use == "context_only" and isinstance(organization_context, dict) and organization_context.get("kind") == "frontier_ai_company":
+            has_context_only_frontier_case = True
+        for field in ("preconditions", "limits"):
+            expect_localized(transfer, field, context, errors)
+
+        sources = record.get("sources")
+        if not isinstance(sources, list) or not sources:
+            errors.append(f"{context}: sources must be a non-empty array")
+        else:
+            for source_index, source in enumerate(sources):
+                source_context = f"{context}.sources[{source_index}]"
+                if not isinstance(source, dict):
+                    errors.append(f"{source_context} must be an object")
+                    continue
+                for field in ("title", "published", "source_type"):
+                    expect_string(source, field, source_context, errors)
+                source_url = source.get("url")
+                if not isinstance(source_url, str) or not source_url.startswith("https://"):
+                    errors.append(f"{source_context}: url must use https")
+                expect_date(source, "accessed_on", source_context, errors)
+
+    if not has_negative_measurement:
+        errors.append("task-time registry must preserve at least one measured slowdown")
+    if not has_context_only_frontier_case:
+        errors.append("task-time registry must keep frontier-company estimates contextual")
+
+    case_applications = registry.get("case_applications")
+    if not isinstance(case_applications, list) or len(case_applications) != 11:
+        errors.append("task-time registry must map exactly eleven worked cases")
+        case_applications = []
+    case_ids: set[str] = set()
+    mapped_files: set[tuple[str, str]] = set()
+    allowed_autonomy = {
+        "copilot": {"A0", "A1"},
+        "agent": {"A2", "A3"},
+        "agency": {"A3", "A4"},
+    }
+    for index, application in enumerate(case_applications):
+        context = f"task-time case_applications[{index}]"
+        if not isinstance(application, dict):
+            errors.append(f"{context} must be an object")
+            continue
+        case_id = application.get("case_id")
+        if not isinstance(case_id, str) or not re.fullmatch(r"[a-z][a-z0-9-]+", case_id):
+            errors.append(f"{context}: invalid case_id")
+        elif case_id in case_ids:
+            errors.append(f"duplicate task-time case_id: {case_id}")
+        else:
+            case_ids.add(case_id)
+        expect_localized(application, "title", context, errors)
+        expect_localized(application, "rationale", context, errors)
+        if application.get("profile_id") not in profile_ids:
+            errors.append(f"{context}: missing task profile")
+        integration_mode = application.get("integration_mode")
+        autonomy_level = application.get("autonomy_level")
+        if integration_mode not in INTEGRATION_MODES:
+            errors.append(f"{context}: invalid integration_mode")
+        elif autonomy_level not in allowed_autonomy[integration_mode]:
+            errors.append(f"{context}: autonomy_level does not match integration_mode")
+        if application.get("evidence_grade") != "E" or application.get("quantitative_use") != "planning_only":
+            errors.append(f"{context}: worked-case numbers must remain grade E planning hypotheses")
+        anchor_ids = application.get("external_anchor_ids")
+        if not isinstance(anchor_ids, list) or len(anchor_ids) != len(set(anchor_ids)) or not set(anchor_ids) <= evidence_ids:
+            errors.append(f"{context}: invalid external_anchor_ids")
+        example_files = application.get("example_files")
+        if not isinstance(example_files, dict) or set(example_files) != {"en", "fr"}:
+            errors.append(f"{context}: example_files must define en and fr")
+            continue
+        pair = (example_files.get("en"), example_files.get("fr"))
+        if not all(isinstance(relative, str) and (ROOT / relative).is_file() for relative in pair):
+            errors.append(f"{context}: missing example file")
+        elif pair in mapped_files:
+            errors.append(f"{context}: duplicate example file pair")
+        else:
+            mapped_files.add(pair)
+    if mapped_files != EXPECTED_CASE_APPLICATION_FILES:
+        errors.append("task-time registry must cover every worked-case file pair exactly once")
 
 
 def load_json(relative: str, errors: list[str]) -> object | None:
@@ -664,6 +881,7 @@ def main() -> int:
     check_hosting_contract(errors)
     check_register(errors)
     check_field_notes(errors)
+    check_task_time_registry(errors)
     check_crosswalk(errors)
     if errors:
         print("Validation failed:")
@@ -677,8 +895,8 @@ def main() -> int:
     )
     print(
         f"Validation passed: {markdown_count} Markdown files, "
-        f"{len(TRANSLATION_PAIRS)} paired documents, AI register, field-feedback "
-        "registry, and control crosswalk contracts OK."
+        f"{len(TRANSLATION_PAIRS)} paired documents, AI register, field-feedback, "
+        "task-time, and control crosswalk contracts OK."
     )
     return 0
 
