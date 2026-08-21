@@ -70,7 +70,7 @@ evidence produced by this playbook. The registry remains empty.
 
 ## 0.5: implementation workbench
 
-- [ ] Connect the guided decisions to editable registers, assessments, and
+- [x] Connect the guided decisions to editable registers, assessments, and
   implementation checklists.
 - [x] Add local persistence, import, and export for a versioned project dossier
   without transmitting client data.
@@ -78,9 +78,10 @@ evidence produced by this playbook. The registry remains empty.
 - [ ] Test the complete workbench with independent professionals, SMEs, public
   services, and regulated or high-impact contexts.
 
-The first 0.5 foundation is implemented with an experimental `0.1.0` dossier
-schema. Stable migration rules, artifact editing, change comparison, and field
-usability testing remain open.
+The first two 0.5 foundations are implemented with an experimental `0.2.0`
+dossier schema and automatic migration from `0.1.0`. Version comparison,
+change-impact decisions, stable migration policy, and field usability testing
+remain open.
 
 ## 1.0: stable public method
 

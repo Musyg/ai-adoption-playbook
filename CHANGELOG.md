@@ -12,7 +12,12 @@
 - Added a persistent local project dossier to the lifecycle workbench. It saves
   answers and conditioned controls in the current browser, restores the guide
   context, exports and imports a strictly validated JSON draft, and publishes
-  an experimental `0.1.0` schema without transmitting project data.
+  an experimental schema without transmitting project data.
+- Connected lifecycle answers to an editable AI system register, risk and
+  impact assessment, evaluation plan, and implementation checklist. Linked
+  fields keep following the guide until explicitly edited, while checklist
+  rows add owners, dates, statuses, and evidence references. The dossier schema
+  is now `0.2.0` and imports valid `0.1.0` drafts automatically.
 
 ## 0.2.2, 2026-08-21
 

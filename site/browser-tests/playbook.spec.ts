@@ -212,6 +212,78 @@ test("lifecycle workbench reveals one phase and derives decision guidance", asyn
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("4. Risk and legal route · COMPLETE");
 });
 
+test("connected project records stay linked, editable, and persistent", async ({ page }) => {
+  test.setTimeout(60_000);
+  const storageKey = "ai-adoption-playbook:project-dossier:v1";
+  const openWorkbench = async () => {
+    await page.locator("#implementation-library > summary").click();
+    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+    await expect(page.locator("#lifecycle-workbench")).toBeVisible();
+  };
+
+  await page.goto("/");
+  await page.evaluate((key) => localStorage.removeItem(key), storageKey);
+  await page.reload();
+  await openWorkbench();
+  let workbench = page.locator("#lifecycle-workbench");
+  const artifacts = workbench.locator(".project-artifacts-workbench");
+  await expect(artifacts.locator(".artifact-router button")).toHaveCount(4);
+  await workbench.locator('[name="project"]').fill("Linked project name");
+  await workbench.locator('[name="owner"]').fill("Operations owner");
+  await workbench.locator('[name="problem"]').fill("Observed delay in the current process");
+  await workbench.locator('[name="affected"]').fill("Customers and operations staff");
+  await workbench.locator('[name="decisionDate"]').fill("2026-09-30");
+
+  const linkedName = artifacts.locator('[name="artifact-system_register-name"]');
+  await expect(linkedName).toHaveValue("Linked project name");
+  await expect(artifacts.locator('[data-field="name"]')).toHaveAttribute("data-mode", "linked");
+  await artifacts.locator('[name="artifact-system_register-system_id"]').fill("AI-042");
+  await linkedName.fill("Approved register name");
+  await workbench.locator('[name="project"]').fill("Changed guide name");
+  await expect(linkedName).toHaveValue("Approved register name");
+  await artifacts.locator('[data-field="name"]').getByRole("button", { name: "Use linked value" }).click();
+  await expect(linkedName).toHaveValue("Changed guide name");
+
+  await artifacts.locator('button[data-artifact="risk_assessment"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await artifacts.locator('[name="artifact-risk_assessment-retention_transfers"]').fill("30 days in Switzerland; no supplier reuse");
+  await artifacts.locator('[name="artifact-risk_assessment-harm_scenarios"]').fill("Incorrect answer could delay a customer request");
+
+  await artifacts.locator('button[data-artifact="evaluation_plan"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(artifacts.locator(".artifact-pattern-note")).toContainText("retrieval coverage");
+  await artifacts.locator('[name="artifact-evaluation_plan-test_provenance"]').fill("Authorized frozen cases v1");
+
+  await artifacts.locator('button[data-artifact="implementation_checklist"]').evaluate((element) => (element as HTMLButtonElement).click());
+  const mandateTask = artifacts.locator('article[data-task="phase:0"]');
+  await expect(mandateTask).toHaveAttribute("data-status", "done");
+  await mandateTask.getByRole("combobox", { name: /Status:/ }).selectOption("in_progress");
+  await mandateTask.getByRole("textbox", { name: /Owner:/ }).fill("Programme lead");
+  await mandateTask.getByLabel(/Due date:/).fill("2026-09-15");
+  await mandateTask.getByRole("textbox", { name: /Evidence reference:/ }).fill("MANDATE-042");
+
+  await expect.poll(() => page.evaluate((key) => {
+    const dossier = JSON.parse(localStorage.getItem(key) ?? "null");
+    return {
+      schema: dossier?.schema_version,
+      systemId: dossier?.artifacts?.system_register?.fields?.system_id?.value,
+      retention: dossier?.artifacts?.risk_assessment?.fields?.retention_transfers?.value,
+      taskStatus: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status,
+      taskMode: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status_mode,
+    };
+  }, storageKey)).toEqual({ schema: "0.2.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
+
+  await page.reload();
+  await openWorkbench();
+  workbench = page.locator("#lifecycle-workbench");
+  await expect(workbench.locator('[name="artifact-system_register-system_id"]')).toHaveValue("AI-042");
+  await workbench.locator('button[data-artifact="risk_assessment"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(workbench.locator('[name="artifact-risk_assessment-retention_transfers"]')).toHaveValue("30 days in Switzerland; no supplier reuse");
+  await workbench.locator('button[data-artifact="implementation_checklist"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(workbench.locator('article[data-task="phase:0"]')).toHaveAttribute("data-status", "in_progress");
+  await expect(workbench.locator('article[data-task="phase:0"]')).toContainText("Status set manually.");
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test("local project dossier persists, exports, imports, and resets safely", async ({ page }) => {
   test.setTimeout(60_000);
   const storageKey = "ai-adoption-playbook:project-dossier:v1";
@@ -274,6 +346,28 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   await expect(workbench.locator(".lifecycle-context")).toContainText("Conversation");
   await expect(workbench.locator(".lifecycle-context")).toContainText("European Union");
   await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
+
+  const legacyDossier = { ...imported };
+  delete legacyDossier.artifacts;
+  await workbench.locator(".dossier-file-input").setInputFiles({
+    name: "legacy-project-dossier.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({ ...legacyDossier, schema_version: "0.1.0" })),
+  });
+  await expect(workbench.getByText("Older dossier updated to the current project-record format.")).toBeVisible();
+  await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
+  await expect.poll(() => page.evaluate((key) => {
+    const dossier = JSON.parse(localStorage.getItem(key) ?? "null");
+    return {
+      schema: dossier?.schema_version,
+      project: dossier?.fields?.project,
+      artifactGroups: Object.keys(dossier?.artifacts ?? {}).sort(),
+    };
+  }, storageKey)).toEqual({
+    schema: "0.2.0",
+    project: "Imported public assistant",
+    artifactGroups: ["evaluation_plan", "implementation_checklist", "risk_assessment", "system_register"],
+  });
 
   const invalid = { ...imported, schema_version: "9.0.0", fields: { project: "Must not replace current work" } };
   await workbench.locator(".dossier-file-input").setInputFiles({

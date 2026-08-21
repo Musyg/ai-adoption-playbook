@@ -1,6 +1,11 @@
-export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.1.0";
+import { createEmptyProjectArtifacts } from "./project-artifacts.mjs";
+
+export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.2.0";
 export const PROJECT_DOSSIER_STORAGE_KEY = "ai-adoption-playbook:project-dossier:v1";
 export const PROJECT_DOSSIER_PLAYBOOK_VERSION = "0.2.2";
+
+const LEGACY_SCHEMA_VERSION = "0.1.0";
+const baseKeys = ["schema_version", "playbook_version", "dossier_id", "created_at", "updated_at", "language", "status", "boundary", "context", "active_phase", "fields", "conditioned_controls", "matched_control_ids", "completed_phases"];
 
 const organizationTypes = new Set(["independent", "tpe", "pme", "nonprofit", "public"]);
 const usePatterns = new Set(["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"]);
@@ -38,6 +43,51 @@ function isUniquePhaseArray(value) {
     && new Set(value).size === value.length;
 }
 
+function isArtifactField(value) {
+  return isRecord(value)
+    && hasOnlyKeys(value, new Set(["value", "mode"]))
+    && typeof value.value === "string"
+    && (value.mode === "linked" || value.mode === "manual");
+}
+
+function isArtifactFieldRecord(value) {
+  return isRecord(value) && Object.values(value).every(isArtifactField);
+}
+
+function isChecklistItem(value) {
+  return isRecord(value)
+    && hasOnlyKeys(value, new Set(["status", "status_mode", "owner", "due_date", "evidence_ref"]))
+    && ["not_started", "in_progress", "done", "not_applicable"].includes(value.status)
+    && (value.status_mode === "linked" || value.status_mode === "manual")
+    && typeof value.owner === "string"
+    && typeof value.due_date === "string"
+    && typeof value.evidence_ref === "string";
+}
+
+function isProjectArtifacts(value) {
+  if (!isRecord(value)
+    || !hasOnlyKeys(value, new Set(["system_register", "risk_assessment", "evaluation_plan", "implementation_checklist"]))) return false;
+  for (const id of ["system_register", "risk_assessment", "evaluation_plan"]) {
+    if (!isRecord(value[id])
+      || !hasOnlyKeys(value[id], new Set(["fields"]))
+      || !isArtifactFieldRecord(value[id].fields)) return false;
+  }
+  return isRecord(value.implementation_checklist)
+    && hasOnlyKeys(value.implementation_checklist, new Set(["items"]))
+    && isRecord(value.implementation_checklist.items)
+    && Object.values(value.implementation_checklist.items).every(isChecklistItem);
+}
+
+function cloneArtifacts(artifacts) {
+  const source = artifacts ?? createEmptyProjectArtifacts();
+  return {
+    system_register: { fields: Object.fromEntries(Object.entries(source.system_register.fields).map(([id, field]) => [id, { ...field }])) },
+    risk_assessment: { fields: Object.fromEntries(Object.entries(source.risk_assessment.fields).map(([id, field]) => [id, { ...field }])) },
+    evaluation_plan: { fields: Object.fromEntries(Object.entries(source.evaluation_plan.fields).map(([id, field]) => [id, { ...field }])) },
+    implementation_checklist: { items: Object.fromEntries(Object.entries(source.implementation_checklist.items).map(([id, item]) => [id, { ...item }])) },
+  };
+}
+
 /**
  * Validate an imported dossier without mutating it.
  *
@@ -55,8 +105,10 @@ export function parseProjectDossier(input) {
   }
 
   if (!isRecord(dossier)) return { ok: false, error: "invalid_root" };
-  if (!hasOnlyKeys(dossier, new Set(["schema_version", "playbook_version", "dossier_id", "created_at", "updated_at", "language", "status", "boundary", "context", "active_phase", "fields", "conditioned_controls", "matched_control_ids", "completed_phases"]))) return { ok: false, error: "invalid_root" };
-  if (dossier.schema_version !== PROJECT_DOSSIER_SCHEMA_VERSION) return { ok: false, error: "unsupported_schema" };
+  const legacy = dossier.schema_version === LEGACY_SCHEMA_VERSION;
+  if (dossier.schema_version !== PROJECT_DOSSIER_SCHEMA_VERSION && !legacy) return { ok: false, error: "unsupported_schema" };
+  const allowedKeys = new Set(legacy ? baseKeys : [...baseKeys, "artifacts"]);
+  if (!hasOnlyKeys(dossier, allowedKeys)) return { ok: false, error: "invalid_root" };
   if (dossier.playbook_version !== PROJECT_DOSSIER_PLAYBOOK_VERSION) return { ok: false, error: "unsupported_playbook" };
   if (typeof dossier.dossier_id !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$/.test(dossier.dossier_id)) return { ok: false, error: "invalid_id" };
   if (!isIsoDate(dossier.created_at) || !isIsoDate(dossier.updated_at) || Date.parse(dossier.created_at) > Date.parse(dossier.updated_at)) return { ok: false, error: "invalid_timestamp" };
@@ -83,7 +135,19 @@ export function parseProjectDossier(input) {
   if (!isBooleanRecord(dossier.conditioned_controls)) return { ok: false, error: "invalid_controls" };
   if (!isUniqueStringArray(dossier.matched_control_ids)) return { ok: false, error: "invalid_matched_controls" };
   if (!isUniquePhaseArray(dossier.completed_phases)) return { ok: false, error: "invalid_completed_phases" };
+  if (!legacy && !isProjectArtifacts(dossier.artifacts)) return { ok: false, error: "invalid_artifacts" };
 
+  if (legacy) {
+    return {
+      ok: true,
+      migratedFrom: LEGACY_SCHEMA_VERSION,
+      value: /** @type {import("./project-dossier.mjs").ProjectDossier} */ ({
+        ...dossier,
+        schema_version: PROJECT_DOSSIER_SCHEMA_VERSION,
+        artifacts: createEmptyProjectArtifacts(),
+      }),
+    };
+  }
   return { ok: true, value: /** @type {import("./project-dossier.mjs").ProjectDossier} */ (dossier) };
 }
 
@@ -108,5 +172,6 @@ export function buildProjectDossier(input) {
     conditioned_controls: { ...input.conditioned_controls },
     matched_control_ids: [...new Set(input.matched_control_ids)].sort(),
     completed_phases: [...new Set(input.completed_phases)].sort((left, right) => left - right),
+    artifacts: cloneArtifacts(input.artifacts),
   };
 }

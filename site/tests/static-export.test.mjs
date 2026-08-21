@@ -37,6 +37,7 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /Switzerland \+ EU|Suisse \+ UE/);
     assert.match(html, /SYNTHETIC EVIDENCE BOUNDARY|FRONTIÈRE DES PREUVES SYNTHÉTIQUES/);
     assert.match(html, /Resume this project later|Reprendre ce projet plus tard/);
+    assert.match(html, /Turn answers into records people can operate|Transformer les réponses en documents réellement exploitables/);
     assert.match(html, /project-dossier\.schema\.json/);
     assert.match(html, new RegExp(visibleCopy));
     assert.match(html, /Atelier Horizon/);
