@@ -22,13 +22,14 @@
 ## Hypothèse transférée préenregistrée
 
 - ID des sources publiques ou hypothèse locale :
+- Version de la photographie figée, horodatage UTC et version du registre des temps :
 - Statut avant pilote : mesure transférée / hypothèse ajustée / hypothèse locale :
 - Contrat de transfert : profil de tâche, mode d’intégration, seuil de qualité et niveau d’expérience :
 - Comparabilité et adaptations nécessaires :
-- Temps manuel, volume et part éligible prévus :
-- Fourchette nette basse, centrale et haute sur toute la charge :
-- Travail humain conservé : préparation, supervision, vérification, correction et exceptions :
-- Mise en place et durée d’amortissement :
+- Minutes manuelles par cas, cas par mois et part éligible prévus :
+- Fourchettes nettes exactes basse, centrale et haute par cas éligible et sur toute la charge :
+- Travail humain conservé : préparation, supervision, vérification, correction, taux d’exception et minutes par exception :
+- Heures de mise en place, durée d’amortissement et minutes calculées par cas éligible :
 
 ## Ce qui s’est passé
 
@@ -36,9 +37,12 @@
 - Niveau d’intégration et permissions :
 - Protocole pilote et seuils préenregistrés :
 - Résultat métier observé :
+- Minutes humaines initiales totales pour tous les cas observés :
+- Minutes humaines totales avec IA pour tous les cas observés, avec cas refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants :
 - Résultat observé sur toute la charge et position sous / dans / au-dessus de la fourchette :
 - Explication de l’écart entre hypothèse et observation :
 - Hypothèse à conserver, resserrer, élargir ou retirer :
+- Photographie recalibrée comme version distincte, ou raison de son absence :
 - Fiabilité par segment critique :
 - Incidents, quasi-incidents, corrections et retraits :
 - Décision prise et autorité :

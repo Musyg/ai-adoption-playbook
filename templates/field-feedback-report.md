@@ -22,13 +22,14 @@
 ## Preregistered transferred hypothesis
 
 - Public source IDs or local hypothesis:
+- Frozen snapshot version, UTC timestamp, and task-time registry version:
 - Pre-pilot status: transferred measurement / adjusted hypothesis / local hypothesis:
 - Transfer contract: task profile, integration mode, quality threshold, and experience level:
 - Comparability and required adjustments:
-- Planned manual time, volume, and eligible share:
-- Net low, central, and high whole-workload range:
-- Retained human work: preparation, supervision, verification, correction, and exceptions:
-- Setup effort and amortization period:
+- Planned manual minutes per case, cases per month, and eligible share:
+- Exact net low, central, and high ranges per eligible case and across the whole workload:
+- Retained human work: preparation, supervision, verification, correction, exception rate, and minutes per exception:
+- Setup hours, amortization period, and calculated minutes per eligible case:
 
 ## What happened
 
@@ -36,9 +37,12 @@
 - Integration level and permissions:
 - Pilot protocol and preregistered thresholds:
 - Observed business outcome:
+- Total baseline human minutes for every observed case:
+- Total human minutes with AI for every observed case, including rejected, failed, excluded, escalated, corrected, fallback, and missing cases:
 - Observed whole-workload result and position below / within / above the range:
 - Explanation for the gap between hypothesis and observation:
 - Hypothesis to retain, narrow, widen, or remove:
+- Recalibrated snapshot as a separate version, or reason none was created:
 - Reliability by critical segment:
 - Incidents, near misses, corrections, and withdrawals:
 - Decision taken and by whom:

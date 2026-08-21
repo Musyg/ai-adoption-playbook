@@ -16,6 +16,8 @@ GitHub never receives raw evidence. Keep client names, personal data, secrets, c
 
 Only after independent review may a sanitized report use the [field-report pull-request template](.github/PULL_REQUEST_TEMPLATE/field-report.md). Review readiness is not publication approval, and an accepted report supports only its explicit evidence boundary.
 
+Every release or material quantitative change also requires a fresh-context independent review of the exact pull-request head SHA. A prior review becomes stale as soon as that SHA changes. Merge is blocked until the new head has no open P0, P1, or P2 finding and the reviewer records the commands and evidence used.
+
 ### 3. Improve the playbook
 
 Good contributions include reusable templates with clear inputs and exit criteria, idiomatic translations, and accessibility, security, or reproducibility improvements.

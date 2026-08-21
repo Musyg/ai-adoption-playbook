@@ -96,19 +96,30 @@ const content = {
     amortization: "Spread setup over",
     units: { minutes: "min", cases: "cases", percent: "%", hours: "hours", months: "months" },
     results: {
-      heading: "Your net planning range",
+      heading: "Net human-time reduction during setup amortization",
       planningEvidence: "external evidence constrained by your declared human work",
       planningLocal: "editable local hypothesis, no transferable source",
       planningUnavailable: "enter at least one eligible case before calculating",
       baseline: "Eligible human workload today",
-      withAi: "Central human time with AI",
+      recurring: "Recurring human time with AI",
+      recurringGain: "Recurring reduction before setup",
+      setupPerCase: "Setup allocated to each case",
+      withAi: "Net human time per case during amortization",
       low: "Low net case",
       central: "Central net case",
       high: "High net case",
       payback: "Setup payback range",
       perMonth: "human hours per month",
       localFloor: "local floor before setup",
+      localScenario: "One local scenario, not a range",
+      noRange: "No low / central / high range is shown because the selected source is not transferable.",
     },
+    modeEffect: "WHAT THIS MODE CHANGES",
+    modeEffectLead: "This level pre-fills setup effort and changes evidence comparability. It does not invent a recurring productivity gain.",
+    modeEffectRecurring: "Your declared recurring human work remains",
+    modeEffectNet: "Before setup allocation, that assumption represents",
+    modeEffectNetSuffix: "less human time. The net result then adds",
+    modeEffectSetupSuffix: "per case during amortization.",
     evidenceRange: "Unadjusted source range on the comparable task",
     evidenceBlocked: "This source does not produce a transferable range for the selected contract.",
     negative: "A negative value means the scenario consumes more human time than the current process.",
@@ -147,19 +158,30 @@ const content = {
     amortization: "Répartir la mise en place sur",
     units: { minutes: "min", cases: "cas", percent: "%", hours: "heures", months: "mois" },
     results: {
-      heading: "Votre fourchette nette de planification",
+      heading: "Réduction nette du temps humain pendant l’amortissement",
       planningEvidence: "preuve externe contrainte par le travail humain déclaré",
       planningLocal: "hypothèse locale modifiable, sans source transférable",
       planningUnavailable: "saisissez au moins un cas éligible avant le calcul",
       baseline: "Charge humaine éligible actuelle",
-      withAi: "Temps humain central avec IA",
+      recurring: "Temps humain récurrent avec IA",
+      recurringGain: "Réduction récurrente hors mise en place",
+      setupPerCase: "Mise en place répartie sur chaque cas",
+      withAi: "Temps humain net par cas pendant l’amortissement",
       low: "Cas net bas",
       central: "Cas net central",
       high: "Cas net haut",
       payback: "Fourchette d’amortissement",
       perMonth: "heures humaines par mois",
       localFloor: "plancher local avant mise en place",
+      localScenario: "Un scénario local, pas une fourchette",
+      noRange: "Aucune fourchette basse / centrale / haute n’est affichée, car la source sélectionnée n’est pas transférable.",
     },
+    modeEffect: "CE QUE CE MODE CHANGE",
+    modeEffectLead: "Ce niveau préremplit l’effort de mise en place et modifie la comparabilité des sources. Il n’invente pas un gain récurrent.",
+    modeEffectRecurring: "Votre travail humain récurrent déclaré reste de",
+    modeEffectNet: "Hors répartition de la mise en place, cette hypothèse représente",
+    modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
+    modeEffectSetupSuffix: "par cas pendant l’amortissement.",
     evidenceRange: "Plage brute de la source pour la tâche comparable",
     evidenceBlocked: "Cette source ne produit aucune plage transférable pour le contrat sélectionné.",
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
@@ -310,16 +332,25 @@ export function TaskTimeCalibrator({
             <label><span>{t.setup}</span><div><input aria-label={t.setup} max="1000000" min="0" onChange={(event) => onSetupHoursChange(inputNumber(event.target.value, 0, 1000000))} type="number" value={setupHours} /><small>{t.units.hours}</small></div><em>{locale === "en" ? "Mode preset" : "Repère du mode"}: {setupPresets[integrationMode]} h</em></label>
             <label><span>{t.amortization}</span><div><input aria-label={t.amortization} max="120" min="1" onChange={(event) => setAmortizationMonths(inputNumber(event.target.value, 1, 120))} type="number" value={amortizationMonths} /><small>{t.units.months}</small></div></label>
           </div></details>
+          <div className="task-time-mode-effect" data-mode={integrationMode}>
+            <strong>{t.modeEffect}</strong>
+            <p>{t.modeEffectLead} {t.modeEffectRecurring} <b>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</b>. {t.modeEffectNet} <b>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</b> {t.modeEffectNetSuffix} <b>{formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min</b> {t.modeEffectSetupSuffix}</p>
+          </div>
         </div>
 
         <output className="calibrator-results" aria-live="polite">
           <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
           <div className="calibrator-result-grid">
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
-            <p><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min` : "n/a"}</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
-            <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} min` : "n/a"}</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
+            <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
+            <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} + ${formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min` : t.results.planningUnavailable}</small></p>
+            {transferableRange ? <>
+              <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{t.results.noRange}</small></p>}
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>

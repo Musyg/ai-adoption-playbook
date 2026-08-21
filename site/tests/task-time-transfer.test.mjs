@@ -157,6 +157,8 @@ test("produces a net evidence range after the local human floor and amortized se
   assert.equal(net.scenarios.low.binding_floor, "source");
   assert.ok(Math.abs(net.scenarios.low.human_time_with_ai_minutes - 53.642857142857146) < 1e-12);
   assert.ok(Math.abs(net.scenarios.central.reduction_fraction - 0.13195238095238093) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.central.recurring_reduction_fraction - 0.251) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.central.recurring_human_hours_saved_per_month - 7.028) < 1e-12);
   assert.ok(Math.abs(net.scenarios.high.human_hours_saved_per_month - 4.394666666666667) < 1e-12);
   const planning = derivePlanningRange(evidence, manual, target);
   assert.equal(planning.calculable, true);

@@ -122,6 +122,8 @@ export type NetPlanningRangePoint = {
   amortized_setup_minutes_per_case: number;
   human_time_with_ai_minutes: number;
   human_time_saved_per_case: number;
+  recurring_reduction_fraction: number;
+  recurring_human_hours_saved_per_month: number;
   reduction_fraction: number;
   whole_workload_reduction_fraction: number;
   human_hours_saved_per_month: number;
