@@ -91,11 +91,17 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.getByLabel("Closest measured task")).toHaveValue("information_synthesis");
   await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
   await expect(page.locator(".task-time-source-range")).toContainText("does not produce a transferable range");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("editable local hypothesis");
+
+  await page.getByLabel("Closest measured task").selectOption("predictive_decision_support");
+  await expect(page.locator(".task-time-no-evidence")).toContainText("No source in the registry matches this task yet");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("editable local hypothesis");
 
   await page.getByLabel("Closest measured task").selectOption("professional_writing");
   await page.getByRole("button", { name: /Copilot A0–A1/ }).click();
   await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2023-NOY-ZHANG-WRITING");
   await expect(page.locator(".task-time-source-range")).toContainText("40–40–40%");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("external evidence constrained");
   await expect(page.locator(".calibrator-result-head strong")).toContainText("37.6%");
   await expect(page.locator('.calibrator-result-grid p[data-range="central"]')).toContainText("37.6%");
 
@@ -107,6 +113,35 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await page.getByLabel("Closest measured task").selectOption("software_mature_repo");
   await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-METR-MATURE-REPOS");
   await expect(page.locator(".task-time-source-range")).toContainText("-39–-19–-2%");
+
+  await page.getByLabel("Share genuinely eligible").fill("0");
+  await expect(page.locator(".calibrator-result-head strong")).toHaveText("n/a");
+  await expect(page.locator(".calibrator-equation")).toContainText("No net range is calculated at 0% eligibility");
+});
+
+test("copied pilot brief preserves the human-time and setup assumptions", async ({ context, page }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const calibrator = page.locator("#calibrator");
+  await calibrator.getByLabel("Closest measured task").selectOption("professional_writing");
+  await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.getByLabel("Preparation and context").fill("7");
+  await calibrator.getByLabel("Supervision").fill("6");
+  await calibrator.getByLabel("Verification").fill("18");
+  await calibrator.getByLabel("Corrections").fill("4");
+  await calibrator.getByLabel("Cases needing exception work").fill("25");
+  await calibrator.getByLabel("Minutes per exception").fill("12");
+
+  await page.locator("#operational-router").getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Copy the pilot brief" }).click();
+  const brief = await page.evaluate(() => navigator.clipboard.readText());
+  expect(brief).toContain("Transfer contract: professional_writing · copilot · reviewed · mixed");
+  expect(brief).toContain("Net method: greater of source residual and local human-work floor, plus amortized setup");
+  expect(brief).toContain("Human-work floor: 7 prep + 6 supervision + 18 verification + 4 correction + 3 expected exceptions = 38 min/case");
+  expect(brief).toContain("Exception assumption: 25% of eligible cases · 12 min each");
+  expect(brief).toContain("Setup allocation: 8 h over 12 months");
 });
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {

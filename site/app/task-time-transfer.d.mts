@@ -98,6 +98,7 @@ export type HumanTimeScenario = {
   monthly_cases: number;
   eligible_share: number;
   eligible_cases: number;
+  calculable: boolean;
   baseline_eligible_human_hours: number;
   components: Record<string, number>;
   operating_human_minutes: number;
@@ -128,6 +129,8 @@ export type NetPlanningRangePoint = {
   setup_payback_months: number | null;
 };
 export type NetPlanningRange = {
+  calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | null;
   source: "external_evidence" | "local_hypothesis";
   compatibility: string;
   evidence_id: string | null;
@@ -139,11 +142,30 @@ export function listEvidenceOptions(registry: TaskTimeRegistry, target: Evidence
 export function buildEvidenceTransfer(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget, workload: WorkloadInput): EvidenceTransferResult;
 export function calculateHumanTimeScenario(input: HumanTimeInput): HumanTimeScenario;
 export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario): NetPlanningRange;
-export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>): {
+export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null): {
+  calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;
   high: number;
   compatibility: string;
   evidence_id: string | null;
+  target: EvidenceTarget | null;
+  method: "greater_residual_plus_amortized_setup";
+  human_work: {
+    preparation_minutes: number;
+    supervision_minutes: number;
+    verification_minutes: number;
+    correction_minutes: number;
+    exception_rate_percent: number;
+    exception_minutes: number;
+    expected_exception_minutes: number;
+    operating_human_minutes: number;
+  };
+  setup: {
+    setup_hours: number;
+    amortization_months: number;
+    amortized_setup_minutes_per_case: number;
+  };
 };

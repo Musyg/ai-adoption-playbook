@@ -158,15 +158,60 @@ test("produces a net evidence range after the local human floor and amortized se
   assert.ok(Math.abs(net.scenarios.low.human_time_with_ai_minutes - 53.642857142857146) < 1e-12);
   assert.ok(Math.abs(net.scenarios.central.reduction_fraction - 0.13195238095238093) < 1e-12);
   assert.ok(Math.abs(net.scenarios.high.human_hours_saved_per_month - 4.394666666666667) < 1e-12);
-  assert.deepEqual(derivePlanningRange(evidence, manual), {
-    source: "external_evidence",
-    low: 0.1059523809523809,
-    central: 0.13195238095238093,
-    high: 0.15695238095238093,
-    compatibility: "compatible",
-    evidence_id: "TT-2026-BCG-JAGGED-FRONTIER",
+  const planning = derivePlanningRange(evidence, manual, target);
+  assert.equal(planning.calculable, true);
+  assert.equal(planning.source, "external_evidence");
+  assert.equal(planning.low, 0.1059523809523809);
+  assert.equal(planning.central, 0.13195238095238093);
+  assert.equal(planning.high, 0.15695238095238093);
+  assert.equal(planning.compatibility, "compatible");
+  assert.equal(planning.evidence_id, "TT-2026-BCG-JAGGED-FRONTIER");
+  assert.deepEqual(planning.target, target);
+  assert.deepEqual(planning.human_work, {
+    preparation_minutes: 5,
+    supervision_minutes: 5,
+    verification_minutes: 10,
+    correction_minutes: 5,
+    exception_rate_percent: 20,
+    exception_minutes: 20,
+    expected_exception_minutes: 4,
+    operating_human_minutes: 29,
   });
+  assert.equal(planning.setup.setup_hours, 40);
+  assert.equal(planning.setup.amortization_months, 12);
+  assert.ok(Math.abs(planning.setup.amortized_setup_minutes_per_case - 7.142857142857143) < 1e-12);
   assert.equal(derivePlanningRange({ ok: false }, manual).source, "local_hypothesis");
+});
+
+test("blocks the net range when no case is eligible and setup cannot be allocated", () => {
+  const target = { task_profile_id: "knowledge_analysis", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
+  const evidence = buildEvidenceTransfer(record("TT-2026-BCG-JAGGED-FRONTIER"), target, {
+    baseline_human_minutes: 60,
+    monthly_cases: 40,
+    eligible_share: 0,
+  });
+  const manual = calculateHumanTimeScenario({
+    baseline_human_minutes: 60,
+    monthly_cases: 40,
+    eligible_share: 0,
+    preparation_minutes: 5,
+    supervision_minutes: 5,
+    verification_minutes: 10,
+    correction_minutes: 5,
+    exception_rate: 20,
+    exception_minutes: 20,
+    setup_hours: 40,
+    amortization_months: 12,
+  });
+  const net = buildNetPlanningRange(evidence, manual);
+  const planning = derivePlanningRange(evidence, manual);
+  assert.equal(manual.calculable, false);
+  assert.equal(net.calculable, false);
+  assert.equal(net.unavailable_reason, "no_eligible_cases");
+  assert.equal(net.scenarios.central.reduction_fraction, 0);
+  assert.equal(net.scenarios.central.human_hours_saved_per_month, 0);
+  assert.equal(planning.calculable, false);
+  assert.deepEqual([planning.low, planning.central, planning.high], [0, 0, 0]);
 });
 
 test("uses the declared human work as a floor without adding it twice", () => {

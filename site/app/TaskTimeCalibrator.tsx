@@ -24,12 +24,31 @@ type Locale = "en" | "fr";
 type UsePatternId = "generation" | "retrieval" | "classification" | "prediction" | "conversation" | "multimodal" | "agentic";
 
 export type TaskTimePlanningRange = {
+  calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;
   high: number;
   compatibility: string;
   evidence_id: string | null;
+  target: EvidenceTarget | null;
+  method: "greater_residual_plus_amortized_setup";
+  human_work: {
+    preparation_minutes: number;
+    supervision_minutes: number;
+    verification_minutes: number;
+    correction_minutes: number;
+    exception_rate_percent: number;
+    exception_minutes: number;
+    expected_exception_minutes: number;
+    operating_human_minutes: number;
+  };
+  setup: {
+    setup_hours: number;
+    amortization_months: number;
+    amortized_setup_minutes_per_case: number;
+  };
 };
 
 const registry = taskTimeEvidence as unknown as TaskTimeRegistry;
@@ -78,7 +97,9 @@ const content = {
     units: { minutes: "min", cases: "cases", percent: "%", hours: "hours", months: "months" },
     results: {
       heading: "Your net planning range",
-      planning: "source evidence constrained by your declared human work",
+      planningEvidence: "external evidence constrained by your declared human work",
+      planningLocal: "editable local hypothesis, no transferable source",
+      planningUnavailable: "enter at least one eligible case before calculating",
       baseline: "Eligible human workload today",
       withAi: "Central human time with AI",
       low: "Low net case",
@@ -91,6 +112,7 @@ const content = {
     evidenceRange: "Unadjusted source range on the comparable task",
     evidenceBlocked: "This source does not produce a transferable range for the selected contract.",
     negative: "A negative value means the scenario consumes more human time than the current process.",
+    zeroEligible: "No net range is calculated at 0% eligibility because setup cannot be allocated to an eligible case.",
     boundary: "For each source point, the engine keeps the greater of the source-implied residual time and your declared human-work floor, then adds amortized setup. This avoids double counting while preventing hidden oversight. The pilot must replace every planning input with observations.",
   },
   fr: {
@@ -126,7 +148,9 @@ const content = {
     units: { minutes: "min", cases: "cas", percent: "%", hours: "heures", months: "mois" },
     results: {
       heading: "Votre fourchette nette de planification",
-      planning: "preuve externe contrainte par le travail humain déclaré",
+      planningEvidence: "preuve externe contrainte par le travail humain déclaré",
+      planningLocal: "hypothèse locale modifiable, sans source transférable",
+      planningUnavailable: "saisissez au moins un cas éligible avant le calcul",
       baseline: "Charge humaine éligible actuelle",
       withAi: "Temps humain central avec IA",
       low: "Cas net bas",
@@ -139,6 +163,7 @@ const content = {
     evidenceRange: "Plage brute de la source pour la tâche comparable",
     evidenceBlocked: "Cette source ne produit aucune plage transférable pour le contrat sélectionné.",
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
+    zeroEligible: "Aucune fourchette nette n’est calculée avec 0 % d’éligibilité, car la mise en place ne peut être répartie sur un cas éligible.",
     boundary: "Pour chaque point de la source, le moteur conserve le plus grand temps entre le résiduel déduit de la source et votre plancher de travail humain, puis ajoute la mise en place amortie. Cette règle évite le double comptage sans masquer le contrôle humain. Le pilote doit remplacer chaque paramètre par une observation.",
   },
 } as const;
@@ -220,7 +245,7 @@ export function TaskTimeCalibrator({
     eligible_share: eligibleShare,
   }), [baselineMinutes, eligibleShare, monthlyCases, selectedRecord, target]);
   const netPlanningRange = useMemo(() => buildNetPlanningRange(evidenceTransfer, humanScenario), [evidenceTransfer, humanScenario]);
-  const planningRange = useMemo(() => derivePlanningRange(evidenceTransfer, humanScenario) as TaskTimePlanningRange, [evidenceTransfer, humanScenario]);
+  const planningRange = useMemo(() => derivePlanningRange(evidenceTransfer, humanScenario, target) as TaskTimePlanningRange, [evidenceTransfer, humanScenario, target]);
 
   useEffect(() => onPlanningRangeChange(planningRange), [onPlanningRangeChange, planningRange]);
 
@@ -237,6 +262,12 @@ export function TaskTimeCalibrator({
   };
   const transferableRange = evidenceTransfer.ok ? evidenceTransfer.scenarios : null;
   const netScenarios = netPlanningRange.scenarios;
+  const netCalculable = netPlanningRange.calculable;
+  const planningBasis = !netCalculable
+    ? t.results.planningUnavailable
+    : netPlanningRange.source === "external_evidence"
+      ? t.results.planningEvidence
+      : t.results.planningLocal;
   const paybacks = [netScenarios.low.setup_payback_months, netScenarios.high.setup_payback_months].filter((value): value is number => value != null);
   const paybackRange = paybacks.length ? `${formatNumber(Math.min(...paybacks), locale)}–${formatNumber(Math.max(...paybacks), locale)} ${t.units.months}` : "n/a";
   const inputNumber = (value: string, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, Number(value) || minimum));
@@ -282,18 +313,18 @@ export function TaskTimeCalibrator({
         </div>
 
         <output className="calibrator-results" aria-live="polite">
-          <div className="calibrator-result-head"><span>{t.results.heading}</span><strong>{formatPercent(netScenarios.central.reduction_fraction, locale)}%</strong><small>{t.results.planning}</small></div>
+          <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
           <div className="calibrator-result-grid">
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
-            <p><span>{t.results.withAi}</span><strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
-            <p data-range="low"><span>{t.results.low}</span><strong>{formatPercent(netScenarios.low.reduction_fraction, locale)}%</strong><small>{formatNumber(netScenarios.low.human_hours_saved_per_month, locale)} {t.results.perMonth}</small></p>
-            <p data-range="central"><span>{t.results.central}</span><strong>{formatPercent(netScenarios.central.reduction_fraction, locale)}%</strong><small>{formatNumber(netScenarios.central.human_hours_saved_per_month, locale)} {t.results.perMonth}</small></p>
-            <p data-range="high"><span>{t.results.high}</span><strong>{formatPercent(netScenarios.high.reduction_fraction, locale)}%</strong><small>{formatNumber(netScenarios.high.human_hours_saved_per_month, locale)} {t.results.perMonth}</small></p>
+            <p><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min` : "n/a"}</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
+            <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
-          <p className="calibrator-equation">max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min</strong> {locale === "en" ? "net in the central case" : "nettes dans le cas central"}</p>
-          {netScenarios.low.reduction_fraction < 0 && <p className="task-time-negative">{t.negative}</p>}
+          {netCalculable ? <p className="calibrator-equation">max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes, locale)} min</strong> {locale === "en" ? "net in the central case" : "nettes dans le cas central"}</p> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
+          {netCalculable && netScenarios.low.reduction_fraction < 0 && <p className="task-time-negative">{t.negative}</p>}
         </output>
       </div>
       <aside className="calibrator-note"><strong>{locale === "en" ? "HOW THE NET RANGE IS BUILT" : "COMMENT LA FOURCHETTE NETTE EST CONSTRUITE"}</strong><p>{t.boundary}</p></aside>

@@ -88,6 +88,7 @@ export function calculateHumanTimeScenario(input) {
   const monthlyCases = bounded(input?.monthly_cases, 0, 1000000);
   const eligibleShare = bounded(input?.eligible_share, 0, 100) / 100;
   const eligibleCases = monthlyCases * eligibleShare;
+  const calculable = eligibleCases > 0;
   const preparationMinutes = bounded(input?.preparation_minutes, 0, 10080);
   const supervisionMinutes = bounded(input?.supervision_minutes, 0, 10080);
   const verificationMinutes = bounded(input?.verification_minutes, 0, 10080);
@@ -111,12 +112,15 @@ export function calculateHumanTimeScenario(input) {
     monthly_cases: monthlyCases,
     eligible_share: eligibleShare,
     eligible_cases: eligibleCases,
+    calculable,
     baseline_eligible_human_hours: eligibleCases * baselineMinutes / 60,
     components: {
       preparation_minutes: preparationMinutes,
       supervision_minutes: supervisionMinutes,
       verification_minutes: verificationMinutes,
       correction_minutes: correctionMinutes,
+      exception_rate: exceptionRate,
+      exception_minutes: exceptionMinutes,
       expected_exception_minutes: expectedExceptionMinutes,
       amortized_setup_minutes_per_case: amortizedSetupMinutesPerCase,
     },
@@ -142,6 +146,23 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
   const operatingHumanMinutes = sourceImpliedHumanMinutes == null
     ? localOperatingFloorMinutes
     : Math.max(sourceImpliedHumanMinutes, localOperatingFloorMinutes);
+  if (!humanScenario.calculable) {
+    return {
+      source_reduction_fraction: evidencePoint?.reduction_fraction ?? null,
+      source_implied_human_minutes: sourceImpliedHumanMinutes,
+      local_operating_floor_minutes: localOperatingFloorMinutes,
+      binding_floor: sourceImpliedHumanMinutes != null && sourceImpliedHumanMinutes >= localOperatingFloorMinutes ? "source" : "local",
+      operating_human_minutes: operatingHumanMinutes,
+      amortized_setup_minutes_per_case: 0,
+      human_time_with_ai_minutes: 0,
+      human_time_saved_per_case: 0,
+      reduction_fraction: 0,
+      whole_workload_reduction_fraction: 0,
+      human_hours_saved_per_month: 0,
+      human_hours_saved_per_year: 0,
+      setup_payback_months: null,
+    };
+  }
   const amortizedSetupMinutesPerCase = humanScenario.components.amortized_setup_minutes_per_case;
   const humanTimeWithAiMinutes = operatingHumanMinutes + amortizedSetupMinutesPerCase;
   const humanTimeSavedPerCase = baselineMinutes - humanTimeWithAiMinutes;
@@ -171,6 +192,8 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
 export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
   const evidenceScenarios = evidenceTransfer?.ok ? evidenceTransfer.scenarios : null;
   return {
+    calculable: humanScenario.calculable,
+    unavailable_reason: humanScenario.calculable ? null : "no_eligible_cases",
     source: evidenceScenarios ? "external_evidence" : "local_hypothesis",
     compatibility: evidenceScenarios ? evidenceTransfer.compatibility.status : "not_available",
     evidence_id: evidenceScenarios ? evidenceTransfer.evidence_id : null,
@@ -183,14 +206,34 @@ export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
   };
 }
 
-export function derivePlanningRange(evidenceTransfer, humanScenario) {
+export function derivePlanningRange(evidenceTransfer, humanScenario, target = null) {
   const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario);
+  const components = humanScenario.components;
   return {
+    calculable: netRange.calculable,
+    unavailable_reason: netRange.unavailable_reason,
     source: netRange.source,
-    low: netRange.scenarios.low.reduction_fraction,
-    central: netRange.scenarios.central.reduction_fraction,
-    high: netRange.scenarios.high.reduction_fraction,
+    low: netRange.calculable ? netRange.scenarios.low.reduction_fraction : 0,
+    central: netRange.calculable ? netRange.scenarios.central.reduction_fraction : 0,
+    high: netRange.calculable ? netRange.scenarios.high.reduction_fraction : 0,
     compatibility: netRange.compatibility,
     evidence_id: netRange.evidence_id,
+    target,
+    method: netRange.method,
+    human_work: {
+      preparation_minutes: components.preparation_minutes,
+      supervision_minutes: components.supervision_minutes,
+      verification_minutes: components.verification_minutes,
+      correction_minutes: components.correction_minutes,
+      exception_rate_percent: components.exception_rate * 100,
+      exception_minutes: components.exception_minutes,
+      expected_exception_minutes: components.expected_exception_minutes,
+      operating_human_minutes: humanScenario.operating_human_minutes,
+    },
+    setup: {
+      setup_hours: humanScenario.setup_hours,
+      amortization_months: humanScenario.amortization_months,
+      amortized_setup_minutes_per_case: components.amortized_setup_minutes_per_case,
+    },
   };
 }

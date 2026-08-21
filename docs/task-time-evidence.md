@@ -49,6 +49,13 @@ avoids adding the source residual and local work together, which would count
 human time twice. Setup remains additive because the published task reductions
 do not include the user’s local one-off implementation.
 
+When the eligible share is zero, the net range is unavailable. There is no
+eligible case over which to allocate setup, so the calculator reports `n/a`
+instead of silently dropping the fixed cost. The copied pilot brief records the
+task profile, operating mode, output state, operator experience, human-work
+components, exception assumption, setup hours, amortization horizon, evidence
+identifier, and net method needed to reproduce the estimate.
+
 The result may be negative. A slowdown is evidence and must not be replaced by
 zero. Machine runtime never counts as human time saved. A turnaround moving from
 three days to one day is an elapsed-time change unless human active minutes were

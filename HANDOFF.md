@@ -193,6 +193,9 @@ first-party admission contract.
    point it retains the greater of source-implied residual human time and the
    declared local human-work floor, then adds amortized setup. The unadjusted
    source range remains visible and neither result is presented as pilot evidence.
+   At zero eligible cases the net range is unavailable, source and local
+   provenance labels remain distinct, and the copied pilot brief preserves the
+   complete human-work and setup contract for reproduction.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.

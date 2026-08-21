@@ -50,6 +50,15 @@ travail local, ce qui compterait deux fois du temps humain. La mise en place
 reste additive, car les réductions publiées n’incluent pas l’implémentation
 initiale propre à l’utilisateur.
 
+Lorsque la part éligible vaut zéro, la fourchette nette est indisponible. Aucun
+cas éligible ne permet de répartir la mise en place. Le calculateur affiche donc
+`n/a` au lieu de faire disparaître silencieusement le coût fixe. La fiche de
+pilote copiée conserve le profil de tâche, le mode opératoire, l’état du
+résultat, l’expérience de l’opérateur, les composantes du travail humain,
+l’hypothèse d’exception, les heures de mise en place, l’horizon d’amortissement,
+l’identifiant de preuve et la méthode nette nécessaires pour reproduire
+l’estimation.
+
 Le résultat peut être négatif. Un ralentissement est une preuve et ne doit pas
 être ramené à zéro. Le temps machine ne compte jamais comme temps humain gagné.
 Un délai qui passe de trois jours à un jour est une variation du temps écoulé si
