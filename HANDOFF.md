@@ -203,9 +203,11 @@ first-party admission contract.
    currently persisted or exported, so an additive schema migration would add
    complexity without preserving any user-authorized record.
 7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
-   palette, and browser checks pass locally for the previous layer. The net
-   range change must pass the same checks and an independent external review
-   before assigning a 0.6 release date.
+   palette, and browser checks pass on commit `43256662`. A fresh-context
+   independent final review reports no P0, P1, or P2 finding. GitHub Actions run
+   `32526763108` passes 43 Node tests and 45 browser scenarios. The review loop
+   also closed zero-eligibility propagation, provenance wording, and copied
+   brief reproducibility findings before this final gate.
 
 This work is a new quantitative evidence and transfer layer. It is not a new
 organization track, it does not require rebuilding the playbook, and it does

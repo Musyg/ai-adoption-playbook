@@ -100,12 +100,13 @@ remain open.
 - [x] Normalize the eleven worked cases against the task profiles and audit
   every quantitative value as measured evidence, a named hypothesis, or a
   value to remove.
-- [ ] Complete an independent source, calculation, editorial, and usability
+- [x] Complete an independent source, calculation, editorial, and usability
   review before assigning a release date.
 
-Status: **0.6 is in development.** The registry contains external planning
-evidence only. It neither completes 0.3 nor changes the empty first-party field
-registry.
+Status: **the 0.6 implementation gate is complete.** The registry contains
+external planning evidence only. It neither completes 0.3 nor changes the
+empty first-party field registry. Version assignment remains a separate release
+decision.
 
 ## 1.0: stable public method
 
