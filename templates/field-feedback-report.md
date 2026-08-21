@@ -19,12 +19,26 @@
 - Raw evidence location and authorized reviewers:
 - Personal, confidential, security-sensitive, or identifying details removed:
 
+## Preregistered transferred hypothesis
+
+- Public source IDs or local hypothesis:
+- Pre-pilot status: transferred measurement / adjusted hypothesis / local hypothesis:
+- Transfer contract: task profile, integration mode, quality threshold, and experience level:
+- Comparability and required adjustments:
+- Planned manual time, volume, and eligible share:
+- Net low, central, and high whole-workload range:
+- Retained human work: preparation, supervision, verification, correction, and exceptions:
+- Setup effort and amortization period:
+
 ## What happened
 
 - Original process and problem:
 - Integration level and permissions:
 - Pilot protocol and preregistered thresholds:
 - Observed business outcome:
+- Observed whole-workload result and position below / within / above the range:
+- Explanation for the gap between hypothesis and observation:
+- Hypothesis to retain, narrow, widen, or remove:
 - Reliability by critical segment:
 - Incidents, near misses, corrections, and withdrawals:
 - Decision taken and by whom:
@@ -44,6 +58,8 @@
 - [ ] No client, supplier, or employee identity without explicit authority
 - [ ] No secrets, exploitable security details, or privileged material
 - [ ] Observation is distinguished from estimate and opinion
+- [ ] Hypothesis and range were frozen before field results were read
+- [ ] Extrapolation, observation, and recalibration retain distinct evidence statuses
 - [ ] Failures and excluded cases are not removed from the denominator
 - [ ] Supplier claims are labelled as supplier claims
 - [ ] Transfer limits are prominent

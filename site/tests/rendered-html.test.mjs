@@ -176,6 +176,8 @@ for (const [pathname, language, title] of [
     assert.match(html, /One bounded A2 business agent|Un agent métier A2 borné/i);
     assert.match(html, /Prepare one real pilot|Préparez un vrai pilote/i);
     assert.match(html, /Nothing entered here is sent|Rien de ce qui est saisi ici n’est transmis/i);
+    assert.match(html, /LOW · CENTRAL · HIGH|BASSE · CENTRALE · HAUTE/i);
+    assert.match(html, /extrapolation and the observation|L’extrapolation et l’observation/i);
     assert.match(html, /LOCAL DRAFT · INCOMPLETE|BROUILLON LOCAL · INCOMPLET/i);
     assert.match(html, /PUBLICATION REVIEW|REVUE DE PUBLICATION/i);
     assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);

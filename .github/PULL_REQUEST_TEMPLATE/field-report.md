@@ -14,16 +14,21 @@ Use this template only for a sanitized report that has already completed the pri
 
 ### Evidence boundary
 
+- Preregistered source IDs or local hypothesis:
+- Transfer contract and planned net low / central / high range:
 - Observed population and workflow:
 - System and workflow version:
 - Full denominator, exclusions, and missing cases:
 - Collection method and baseline:
 - Transfer boundary:
 - Claims this report does not support:
+- Observed whole-workload result and position below / within / above the range:
+- Recalibration decision and explanation:
 
 ### Required checks
 
-- [ ] Observation, internal measurement, estimate, opinion, and supplier claim are separated.
+- [ ] The planning range was frozen before field results were read.
+- [ ] Extrapolation, observation, recalibration, opinion, and supplier claim are separated.
 - [ ] Failures, incidents, corrections, refusals, and withdrawals remain visible.
 - [ ] No personal data, identity, secret, privileged material, raw prompt or log, or exploitable security detail is present.
 - [ ] Residual re-identification and security risk were reviewed across the complete report.

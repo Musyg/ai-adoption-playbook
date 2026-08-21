@@ -5,6 +5,12 @@ une observation en affirmation universelle. Le site interactif prépare un
 brouillon local ; il ne transmet aucune donnée et n’admet aucun rapport dans le
 registre public.
 
+La 0.3 ne commence pas au premier rapport terrain. Elle utilise les études
+publiques et le moteur de transposition pour préenregistrer une hypothèse basse,
+centrale et haute. Le pilote mesure ensuite l’écart. L’extrapolation, la mesure
+locale et le résultat recalibré restent trois objets distincts dans le même
+cycle d’apprentissage.
+
 ## 1. Cadrer le pilote
 
 Avant toute observation réelle, consignez :
@@ -14,6 +20,8 @@ Avant toute observation réelle, consignez :
   la version du système ;
 - la baseline manuelle, le dénominateur de toutes les demandes, la règle
   d’éligibilité, les exclusions et les seuils préenregistrés ;
+- les sources transférables, leur contrat de comparabilité, la fourchette nette
+  prévue, le travail humain conservé et la mise en place amortie ;
 - les effets autorisés, validations requises, autorité d’arrêt, fallback et
   emplacement des preuves.
 
@@ -30,6 +38,11 @@ retirés.
 Consignez résultat accepté, temps humain actif, corrections, effets critiques,
 éligibilité, validations, effets d’outils, relectures, incidents et traces
 manquantes. L’activité du modèle n’est pas un résultat métier.
+
+Comparez le résultat sur toute la charge à la fourchette préenregistrée. Notez
+s’il se situe en dessous, dans la plage ou au-dessus, puis expliquez l’écart.
+Une observation hors plage est une information de recalibrage, pas une raison
+de réécrire silencieusement l’hypothèse initiale.
 
 ## 3. Préparer un brouillon privé
 

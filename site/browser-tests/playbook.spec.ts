@@ -1,4 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
+import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 
 const locales = [
@@ -149,6 +150,33 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   expect(brief).toContain("Exception assumption: 25% of eligible cases · 12 min each");
   expect(brief).toContain("Setup allocation: 8 h over 12 months");
 });
+
+for (const fieldLocale of [
+  { path: "/", task: "Closest measured task", level: /Copilot A0–A1/, panel: /Prepare field feedback/, download: "Download the local draft", planned: "LOW · CENTRAL · HIGH", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration" },
+  { path: "/fr/", task: "Tâche mesurée la plus proche", level: /Copilote A0–A1/, panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "BASSE · CENTRALE · HAUTE", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage" },
+] as const) {
+  test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
+    await page.goto(fieldLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    await page.locator("#calibrator").getByLabel(fieldLocale.task).selectOption("professional_writing");
+    await page.locator("#calibrator").getByRole("button", { name: fieldLocale.level }).click();
+    await page.locator("#operational-router").getByRole("button", { name: fieldLocale.panel }).click();
+
+    const evidence = page.locator("#field-pilot .field-pilot-evidence");
+    await expect(evidence).toContainText(fieldLocale.planned);
+    await expect(evidence).toContainText(fieldLocale.observed);
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: fieldLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(fieldLocale.hypothesis);
+    expect(report).toContain("TT-2023-NOY-ZHANG-WRITING");
+    expect(report).toContain(fieldLocale.recalibration);
+  });
+}
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {
   await page.goto("/");

@@ -805,9 +805,10 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .field-pilot-evidence > div { display: grid; grid-template-columns: repeat(3, 1fr); }
 .field-pilot-evidence span { border: 1px solid var(--dark-line); border-bottom: 0; border-right: 0; display: flex; flex-direction: column; min-height: 86px; padding: 10px; }
 .field-pilot-evidence span:nth-child(3n) { border-right: 1px solid var(--dark-line); }
-.field-pilot-evidence span:nth-child(n+4) { border-bottom: 1px solid var(--dark-line); }
+.field-pilot-evidence span:nth-child(n+7) { border-bottom: 1px solid var(--dark-line); }
 .field-pilot-evidence small { color: var(--dark-muted); font: 700 8px "Courier New", monospace; }
 .field-pilot-evidence strong { color: var(--blue); font: 700 20px "Courier New", monospace; margin-top: auto; }
+.field-pilot-evidence span:first-child strong { font-size: clamp(12px, 1.3vw, 18px); overflow-wrap: anywhere; }
 .field-pilot-evidence > a { color: var(--blue); display: inline-block; font-size: 11px; font-weight: 700; margin-top: 14px; }
 .field-pilot-evidence-confirm { border-top: 1px solid var(--dark-line); cursor: pointer; display: grid; gap: 10px; grid-template-columns: 20px 1fr; margin-top: 16px; padding-top: 14px; }
 .field-pilot-evidence-confirm input { accent-color: var(--blue); height: 16px; margin: 1px 0 0; width: 16px; }

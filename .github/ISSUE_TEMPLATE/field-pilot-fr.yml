@@ -101,6 +101,18 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: planning_basis
+    attributes:
+      label: Base de planification préenregistrée
+      description: Choisissez comment construire l’hypothèse basse, centrale et haute avant de lire les résultats terrain.
+      options:
+        - Source publique comparable via le moteur de transposition
+        - Hypothèse locale modifiable de temps humain
+        - Pas encore cadrée
+    validations:
+      required: true
+
   - type: textarea
     id: workflow
     attributes:

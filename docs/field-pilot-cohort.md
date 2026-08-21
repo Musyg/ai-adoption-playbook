@@ -5,6 +5,15 @@ organizations, nonprofits, and public services in Switzerland and the European
 Union. It exists to test the playbook in real work. It is not a request for
 testimonials and it does not assume that AI will improve the workflow.
 
+## Two layers in one 0.3 cycle
+
+Each pilot starts from a preregistered extrapolated range or local hypothesis.
+This first layer supports planning and may come from comparable tasks in other
+organizations. The second layer is the pilot observation over the complete
+denominator. The report retains the projection, the result, and their gap so
+future transfers can improve. Only the observed layer can count as admitted
+field feedback, but both belong to the 0.3 work.
+
 Use the [public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml)
 to propose a non-identifying pilot. The issue contains coordination metadata
 only. Raw evidence remains in an authorized private system.
@@ -34,10 +43,12 @@ not create a universal productivity benchmark.
 2. **Agree the protocol.** Name the local evidence owner, independent reviewer,
    publication authority, and withdrawal route before measurement.
 3. **Freeze the comparison.** Record system version, complete workload,
-   baseline, exclusions, cases, thresholds, incidents, and stop conditions.
+   baseline, transferred sources, planned range, retained human work,
+   exclusions, cases, thresholds, incidents, and stop conditions.
 4. **Run privately.** Keep prompts, logs, screenshots, personal data, client
    material, secrets, and security-sensitive detail outside GitHub.
-5. **Review.** A reviewer checks provenance, denominator, failures,
+5. **Compare and review.** Position the observed result against the range,
+   explain the gap, then check provenance, denominator, failures,
    anonymization, transfer limits, and consistency with the raw evidence.
 6. **Admit or withhold.** Publish only a sanitized report that satisfies every
    registry rule. Withhold unsafe, unverifiable, or re-identifying material.

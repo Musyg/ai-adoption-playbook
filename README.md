@@ -53,11 +53,13 @@ support for a generic 5x to 12x accepted-outcome multiplier. The
 [critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
 blocking conditions and evidence gates without replacing the universal process.
 
-The public studies and all eleven worked cases are not first-party field
-evidence for this playbook. The public field registry is empty. Release `0.3`
-remains a future release and cannot be completed until at least three genuine,
-independently reviewed and anonymized pilot reports meet the cohort and registry
-contract.
+Release `0.3` already uses public studies and the task-time transfer engine to
+create preregistered planning hypotheses. Each pilot preserves that extrapolated
+range, the later field observation, and their gap. These are parts of the same
+learning cycle with different evidence labels. The public field registry is
+still empty, so the field-validation gate remains open until at least three
+genuine, independently reviewed and anonymized pilot reports meet the cohort
+and registry contract.
 
 **Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
 to prepare a local draft, preserve the full denominator, and request independent

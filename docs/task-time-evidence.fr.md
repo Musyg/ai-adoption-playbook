@@ -175,7 +175,8 @@ l’étiquette de l’organisation.
 - [Protocole de pilote terrain](field-pilot-protocol.fr.md)
 - [Revue des preuves publiques](../references/field-evidence-review-2026.fr.md)
 
-Les études externes améliorent la planification, mais ne remplissent pas
-`field-notes/index.json`. La règle d’admission séparée de la version 0.3 exige
-toujours au moins trois rapports réels, revus indépendamment et assainis,
-produits à l’aide de ce playbook.
+Ces fourchettes alimentent la couche d’hypothèse de la 0.3. Le brouillon terrain
+fige la plage, consigne le résultat observé sur toute la charge et explique leur
+écart. Les études externes ne remplissent pas `field-notes/index.json` ; seules
+des observations réelles, revues indépendamment et assainies peuvent satisfaire
+sa règle d’admission.
