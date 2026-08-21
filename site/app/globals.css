@@ -207,8 +207,8 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .guided-result-grid ul { margin: 9px 0 0; padding-left: 18px; }
 .guided-result-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
-.chapter-stack { display: grid; gap: 12px; margin: 0 auto; max-width: 1280px; padding: 64px 40px 96px; }
-.guide-chapter { border: 1px solid var(--line); scroll-margin-top: 72px; }
+.chapter-stack { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); margin: 0 auto; max-width: 1280px; padding: 64px 40px 96px; }
+.guide-chapter { border: 1px solid var(--line); min-width: 0; scroll-margin-top: 72px; }
 .guide-chapter > summary { align-items: center; background: var(--surface); cursor: pointer; display: grid; gap: 20px; grid-template-columns: 50px minmax(0, 1fr) 36px; list-style: none; padding: 24px 28px; }
 .guide-chapter > summary::-webkit-details-marker { display: none; }
 .guide-chapter > summary:hover { border-left: 4px solid var(--blue-deep); padding-left: 24px; }
@@ -934,6 +934,91 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .lifecycle-export p span { color: var(--dark-muted); font-size: 11px; line-height: 1.5; margin-top: 8px; }
 .lifecycle-export .primary { background: var(--dark-text); border-color: var(--dark-text); color: #071018; white-space: nowrap; }
 .lifecycle-export .primary:hover { background: transparent; border-color: var(--blue); color: var(--blue); }
+.project-artifacts-workbench { background: var(--paper); border-top: 1px solid var(--line); color: var(--ink); }
+.project-artifacts-head { align-items: start; display: grid; gap: 30px; grid-template-columns: 1fr auto; padding: 38px 30px; }
+.project-artifacts-head h4 { font-size: clamp(28px, 4vw, 48px); letter-spacing: -.04em; margin: 10px 0 0; max-width: 820px; }
+.project-artifacts-head > div > p:not(.eyebrow) { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 16px 0 0; max-width: 760px; }
+.project-artifacts-head output { border-left: 3px solid var(--blue-deep); display: flex; flex-direction: column; min-width: 170px; padding-left: 18px; }
+.project-artifacts-head output strong { font: 700 34px "Courier New", monospace; }
+.project-artifacts-head output span { color: var(--muted); font-size: 10px; margin-top: 7px; }
+.artifact-router { display: grid; grid-template-columns: repeat(4, 1fr); }
+.artifact-router button { background: transparent; border: 1px solid var(--line); border-bottom: 0; border-left: 0; color: var(--ink); cursor: pointer; display: grid; grid-template-columns: 1fr auto; min-height: 155px; padding: 20px; text-align: left; }
+.artifact-router button:first-child { border-left: 1px solid var(--line); }
+.artifact-router button:hover { border-top-color: var(--blue-deep); }
+.artifact-router button[aria-current="page"] { background: var(--dark); border-color: var(--dark); color: var(--dark-text); box-shadow: inset 0 -4px var(--blue); }
+.artifact-router button > span { color: var(--blue-deep); font: 700 10px "Courier New", monospace; letter-spacing: .08em; }
+.artifact-router button[aria-current="page"] > span { color: var(--blue); }
+.artifact-router button > strong { align-self: end; font-size: 15px; grid-column: 1 / -1; margin-top: 30px; }
+.artifact-router button > small { color: var(--muted); font-size: 10px; grid-column: 1 / -1; line-height: 1.4; margin-top: 7px; }
+.artifact-router button[aria-current="page"] > small { color: var(--dark-muted); }
+.artifact-router button > em { color: var(--muted); font: 700 10px "Courier New", monospace; font-style: normal; }
+.artifact-router button[aria-current="page"] > em { color: var(--dark-text); }
+.artifact-context { border: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; }
+.artifact-context p { display: flex; flex-direction: column; margin: 0; min-height: 72px; padding: 16px 30px; }
+.artifact-context p:first-child { border-right: 1px solid var(--line); }
+.artifact-context span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.artifact-context strong { font-size: 12px; margin-top: 9px; }
+.artifact-panel { padding: 34px 30px 42px; }
+.artifact-panel > header { align-items: start; display: flex; gap: 30px; justify-content: space-between; }
+.artifact-panel > header > div > span { color: var(--blue-deep); font: 700 10px "Courier New", monospace; letter-spacing: .08em; }
+.artifact-panel > header h5 { font-size: clamp(26px, 3vw, 38px); letter-spacing: -.035em; margin: 10px 0 0; }
+.artifact-panel > header p { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 14px 0 0; max-width: 760px; }
+.artifact-panel > header details { position: relative; }
+.artifact-panel > header summary { align-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--blue-deep); cursor: pointer; display: flex; font: 800 17px "Courier New", monospace; height: 42px; justify-content: center; list-style: none; width: 42px; }
+.artifact-panel > header summary::-webkit-details-marker { display: none; }
+.artifact-panel > header summary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.artifact-panel > header details > div { background: var(--ink); color: var(--paper); padding: 18px; position: absolute; right: 0; top: 50px; width: min(330px, 72vw); z-index: 4; }
+.artifact-panel > header details strong { color: var(--blue); font: 700 10px "Courier New", monospace; letter-spacing: .08em; }
+.artifact-panel > header details p { color: var(--dark-muted); font-size: 12px; line-height: 1.5; margin: 10px 0 0; }
+.artifact-pattern-note { border-left: 4px solid var(--blue-deep); display: grid; gap: 18px; grid-template-columns: 220px 1fr; margin-top: 26px; padding: 16px 20px; }
+.artifact-pattern-note strong { color: var(--blue-deep); font: 700 10px "Courier New", monospace; letter-spacing: .08em; }
+.artifact-pattern-note p { color: var(--muted); font-size: 12px; line-height: 1.55; margin: 0; }
+.artifact-fields { display: grid; grid-template-columns: 1fr 1fr; margin-top: 28px; }
+.artifact-fields > label { border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 9px; min-width: 0; padding: 18px 18px 18px 0; }
+.artifact-fields > label:nth-child(even) { border-left: 1px solid var(--line); padding-left: 18px; padding-right: 0; }
+.artifact-fields > label > span { align-items: center; display: flex; gap: 10px; justify-content: space-between; }
+.artifact-fields > label > span strong { font-size: 12px; }
+.artifact-fields > label > span em { border: 1px solid var(--line); color: var(--muted); font: 700 8px "Courier New", monospace; font-style: normal; letter-spacing: .06em; padding: 4px 6px; text-transform: uppercase; }
+.artifact-fields > label[data-mode="manual"] > span em { border-color: var(--blue-deep); color: var(--blue-deep); }
+.artifact-fields input, .artifact-fields textarea { background: var(--paper); border: 1px solid var(--line); border-radius: 0; color: var(--ink); font-family: inherit; font-size: 13px; min-width: 0; padding: 12px; width: 100%; }
+.artifact-fields textarea { line-height: 1.5; resize: vertical; }
+.artifact-fields > label > small { color: var(--muted); font-size: 10px; line-height: 1.45; }
+.artifact-fields > label > b { display: flex; flex-wrap: wrap; gap: 7px; min-height: 24px; }
+.artifact-fields > label > b button { background: transparent; border: 0; color: var(--blue-deep); cursor: pointer; font: 700 9px "Courier New", monospace; padding: 2px 0; text-decoration: underline; text-underline-offset: 3px; }
+.artifact-fields > label > b button:hover { color: var(--ink); }
+.artifact-checklist { margin-top: 30px; }
+.artifact-checklist > nav { display: grid; grid-template-columns: repeat(3, 1fr); }
+.artifact-checklist > nav button { align-items: center; background: transparent; border: 1px solid var(--line); border-left: 0; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; padding: 16px; text-align: left; }
+.artifact-checklist > nav button:first-child { border-left: 1px solid var(--line); }
+.artifact-checklist > nav button:hover { border-color: var(--blue-deep); }
+.artifact-checklist > nav button[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.artifact-checklist > nav strong { font-size: 11px; }
+.artifact-checklist > nav span { color: var(--blue-deep); font: 700 10px "Courier New", monospace; }
+.artifact-checklist > nav button[aria-current="page"] span { color: var(--blue); }
+.checklist-task-layout { border: 1px solid var(--line); border-top: 0; display: grid; grid-template-columns: 250px 1fr; }
+.checklist-task-layout > nav { border-right: 1px solid var(--line); max-height: 520px; overflow-y: auto; }
+.checklist-task-layout > nav button { background: transparent; border: 0; border-top: 1px solid var(--line); color: var(--ink); cursor: pointer; display: grid; gap: 5px 10px; grid-template-columns: 42px 1fr; padding: 13px; text-align: left; width: 100%; }
+.checklist-task-layout > nav button:first-child { border-top: 0; }
+.checklist-task-layout > nav button:hover { background: rgb(7 16 24 / 5%); }
+.checklist-task-layout > nav button[aria-current="step"] { background: var(--ink); color: var(--paper); }
+.checklist-task-layout > nav button > span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; grid-row: 1 / span 2; }
+.checklist-task-layout > nav button[aria-current="step"] > span { color: var(--blue); }
+.checklist-task-layout > nav button > strong { font-size: 10px; line-height: 1.35; }
+.checklist-task-layout > nav button > small { color: var(--muted); font-size: 8px; }
+.checklist-task-layout > nav button[aria-current="step"] > small { color: var(--dark-muted); }
+.checklist-task-layout > article { min-width: 0; padding: 24px; }
+.checklist-task-layout > article > header { align-items: start; display: grid; gap: 14px; grid-template-columns: 110px 1fr; }
+.checklist-task-layout > article > header > span { color: var(--blue-deep); font: 700 9px "Courier New", monospace; overflow-wrap: anywhere; }
+.checklist-task-layout > article > header strong { display: block; font-size: 16px; }
+.checklist-task-layout > article > header small { color: var(--muted); display: block; font-size: 9px; margin-top: 5px; }
+.checklist-fields { display: grid; gap: 10px; grid-template-columns: .8fr 1fr .8fr 1.2fr; margin-top: 15px; }
+.checklist-fields label { display: flex; flex-direction: column; gap: 6px; }
+.checklist-fields label > span { color: var(--muted); font: 700 8px "Courier New", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.checklist-fields input, .checklist-fields select { background: var(--paper); border: 1px solid var(--line); border-radius: 0; color: var(--ink); font-family: inherit; font-size: 11px; min-width: 0; padding: 10px; width: 100%; }
+.checklist-task-layout > article > footer { align-items: center; background: transparent; color: var(--muted); display: flex; font-size: 9px; justify-content: space-between; margin-top: 14px; padding: 0; }
+.checklist-task-layout > article > footer p { margin: 0; }
+.checklist-task-layout > article > footer button { background: transparent; border: 0; color: var(--blue-deep); cursor: pointer; font: 700 9px "Courier New", monospace; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+.artifact-panel > footer { background: transparent; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.5; margin-top: 28px; padding: 18px 0 0; }
 .project-dossier-manager { background: var(--dark); color: var(--dark-text); padding: 30px; }
 .project-dossier-manager > header { align-items: start; display: grid; gap: 28px; grid-template-columns: 1fr auto; }
 .project-dossier-manager > header h4 { font-size: clamp(22px, 3vw, 34px); letter-spacing: -.025em; margin: 8px 0 0; }
@@ -1997,6 +2082,24 @@ footer a { color: var(--blue); }
   .project-dossier-manager > header output { min-width: 0; }
   .dossier-actions { align-items: stretch; flex-direction: column; }
   .dossier-actions .button { text-align: center; }
+  .project-artifacts-head { align-items: stretch; grid-template-columns: 1fr; padding: 28px 22px; }
+  .project-artifacts-head output { min-width: 0; }
+  .artifact-router { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .artifact-router button { border-left: 0; flex: 0 0 180px; scroll-snap-align: start; }
+  .artifact-router button:first-child { border-left: 1px solid var(--line); }
+  .artifact-context { grid-template-columns: 1fr; }
+  .artifact-context p:first-child { border-bottom: 1px solid var(--line); border-right: 0; }
+  .artifact-panel { padding: 28px 22px 34px; }
+  .artifact-fields, .artifact-pattern-note, .checklist-fields { grid-template-columns: 1fr; }
+  .artifact-fields > label:nth-child(even) { border-left: 0; padding-left: 0; }
+  .artifact-checklist > nav { display: flex; overflow-x: auto; }
+  .artifact-checklist > nav button { flex: 0 0 190px; }
+  .checklist-task-layout { grid-template-columns: 1fr; }
+  .checklist-task-layout > nav { border-bottom: 1px solid var(--line); border-right: 0; display: flex; max-height: none; overflow-x: auto; }
+  .checklist-task-layout > nav button { border-left: 1px solid var(--line); border-top: 0; flex: 0 0 155px; }
+  .checklist-task-layout > nav button:first-child { border-left: 0; }
+  .checklist-task-layout > article { padding: 18px; }
+  .checklist-task-layout > article > header { grid-template-columns: 1fr; }
   :is(.sme-range-bar, .mission-range-bar, .public-range-bar, .agency-bar) i { background: #34414c; border-left: 4px solid var(--blue); }
   .tool-grid { grid-template-columns: 1fr; }
   .tool-grid a, .tool-grid a:nth-child(3n), .tool-grid a:last-child { border-bottom: 0; border-right: 1px solid var(--dark-line); }

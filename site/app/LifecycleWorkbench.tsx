@@ -7,6 +7,9 @@ import {
   parseProjectDossier,
   PROJECT_DOSSIER_STORAGE_KEY,
 } from "./project-dossier.mjs";
+import type { ProjectArtifacts } from "./project-dossier.mjs";
+import { createEmptyProjectArtifacts, materializeProjectArtifacts } from "./project-artifacts.mjs";
+import { ProjectArtifactsWorkbench } from "./ProjectArtifactsWorkbench";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -145,6 +148,7 @@ const dossierUi = {
     notSaved: "Not saved yet",
     saveError: "Local save failed. Export the dossier before leaving this page.",
     resumed: "Local dossier resumed.",
+    migrated: "Older dossier updated to the current project-record format.",
     imported: "Dossier imported and guide context restored.",
     removed: "Local copy removed. A new blank dossier is ready.",
     invalid: "This file is not a compatible project dossier. Your current work was not changed.",
@@ -164,6 +168,7 @@ const dossierUi = {
     notSaved: "Pas encore enregistré",
     saveError: "L’enregistrement local a échoué. Exportez le dossier avant de quitter cette page.",
     resumed: "Dossier local repris.",
+    migrated: "Ancien dossier mis à jour vers le format actuel des documents projet.",
     imported: "Dossier importé et contexte du guide restauré.",
     removed: "Copie locale supprimée. Un nouveau dossier vide est prêt.",
     invalid: "Ce fichier n’est pas un dossier projet compatible. Votre travail actuel n’a pas été modifié.",
@@ -198,6 +203,7 @@ export function LifecycleWorkbench(props: Props) {
   const [activePhase, setActivePhase] = useState(0);
   const [values, setValues] = useState<Record<string, string>>({});
   const [checkedControls, setCheckedControls] = useState<Record<string, boolean>>({});
+  const [artifacts, setArtifacts] = useState<ProjectArtifacts>(() => createEmptyProjectArtifacts());
   const [copied, setCopied] = useState(false);
   const [dossierId, setDossierId] = useState("");
   const [createdAt, setCreatedAt] = useState("");
@@ -246,8 +252,9 @@ export function LifecycleWorkbench(props: Props) {
       setActivePhase(parsed.value.active_phase);
       setValues(parsed.value.fields);
       setCheckedControls(parsed.value.conditioned_controls);
+      setArtifacts(parsed.value.artifacts);
       setHasLocalCopy(true);
-      setDossierNotice(dossierUi[locale].resumed);
+      setDossierNotice(parsed.migratedFrom ? dossierUi[locale].migrated : dossierUi[locale].resumed);
       setStorageReady(true);
     }, 0);
     return () => window.clearTimeout(timer);
@@ -321,6 +328,15 @@ export function LifecycleWorkbench(props: Props) {
   const completedPhases = phaseReady.flatMap((ready, index) => ready ? [index] : []);
   const completedPhaseKey = completedPhases.join(",");
   const matchedControlKey = [...new Set(props.matchedControls.map((control) => control.id))].sort().join(",");
+  const conditionedControls = useMemo(() => Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])), [checkedControls, securityControls]);
+  const securityControlKey = securityControls.map((control) => control.id).join(",");
+  const resolvedArtifacts = useMemo(() => materializeProjectArtifacts(artifacts, {
+    values,
+    completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
+    conditioned_controls: conditionedControls,
+    security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
+    matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
+  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, securityControlKey, values]);
   const current = phases[activePhase];
   const controlsForPhase = props.matchedControls.filter((control) => control.phases.includes(activePhase));
 
@@ -343,9 +359,10 @@ export function LifecycleWorkbench(props: Props) {
         },
         active_phase: activePhase,
         fields: values,
-        conditioned_controls: Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])),
+        conditioned_controls: conditionedControls,
         matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
         completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
+        artifacts: resolvedArtifacts,
       });
       try {
         window.localStorage.setItem(PROJECT_DOSSIER_STORAGE_KEY, JSON.stringify(dossier));
@@ -356,7 +373,7 @@ export function LifecycleWorkbench(props: Props) {
       }
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [activePhase, checkedControls, completedPhaseKey, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, securityControls, storageReady, values]);
+  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, storageReady, values]);
 
   const update = (id: string, value: string) => {
     setValues((previous) => ({ ...previous, [id]: value }));
@@ -385,9 +402,10 @@ export function LifecycleWorkbench(props: Props) {
     },
     active_phase: activePhase,
     fields: values,
-    conditioned_controls: Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])),
+    conditioned_controls: conditionedControls,
     matched_control_ids: props.matchedControls.map((control) => control.id),
     completed_phases: completedPhases,
+    artifacts: resolvedArtifacts,
   });
 
   const exportDossier = () => {
@@ -432,8 +450,9 @@ export function LifecycleWorkbench(props: Props) {
       setActivePhase(parsed.value.active_phase);
       setValues(parsed.value.fields);
       setCheckedControls(parsed.value.conditioned_controls);
+      setArtifacts(parsed.value.artifacts);
       setHasLocalCopy(true);
-      setDossierNotice(dossierLabels.imported);
+      setDossierNotice(parsed.migratedFrom ? dossierLabels.migrated : dossierLabels.imported);
       setSaveFailed(false);
     } catch {
       setDossierNotice(dossierLabels.invalid);
@@ -451,6 +470,7 @@ export function LifecycleWorkbench(props: Props) {
     setActivePhase(0);
     setValues({});
     setCheckedControls({});
+    setArtifacts(createEmptyProjectArtifacts());
     setHasLocalCopy(false);
     setSaveFailed(false);
     setCopied(false);
@@ -518,6 +538,20 @@ export function LifecycleWorkbench(props: Props) {
 
         <footer><p data-ready={phaseReady[activePhase]}>{phaseReady[activePhase] ? labels.ready : labels.incomplete}</p><div><button disabled={activePhase === 0} onClick={() => selectPhase(Math.max(0, activePhase - 1))} type="button">← {labels.previous}</button><button onClick={() => selectPhase(Math.min(11, activePhase + 1))} type="button">{activePhase === 11 ? labels.done : labels.next} →</button></div></footer>
       </section>
+
+      <ProjectArtifactsWorkbench
+        artifacts={resolvedArtifacts}
+        jurisdictionLabel={props.jurisdictionLabel}
+        locale={locale}
+        matchedControls={props.matchedControls}
+        onChange={setArtifacts}
+        onDirty={() => { setHasLocalCopy(true); setDossierNotice(""); }}
+        onOpenPhase={(phase) => { selectPhase(phase); window.requestAnimationFrame(() => document.querySelector(".lifecycle-phase")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}
+        phaseTitles={phases.map((phase) => phase.title)}
+        securityControls={securityControls.map((control) => ({ ...control, checked: conditionedControls[control.id] }))}
+        usePatternId={props.usePatternId}
+        usePatternLabel={props.usePatternLabel}
+      />
 
       <section aria-labelledby="project-dossier-title" className="project-dossier-manager" data-dossier-state={saveFailed ? "error" : hasLocalCopy ? "saved" : "new"}>
         <header><div><p className="eyebrow">{labels.local}</p><h4 id="project-dossier-title">{dossierLabels.title}</h4><p>{dossierLabels.text}</p></div><output aria-live="polite"><strong>{saveFailed ? dossierLabels.saveError : hasLocalCopy ? dossierLabels.saved : dossierLabels.notSaved}</strong><span>{dossierLabels.draft}</span>{savedAt && <small>{dossierLabels.lastSaved}: <time dateTime={savedAt}>{new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(savedAt))}</time></small>}</output></header>
