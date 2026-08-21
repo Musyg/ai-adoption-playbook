@@ -2,7 +2,9 @@
 
 This directory is the publication boundary for reviewed, anonymized field feedback. It contains no field report yet. An empty registry is not evidence that the playbook works in practice.
 
-Start with the [field-pilot protocol](../docs/field-pilot-protocol.md). Its site
+Start with the [first-cohort brief](../docs/field-pilot-cohort.md) and the
+[field-pilot protocol](../docs/field-pilot-protocol.md). The cohort targets
+three admitted reports across distinct use patterns and contexts. Its site
 assistant creates a local draft only; raw evidence must never be submitted
 through a public issue.
 

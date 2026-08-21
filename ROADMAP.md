@@ -37,14 +37,19 @@ the public deployment. It does not claim first-party field evidence.
 
 ## 0.3: first-party field evidence, not released
 
-Entry condition: at least one genuine pilot report must contain observed
+Entry condition: at least three genuine pilot reports must contain observed
 first-party results, retain the complete denominator, pass independent review
 and anonymization, state transfer limits, and meet the public registry contract.
+The cohort must include one non-agentic or copilot workflow, one bounded A2
+business agent, and one distinct Swiss or EU context. An orchestrated-agency
+report is useful but not required and remains unproven until one is admitted.
 
 - [x] Provide a field-pilot protocol, blank report, local drafting assistant,
   review checklist, and empty machine-readable registry.
 - [x] Publish a review of public studies, negative results, denominator effects,
   and transfer limits to improve pilot design.
+- [x] Publish a three-report cohort brief and public intake for Switzerland and
+  the European Union without accepting raw evidence through GitHub.
 - [ ] Admit genuine, independently reviewed and anonymized field feedback to
   the registry.
 
@@ -54,13 +59,13 @@ evidence produced by this playbook. The registry remains empty.
 
 ## 0.4: complete interactive lifecycle
 
-- [ ] Make mandate and initial-state definition interactive.
-- [ ] Add guided work mapping and use-case prioritization.
-- [ ] Turn risk, legal, architecture, and supplier choices into conditional
+- [x] Make mandate and initial-state definition interactive.
+- [x] Add guided work mapping and use-case prioritization.
+- [x] Turn risk, legal, architecture, and supplier choices into conditional
   guided paths.
-- [ ] Add an interactive security-control builder and close the remaining gaps
+- [x] Add an interactive security-control builder and close the remaining gaps
   across lifecycle phases 0 to 11.
-- [ ] Preserve progressive disclosure so the default experience never becomes
+- [x] Preserve progressive disclosure so the default experience never becomes
   a wall of text.
 
 ## 0.5: implementation workbench

@@ -35,6 +35,23 @@ body:
       required: true
 
   - type: dropdown
+    id: use_pattern
+    attributes:
+      label: Mode d’usage de l’IA
+      description: Choisissez le travail principal du système. Cette question est distincte de l’autonomie et du niveau d’intégration.
+      options:
+        - Génération assistée
+        - Recherche contrôlée ou RAG
+        - Classification ou extraction
+        - Prévision ou notation
+        - Conversation externe ou chatbot
+        - Traitement multimodal
+        - Action agentique
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
     id: integration
     attributes:
       label: Niveau d’intégration visé
@@ -43,6 +60,18 @@ body:
         - Agent métier A2–A3
         - Agence orchestrée A3–A4
         - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: jurisdiction
+    attributes:
+      label: Territoire principal
+      description: Choisissez le territoire d’exploitation du processus ou de résidence des personnes concernées.
+      options:
+        - Suisse
+        - Union européenne
+        - Suisse et Union européenne
     validations:
       required: true
 
@@ -56,6 +85,19 @@ body:
         - Éducation
         - Finance
         - Infrastructure critique
+    validations:
+      required: true
+
+  - type: dropdown
+    id: readiness
+    attributes:
+      label: Étape actuelle
+      options:
+        - Problème et situation initiale en cours de définition
+        - Évaluation hors ligne prête ou en cours
+        - Pilote à blanc prêt ou en cours
+        - Pilote réel borné prêt ou en cours
+        - Système existant disponible pour une revue rétrospective
     validations:
       required: true
 
@@ -86,4 +128,6 @@ body:
         - label: Je comprends que cette issue contient des métadonnées de coordination, et non une preuve, une approbation ou un résultat terrain publié.
           required: true
         - label: Je conserverai les preuves brutes dans un système privé autorisé et ne soumettrai qu’un rapport anonymisé ayant fait l’objet d’une revue séparée si sa publication est appropriée.
+          required: true
+        - label: Je peux nommer un responsable local des preuves, un réviseur indépendant et une autorité de publication avant toute admission d’un rapport.
           required: true

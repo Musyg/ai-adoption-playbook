@@ -161,6 +161,57 @@ test("chapter routers reveal one topic at a time and restore deep links", async 
   await expect(page.locator("#agency-case")).toBeHidden();
 });
 
+test("lifecycle workbench reveals one phase and derives decision guidance", async ({ page, context }) => {
+  test.setTimeout(60_000);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.locator("#implementation-library > summary").click();
+  await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+
+  const workbench = page.locator("#lifecycle-workbench");
+  await expect(workbench).toBeVisible();
+  await expect(workbench.locator(".lifecycle-nav button")).toHaveCount(12);
+  await expect(workbench.locator(".lifecycle-phase")).toHaveAttribute("data-phase", "0");
+  await expect(workbench.locator(".lifecycle-phase h4")).toHaveText("Mandate");
+
+  await workbench.locator('[name="project"]').fill("North workshop");
+  await workbench.locator('[name="owner"]').fill("Operations owner");
+  await workbench.locator('[name="problem"]').fill("Accepted requests wait too long for a reviewed answer.");
+  await workbench.locator('[name="affected"]').fill("Customers and operations staff");
+  await workbench.locator('[name="decisionDate"]').fill("2026-10-01");
+  await expect(workbench.locator(".lifecycle-head output strong")).toHaveText("1/12");
+
+  await workbench.locator('.lifecycle-nav button[data-phase="1"]').click();
+  await workbench.locator('[name="baselineVolume"]').fill("40");
+  await workbench.locator('[name="baselineMinutes"]').fill("60");
+  await workbench.locator('[name="baselineOutcome"]').fill("Reviewed answer");
+  await workbench.locator('[name="baselineErrors"]').fill("8");
+  await expect(workbench.locator(".lifecycle-result strong")).toHaveText("40.0 h");
+
+  await workbench.locator('.lifecycle-nav button[data-phase="4"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await workbench.locator('[name="riskImpact"]').selectOption("high");
+  await workbench.locator('[name="dataSensitivity"]').selectOption("sensitive");
+  await workbench.locator('[name="externalInteraction"]').selectOption("yes");
+  await workbench.locator('[name="automatedDecision"]').selectOption("yes");
+  await workbench.locator('[name="sectorDuty"]').fill("Applicable sector duties under review");
+  await expect(workbench.locator(".lifecycle-guidance output strong")).toHaveText("R3");
+  await expect(workbench.locator(".lifecycle-guidance")).toContainText("Switzerland");
+  await expect(workbench.locator(".lifecycle-guidance")).toContainText("European Union");
+
+  await workbench.locator('.lifecycle-nav button[data-phase="7"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(workbench.locator('.security-builder input[name="SEC-SENSITIVE"]')).toHaveCount(1);
+  await expect(workbench.locator('.security-builder input[name="SEC-RETRIEVAL"]')).toHaveCount(1);
+  await expect(workbench.locator('.security-builder input[name="SEC-ACTION"]')).toHaveCount(1);
+  await expect(workbench.locator('.security-builder input[name="SEC-INDEPENDENT"]')).toHaveCount(1);
+
+  const securityChecks = workbench.locator(".security-builder input");
+  for (let index = 0; index < await securityChecks.count(); index += 1) await securityChecks.nth(index).check();
+  await expect(workbench.locator('.lifecycle-nav button[data-phase="7"]')).toHaveAttribute("data-complete", "true");
+  await workbench.getByRole("button", { name: "Copy the working plan" }).click();
+  await expect(workbench.getByRole("button", { name: "Working plan copied" })).toBeVisible();
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("4. Risk and legal route · COMPLETE");
+});
+
 test("rendered page has no automatic axe violations", async ({ page }) => {
   await page.goto("/");
   for (const chapter of ["concept-library", "operational-workspace", "implementation-library"]) {

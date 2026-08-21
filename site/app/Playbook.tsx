@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
 import { geoArticlePath, geoArticles } from "./geo-content";
+import { LifecycleWorkbench } from "./LifecycleWorkbench";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -382,7 +383,7 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
     implementation: [
       { id: "paths", number: "01", title: "Choose the organization path", text: "Adapt ownership, pace, and safeguards for an independent, company, nonprofit, or public service." },
       { id: "sectors", number: "02", title: "Add sector safeguards", text: "Apply healthcare, education, finance, or critical-infrastructure limits when relevant." },
-      { id: "method", number: "03", title: "Follow the full method", text: "Open the eight implementation steps and their concrete deliverables." },
+      { id: "method", number: "03", title: "Build the full lifecycle", text: "Work through phases 0 to 11 one at a time and keep the evidence each decision needs." },
       { id: "case-library", number: "04", title: "Explore worked cases", text: "Compare eleven synthetic cases without treating their numbers as universal benchmarks." },
       { id: "maturity-controls", number: "05", title: "Orient risk and maturity", text: "Find the minimum control depth from impact and autonomy." },
       { id: "control-crosswalk", number: "06", title: "Filter the controls", text: "Turn organization, risk, autonomy, use pattern, and territory into a traceable control list." },
@@ -430,7 +431,7 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
     implementation: [
       { id: "paths", number: "01", title: "Choisir le parcours de la structure", text: "Adaptez responsabilités, rythme et protections à l’indépendant, l’entreprise, l’association ou le service public." },
       { id: "sectors", number: "02", title: "Ajouter les protections du secteur", text: "Ajoutez les limites santé, éducation, finance ou infrastructure critique lorsqu’elles s’appliquent." },
-      { id: "method", number: "03", title: "Suivre toute la méthode", text: "Ouvrez les huit étapes de mise en œuvre et leurs livrables concrets." },
+      { id: "method", number: "03", title: "Construire tout le cycle de vie", text: "Parcourez les phases 0 à 11 une par une et conservez les preuves nécessaires à chaque décision." },
       { id: "case-library", number: "04", title: "Explorer les cas d’école", text: "Comparez onze cas synthétiques sans transformer leurs chiffres en références universelles." },
       { id: "maturity-controls", number: "05", title: "Orienter risque et maturité", text: "Trouvez la profondeur minimale de contrôle selon l’impact et l’autonomie." },
       { id: "control-crosswalk", number: "06", title: "Filtrer les contrôles", text: "Transformez structure, risque, autonomie, mode d’usage et territoire en liste traçable." },
@@ -1990,6 +1991,15 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <section className="field-pilot section-blue" hidden={operationalPanel !== "field-pilot"} id="field-pilot" aria-labelledby="field-pilot-title">
           <div className="section-heading"><p className="eyebrow">{t.fieldPilotEyebrow}</p><h2 id="field-pilot-title">{t.fieldPilotTitle}</h2><p>{t.fieldPilotText}</p></div>
+          <aside className="field-cohort" aria-label={locale === "en" ? "First field cohort status" : "État de la première cohorte terrain"}>
+            <div><span>{locale === "en" ? "0.3 FIELD COHORT" : "COHORTE TERRAIN 0.3"}</span><strong>0/3</strong><p>{locale === "en" ? "admitted reports" : "rapports admis"}</p></div>
+            <ul>
+              <li>{locale === "en" ? "One non-agentic or copilot workflow" : "Un processus non agentique ou avec copilote"}</li>
+              <li>{locale === "en" ? "One bounded A2 business agent" : "Un agent métier A2 borné"}</li>
+              <li>{locale === "en" ? "One distinct Swiss or EU context" : "Un contexte suisse ou européen distinct"}</li>
+            </ul>
+            <p><strong>{locale === "en" ? "Recruiting in Switzerland and the European Union." : "Recrutement en Suisse et dans l’Union européenne."}</strong>{locale === "en" ? " A public intake coordinates participation. It is never evidence, and raw material stays outside GitHub." : " Une entrée publique coordonne la participation. Elle ne constitue jamais une preuve et les éléments bruts restent hors de GitHub."}</p>
+          </aside>
           <ol className="field-pilot-flow">{t.fieldPilotFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <div className="field-pilot-shell">
             <div className="field-pilot-form">
@@ -2015,7 +2025,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>
-          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
+          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{locale === "en" ? "The public registry still contains zero reports. Preparing a draft does not change that count." : "Le registre public contient toujours zéro rapport. Préparer un brouillon ne modifie pas ce nombre."}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-cohort${locale === "fr" ? ".fr" : ""}.md`}>{locale === "en" ? "Read the cohort brief" : "Lire la présentation de la cohorte"} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
         <ChapterStepper active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
@@ -2050,7 +2060,21 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <section className="method section-light" hidden={implementationPanel !== "method"} id="method" aria-labelledby="method-title">
           <div className="section-heading"><p className="eyebrow">{t.methodEyebrow}</p><h2 id="method-title">{t.methodTitle}</h2><p>{t.methodText}</p></div>
-          <div className="process-list">{t.steps.map(([title, text, evidence], index) => <details key={title} open={index === 0}><summary><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><em aria-hidden="true">+</em></summary><div className="step-body"><p>{text}</p><p className="evidence"><span>{t.deliverable}</span>{evidence}</p></div></details>)}</div>
+          <LifecycleWorkbench
+            audienceId={selected.id}
+            audienceLabel={selected.title}
+            autonomy={autonomy}
+            initialRisk={risk}
+            integrationId={calibrationLevel}
+            integrationLabel={selectedGuideLevel.title}
+            jurisdictionId={jurisdiction}
+            jurisdictionLabel={selectedJurisdiction.label}
+            locale={locale}
+            matchedControls={applicableControls.map((control) => ({ family: control.family, id: control.control_id, phases: control.lifecycle_phases, priority: t.crosswalkPriority[control.priority], title: control.title[locale] }))}
+            onRiskChange={setRisk}
+            usePatternId={usePattern}
+            usePatternLabel={selectedUsePattern.title}
+          />
         </section>
 
         <div className="case-library" hidden={implementationPanel !== "case-library"} id="case-library">

@@ -64,8 +64,10 @@ jamais comme preuves terrain.
 
 ## Première cohorte minimale
 
-La première cohorte utile doit chercher plusieurs observations distinctes plutôt
-qu’une seule réussite : au moins un copilote, un agent métier borné et un candidat
-agence orchestrée, avec leur effort d’implémentation et leurs cas échoués ou
-exclus visibles. C’est un objectif d’apprentissage, pas une affirmation de
-validation statistique.
+La [première cohorte](field-pilot-cohort.fr.md) vise au moins trois rapports
+admis : un processus non agentique ou avec copilote, un agent métier A2 borné
+et un contexte suisse ou européen distinct. Un candidat avec agence orchestrée
+est bienvenu seulement si un véritable système peut être comparé à une
+architecture plus simple ; il n’est pas exigé. L’effort de mise en œuvre et les
+cas échoués ou exclus restent visibles. C’est un objectif d’apprentissage, pas
+une affirmation de validation statistique.

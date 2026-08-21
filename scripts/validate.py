@@ -40,6 +40,8 @@ REQUIRED_FILES = (
     "docs/ai-use-patterns.fr.md",
     "docs/field-pilot-protocol.md",
     "docs/field-pilot-protocol.fr.md",
+    "docs/field-pilot-cohort.md",
+    "docs/field-pilot-cohort.fr.md",
     "docs/legal-switzerland-eu.md",
     "docs/maturity-model.md",
     "docs/risk-autonomy.md",
@@ -111,6 +113,7 @@ TRANSLATION_PAIRS = (
     ("docs/evaluations-and-gates.md", "docs/evaluations-and-gates.fr.md"),
     ("docs/ai-use-patterns.md", "docs/ai-use-patterns.fr.md"),
     ("docs/field-pilot-protocol.md", "docs/field-pilot-protocol.fr.md"),
+    ("docs/field-pilot-cohort.md", "docs/field-pilot-cohort.fr.md"),
     ("docs/legal-switzerland-eu.md", "docs/legal-switzerland-eu.fr.md"),
     ("docs/maturity-model.md", "docs/maturity-model.fr.md"),
     ("docs/risk-autonomy.md", "docs/risk-autonomy.fr.md"),
@@ -372,6 +375,30 @@ def check_field_notes(errors: list[str]) -> None:
         errors.append("field-feedback schema_version must be 1.0.0")
     expect_date(registry, "published_on", "field-feedback registry", errors)
     expect_localized(registry, "limitations", "field-feedback registry", errors)
+    cohort = registry.get("cohort")
+    if not isinstance(cohort, dict):
+        errors.append("field-feedback cohort must be an object")
+    else:
+        if cohort.get("target_admitted_reports") != 3:
+            errors.append("field-feedback cohort target must be 3 admitted reports")
+        raw_reports = registry.get("reports")
+        reviewed_count = (
+            len(
+                [
+                    report
+                    for report in raw_reports
+                    if isinstance(report, dict) and report.get("status") == "reviewed"
+                ]
+            )
+            if isinstance(raw_reports, list)
+            else 0
+        )
+        if cohort.get("admitted_reports") != reviewed_count:
+            errors.append("field-feedback cohort admitted count must match reviewed reports")
+        if cohort.get("recruiting_regions") != ["CH", "EU"]:
+            errors.append("field-feedback cohort must recruit in CH and EU")
+        if cohort.get("orchestrated_agency_required") is not False:
+            errors.append("field-feedback cohort must not require orchestrated-agency evidence")
     reports = registry.get("reports")
     if not isinstance(reports, list):
         errors.append("field-feedback reports must be an array")
