@@ -92,11 +92,11 @@ for (const [pathname, language, title] of [
     assert.match(html, /8\/17/);
     assert.match(html, /A4 remains unproven|A4 reste à démontrer/i);
     assert.match(html, /Talos\/Hermes analogy|Analogie Talos\/Hermes/i);
-    assert.match(html, /Calibrate before you promise|Calibrez avant de promettre/i);
-    assert.match(renderedText, /5[.,]6–14 h/);
-    assert.match(renderedText, /14–35%/);
-    assert.match(renderedText, /×1[.,]3–2/);
-    assert.match(html, /A range is not a plan|Une fourchette n’est pas un plan/i);
+    assert.match(html, /Measure the task, not the hype|Mesurer la tâche, pas la promesse/i);
+    assert.match(html, /Define one task|Définir une seule tâche/i);
+    assert.match(html, /TT-2025-ANTHROPIC-MODEL-ESTIMATE/);
+    assert.match(renderedText, /33[.,]1%/);
+    assert.match(html, /Read the two results separately|Lire les deux résultats séparément/i);
     assert.match(html, /Pilot preregistered|Pilote préenregistré/i);
     assert.match(renderedText, /≥ 20%/);
     assert.match(html, /REWORK \+ RERUN|CORRIGER ET REJOUER/i);

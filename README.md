@@ -34,6 +34,15 @@ All eleven cases are synthetic and label their evidence limits explicitly.
 
 > Status: version **0.2.2**, public repository, snapshot **2026-08-21**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
 
+**Task-time evidence:** the interactive calculator now starts from a countable
+task, shows whether a public source is comparable, and keeps the source range
+separate from the user’s own preparation, supervision, verification,
+correction, exception, and setup time. The
+[method and transfer rules](docs/task-time-evidence.md) explain why organization
+type changes context and controls but does not define the benchmark. Model
+estimates, supplier cases, and self-reported savings remain visible without
+becoming automatic productivity promises.
+
 **Public research and sector safeguards:** the
 [20-source public evidence review](references/field-evidence-review-2026.md)
 separates task effects, eligible-flow effects, whole-workload outcomes,
@@ -46,8 +55,9 @@ blocking conditions and evidence gates without replacing the universal process.
 
 The public studies and all eleven worked cases are not first-party field
 evidence for this playbook. The public field registry is empty. Release `0.3`
-remains a future release and cannot be completed until a genuine, independently
-reviewed and anonymized pilot report meets the registry contract.
+remains a future release and cannot be completed until at least three genuine,
+independently reviewed and anonymized pilot reports meet the cohort and registry
+contract.
 
 **Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
 to prepare a local draft, preserve the full denominator, and request independent

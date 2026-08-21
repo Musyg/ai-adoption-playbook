@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Added a versioned task-time evidence registry and strict JSON Schema. Nine
+  external records separate measured task time, operational outcomes,
+  self-reports, internal cases, and model estimates through grades A to E.
+- Replaced integration-level productivity bands with a task-based transfer
+  engine. It checks task profile, operating mode, output state, and experience,
+  preserves measured slowdowns, and blocks context-only values from automatic
+  calculation.
+- Rebuilt the calibrator as a progressive three-part guide. It keeps a source
+  range separate from preparation, supervision, verification, correction,
+  exception, and amortized setup time, with no organization-type benchmark.
+- Classified all eleven worked cases by task profile and operating mode in the
+  machine-readable registry. Their results remain grade E planning hypotheses,
+  even when an external record provides separate mechanism context.
 - Opened the 0.3 field-pilot cohort for Switzerland and the European Union with
   a three-report admission target, use-pattern-specific observations, and a
   strict separation between public coordination and private raw evidence.

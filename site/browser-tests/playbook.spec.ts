@@ -57,6 +57,13 @@ test("use pattern and jurisdiction update the evidence profile", async ({ page }
   await page.locator(".jurisdiction-options button").nth(1).click();
   await expect(page.locator(".crosswalk-controls details")).toHaveCount(20);
   await expect(page.getByText("AAP-TRN-004", { exact: true })).toHaveCount(1);
+
+  await page.locator(".use-pattern-grid button").nth(3).click();
+  await expect(page.getByLabel("Closest measured task")).toHaveValue("predictive_decision_support");
+  await expect(page.locator(".task-time-no-evidence")).toContainText("No source in the registry matches this task yet");
+
+  await page.locator(".use-pattern-grid button").nth(5).click();
+  await expect(page.getByLabel("Closest measured task")).toHaveValue("multimodal_review");
 });
 
 test("non-agentic cases expose four distinct evidence contracts", async ({ page }) => {
@@ -77,19 +84,27 @@ test("non-agentic cases expose four distinct evidence contracts", async ({ page 
   await expect(caseLinks.nth(3)).toHaveAttribute("href", /examples\/en\/multimodal-catalog-accessibility\.md$/);
 });
 
-test("calibrator treats low and high effects as editable hypotheses", async ({ page }) => {
+test("task-time calibrator separates transferable evidence from the human-time account", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
 
-  await expect(page.locator(".calibrator-result-head strong")).toContainText("20–50%");
-  await page.getByLabel("Low effect hypothesis").fill("10");
-  await page.getByLabel("High effect hypothesis").fill("20");
+  await expect(page.getByLabel("Closest measured task")).toHaveValue("information_synthesis");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
+  await expect(page.locator(".task-time-source-range")).toContainText("does not produce a transferable range");
 
-  await expect(page.locator(".calibrator-result-head strong")).toContainText("10–20%");
-  await expect(page.locator(".calibrator-equation")).toContainText("7–14%");
+  await page.getByLabel("Closest measured task").selectOption("professional_writing");
+  await page.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2023-NOY-ZHANG-WRITING");
+  await expect(page.locator(".task-time-source-range")).toContainText("40–40–40%");
 
-  await page.getByRole("button", { name: /Orchestrated agency/ }).click();
-  await expect(page.locator(".calibrator-result-head strong")).toContainText("35–70%");
+  await page.locator(".task-time-components > summary").click();
+  await page.getByLabel("Verification").fill("70");
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("-");
+  await expect(page.locator(".task-time-negative")).toContainText("consumes more human time");
+
+  await page.getByLabel("Closest measured task").selectOption("software_mature_repo");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-METR-MATURE-REPOS");
+  await expect(page.locator(".task-time-source-range")).toContainText("-39–-19–-2%");
 });
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {
@@ -148,6 +163,8 @@ test("chapter routers reveal one topic at a time and restore deep links", async 
   await expect(page.locator("#paths")).toBeVisible();
   await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(3).click();
   await expect(page.locator("#case-library")).toBeVisible();
+  await expect(page.locator(".case-evidence-boundary")).toContainText("grade E planning hypotheses");
+  await expect(page.locator(".case-evidence-boundary .button")).toHaveAttribute("href", "#calibrator");
   await expect(page.locator("#case")).toBeVisible();
   await page.locator("#case-library .case-router nav button").last().click();
   await expect(page.locator("#agency-case")).toBeVisible();

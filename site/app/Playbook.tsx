@@ -6,6 +6,9 @@ import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
 import { geoArticlePath, geoArticles } from "./geo-content";
 import { LifecycleWorkbench } from "./LifecycleWorkbench";
+import { TaskTimeCalibrator } from "./TaskTimeCalibrator";
+import type { TaskTimePlanningRange } from "./TaskTimeCalibrator";
+import { calculateHumanTimeScenario } from "./task-time-transfer.mjs";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -99,10 +102,27 @@ const crosswalkConditions: Record<Locale, Record<string, string>> = {
   },
 };
 const phase = (rows: string[][]): Phase[] => rows.map(([label, title, text]) => ({ label, title, text }));
-const calibrationSpecs: Record<IntegrationId, { low: number; high: number; setup: number }> = {
-  copilot: { low: 0.1, high: 0.3, setup: 8 },
-  agent: { low: 0.2, high: 0.5, setup: 40 },
-  agency: { low: 0.35, high: 0.7, setup: 120 },
+const setupPresets: Record<IntegrationId, number> = { copilot: 8, agent: 40, agency: 120 };
+const initialHumanTimeScenario = calculateHumanTimeScenario({
+  baseline_human_minutes: 60,
+  monthly_cases: 40,
+  eligible_share: 70,
+  preparation_minutes: 5,
+  supervision_minutes: 5,
+  verification_minutes: 15,
+  correction_minutes: 5,
+  exception_rate: 20,
+  exception_minutes: 15,
+  setup_hours: 40,
+  amortization_months: 12,
+});
+const initialPlanningRange: TaskTimePlanningRange = {
+  source: "local_hypothesis",
+  low: initialHumanTimeScenario.reduction_fraction,
+  central: initialHumanTimeScenario.reduction_fraction,
+  high: initialHumanTimeScenario.reduction_fraction,
+  compatibility: "not_available",
+  evidence_id: null,
 };
 const pilotSpecs: Record<IntegrationId, { horizon: number; frozen: number; live: number; valueFloor: number }> = {
   copilot: { horizon: 14, frozen: 20, live: 14, valueFloor: 10 },
@@ -268,6 +288,9 @@ type ChapterNavigationContent = {
   casesTitle: string;
   casesText: string;
   casesLabel: string;
+  caseEvidenceTitle: string;
+  caseEvidenceText: string;
+  caseEvidenceLink: string;
   previous: string;
   next: string;
   position: string;
@@ -363,6 +386,9 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
     casesTitle: "Open one case, then compare deliberately.",
     casesText: "Each case has a different organization, task, autonomy boundary, and proof contract. Select the closest comparison, not the biggest number.",
     casesLabel: "Worked cases",
+    caseEvidenceTitle: "All 11 case results are grade E planning hypotheses.",
+    caseEvidenceText: "They show how to structure a test. They do not inherit a study result, and they become evidence only after your own baseline and pilot observations.",
+    caseEvidenceLink: "Count your task time",
     previous: "Previous topic",
     next: "Next topic",
     position: "Current position",
@@ -373,7 +399,7 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
       { id: "integration-levels", number: "04", title: "How much work does it carry?", text: "Compare a copilot, one business agent, and an orchestrated agency without mixing their gains." },
     ],
     operational: [
-      { id: "calibrator", number: "01", title: "Test a realistic range", text: "Turn volume, eligible work, setup, and a low or high effect into an editable scenario." },
+      { id: "calibrator", number: "01", title: "Count human time", text: "Compare one task with measured evidence, then expose every minute that remains human." },
       { id: "pilot-plan", number: "02", title: "Build the test plan", text: "Freeze the cases, thresholds, safeguards, and possible decisions before the live pilot." },
       { id: "evidence-gate", number: "03", title: "Enter observed results", text: "Record value, quality, safety, trace, and eligibility. The weakest critical result decides." },
       { id: "operations", number: "04", title: "Operate within the proof", text: "Name owners, monitoring, suspension triggers, safe return, and the next review date." },
@@ -411,6 +437,9 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
     casesTitle: "Ouvrez un cas, puis comparez avec méthode.",
     casesText: "Chaque cas possède sa structure, sa tâche, sa limite d’autonomie et son contrat de preuve. Choisissez le cas le plus proche, pas le chiffre le plus élevé.",
     casesLabel: "Cas d’école",
+    caseEvidenceTitle: "Les résultats des 11 cas sont des hypothèses de planification de niveau E.",
+    caseEvidenceText: "Ils montrent comment structurer un test. Ils n’héritent d’aucun résultat d’étude et ne deviennent des preuves qu’après votre propre mesure initiale et vos observations de pilote.",
+    caseEvidenceLink: "Compter le temps de votre tâche",
     previous: "Sujet précédent",
     next: "Sujet suivant",
     position: "Position actuelle",
@@ -421,7 +450,7 @@ const chapterNavigationContent: Record<Locale, ChapterNavigationContent> = {
       { id: "integration-levels", number: "04", title: "Quelle part du travail porte-t-elle ?", text: "Comparez copilote, agent métier et agence orchestrée sans mélanger leurs gains." },
     ],
     operational: [
-      { id: "calibrator", number: "01", title: "Tester une fourchette réaliste", text: "Transformez volume, part éligible, préparation et effet bas ou haut en scénario modifiable." },
+      { id: "calibrator", number: "01", title: "Compter le temps humain", text: "Comparez une tâche aux preuves mesurées, puis rendez visible chaque minute qui reste humaine." },
       { id: "pilot-plan", number: "02", title: "Construire le plan de test", text: "Figez les cas, seuils, protections et décisions possibles avant le pilote réel." },
       { id: "evidence-gate", number: "03", title: "Saisir les résultats observés", text: "Notez valeur, qualité, sécurité, traces et éligibilité. Le résultat critique le plus faible décide." },
       { id: "operations", number: "04", title: "Exploiter dans les limites prouvées", text: "Nommez responsables, suivi, arrêts, retour sûr et prochaine date de revue." },
@@ -524,18 +553,10 @@ const copy = {
       { tag: "PUBLIC SECTOR · REVIEW", value: "19–26 min", title: "Self-reported daily saving", text: "Large trials, but no random allocation and no proof that saved time became a delivered public outcome.", url: "https://www.gov.uk/government/publications/microsoft-365-copilot-experiment-cross-government-findings-report" },
     ],
     researchReview: "Read the full 20-source evidence review",
-    calibratorEyebrow: "CALIBRATE BEFORE YOU PROMISE",
-    calibratorTitle: "Turn the ranges into a testable scenario for your own workflow.",
-    calibratorText: "Choose the integration level, then expose volume, manual time, eligible share, low and high effect hypotheses, and setup effort. The result is a stress-test envelope, not a forecast.",
-    calibratorLevel: "Integration level",
+    calibratorEyebrow: "MEASURE THE TASK, NOT THE HYPE",
+    calibratorTitle: "See what the evidence transfers, then count the human work that remains.",
+    calibratorText: "Define one repeatable task, inspect a comparable source, and account for preparation, supervision, verification, corrections, exceptions, and setup. External evidence frames a test. Your pilot supplies the answer.",
     calibratorLevels: [{ id: "copilot", label: "Copilot · A0–A1", note: "One assisted step" }, { id: "agent", label: "Business agent · A2–A3", note: "One bounded workflow" }, { id: "agency", label: "Orchestrated agency · A3", note: "Specialists under one policy" }],
-    calibratorInputs: { minutes: "Manual minutes per case", cases: "Cases per month", eligible: "Share genuinely eligible", low: "Low effect hypothesis", high: "High effect hypothesis", setup: "One-off setup effort" },
-    calibratorUnits: { minutes: "min", cases: "cases", eligible: "%", low: "%", high: "%", setup: "hours" },
-    calibratorResults: { eligible: "Eligible workload today", freed: "Human hours freed / month", remaining: "Human hours remaining on eligible cases", total: "Reduction across the whole workload", throughput: "Theoretical accepted throughput", payback: "Setup absorbed after" },
-    calibratorReading: "READ THIS RESULT CORRECTLY",
-    calibratorCaution: "The calculation assumes accepted quality, no new bottleneck, and stable eligibility. It excludes model cost, supervision drift, incidents, demand elasticity, revenue, and the time of people outside the measured workflow. Replace every assumption with observed data during the pilot.",
-    calibratorPreset: "Suggested setup effort",
-    calibratorMonths: "months",
     pilotPlannerEyebrow: "FROM SCENARIO TO PROTOCOL",
     pilotPlannerTitle: "A range is not a plan. Make the next decision capable of failing cleanly.",
     pilotPlannerText: "The calibrator exposes the assumptions. This protocol now fixes the order, practical sample, evidence, and decision before the system touches live work.",
@@ -888,18 +909,10 @@ const copy = {
       { tag: "SECTEUR PUBLIC · ÉVALUATION", value: "19–26 min", title: "Gain quotidien déclaré", text: "Essais larges, sans attribution aléatoire ni preuve que le temps libéré devient un résultat public livré.", url: "https://www.gov.uk/government/publications/microsoft-365-copilot-experiment-cross-government-findings-report" },
     ],
     researchReview: "Lire la revue complète de 20 sources",
-    calibratorEyebrow: "CALIBREZ AVANT DE PROMETTRE",
-    calibratorTitle: "Transformez vos fourchettes en un scénario testable pour votre propre processus.",
-    calibratorText: "Choisissez le niveau d’intégration puis rendez visibles volume, temps manuel, part éligible, hypothèses d’effet basse et haute et effort initial. Le résultat est une enveloppe de stress, pas une prévision.",
-    calibratorLevel: "Niveau d’intégration",
+    calibratorEyebrow: "MESURER LA TÂCHE, PAS LA PROMESSE",
+    calibratorTitle: "Voyez ce que la preuve permet de transférer, puis comptez le travail humain qui reste.",
+    calibratorText: "Définissez une tâche répétable, examinez une source comparable et comptez préparation, supervision, vérification, corrections, exceptions et mise en place. La source encadre le test. Votre pilote apporte la réponse.",
     calibratorLevels: [{ id: "copilot", label: "Copilote · A0–A1", note: "Une étape assistée" }, { id: "agent", label: "Agent métier · A2–A3", note: "Un processus borné" }, { id: "agency", label: "Agence orchestrée · A3", note: "Spécialistes soumis aux mêmes règles" }],
-    calibratorInputs: { minutes: "Minutes manuelles par dossier", cases: "Dossiers par mois", eligible: "Part réellement éligible", low: "Hypothèse d’effet basse", high: "Hypothèse d’effet haute", setup: "Effort initial de mise en place" },
-    calibratorUnits: { minutes: "min", cases: "dossiers", eligible: "%", low: "%", high: "%", setup: "heures" },
-    calibratorResults: { eligible: "Charge éligible actuelle", freed: "Heures humaines libérées / mois", remaining: "Heures humaines restantes sur les cas éligibles", total: "Réduction sur toute la charge", throughput: "Débit accepté théorique", payback: "Mise en place absorbée après" },
-    calibratorReading: "LIRE CE RÉSULTAT CORRECTEMENT",
-    calibratorCaution: "Le calcul suppose une qualité acceptée, aucun nouveau goulot et une éligibilité stable. Il exclut le coût du modèle, la dérive de supervision, les incidents, l’élasticité de la demande, le revenu et le temps des personnes hors du processus mesuré. Remplacez chaque hypothèse par une observation pendant le pilote.",
-    calibratorPreset: "Effort suggéré",
-    calibratorMonths: "mois",
     pilotPlannerEyebrow: "DU SCÉNARIO AU PROTOCOLE",
     pilotPlannerTitle: "Une fourchette n’est pas un plan. La prochaine décision doit pouvoir échouer proprement.",
     pilotPlannerText: "Le calibrateur rend les hypothèses visibles. Ce protocole fixe maintenant l’ordre, l’échantillon pratique, les preuves et la décision avant que le système ne touche au travail réel.",
@@ -1336,8 +1349,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [caseMinutes, setCaseMinutes] = useState(60);
   const [monthlyCases, setMonthlyCases] = useState(40);
   const [eligibleShare, setEligibleShare] = useState(70);
-  const [impactLow, setImpactLow] = useState(calibrationSpecs.agent.low * 100);
-  const [impactHigh, setImpactHigh] = useState(calibrationSpecs.agent.high * 100);
+  const [planningRange, setPlanningRange] = useState<TaskTimePlanningRange>(initialPlanningRange);
   const [setupHours, setSetupHours] = useState(40);
   const [pilotPlanCopied, setPilotPlanCopied] = useState(false);
   const [observedCases, setObservedCases] = useState(20);
@@ -1391,11 +1403,8 @@ export function Playbook({ locale }: { locale: Locale }) {
   const journeyLabel = locale === "en" ? "Decision path" : "Parcours de décision";
   const journeySteps = guideCopy.progress;
   const selectCalibrationLevel = (level: IntegrationId) => {
-    const spec = calibrationSpecs[level];
     setCalibrationLevel(level);
-    setImpactLow(spec.low * 100);
-    setImpactHigh(spec.high * 100);
-    setSetupHours(spec.setup);
+    setSetupHours(setupPresets[level]);
     setReviewDate(operationSpecs[level].reviewDate);
     setOperationCopied(false);
     setDossierCopied(false);
@@ -1427,9 +1436,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     setCalibrationLevel(level);
     setAutonomy(context.autonomy);
     setRisk(context.risk);
-    setImpactLow(calibrationSpecs[level].low * 100);
-    setImpactHigh(calibrationSpecs[level].high * 100);
-    setSetupHours(calibrationSpecs[level].setup);
+    setSetupHours(setupPresets[level]);
     setReviewDate(operationSpecs[level].reviewDate);
     setOperationCopied(false);
     setDossierCopied(false);
@@ -1465,15 +1472,13 @@ export function Playbook({ locale }: { locale: Locale }) {
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" })));
   };
   const calibration = useMemo(() => {
-    const spec = calibrationSpecs[calibrationLevel];
-    const low = Math.min(impactLow, impactHigh) / 100;
-    const high = Math.max(impactLow, impactHigh) / 100;
+    const low = Math.min(planningRange.low, planningRange.high);
+    const high = Math.max(planningRange.low, planningRange.high);
     const eligibleCases = monthlyCases * eligibleShare / 100;
     const eligibleHours = eligibleCases * caseMinutes / 60;
     const freedLow = eligibleHours * low;
     const freedHigh = eligibleHours * high;
     return {
-      spec,
       low,
       high,
       eligibleCases,
@@ -1486,17 +1491,17 @@ export function Playbook({ locale }: { locale: Locale }) {
       totalHigh: eligibleShare * high,
       throughputLow: 1 / (1 - low),
       throughputHigh: 1 / (1 - high),
-      paybackLow: setupHours / Math.max(freedHigh, 0.01),
-      paybackHigh: setupHours / Math.max(freedLow, 0.01),
+      paybackLow: freedHigh > 0 ? setupHours / freedHigh : null,
+      paybackHigh: freedLow > 0 ? setupHours / freedLow : null,
     };
-  }, [calibrationLevel, caseMinutes, monthlyCases, eligibleShare, impactLow, impactHigh, setupHours]);
+  }, [caseMinutes, monthlyCases, eligibleShare, planningRange, setupHours]);
   const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
   const pilotSpec = pilotSpecs[calibrationLevel];
   const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
   const pilotCollectionWeeks = pilotSpec.live / Math.max(calibration.eligibleCases, 0.01) * 4.35;
   const pilotBrief = locale === "en"
-    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
-    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning basis: ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "local human-time hypothesis"}`, `Planning range: ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)}% across the whole measured workload`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
+    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Base de planification : ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "hypothèse locale de temps humain"}`, `Fourchette : ${formatNumber(calibration.totalLow)}–${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
   const samplePass = observedCases >= pilotSpec.live;
   const valuePass = observedTimeReduction >= pilotSpec.valueFloor;
   const qualityPass = observedQuality >= 90;
@@ -1896,32 +1901,22 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <section className="calibrator section-blue" hidden={operationalPanel !== "calibrator"} id="calibrator" aria-labelledby="calibrator-title">
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
-          <div className="calibrator-shell">
-            <div className="calibrator-controls">
-              <fieldset><legend>{t.calibratorLevel}</legend><div className="calibrator-levels">{t.calibratorLevels.map((level) => <button aria-pressed={calibrationLevel === level.id} key={level.id} onClick={() => selectCalibrationLevel(level.id)} type="button"><strong>{level.label}</strong><span>{level.note}</span></button>)}</div></fieldset>
-              <div className="calibrator-inputs">
-                <label><span>{t.calibratorInputs.minutes}</span><div><input aria-label={t.calibratorInputs.minutes} max="1440" min="5" onChange={(event) => setCaseMinutes(Math.min(1440, Math.max(5, Number(event.target.value) || 5)))} step="5" type="number" value={caseMinutes} /><small>{t.calibratorUnits.minutes}</small></div></label>
-                <label><span>{t.calibratorInputs.cases}</span><div><input aria-label={t.calibratorInputs.cases} max="2000" min="1" onChange={(event) => setMonthlyCases(Math.min(2000, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={monthlyCases} /><small>{t.calibratorUnits.cases}</small></div></label>
-                <label><span>{t.calibratorInputs.eligible}</span><div><input aria-label={t.calibratorInputs.eligible} max="100" min="1" onChange={(event) => setEligibleShare(Math.min(100, Math.max(1, Number(event.target.value) || 1)))} step="1" type="number" value={eligibleShare} /><small>{t.calibratorUnits.eligible}</small></div></label>
-                <label><span>{t.calibratorInputs.low}</span><div><input aria-label={t.calibratorInputs.low} max="95" min="0" onChange={(event) => setImpactLow(Math.min(95, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={impactLow} /><small>{t.calibratorUnits.low}</small></div></label>
-                <label><span>{t.calibratorInputs.high}</span><div><input aria-label={t.calibratorInputs.high} max="95" min="0" onChange={(event) => setImpactHigh(Math.min(95, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={impactHigh} /><small>{t.calibratorUnits.high}</small></div></label>
-                <label><span>{t.calibratorInputs.setup}</span><div><input aria-label={t.calibratorInputs.setup} max="2000" min="0" onChange={(event) => setSetupHours(Math.min(2000, Math.max(0, Number(event.target.value) || 0)))} step="1" type="number" value={setupHours} /><small>{t.calibratorUnits.setup}</small></div><em>{t.calibratorPreset}: {calibration.spec.setup} h</em></label>
-              </div>
-            </div>
-            <output className="calibrator-results" aria-live="polite">
-              <div className="calibrator-result-head"><span>{t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label}</span><strong>{formatNumber(calibration.low * 100, 0)}–{formatNumber(calibration.high * 100, 0)}%</strong><small>{locale === "en" ? "editable hypothesis on eligible work" : "hypothèse modifiable sur la charge éligible"}</small></div>
-              <div className="calibrator-result-grid">
-                <p><span>{t.calibratorResults.eligible}</span><strong>{formatNumber(calibration.eligibleHours)} h</strong><small>{formatNumber(calibration.eligibleCases)} {t.calibratorUnits.cases}</small></p>
-                <p><span>{t.calibratorResults.freed}</span><strong>{formatNumber(calibration.freedLow)}–{formatNumber(calibration.freedHigh)} h</strong></p>
-                <p><span>{t.calibratorResults.remaining}</span><strong>{formatNumber(calibration.remainingLow)}–{formatNumber(calibration.remainingHigh)} h</strong></p>
-                <p><span>{t.calibratorResults.total}</span><strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong></p>
-                <p><span>{t.calibratorResults.throughput}</span><strong>×{formatNumber(calibration.throughputLow)}–{formatNumber(calibration.throughputHigh)}</strong></p>
-                <p><span>{t.calibratorResults.payback}</span><strong>{formatNumber(calibration.paybackLow)}–{formatNumber(calibration.paybackHigh)} {t.calibratorMonths}</strong></p>
-              </div>
-              <p className="calibrator-equation">{eligibleShare}% × {formatNumber(calibration.low * 100, 0)}–{formatNumber(calibration.high * 100, 0)}% = <strong>{formatNumber(calibration.totalLow)}–{formatNumber(calibration.totalHigh)}%</strong> {locale === "en" ? "across the whole measured workload" : "sur toute la charge mesurée"}</p>
-            </output>
-          </div>
-          <aside className="calibrator-note"><strong>{t.calibratorReading}</strong><p>{t.calibratorCaution}</p></aside>
+          <TaskTimeCalibrator
+            baselineMinutes={caseMinutes}
+            eligibleShare={eligibleShare}
+            integrationMode={calibrationLevel}
+            key={usePattern}
+            locale={locale}
+            monthlyCases={monthlyCases}
+            onBaselineMinutesChange={setCaseMinutes}
+            onEligibleShareChange={setEligibleShare}
+            onIntegrationModeChange={selectCalibrationLevel}
+            onMonthlyCasesChange={setMonthlyCases}
+            onPlanningRangeChange={setPlanningRange}
+            onSetupHoursChange={setSetupHours}
+            setupHours={setupHours}
+            usePattern={usePattern}
+          />
         </section>
 
         <section className="pilot-planner section-light" hidden={operationalPanel !== "pilot-plan"} id="pilot-plan" aria-labelledby="pilot-plan-title">
@@ -2116,6 +2111,11 @@ export function Playbook({ locale }: { locale: Locale }) {
 
         <div className="case-library" hidden={implementationPanel !== "case-library"} id="case-library">
         <ChapterNavigator active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" variant="cases" />
+        <aside aria-label={chapterCopy.caseEvidenceTitle} className="case-evidence-boundary">
+          <span>E</span>
+          <div><strong>{chapterCopy.caseEvidenceTitle}</strong><p>{chapterCopy.caseEvidenceText}</p></div>
+          <a className="button" href="#calibrator">{chapterCopy.caseEvidenceLink} ↓</a>
+        </aside>
 
         <section className="worked-case section-dark" hidden={casePanel !== "case"} id="case" aria-labelledby="case-title">
           <div className="section-heading"><p className="eyebrow">{t.caseEyebrow}</p><h2 id="case-title">{t.caseTitle}</h2><p>{t.caseText}</p></div>

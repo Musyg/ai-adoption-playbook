@@ -36,6 +36,16 @@ Les onze cas sont synthétiques et indiquent explicitement les limites de leurs 
 
 > État : version **0.2.2**, dépôt public, photographie au **21 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
+**Preuves de temps de tâche :** le calculateur interactif part maintenant d’une
+tâche comptable, indique si une source publique est comparable et sépare sa
+plage de votre propre temps de préparation, supervision, vérification,
+correction, exception et mise en place. La
+[méthode et les règles de transfert](docs/task-time-evidence.fr.md) expliquent
+pourquoi le type d’organisation modifie le contexte et les contrôles sans
+définir la référence. Les estimations par modèle, cas fournisseurs et gains
+déclarés restent visibles sans devenir des promesses automatiques de
+productivité.
+
 **Études publiques et protections sectorielles :** la
 [revue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
 sépare effets sur une tâche, effets sur le flux éligible, résultats sur toute la
@@ -49,8 +59,9 @@ universel.
 
 Les études publiques et les onze cas d’école ne sont pas des preuves terrain
 produites par ce guide. Le registre public est vide. La version `0.3` reste une
-version future et ne pourra être achevée que lorsqu’un véritable rapport de
-pilote, revu indépendamment et anonymisé, satisfera le contrat du registre.
+version future et ne pourra être achevée qu’après l’admission d’au moins trois
+véritables rapports de pilote, revus indépendamment et anonymisés, conformément
+au contrat de la cohorte et du registre.
 
 **Validation terrain :** utilisez le
 [protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
