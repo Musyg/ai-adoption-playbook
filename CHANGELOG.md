@@ -18,6 +18,11 @@
   fields keep following the guide until explicitly edited, while checklist
   rows add owners, dates, statuses, and evidence references. The dossier schema
   is now `0.2.0` and imports valid `0.1.0` drafts automatically.
+- Added local version comparison for earlier exports of the same project
+  dossier. The workbench presents one decision-relevant change at a time,
+  suggests whether to review, reassess, or reopen a gate, and records the human
+  response, owner, date, note, and evidence reference. Schema `0.3.0` keeps the
+  reference snapshot and migrates valid `0.1.0` and `0.2.0` dossiers additively.
 
 ## 0.2.2, 2026-08-21
 

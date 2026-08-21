@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.2.0",
+  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.3.0",
   "title": "AI Adoption Playbook local project dossier",
   "type": "object",
   "additionalProperties": false,
@@ -19,10 +19,11 @@
     "conditioned_controls",
     "matched_control_ids",
     "completed_phases",
-    "artifacts"
+    "artifacts",
+    "change_review"
   ],
   "properties": {
-    "schema_version": { "const": "0.2.0" },
+    "schema_version": { "const": "0.3.0" },
     "playbook_version": { "const": "0.2.2" },
     "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
     "created_at": { "type": "string", "format": "date-time" },
@@ -77,9 +78,68 @@
           }
         }
       }
+    },
+    "change_review": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseline", "compared_at", "items"],
+          "properties": {
+            "baseline": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["dossier_id", "updated_at", "schema_version", "playbook_version", "snapshot"],
+              "properties": {
+                "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
+                "updated_at": { "type": "string", "format": "date-time" },
+                "schema_version": { "enum": ["0.1.0", "0.2.0", "0.3.0"] },
+                "playbook_version": { "const": "0.2.2" },
+                "snapshot": { "$ref": "#/$defs/projectSnapshot" }
+              }
+            },
+            "compared_at": { "type": "string", "format": "date-time" },
+            "items": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/changeReviewItem" }
+            }
+          }
+        }
+      ]
     }
   },
   "$defs": {
+    "projectSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context", "fields", "conditioned_controls", "matched_control_ids", "completed_phases", "artifacts"],
+      "properties": {
+        "context": { "$ref": "#/properties/context" },
+        "fields": { "$ref": "#/properties/fields" },
+        "conditioned_controls": { "$ref": "#/properties/conditioned_controls" },
+        "matched_control_ids": { "$ref": "#/properties/matched_control_ids" },
+        "completed_phases": { "$ref": "#/properties/completed_phases" },
+        "artifacts": { "$ref": "#/properties/artifacts" }
+      }
+    },
+    "changeReviewItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "domain", "before", "after", "recommended_action", "decision", "owner", "due_date", "evidence_ref", "note"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "domain": { "enum": ["scope", "risk", "architecture", "evaluation", "controls", "ownership", "delivery"] },
+        "before": { "type": "string" },
+        "after": { "type": "string" },
+        "recommended_action": { "enum": ["review", "reassess", "restart"] },
+        "decision": { "enum": ["pending", "accepted", "reassess", "restart"] },
+        "owner": { "type": "string" },
+        "due_date": { "type": "string" },
+        "evidence_ref": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
     "fieldArtifact": {
       "type": "object",
       "additionalProperties": false,

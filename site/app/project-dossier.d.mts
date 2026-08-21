@@ -30,8 +30,43 @@ export type ArtifactMaterializationInput = {
   matched_control_ids: string[];
 };
 
+export type ProjectSnapshot = {
+  context: ProjectDossierContext;
+  fields: Record<string, string>;
+  conditioned_controls: Record<string, boolean>;
+  matched_control_ids: string[];
+  completed_phases: number[];
+  artifacts: ProjectArtifacts;
+};
+export type ChangeDomain = "scope" | "risk" | "architecture" | "evaluation" | "controls" | "ownership" | "delivery";
+export type ChangeRecommendation = "review" | "reassess" | "restart";
+export type ChangeDecision = "pending" | "accepted" | "reassess" | "restart";
+export type ChangeReviewItem = {
+  path: string;
+  domain: ChangeDomain;
+  before: string;
+  after: string;
+  recommended_action: ChangeRecommendation;
+  decision: ChangeDecision;
+  owner: string;
+  due_date: string;
+  evidence_ref: string;
+  note: string;
+};
+export type ProjectChangeReview = {
+  baseline: {
+    dossier_id: string;
+    updated_at: string;
+    schema_version: string;
+    playbook_version: string;
+    snapshot: ProjectSnapshot;
+  };
+  compared_at: string;
+  items: Record<string, ChangeReviewItem>;
+};
+
 export type ProjectDossier = {
-  schema_version: "0.2.0";
+  schema_version: "0.3.0";
   playbook_version: "0.2.2";
   dossier_id: string;
   created_at: string;
@@ -46,12 +81,13 @@ export type ProjectDossier = {
   matched_control_ids: string[];
   completed_phases: number[];
   artifacts: ProjectArtifacts;
+  change_review: ProjectChangeReview | null;
 };
 
 export type ProjectDossierInput = Omit<ProjectDossier, "schema_version" | "playbook_version" | "status" | "boundary">;
 
-export const PROJECT_DOSSIER_SCHEMA_VERSION: "0.2.0";
+export const PROJECT_DOSSIER_SCHEMA_VERSION: "0.3.0";
 export const PROJECT_DOSSIER_STORAGE_KEY: "ai-adoption-playbook:project-dossier:v1";
 export const PROJECT_DOSSIER_PLAYBOOK_VERSION: "0.2.2";
-export function parseProjectDossier(input: unknown): { ok: true; value: ProjectDossier; migratedFrom?: "0.1.0" } | { ok: false; error: string };
+export function parseProjectDossier(input: unknown): { ok: true; value: ProjectDossier; migratedFrom?: "0.1.0" | "0.2.0" } | { ok: false; error: string };
 export function buildProjectDossier(input: ProjectDossierInput): ProjectDossier;

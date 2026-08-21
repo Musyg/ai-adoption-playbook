@@ -74,13 +74,14 @@ evidence produced by this playbook. The registry remains empty.
   implementation checklists.
 - [x] Add local persistence, import, and export for a versioned project dossier
   without transmitting client data.
-- [ ] Add version comparison, change-impact prompts, and reassessment support.
+- [x] Add version comparison, change-impact prompts, and reassessment support.
 - [ ] Test the complete workbench with independent professionals, SMEs, public
   services, and regulated or high-impact contexts.
 
-The first two 0.5 foundations are implemented with an experimental `0.2.0`
-dossier schema and automatic migration from `0.1.0`. Version comparison,
-change-impact decisions, stable migration policy, and field usability testing
+The first three 0.5 foundations are implemented with an experimental `0.3.0`
+dossier schema, additive migration from `0.1.0` and `0.2.0`, local comparison
+against an earlier export of the same dossier, and recorded reassessment
+decisions. Field usability testing and the stable 1.0 compatibility freeze
 remain open.
 
 ## 1.0: stable public method
