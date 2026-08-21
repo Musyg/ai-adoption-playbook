@@ -1,13 +1,12 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-20 (Europe/Zurich)
+Snapshot: 2026-08-21 (Europe/Zurich)
 
 ## Current state
 
 - Repository: `Musyg/ai-adoption-playbook`
 - Canonical branch: `main`
-- Delivery branch: `agent/github-pages`
-- Release prepared: `0.2.1`
+- Release: `0.2.2`
 - Visibility: public
 - Approved public website: `https://musyg.github.io/ai-adoption-playbook/`
 - Static hosting: GitHub Pages through `.github/workflows/pages.yml`
@@ -68,7 +67,7 @@ multimodal catalogue assistant. They demonstrate that systems can share A0 or
 A1 autonomy while requiring different frozen datasets, failure metrics, legal
 routes, security tests, and release gates.
 
-The 0.3 research pass adds a review of 20 public studies,
+The public-evidence review covers 20 public studies,
 deployments, benchmarks, official evaluations, and negative results. It removes
 the former universal productivity bands from the visual guide. The public
 evidence does not support a generic 5x to 12x multiplier on accepted business
@@ -77,8 +76,10 @@ outcomes. Those figures may be tested as explicit hypotheses only.
 Synthetic examples are not field evidence. `field-notes/index.json` remains
 empty until a genuine, independently reviewed and sanitized submission meets
 the publication contract. Public third-party studies inform pilot design but do
-not satisfy that first-party admission rule. This remains the only open 0.3
-roadmap item and does not block publication of the complete 0.2.1 release.
+not satisfy that first-party admission rule. Release 0.3 remains unreleased
+until a genuine first-party report passes independent review, anonymization,
+denominator, and registry requirements. This limitation does not turn public
+studies or synthetic cases into field evidence for release 0.2.2.
 
 ## GitHub Pages deployment
 
@@ -108,12 +109,12 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-20:
+Latest local verification on 2026-08-21:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 21/21 pass
+- Node tests: 22/22 pass
 - Playwright: 30/30 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations

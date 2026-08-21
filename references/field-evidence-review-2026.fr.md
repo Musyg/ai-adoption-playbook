@@ -137,7 +137,7 @@ Le scénario haut correct est donc conditionnel :
 Sans ces conditions, l’orchestration multi-agents peut seulement produire plus
 de travail intermédiaire, de files de revue et d’erreurs plausibles.
 
-## Ce qui fermerait réellement le dernier point 0.3
+## Les preuves terrain qui manquent encore
 
 La littérature publique ne peut pas terminer l’item de roadmap sur le retour
 terrain anonymisé. Il faut encore un vrai pilote autorisé qui :

@@ -1,10 +1,18 @@
 # Roadmap
 
-## Repository release readiness, technical snapshot 0.2.1
+## How to read the numbers
+
+- `0.2.2`, `0.3`, `0.4`, and later numbers are repository releases.
+- `01` to `05` are the five decisions in the short interactive guide.
+- lifecycle phases `0` to `11` describe the complete adoption process.
+- `A0` to `A4` describe autonomy; `R0` to `R3` describe impact and risk.
+- `G`, `P`, and named gates are decision checkpoints, not release numbers.
+
+## Current release: 0.2.2
 
 - [x] Correct TypeScript and dependency vulnerabilities.
 - [x] Correct automated accessibility findings.
-- [x] Remove provider-specific hosting configuration and origins.
+- [x] Keep the local static export provider neutral.
 - [x] Consolidate validation workflows and add dependency update configuration.
 - [x] Add automated browser checks for desktop, dark mode, and mobile.
 - [x] Replace the long default page with a five-step progressive guide and
@@ -13,57 +21,72 @@
   responsive selectors and restorable deep links.
 - [x] Separate seven AI use patterns from integration level, autonomy, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
-- [x] Update version, changelog, operational documentation, and handoff.
-- [x] Complete the repository, history, security, and community-file audit.
-- [x] Audit the 95 paired content headings, browser titles, route metadata, and
-  six practical guides.
-- [x] Change repository visibility to public after explicit owner approval.
+- [x] Complete the repository, history, security, community-file, language,
+  title, accessibility, and browser audits.
+- [x] Publish the repository and the owner-approved GitHub Pages deployment.
+- [x] Clarify every numbering system and remove release numbers from guide
+  section labels.
 
-Public visibility was explicitly authorized on 2026-08-20 after the security,
-content, title, accessibility, and browser audits. Hosting remains
-a different future project: repository publication does not select a host,
-declare a website URL, or authorize deployment.
+Public visibility and GitHub Pages were explicitly authorized on 2026-08-20.
+The deployment runs only after validation succeeds on `main`. The local export
+remains neutral and uses `noindex` when no approved public origin is supplied.
 
-The open field-feedback item under 0.3 is an evidence-growth objective. It does
-not block publication of the complete 0.2.1 release, because the empty registry
-and the absence of first-party evidence are stated explicitly.
+Progress: **0.2.2 complete.** It is a corrective release of the complete 0.2
+method. It improves wording, version clarity, links, release documentation, and
+the public deployment. It does not claim first-party field evidence.
 
-## 0.2
+## 0.3: first-party field evidence, not released
 
-- [x] Complete the operating guides and organization tracks.
-- [x] Add worked, synthetic examples for each track.
-- [x] Add four non-agentic cases for RAG, prediction, an external
-  chatbot, and multimodal work.
-- [x] Add a machine-readable control crosswalk with source and version fields.
-- [x] Add use-pattern evaluation profiles and separate Swiss and EU routing.
+Entry condition: at least one genuine pilot report must contain observed
+first-party results, retain the complete denominator, pass independent review
+and anonymization, state transfer limits, and meet the public registry contract.
 
-Progress: **0.2 complete.** Operating guides, templates, organization
-tracks, and eleven worked examples now cover independent professionals, TPEs,
-SMEs/PMEs, nonprofits/foundations, public services, and four distinct
-non-agentic evidence contracts. The versioned JSON control crosswalk
-maps stable control and evidence IDs to organization, risk, autonomy, use pattern,
-jurisdiction, conditions, lifecycle phases, gates, sources, and implementation
-files.
+- [x] Provide a field-pilot protocol, blank report, local drafting assistant,
+  review checklist, and empty machine-readable registry.
+- [x] Publish a review of public studies, negative results, denominator effects,
+  and transfer limits to improve pilot design.
+- [ ] Admit genuine, independently reviewed and anonymized field feedback to
+  the registry.
 
-## 0.3
+Status: **0.3 is not complete and must not be released yet.** Public studies,
+supplier cases, benchmarks, and synthetic examples are context, not field
+evidence produced by this playbook. The registry remains empty.
 
-- [x] Add sector extensions for healthcare, education, finance and critical infrastructure.
-- [x] Add accessibility and fundamental-rights assessment templates.
-- [x] Publish a review of public field evidence, negative results, denominator effects, and transfer limits.
-- Publish anonymized field feedback with explicit transfer limits.
+## 0.4: complete interactive lifecycle
 
-Progress: four sector overlays and three assessment/report templates are
-implemented. The review separates causal field
-experiments, telemetry, benchmarks, official evaluations, filings, and supplier
-cases. It also documents negative results and the difference between eligible
-task gain and whole-workload outcome. The reviewed field-feedback publication
-contract and empty machine-readable registry are available under `field-notes/`.
-A field-pilot protocol and local-only web assistant prepare reviewable
-drafts without transmitting raw evidence. No field report has yet met the
-admission rule, so the final 0.3 item remains open rather than substituting
-public studies, synthetic cases, or vendor claims for observed first-party
-evidence.
+- [ ] Make mandate and initial-state definition interactive.
+- [ ] Add guided work mapping and use-case prioritization.
+- [ ] Turn risk, legal, architecture, and supplier choices into conditional
+  guided paths.
+- [ ] Add an interactive security-control builder and close the remaining gaps
+  across lifecycle phases 0 to 11.
+- [ ] Preserve progressive disclosure so the default experience never becomes
+  a wall of text.
+
+## 0.5: implementation workbench
+
+- [ ] Connect the guided decisions to editable registers, assessments, and
+  implementation checklists.
+- [ ] Add local import and export for a complete project dossier without
+  transmitting client data.
+- [ ] Add version comparison, change-impact prompts, and reassessment support.
+- [ ] Test the complete workbench with independent professionals, SMEs, public
+  services, and regulated or high-impact contexts.
+
+## 1.0: stable public method
+
+- [ ] Close the first-party evidence requirement with explicit limitations.
+- [ ] Demonstrate end-to-end usability of all lifecycle phases with people who
+  did not contribute to the repository.
+- [ ] Freeze stable schemas, identifiers, migration rules, and compatibility
+  policy.
+- [ ] Complete independent editorial, accessibility, security, legal-routing,
+  and reproducibility reviews.
+- [ ] Publish a stable release only when the method, software, documentation,
+  and evidence boundaries agree.
 
 ## Release rule
 
-A roadmap item is not presented as implemented until its artifacts, validation and limitations are in the repository.
+A roadmap item is not presented as implemented until its artifacts, validation,
+and limitations are in the repository. A future release number is not a claim
+that its entry conditions have been met.

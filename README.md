@@ -32,9 +32,9 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.1**, public repository, snapshot **2026-08-20**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
+> Status: version **0.2.2**, public repository, snapshot **2026-08-21**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
 
-**0.3 evidence and sector work:** the
+**Public research and sector safeguards:** the
 [20-source public evidence review](references/field-evidence-review-2026.md)
 separates task effects, eligible-flow effects, whole-workload outcomes,
 benchmarks, telemetry, and supplier cases. It finds no independent causal field
@@ -42,13 +42,22 @@ support for a generic 5x to 12x accepted-outcome multiplier. The
 [healthcare](sectors/en/healthcare.md),
 [education](sectors/en/education.md), [finance](sectors/en/finance.md), and
 [critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
-vetoes and evidence gates without replacing the universal process.
+blocking conditions and evidence gates without replacing the universal process.
+
+The public studies and all eleven worked cases are not first-party field
+evidence for this playbook. The public field registry is empty. Release `0.3`
+remains a future release and cannot be completed until a genuine, independently
+reviewed and anonymized pilot report meets the registry contract.
 
 **Field validation:** use the [field-pilot protocol](docs/field-pilot-protocol.md)
 to prepare a local draft, preserve the full denominator, and request independent
 review before any anonymized result can enter the public registry. To coordinate
 a genuine pilot without publishing raw evidence, open the
 [pilot intake form](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml).
+
+Numbering is deliberately separate: `0.2.2` is the repository release, guide
+steps `01` to `05` are reader decisions, lifecycle phases `0` to `11` describe
+the full method, `A0` to `A4` describe autonomy, and `R0` to `R3` describe risk.
 
 ## Why this repository exists
 

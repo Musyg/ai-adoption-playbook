@@ -67,7 +67,7 @@ métier peut créer un gain important sur un sous-flux, tout en montrant pourquo
 - Salesforce rapporte environ 85 % de résolution pour les conversations
   éligibles de son centre d’aide, avec transfert humain prévu. Le déploiement
   ne couvre pas indistinctement toutes les visites ni toutes les demandes.
-  [Retour d’expérience Salesforce](https://www.salesforce.com/news/stories/ai-agent-customer-service-salesforce-learnings/)
+  [Retour d’expérience Salesforce](https://www.salesforce.com/news/stories/ai-agent-customer-service-salesforce-learnings/?bc=OTH)
 
 ## Contre-preuves : un agent généraliste n’est pas une agence métier
 

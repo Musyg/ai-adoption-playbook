@@ -1,6 +1,6 @@
 # Registre des sources primaires
 
-Dernière vérification : **20 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
+Dernière vérification : **21 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
 
 Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu protégé des normes.
 
@@ -60,7 +60,7 @@ le playbook en avis médical, juridique, prudentiel, pédagogique ou de sûreté
 
 - [Commission européenne — lignes directrices 2026 sur l’usage éthique de l’IA et des données dans l’enseignement](https://education.ec.europa.eu/focus-topics/digital-education/actions/plan/ethical-guidelines-for-educators-on-using-artificial-intelligence) — orientation pratique pour les équipes éducatives ; ne remplace pas le droit national ou cantonal.
 - [Educa — future politique d’utilisation des données dans la formation](https://www.educa.ch/fr/news/2025/future-politique-dutilisation-des-donnees-dans-la-formation) — rapport suisse 2025 et 51 mesures d’orientation ; sa mise en œuvre dépend des autorités compétentes.
-- [Educa — analyse juridique de l’IA dans l’espace suisse de formation](https://www.swisseducation.educa.ch/de/news/2024/rechtliche-auslegeordnung-zu-ki-im-bildungsraum) — souligne la nécessité de vérifier les bases légales scolaires, notamment cantonales.
+- [Educa — analyse juridique de l’IA dans l’espace suisse de formation](https://www.educa.ch/de/taetigkeiten/abgeschlossene-projekte/entwicklung-einer-datennutzungspolitik/rechtliche) — souligne la nécessité de vérifier les bases légales scolaires, notamment cantonales.
 
 ### Finance
 
@@ -70,7 +70,7 @@ le playbook en avis médical, juridique, prudentiel, pédagogique ou de sûreté
 
 ### Infrastructures critiques
 
-- [OFCS — obligation suisse d’annoncer les cyberattaques](https://www.ncsc.admin.ch/ncsc/fr/home/aktuell/im-fokus/2025/meldepflicht-2025.html) — en vigueur depuis le 1er avril 2025 pour les entités assujetties, annonce dans les 24 heures après découverte.
+- [OFCS — obligation suisse d’annoncer les cyberattaques](https://www.ncsc.admin.ch/ncsc/de/home/meldepflicht/meldepflicht-info.html) — en vigueur depuis le 1er avril 2025 pour les entités assujetties, annonce dans les 24 heures après découverte.
 - [Directive (UE) 2022/2555 — NIS2](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) — mesures de gestion du risque cyber et notification ; vérifier la transposition nationale et le champ de l’entité.
 - [Directive (UE) 2022/2557 — résilience des entités critiques](https://eur-lex.europa.eu/eli/dir/2022/2557/oj) — approche tous risques, continuité des services essentiels et dépendances intersectorielles ; vérifier la transposition nationale.
 

@@ -77,10 +77,10 @@
       "source_id": "AAP-PROCESS-02",
       "title": "AI Adoption Playbook: universal process and gates",
       "publisher": "Musyg",
-      "version": "0.3 draft · 2026.08",
+      "version": "0.2.2 · 2026.08",
       "status": "internal_method",
       "url": "https://github.com/Musyg/ai-adoption-playbook/blob/main/docs/universal-process.fr.md",
-      "checked_on": "2026-08-19",
+      "checked_on": "2026-08-21",
       "use_boundary": {
         "en": "Direct source for playbook lifecycle, evidence, and gate mappings.",
         "fr": "Source directe des correspondances avec le cycle de vie, les preuves et les gates du playbook."

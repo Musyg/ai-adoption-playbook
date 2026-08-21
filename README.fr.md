@@ -1,6 +1,6 @@
 # Playbook d’adoption de l’IA
 
-**Un parcours pratique, gouverné par la preuve, du premier workflow utile jusqu’aux systèmes IA en production.**
+**Un parcours pratique, gouverné par la preuve, du premier processus métier utile jusqu’aux systèmes IA en production.**
 
 [Guide interactif](https://musyg.github.io/ai-adoption-playbook/fr/) · [Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
 
@@ -25,7 +25,7 @@ référence.
 [agent administratif de dossiers d’urbanisme pour service public](examples/fr/service-public-agent-dossiers-urbanisme.md), d’un
 [agent métier borné](examples/fr/independant-agent-metier-suivi.md) et d’une
 [agence orchestrée](examples/fr/independant-agence-orchestree-diagnostic.md),
-de la baseline jusqu’à une décision explicite de périmètre.
+de la situation de départ jusqu’à une décision explicite de périmètre.
 Quatre cas non agentiques supplémentaires montrent pourquoi une faible autonomie
 n’implique pas un contrat d’évaluation unique : un
 [assistant RAG de procédures en lecture seule](examples/fr/assistant-rag-procedures.md),
@@ -34,17 +34,23 @@ une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
 [assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
 Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.1**, dépôt public, photographie au **20 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
+> État : version **0.2.2**, dépôt public, photographie au **21 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
-**Preuves et extensions 0.3 :** la
+**Études publiques et protections sectorielles :** la
 [revue de 20 sources publiques](references/field-evidence-review-2026.fr.md)
 sépare effets sur une tâche, effets sur le flux éligible, résultats sur toute la
-charge, benchmarks, télémétrie et cas fournisseurs. Elle ne trouve aucune preuve
+charge, tests comparatifs, télémétrie et cas fournisseurs. Elle ne trouve aucune preuve
 causale indépendante d’un multiplicateur générique de 5 à 12 sur les résultats
 acceptés. Les extensions [santé](sectors/fr/healthcare.md),
 [éducation](sectors/fr/education.md), [finance](sectors/fr/finance.md) et
 [infrastructure critique](sectors/fr/critical-infrastructure.md) ajoutent des
-vetoes et gates sectoriels sans remplacer le processus universel.
+conditions bloquantes et des seuils de décision sans remplacer le processus
+universel.
+
+Les études publiques et les onze cas d’école ne sont pas des preuves terrain
+produites par ce guide. Le registre public est vide. La version `0.3` reste une
+version future et ne pourra être achevée que lorsqu’un véritable rapport de
+pilote, revu indépendamment et anonymisé, satisfera le contrat du registre.
 
 **Validation terrain :** utilisez le
 [protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un
@@ -52,6 +58,11 @@ brouillon local, conserver le dénominateur complet et demander une revue
 indépendante avant toute admission d’un résultat anonymisé dans le registre.
 Pour coordonner un vrai pilote sans publier les preuves brutes, ouvrez le
 [formulaire de prise en charge du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml).
+
+Les numéros désignent des choses distinctes : `0.2.2` est la version du dépôt,
+les étapes `01` à `05` sont les décisions du parcours court, les phases `0` à
+`11` forment la méthode complète, `A0` à `A4` indiquent l’autonomie et `R0` à
+`R3` le niveau de risque.
 
 ## Pourquoi ce dépôt existe
 
@@ -61,11 +72,11 @@ La méthode reste commune, mais la profondeur des contrôles change selon la str
 
 | Structure | Point de départ recommandé | Premier horizon utile |
 |---|---|---:|
-| Indépendant | Un workflow réversible et peu risqué | 14 jours |
+| Indépendant | Un processus réversible et peu risqué | 14 jours |
 | TPE | Un processus partagé, un responsable, une procédure manuelle | 30 jours |
-| PME | Portefeuille de cas, plateforme commune et gates formels | 90 jours |
+| PME | Portefeuille de cas, plateforme commune et seuils formels | 90 jours |
 | Association ou fondation | Protection de la mission, des bénéficiaires et des donateurs | 60 jours |
-| Service public | Mandat légal, analyse d’impact, audit et recours humain | Par gates |
+| Service public | Mandat légal, analyse d’impact, audit et recours humain | Par étapes de validation |
 
 Choisissez le parcours adapté :
 
@@ -79,12 +90,12 @@ Choisissez le parcours adapté :
 
 ```mermaid
 flowchart LR
-    A["Mandat et baseline"] --> B["Travail, systèmes et données"]
+    A["Mandat et situation initiale"] --> B["Travail, systèmes et données"]
     B --> C["Cas d’usage prioritaires"]
     C --> D["Risque et autonomie"]
     D --> E["Système suffisant le plus simple"]
     E --> F["Évaluations avant le produit"]
-    F --> G["Shadow mode"]
+    F --> G["Observation sans effet"]
     G --> H["Copilote validé par l’humain"]
     H --> I["Automatisation bornée"]
     I --> J["Surveiller, revoir, retirer"]
@@ -93,7 +104,7 @@ flowchart LR
 
 Trois règles ne se négocient pas :
 
-1. **Sans propriétaire, baseline et résultat mesurable : pas de projet.**
+1. **Sans responsable, situation initiale et résultat mesurable : pas de projet.**
 2. **Sans seuils écrits d’acceptation et d’arrêt : pas de pilote.**
 3. **Sans preuves séparées de valeur, sécurité et fiabilité : pas de production.**
 
@@ -111,7 +122,7 @@ preuves différentes.
 2. règle déterministe ou automatisation classique ;
 3. appel de modèle unique avec sortie structurée ;
 4. recherche dans des sources contrôlées ;
-5. workflow avec outils et approbation explicite ;
+5. processus avec outils et approbation explicite ;
 6. agent borné avec moindre privilège ;
 7. multi-agent seulement s’il surpasse une architecture plus simple sur des cas réels.
 
@@ -122,7 +133,7 @@ preuves différentes.
 3. Ajoutez l’[extension sectorielle](sectors/fr/) lorsque le travail touche la santé, l’éducation, la finance ou une infrastructure critique.
 4. Copiez le [mandat](templates/mandate.fr.md) et la [fiche de cas d’usage](templates/use-case-card.fr.md).
 5. Inscrivez les systèmes actuels et envisagés dans le [registre IA](templates/ai-system-register.csv).
-6. Ne construisez rien avant la validation du premier gate.
+6. Ne construisez rien avant le premier point de décision validé.
 
 ## Ce que contient le playbook
 
@@ -134,8 +145,8 @@ preuves différentes.
 - quatre extensions pour la santé, l’éducation, la finance et les infrastructures critiques ;
 - des profils d’évaluation et de sécurité propres au mode, avec routage juridique
   séparé pour la Suisse et l’Union européenne ;
-- des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et runbooks copiables ;
-- un référentiel JSON versionné reliant contrôles, applicabilité, preuves, gates et sources ;
+- des registres, analyses d’accessibilité et de droits fondamentaux, questionnaires et procédures d’exploitation copiables ;
+- un référentiel JSON versionné reliant contrôles, applicabilité, preuves, points de décision et sources ;
 - un registre daté de sources primaires ;
 - une validation automatisée du dépôt, sans dépendance externe ;
 - des contrôles automatisés de TypeScript, des dépendances, de l’accessibilité,
@@ -156,7 +167,7 @@ L’export statique reste neutre vis-à-vis de l’hébergeur et utilise `noinde
 défaut. Il ne produit ni origine canonique ni sitemap tant que
 `PUBLIC_SITE_URL` n’est pas défini pour un hébergeur explicitement approuvé.
 `STATIC_BASE_PATH` permet ensuite de servir l’application sous un sous-chemin.
-Le workflow GitHub Pages fournit ces deux valeurs au moment du build pour l’URL
+Le processus GitHub Pages fournit ces deux valeurs lors de la construction pour l’URL
 publique approuvée, sans modifier l’export local neutre.
 
 ## Périmètre et limites

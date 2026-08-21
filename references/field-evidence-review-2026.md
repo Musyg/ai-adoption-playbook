@@ -129,7 +129,7 @@ The correct high case is therefore conditional:
 Without these conditions, multi-agent orchestration may only generate more
 intermediate work, review queues, and plausible errors.
 
-## What would close the remaining 0.3 evidence gap
+## What field evidence is still missing
 
 The public literature cannot complete the roadmap item for anonymized field
 feedback. Completion still requires an authorized real pilot that:
