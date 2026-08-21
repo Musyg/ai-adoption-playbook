@@ -77,9 +77,125 @@ Synthetic examples are not field evidence. `field-notes/index.json` remains
 empty until a genuine, independently reviewed and sanitized submission meets
 the publication contract. Public third-party studies inform pilot design but do
 not satisfy that first-party admission rule. Release 0.3 remains unreleased
-until a genuine first-party report passes independent review, anonymization,
-denominator, and registry requirements. This limitation does not turn public
-studies or synthetic cases into field evidence for release 0.2.2.
+until at least three genuine first-party reports pass independent review,
+anonymization, complete-denominator, transfer-limit, and registry requirements.
+This limitation does not turn public studies or synthetic cases into field
+evidence for release 0.2.2.
+
+## Frozen next decision: transferable task-time evidence
+
+The next quantitative layer compares bounded tasks and workflows, not
+organization categories. Evidence from an AI company, research laboratory,
+university, public administration, independent practice, or small business may
+inform another context only when the task contract, automation mechanism,
+prerequisites, and acceptance threshold are comparable. Organization type is a
+context overlay for scale, law, governance, data, procurement, and control
+requirements. It is not the benchmark unit.
+
+This addition must preserve the existing seven use patterns, three integration
+levels, A0 to A4 autonomy scale, R0 to R3 impact scale, Swiss and EU routing,
+progressive interface, lifecycle, controls, dossier, and worked cases. Existing
+cases are to be normalized as applications of transferable mechanisms, not
+discarded or rewritten from scratch.
+
+The three operational modes remain distinct:
+
+1. copilot: AI prepares, suggests, retrieves, or analyzes while a person
+   operates every cycle, generally at A0 or A1;
+2. bounded automation: AI completes an explicitly eligible process with
+   authorized tools and escalates exceptions, generally from A1 to A3;
+3. hard automation: long-horizon work uses several tools or agents, may run in
+   parallel, and requires stronger controls, generally at A3 or A4.
+
+Scale, multiple agents, or a frontier organization do not automatically imply
+A4. Autonomy remains a separate, observed property of what the system may do.
+
+### Time-accounting contract
+
+Every quantitative record must distinguish:
+
+- baseline human time without AI;
+- human preparation time;
+- human supervision time;
+- human verification and correction time;
+- human time spent on exceptions and rework;
+- amortized human setup time;
+- machine runtime;
+- end-to-end elapsed time;
+- task frequency and volume;
+- the required quality threshold, acceptance rate, and exception rate.
+
+Machine runtime is never counted as human time saved. A slower or negative
+result remains valid evidence and must not be clipped away. The core equations
+are:
+
+```text
+human time with AI = preparation + supervision + verification
+                     + corrections + exceptions + amortized setup
+human time saved per task = baseline human time - human time with AI
+annual human time saved = human time saved per task * annual frequency
+```
+
+Elapsed-time reduction, human-capacity gain, quality, and risk remain separate
+outputs. A claim such as a review moving from three days to one day is an
+elapsed-time observation unless the human minutes are also measured.
+
+### Transfer contract
+
+For each source record, calculate its residual human-time ratio:
+
+```text
+residual ratio = human time with AI / baseline human time
+```
+
+The ratio may inform a target task only after checking output unit, complexity,
+quality threshold, verifiability, data and tool access, operator experience,
+exception rate, and consequence of error. The transfer result has three states:
+
+1. compatible: produce a source-informed low, central, and high range;
+2. partially compatible: expose the adjustments and label the result as a
+   hypothesis to test;
+3. incompatible: do not transfer the quantitative result.
+
+A percentage is never transferred merely because two organizations share a
+sector or size. Conversely, a source from a different organization type is not
+excluded when the task and evaluation contract are genuinely comparable.
+
+### Evidence grades
+
+Quantitative records must expose their source and use one evidence grade:
+
+- A: controlled or paired measurements with actual task-time logs;
+- B: field telemetry or other objective operational measurements;
+- C: self-reported time or survey estimates;
+- D: internal or supplier case study with incomplete independent validation;
+- E: model-estimated, synthetic, or planning-only value.
+
+Grades describe the measurement basis, not whether the result is favorable.
+Public and supplier evidence can seed planning, but it does not satisfy the 0.3
+first-party admission contract.
+
+### Authorized implementation order
+
+1. Keep `main` stable and introduce a versioned task-time evidence registry and
+   JSON Schema on a feature branch.
+2. Build a pure transfer engine that applies the compatibility gates and keeps
+   human time, machine time, elapsed time, quality, and risk separate.
+3. Evolve the current calibrator into a short interactive flow using the
+   registry, with current task duration, frequency, automation mode, and
+   verification burden as the minimum inputs.
+4. Show low, central, and high net-human-time scenarios with conditions,
+   confidence, exception cost, and the source of every assumption.
+5. Normalize the existing cases progressively and audit every current number as
+   measured evidence, a named hypothesis, or a value to remove.
+6. Add an optional `time_scenario` dossier object only if saved simulations need
+   to survive export, using an additive schema migration.
+7. Re-run content, paired-route, TypeScript, JSON Schema, accessibility, and
+   browser validation before publication.
+
+This work is a new quantitative evidence and transfer layer. It is not a new
+organization track, it does not require rebuilding the playbook, and it does
+not by itself complete release 0.3.
 
 ## GitHub Pages deployment
 
@@ -114,19 +230,19 @@ Latest local verification on 2026-08-21:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 22/22 pass
-- Playwright: 30/30 pass across both routes, desktop light, desktop dark, and
+- Node tests: 29/29 pass
+- Playwright: 42/42 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 108 Markdown files and 45 paired documents pass
+- repository validation: 112 Markdown files and 47 paired documents pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 22 Node tests for accessibility semantics, decision logic, rendered HTML,
+- 29 Node tests for accessibility semantics, decision logic, rendered HTML,
   controls, GEO content, and all 14 exported routes;
-- 30 Playwright checks across both routes, desktop light, desktop dark, and
+- 42 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;
