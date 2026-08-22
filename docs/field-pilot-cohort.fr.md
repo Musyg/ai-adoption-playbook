@@ -5,6 +5,16 @@ associations et services publics de Suisse et de l’Union européenne. Elle ser
 à tester le playbook dans un travail réel. Ce n’est pas un appel à témoignages
 et elle ne suppose pas que l’IA améliorera le processus.
 
+## Deux couches dans une même 0.3
+
+Chaque pilote part d’une fourchette extrapolée ou d’une hypothèse locale
+préenregistrée. Cette première couche sert à planifier et peut être construite à
+partir de tâches comparables dans d’autres organisations. La seconde couche est
+l’observation du pilote sur le dénominateur complet. Le rapport conserve la
+projection, le résultat et leur écart afin d’améliorer les futures
+transpositions. Seule la couche observée peut compter comme retour terrain
+admis, mais les deux appartiennent au travail 0.3.
+
 Utilisez l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml)
 pour proposer un pilote non identifiant. L’issue contient uniquement des
 métadonnées de coordination. Les preuves brutes restent dans un système privé
@@ -38,11 +48,13 @@ statistique. Ils ne créent pas une référence universelle de productivité.
    réviseur indépendant, l’autorité de publication et la voie de retrait avant
    la mesure.
 3. **Figer la comparaison.** Consigner version du système, charge complète,
-   situation initiale, exclusions, cas, seuils, incidents et conditions d’arrêt.
+   situation initiale, sources transférées, fourchette prévue, travail humain,
+   exclusions, cas, seuils, incidents et conditions d’arrêt.
 4. **Exécuter en privé.** Garder prompts, logs, captures, données personnelles,
    contenu client, secrets et détails de sécurité hors de GitHub.
-5. **Réviser.** Vérifier provenance, dénominateur, échecs, anonymisation, limites
-   de transfert et cohérence avec les preuves brutes.
+5. **Comparer et réviser.** Positionner le résultat observé par rapport à la
+   fourchette, expliquer l’écart, puis vérifier provenance, dénominateur, échecs,
+   anonymisation, limites de transfert et cohérence avec les preuves brutes.
 6. **Admettre ou retenir.** Publier uniquement un rapport nettoyé qui satisfait
    toutes les règles du registre. Retenir tout élément dangereux, invérifiable
    ou réidentifiant.

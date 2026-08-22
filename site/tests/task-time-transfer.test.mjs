@@ -157,6 +157,8 @@ test("produces a net evidence range after the local human floor and amortized se
   assert.equal(net.scenarios.low.binding_floor, "source");
   assert.ok(Math.abs(net.scenarios.low.human_time_with_ai_minutes - 53.642857142857146) < 1e-12);
   assert.ok(Math.abs(net.scenarios.central.reduction_fraction - 0.13195238095238093) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.central.recurring_reduction_fraction - 0.251) < 1e-12);
+  assert.ok(Math.abs(net.scenarios.central.recurring_human_hours_saved_per_month - 7.028) < 1e-12);
   assert.ok(Math.abs(net.scenarios.high.human_hours_saved_per_month - 4.394666666666667) < 1e-12);
   const planning = derivePlanningRange(evidence, manual, target);
   assert.equal(planning.calculable, true);
@@ -208,8 +210,10 @@ test("blocks the net range when no case is eligible and setup cannot be allocate
   assert.equal(manual.calculable, false);
   assert.equal(net.calculable, false);
   assert.equal(net.unavailable_reason, "no_eligible_cases");
-  assert.equal(net.scenarios.central.reduction_fraction, 0);
-  assert.equal(net.scenarios.central.human_hours_saved_per_month, 0);
+  assert.equal(net.scenarios.central.recurring_reduction_fraction, (60 - net.scenarios.central.operating_human_minutes) / 60);
+  assert.equal(net.scenarios.central.amortized_setup_minutes_per_case, null);
+  assert.equal(net.scenarios.central.reduction_fraction, null);
+  assert.equal(net.scenarios.central.human_hours_saved_per_month, null);
   assert.equal(planning.calculable, false);
   assert.deepEqual([planning.low, planning.central, planning.high], [0, 0, 0]);
 });

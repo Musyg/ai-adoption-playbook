@@ -16,6 +16,8 @@ GitHub ne reçoit jamais les preuves brutes. Conservez noms de clients, données
 
 Un rapport nettoyé ne peut utiliser le [modèle de pull request terrain](.github/PULL_REQUEST_TEMPLATE/field-report.fr.md) qu’après revue indépendante. Être prêt pour la revue ne vaut pas autorisation de publier, et un rapport accepté ne soutient que sa frontière de preuves explicite.
 
+Chaque version ou modification quantitative significative exige aussi une revue indépendante en contexte neuf du SHA exact en tête de la pull request. Une revue antérieure devient caduque dès que ce SHA change. La fusion reste bloquée tant que la nouvelle tête comporte un constat P0, P1 ou P2 ouvert, et la personne chargée de la revue consigne les commandes et preuves utilisées.
+
 ### 3. Améliorer le playbook
 
 Les bonnes contributions incluent des modèles réutilisables aux entrées et sorties claires, des traductions idiomatiques et des améliorations d’accessibilité, de sécurité ou de reproductibilité.

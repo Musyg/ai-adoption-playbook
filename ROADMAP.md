@@ -35,11 +35,14 @@ Progress: **0.2.2 complete.** It is a corrective release of the complete 0.2
 method. It improves wording, version clarity, links, release documentation, and
 the public deployment. It does not claim first-party field evidence.
 
-## 0.3: first-party field evidence, not released
+## 0.3: extrapolation, field observation, and recalibration
 
-Entry condition: at least three genuine pilot reports must contain observed
-first-party results, retain the complete denominator, pass independent review
-and anonymization, state transfer limits, and meet the public registry contract.
+The 0.3 work starts before field data exists. Public evidence and the transfer
+engine produce labelled, preregistered hypotheses. Pilots preserve those ranges,
+observe the complete denominator, explain the gap, and recalibrate future
+transfers. Completing the field-validation gate still requires at least three
+genuine pilot reports with observed first-party results, independent review,
+anonymization, explicit transfer limits, and the public registry contract.
 The cohort must include one non-agentic or copilot workflow, one bounded A2
 business agent, and one distinct Swiss or EU context. An orchestrated-agency
 report is useful but not required and remains unproven until one is admitted.
@@ -48,14 +51,17 @@ report is useful but not required and remains unproven until one is admitted.
   review checklist, and empty machine-readable registry.
 - [x] Publish a review of public studies, negative results, denominator effects,
   and transfer limits to improve pilot design.
+- [x] Connect transferred low, central, and high hypotheses to field drafts so
+  each pilot compares projection, observation, and recalibration explicitly.
 - [x] Publish a three-report cohort brief and public intake for Switzerland and
   the European Union without accepting raw evidence through GitHub.
 - [ ] Admit genuine, independently reviewed and anonymized field feedback to
   the registry.
 
-Status: **0.3 is not complete and must not be released yet.** Public studies,
-supplier cases, benchmarks, and synthetic examples are context, not field
-evidence produced by this playbook. The registry remains empty.
+Status: **the 0.3 extrapolation and preregistration layer is implemented; its
+field-validation gate remains open.** Public studies, supplier cases,
+benchmarks, and synthetic examples may seed labelled hypotheses. They do not
+become observed field results, and the first-party registry remains empty.
 
 ## 0.4: complete interactive lifecycle
 

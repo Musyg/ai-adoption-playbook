@@ -101,6 +101,18 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: planning_basis
+    attributes:
+      label: Preregistered planning basis
+      description: Choose how the low, central, and high hypothesis will be created before field results are read.
+      options:
+        - Comparable public source through the transfer engine
+        - Editable local human-time hypothesis
+        - Not framed yet
+    validations:
+      required: true
+
   - type: textarea
     id: workflow
     attributes:

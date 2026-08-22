@@ -16,6 +16,10 @@
   eligible share blocks the net range, provenance labels distinguish external
   evidence from local hypotheses, and copied pilot briefs retain every local
   assumption required to reproduce the calculation.
+- Connected that planning range to the 0.3 field loop. Field drafts now retain
+  the preregistered source and transfer contract, compare the extrapolated range
+  with the observed whole-workload result, and state whether the result falls
+  below, within, or above the range without merging their evidence labels.
 - Classified all eleven worked cases by task profile and operating mode in the
   machine-readable registry. Their results remain grade E planning hypotheses,
   even when an external record provides separate mechanism context.

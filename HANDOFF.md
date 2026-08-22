@@ -74,14 +74,14 @@ the former universal productivity bands from the visual guide. The public
 evidence does not support a generic 5x to 12x multiplier on accepted business
 outcomes. Those figures may be tested as explicit hypotheses only.
 
-Synthetic examples are not field evidence. `field-notes/index.json` remains
-empty until a genuine, independently reviewed and sanitized submission meets
-the publication contract. Public third-party studies inform pilot design but do
-not satisfy that first-party admission rule. Release 0.3 remains unreleased
-until at least three genuine first-party reports pass independent review,
-anonymization, complete-denominator, transfer-limit, and registry requirements.
-This limitation does not turn public studies or synthetic cases into field
-evidence for release 0.2.2.
+The 0.3 work combines two labelled layers. Public studies, transferable task
+records, and synthetic cases may seed preregistered hypotheses. Field pilots
+then preserve the hypothesis, the complete observed denominator, and the gap
+used for recalibration. This makes extrapolation part of 0.3 without relabelling
+it as observation. `field-notes/index.json` remains empty until genuine,
+independently reviewed and sanitized submissions meet the publication contract.
+The field-validation gate still requires at least three admitted first-party
+reports.
 
 ## 0.6 implementation: transferable task-time evidence
 
@@ -175,8 +175,8 @@ Quantitative records must expose their source and use one evidence grade:
 - E: model-estimated, synthetic, or planning-only value.
 
 Grades describe the measurement basis, not whether the result is favorable.
-Public and supplier evidence can seed planning, but it does not satisfy the 0.3
-first-party admission contract.
+Public and supplier evidence seeds the hypothesis layer of 0.3. It remains
+distinct from the observed layer required by the first-party admission contract.
 
 ### Implementation state
 
@@ -208,10 +208,16 @@ first-party admission contract.
    `32526763108` passes 43 Node tests and 45 browser scenarios. The review loop
    also closed zero-eligibility propagation, provenance wording, and copied
    brief reproducibility findings before this final gate.
+8. The 0.3 field draft now consumes the same quantitative layer. It preserves
+   the low, central, and high hypothesis, source or local basis, transfer
+   contract, observed whole-workload result, range position, and recalibration
+   boundary in both routes.
 
-This work is a new quantitative evidence and transfer layer. It is not a new
-organization track, it does not require rebuilding the playbook, and it does
-not by itself complete release 0.3.
+This quantitative evidence and transfer layer now feeds 0.3 directly. The field
+draft retains its source, transfer contract, net range, human-work assumptions,
+observed whole-workload result, and position against the range. It is not a new
+organization track and it does not require rebuilding the playbook. The
+remaining 0.3 gate is field confirmation, not extrapolation work left undone.
 
 ## GitHub Pages deployment
 
@@ -241,13 +247,13 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-21:
+Latest local verification on 2026-08-22:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 40/40 pass
-- Playwright: 42/42 pass across both routes, desktop light, desktop dark, and
+- Node tests: 43/43 pass
+- Playwright: 78/78 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
 - repository validation: 114 Markdown files and 48 paired documents pass
@@ -256,9 +262,9 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 40 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 43 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 42 Playwright checks across both routes, desktop light, desktop dark, and
+- 78 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;

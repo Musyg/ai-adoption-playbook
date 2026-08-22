@@ -57,11 +57,14 @@ acceptés. Les extensions [santé](sectors/fr/healthcare.md),
 conditions bloquantes et des seuils de décision sans remplacer le processus
 universel.
 
-Les études publiques et les onze cas d’école ne sont pas des preuves terrain
-produites par ce guide. Le registre public est vide. La version `0.3` reste une
-version future et ne pourra être achevée qu’après l’admission d’au moins trois
-véritables rapports de pilote, revus indépendamment et anonymisés, conformément
-au contrat de la cohorte et du registre.
+La version `0.3` utilise déjà les études publiques et le moteur de transposition
+des temps pour construire des hypothèses de planification préenregistrées. Chaque
+pilote conserve cette fourchette extrapolée, l’observation terrain ultérieure et
+leur écart. Ces éléments appartiennent au même cycle d’apprentissage avec des
+statuts de preuve distincts. Le registre public reste vide, donc la condition de
+validation terrain demeure ouverte jusqu’à l’admission d’au moins trois vrais
+rapports de pilote, revus indépendamment et anonymisés selon le contrat de la
+cohorte et du registre.
 
 **Validation terrain :** utilisez le
 [protocole de pilote terrain](docs/field-pilot-protocol.fr.md) pour préparer un

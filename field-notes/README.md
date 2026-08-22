@@ -8,6 +8,11 @@ three admitted reports across distinct use patterns and contexts. Its site
 assistant creates a local draft only; raw evidence must never be submitted
 through a public issue.
 
+The draft keeps the preregistered transferred range beside the observed result.
+That comparison is part of the 0.3 learning cycle. The extrapolated range never
+counts as an admitted field observation, and it must not be rewritten after the
+result is known.
+
 Use the [public pilot intake](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-en.yml)
 only to coordinate a non-identifying pilot. After the private evidence review,
 a sanitized report may use the
@@ -21,7 +26,8 @@ A report is listed in [`index.json`](index.json) only when it:
 
 1. uses the [field-feedback template](../templates/field-feedback-report.md);
 2. identifies provenance, collection method, system version, baseline, denominator, and missing cases;
-3. separates observation, estimate, opinion, and supplier claim;
+3. preserves the preregistered hypothesis and separates extrapolation,
+   observation, recalibration, opinion, and supplier claim;
 4. records incidents, failures, corrections, and withdrawals;
 5. removes personal data, identities, secrets, privileged material, and exploitable security detail;
 6. states the populations, workflows, conditions, and claims to which the result does **not** transfer;

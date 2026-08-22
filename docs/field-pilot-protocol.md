@@ -4,6 +4,11 @@ This protocol turns the playbook into a bounded field exercise without turning
 one observation into a universal claim. The interactive site prepares a local
 draft; it does not submit data or admit a report to the public registry.
 
+Version 0.3 does not begin with the first field report. It uses public studies
+and the transfer engine to preregister a low, central, and high hypothesis. The
+pilot then measures the gap. Extrapolation, local measurement, and the
+recalibrated result remain three distinct objects in the same learning cycle.
+
 ## 1. Frame the pilot
 
 Before live observation, record:
@@ -12,6 +17,8 @@ Before live observation, record:
 - organization type, sector overlay, integration level, and system version;
 - manual baseline, full request denominator, eligibility rule, exclusions, and
   preregistered thresholds;
+- transferable sources, their comparability contract, the planned net range,
+  retained human work, and amortized setup;
 - allowed effects, required approvals, stop authority, fallback, and evidence
   location.
 
@@ -27,6 +34,11 @@ including ineligible, refused, failed, escalated, and withdrawn cases.
 Record accepted outcome, human active time, corrections, critical effects,
 eligibility, approvals, tool effects, read-backs, incidents, and missing traces.
 Model activity is not a business outcome.
+
+Compare the whole-workload result with the preregistered range. Record whether
+it falls below, within, or above the range, then explain the gap. An observation
+outside the range is recalibration evidence, not a reason to silently rewrite
+the original hypothesis.
 
 ## 3. Prepare a private draft
 

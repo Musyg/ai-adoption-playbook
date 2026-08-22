@@ -1,4 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
+import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 
 const locales = [
@@ -92,6 +93,16 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
   await expect(page.locator(".task-time-source-range")).toContainText("does not produce a transferable range");
   await expect(page.locator(".calibrator-result-head small")).toContainText("editable local hypothesis");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="setup"]')).toContainText("7.1 min");
+  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("One local scenario, not a range");
+  await expect(page.locator('.calibrator-result-grid p[data-range="low"]')).toHaveCount(0);
+
+  await page.getByRole("button", { name: /Hard automation A3–A4/ }).click();
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="setup"]')).toContainText("21.4 min");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"]')).toContainText("54.4 min");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("does not invent a recurring productivity gain");
 
   await page.getByLabel("Closest measured task").selectOption("predictive_decision_support");
   await expect(page.locator(".task-time-no-evidence")).toContainText("No source in the registry matches this task yet");
@@ -125,6 +136,160 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
 });
 
+test("zero eligibility keeps the recurring assumption separate from unavailable setup allocation", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  await page.getByLabel("Share genuinely eligible").fill("0");
+
+  await expect(page.locator(".task-time-mode-effect")).toContainText("33 min");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("45%");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("Setup per case and the net result remain unavailable");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"] strong')).toHaveText("33 min");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-gain"] strong')).toHaveText("45%");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="setup"] strong')).toHaveText("n/a");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"] strong')).toHaveText("n/a");
+});
+
+for (const zeroEligibilityLocale of [
+  {
+    path: "/",
+    eligible: "Share genuinely eligible",
+    plan: /Build the test plan/,
+    freeze: "Freeze hypothesis v1",
+    panel: /Prepare field feedback/,
+    download: "Download the local draft",
+    wholeRange: "Exact whole-workload range, low / central / high: n/a · no eligible case",
+    eligibleRange: "Exact eligible-case range, low / central / high: n/a · no eligible case",
+    setup: "Setup allocation: 40 h / 12 months = n/a · no eligible case",
+    falseZero: "= 0 min/eligible case",
+  },
+  {
+    path: "/fr/",
+    eligible: "Part réellement éligible",
+    plan: /Construire le plan de test/,
+    freeze: "Figer l’hypothèse v1",
+    panel: /Préparer le retour terrain/,
+    download: "Télécharger le brouillon local",
+    wholeRange: "Fourchette exacte sur toute la charge, basse / centrale / haute: n/a · aucun cas éligible",
+    eligibleRange: "Fourchette exacte par cas éligible, basse / centrale / haute: n/a · aucun cas éligible",
+    setup: "Répartition de la mise en place: 40 h / 12 mois = n/a · aucun cas éligible",
+    falseZero: "= 0 min/cas éligible",
+  },
+] as const) {
+  test(`${zeroEligibilityLocale.path} export preserves unavailable ranges at zero eligibility`, async ({ page }) => {
+    await page.goto(zeroEligibilityLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    await page.getByLabel(zeroEligibilityLocale.eligible).fill("0");
+    const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: zeroEligibilityLocale.plan }).click();
+    await page.getByRole("button", { name: zeroEligibilityLocale.freeze }).click();
+    await router.getByRole("button", { name: zeroEligibilityLocale.panel }).click();
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: zeroEligibilityLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(zeroEligibilityLocale.wholeRange);
+    expect(report).toContain(zeroEligibilityLocale.eligibleRange);
+    expect(report).toContain(zeroEligibilityLocale.setup);
+    expect(report).not.toContain("0 / 0 / 0%");
+    expect(report).not.toContain(zeroEligibilityLocale.falseZero);
+  });
+}
+
+test("whole-workload result uses total observed human time and rejects a positive gain at zero accepted outputs", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  await page.locator("#operational-router").getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("Total baseline human time for every observed case").fill("1200");
+  await page.getByLabel("Total human time with AI for every observed case").fill("600");
+  await page.getByLabel("Outputs accepted after defined review").fill("0");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="raw-whole-load"] strong')).toHaveText("50%");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="decision-whole-load"] strong')).toHaveText("0%");
+  await expect(page.locator("#evidence-gate .evidence-ledger li").filter({ hasText: "Value on accepted cases" })).toContainText("n/a");
+  await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Human hours projected" }).locator("strong")).toHaveText("0 h");
+  await page.getByLabel("Outputs accepted after defined review").fill("93");
+  await expect(page.locator('#evidence-gate .evidence-impact p[data-metric="decision-whole-load"] strong')).toHaveText("50%");
+});
+
+for (const zeroAcceptanceLocale of [
+  { path: "/", plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for every observed case", ai: "Total human time with AI for every observed case", quality: "Outputs accepted after defined review", panel: /Prepare field feedback/, download: "Download the local draft", raw: "Raw calculation: (1200 − 600) / 1200 = 50%", adjusted: "Decision-adjusted whole-workload reduction: 0%", reason: "capped at 0% because no output was accepted" },
+  { path: "/fr/", plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour tous les cas observés", ai: "Temps humain total avec IA pour tous les cas observés", quality: "Sorties acceptées après la revue définie", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", raw: "Calcul brut: (1200 − 600) / 1200 = 50%", adjusted: "Réduction sur toute la charge retenue pour la décision: 0%", reason: "plafonnée à 0 %, car aucune sortie n’a été acceptée" },
+] as const) {
+  test(`${zeroAcceptanceLocale.path} export separates raw time change from the zero-acceptance decision result`, async ({ page }) => {
+    await page.goto(zeroAcceptanceLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: zeroAcceptanceLocale.plan }).click();
+    await page.getByRole("button", { name: zeroAcceptanceLocale.freeze }).click();
+    await router.getByRole("button", { name: zeroAcceptanceLocale.evidence }).click();
+    await page.getByLabel(zeroAcceptanceLocale.baseline).fill("1200");
+    await page.getByLabel(zeroAcceptanceLocale.ai).fill("600");
+    await page.getByLabel(zeroAcceptanceLocale.quality).fill("0");
+    await router.getByRole("button", { name: zeroAcceptanceLocale.panel }).click();
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: zeroAcceptanceLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(zeroAcceptanceLocale.raw);
+    expect(report).toContain(zeroAcceptanceLocale.adjusted);
+    expect(report).toContain(zeroAcceptanceLocale.reason);
+  });
+}
+
+test("field comparison remains locked to v1 and a changed plan requires a separate recalibration snapshot", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  const calibrator = page.locator("#calibrator");
+  await calibrator.getByLabel("Closest measured task").selectOption("professional_writing");
+  await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  const frozenRange = await page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong").innerText();
+
+  await router.getByRole("button", { name: /Count human time/ }).click();
+  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.getByLabel("Verification").fill("25");
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expect(page.locator(".planning-freeze-warning")).toContainText("differs from the latest frozen version");
+  await expect(page.locator(".field-pilot-evidence-confirm input")).toBeDisabled();
+  await expect(page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong")).toHaveText(frozenRange);
+
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expect(page.locator(".planning-freeze-warning")).toContainText("Comparison locked to preregistered v1");
+  await expect(page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong")).toHaveText(frozenRange);
+});
+
+test("field comparison rounds negative half-values exactly as the interface displays them", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  const calibrator = page.locator("#calibrator");
+  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.getByLabel("Verification").fill("42");
+  await calibrator.getByLabel("One-off setup effort").fill("0");
+  await expect(calibrator.locator(".calibrator-result-head strong")).toHaveText("0%");
+
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("Bounded live cases observed").fill("40");
+  await page.getByLabel("Total baseline human time for every observed case").fill("2000");
+  await page.getByLabel("Total human time with AI for every observed case").fill("2001");
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+
+  const evidence = page.locator("#field-pilot .field-pilot-evidence");
+  await expect(evidence.getByText("OBSERVED WHOLE LOAD").locator("..").locator("strong")).toHaveText("-0.1%");
+  await expect(evidence.getByText("RANGE CHECK").locator("..").locator("strong")).toHaveText("BELOW");
+});
+
 test("copied pilot brief preserves the human-time and setup assumptions", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
@@ -148,6 +313,112 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   expect(brief).toContain("Human-work floor: 7 prep + 6 supervision + 18 verification + 4 correction + 3 expected exceptions = 38 min/case");
   expect(brief).toContain("Exception assumption: 25% of eligible cases · 12 min each");
   expect(brief).toContain("Setup allocation: 8 h over 12 months");
+});
+
+for (const fieldLocale of [
+  { path: "/", task: "Closest measured task", level: /Copilot A0–A1/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", panel: /Prepare field feedback/, download: "Download the local draft", planned: "LOW · CENTRAL · HIGH", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
+  { path: "/fr/", task: "Tâche mesurée la plus proche", level: /Copilote A0–A1/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "BASSE · CENTRALE · HAUTE", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
+] as const) {
+  test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
+    await page.goto(fieldLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    await page.locator("#calibrator").getByLabel(fieldLocale.task).selectOption("professional_writing");
+    await page.locator("#calibrator").getByRole("button", { name: fieldLocale.level }).click();
+    const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: fieldLocale.plan }).click();
+    await page.getByRole("button", { name: fieldLocale.freeze }).click();
+    await router.getByRole("button", { name: fieldLocale.panel }).click();
+
+    const evidence = page.locator("#field-pilot .field-pilot-evidence");
+    await expect(evidence).toContainText(fieldLocale.planned);
+    await expect(evidence).toContainText(fieldLocale.observed);
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: fieldLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(fieldLocale.hypothesis);
+    expect(report).toContain("TT-2023-NOY-ZHANG-WRITING");
+    expect(report).toContain(fieldLocale.recalibration);
+    expect(report).toContain(fieldLocale.volume);
+    expect(report).toContain(fieldLocale.denominator);
+    expect(report).toContain("1.0.0 · 2026-08-21");
+  });
+}
+
+test("any field-report mutation invalidates confirmation and all six publication checks", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+
+  await page.getByLabel("Non-identifying project alias").fill("Workshop North");
+  await page.getByLabel("System + workflow version").fill("Workflow 1.2");
+  await page.getByLabel("Exact workflow observed").fill("One bounded request from intake to reviewed output.");
+  await page.getByLabel("Observation start").fill("2026-08-01");
+  await page.getByLabel("Observation end").fill("2026-08-21");
+  await page.getByLabel("Why observation differs from the hypothesis").fill("The measured case mix had more exceptions than the planning sample.");
+  await page.getByLabel("Hypothesis and decision after observation").fill("Retain v1; no recalibration required.");
+  await page.getByLabel("Where the result may transfer").fill("Same bounded workflow, permissions, review gate, and operator profile.");
+  await page.getByLabel("What this result does not prove").fill("It does not prove gains for another workflow, model, or autonomy level.");
+  const confirmation = page.locator(".field-pilot-evidence-confirm input");
+  const reviewChecks = page.locator(".field-pilot-checklist input");
+  const approveCurrentReport = async () => {
+    await confirmation.check();
+    for (let index = 0; index < 6; index += 1) await reviewChecks.nth(index).check();
+    await expect(page.locator(".field-pilot-status")).toContainText("READY FOR INDEPENDENT REVIEW");
+    await expect(page.locator(".field-pilot-status strong")).toHaveText("16/16");
+  };
+  const expectReviewInvalidated = async () => {
+    await expect(confirmation).not.toBeChecked();
+    await expect(reviewChecks).toHaveCount(6);
+    for (let index = 0; index < 6; index += 1) await expect(reviewChecks.nth(index)).not.toBeChecked();
+  };
+  await approveCurrentReport();
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download the local draft" }).click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  expect(path).not.toBeNull();
+  const readyReport = await readFile(path!, "utf8");
+  expect(readyReport).not.toContain("[TO COMPLETE]");
+  expect(readyReport).toContain("No v2 snapshot frozen. Recorded decision: Retain v1; no recalibration required.");
+
+  await page.locator("#concept-library > summary").click();
+  await page.locator("#use-patterns .jurisdiction-options button").first().click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await approveCurrentReport();
+
+  await page.locator("#use-patterns .use-pattern-grid button").first().click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await expect(confirmation).toBeDisabled();
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await approveCurrentReport();
+
+  await page.locator("#implementation-library > summary").click();
+  await page.locator("#paths .path-card").nth(1).click();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+  await approveCurrentReport();
+
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("Total baseline human time for every observed case").fill("1300");
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await expectReviewInvalidated();
+
+  await confirmation.check();
+  await expect(page.locator(".field-pilot-status")).not.toContainText("READY FOR INDEPENDENT REVIEW");
+  await expect(page.locator(".field-pilot-status strong")).toHaveText("10/16");
 });
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {
@@ -543,6 +814,21 @@ test("large surfaces stay neutral and button hovers stay within the portfolio pa
       expect(colors.background).not.toBe("rgb(28, 159, 255)");
       expect(colors.color).not.toBe("rgb(28, 159, 255)");
     }
+
+    await page.locator("#operational-workspace > summary").click();
+    const modeButton = page.locator("#calibrator").getByRole("button", { name: /Copilot A0–A1/ });
+    await modeButton.hover();
+    await page.waitForTimeout(250);
+    const modeColors = await modeButton.evaluate((element) => ({
+      background: getComputedStyle(element).backgroundColor,
+      label: getComputedStyle(element.querySelector("strong")!).color,
+      code: getComputedStyle(element.querySelector("span")!).color,
+    }));
+    expect(modeColors).toEqual({
+      background: "rgb(15, 18, 22)",
+      label: "rgb(241, 245, 247)",
+      code: "rgb(241, 245, 247)",
+    });
   }
 
   await page.locator("details").evaluateAll((elements) => elements.forEach((element) => element.setAttribute("open", "")));

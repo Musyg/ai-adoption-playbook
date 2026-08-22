@@ -8,6 +8,11 @@ cohorte vise trois rapports admis portant sur des modes d’usage et des context
 distincts. Son assistant web crée uniquement un brouillon local ; les preuves brutes ne
 doivent jamais être transmises dans une issue publique.
 
+Le brouillon conserve la fourchette transférée préenregistrée à côté du résultat
+observé. Cette comparaison appartient au cycle d’apprentissage 0.3. La
+fourchette extrapolée ne compte jamais comme observation terrain admise et ne
+doit pas être réécrite après la lecture du résultat.
+
 Utilisez l’[entrée publique du pilote](https://github.com/Musyg/ai-adoption-playbook/issues/new?template=field-pilot-fr.yml)
 uniquement pour coordonner un pilote non identifiant. Après la revue privée des
 preuves, un rapport nettoyé peut utiliser le
@@ -21,7 +26,8 @@ Un rapport apparaît dans [`index.json`](index.json) uniquement s’il :
 
 1. utilise le [modèle de retour terrain](../templates/field-feedback-report.fr.md) ;
 2. précise provenance, collecte, version du système, baseline, dénominateur et cas manquants ;
-3. sépare observation, estimation, opinion et affirmation fournisseur ;
+3. conserve l’hypothèse préenregistrée et sépare extrapolation, observation,
+   recalibrage, opinion et affirmation fournisseur ;
 4. consigne incidents, échecs, corrections et retraits ;
 5. retire données personnelles, identités, secrets, contenu privilégié et détail de sécurité exploitable ;
 6. indique les populations, workflows, conditions et affirmations auxquels le résultat **ne se transfère pas** ;

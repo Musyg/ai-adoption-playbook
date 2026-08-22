@@ -168,7 +168,7 @@ This mapping is based on the task contract, not the organization label.
 - [Field-pilot protocol](field-pilot-protocol.md)
 - [Public field-evidence review](../references/field-evidence-review-2026.md)
 
-External studies improve planning but do not populate
-`field-notes/index.json`. The separate release 0.3 admission rule still requires
-at least three genuine, independently reviewed and sanitized reports produced
-through this playbook.
+These ranges feed the hypothesis layer of 0.3. A field draft freezes the range,
+records the observed whole-workload result, and explains their gap. External
+studies do not populate `field-notes/index.json`; only genuine, independently
+reviewed and sanitized observations can satisfy its admission rule.
