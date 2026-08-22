@@ -23,7 +23,7 @@ python ../scripts/validate.py
 ```
 
 `npm run verify` checks lint, TypeScript, both production builds, 43 Node tests,
-and 72 Playwright checks across both routes, desktop, dark mode, and mobile.
+and 78 Playwright checks across both routes, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 

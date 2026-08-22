@@ -150,6 +150,54 @@ test("zero eligibility keeps the recurring assumption separate from unavailable 
   await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"] strong')).toHaveText("n/a");
 });
 
+for (const zeroEligibilityLocale of [
+  {
+    path: "/",
+    eligible: "Share genuinely eligible",
+    plan: /Build the test plan/,
+    freeze: "Freeze hypothesis v1",
+    panel: /Prepare field feedback/,
+    download: "Download the local draft",
+    wholeRange: "Exact whole-workload range, low / central / high: n/a · no eligible case",
+    eligibleRange: "Exact eligible-case range, low / central / high: n/a · no eligible case",
+    setup: "Setup allocation: 40 h / 12 months = n/a · no eligible case",
+    falseZero: "= 0 min/eligible case",
+  },
+  {
+    path: "/fr/",
+    eligible: "Part réellement éligible",
+    plan: /Construire le plan de test/,
+    freeze: "Figer l’hypothèse v1",
+    panel: /Préparer le retour terrain/,
+    download: "Télécharger le brouillon local",
+    wholeRange: "Fourchette exacte sur toute la charge, basse / centrale / haute: n/a · aucun cas éligible",
+    eligibleRange: "Fourchette exacte par cas éligible, basse / centrale / haute: n/a · aucun cas éligible",
+    setup: "Répartition de la mise en place: 40 h / 12 mois = n/a · aucun cas éligible",
+    falseZero: "= 0 min/cas éligible",
+  },
+] as const) {
+  test(`${zeroEligibilityLocale.path} export preserves unavailable ranges at zero eligibility`, async ({ page }) => {
+    await page.goto(zeroEligibilityLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    await page.getByLabel(zeroEligibilityLocale.eligible).fill("0");
+    const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: zeroEligibilityLocale.plan }).click();
+    await page.getByRole("button", { name: zeroEligibilityLocale.freeze }).click();
+    await router.getByRole("button", { name: zeroEligibilityLocale.panel }).click();
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: zeroEligibilityLocale.download }).click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const report = await readFile(path!, "utf8");
+    expect(report).toContain(zeroEligibilityLocale.wholeRange);
+    expect(report).toContain(zeroEligibilityLocale.eligibleRange);
+    expect(report).toContain(zeroEligibilityLocale.setup);
+    expect(report).not.toContain("0 / 0 / 0%");
+    expect(report).not.toContain(zeroEligibilityLocale.falseZero);
+  });
+}
+
 test("whole-workload result uses total observed human time and rejects a positive gain at zero accepted outputs", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
