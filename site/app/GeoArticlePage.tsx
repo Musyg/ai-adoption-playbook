@@ -26,6 +26,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
         breadcrumb: "Guides pratiques",
         updated: "Mis à jour",
         takeaways: "À retenir",
+        notation: "Repères : A0 à A4 décrivent le droit d’agir du système. R0 à R3 décrivent l’impact possible. Les lettres A à E, lorsqu’elles qualifient une source, décrivent seulement la solidité de la preuve.",
         contents: "Dans ce guide",
         caseLabel: "CAS D’ÉCOLE",
         sources: "Sources et limites",
@@ -43,6 +44,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
         breadcrumb: "Practical guides",
         updated: "Updated",
         takeaways: "Key takeaways",
+        notation: "Reading key: A0 to A4 describe the system’s authority. R0 to R3 describe possible impact. Letters A to E, when attached to a source, describe evidence strength only.",
         contents: "In this guide",
         caseLabel: "WORKED EXAMPLE",
         sources: "Sources and limits",
@@ -76,6 +78,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
             <h1>{article.title}</h1>
             <p className="geo-answer">{article.answer}</p>
             <div className="geo-meta"><span>{copy.updated} {article.updated}</span><span>{article.readingTime}</span><span>Musyg</span></div>
+            <p className="geo-notation">{copy.notation}</p>
           </header>
 
           <div className="geo-layout">
@@ -91,7 +94,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
             <div className="geo-content">
               <section className="geo-takeaways" id="answer" aria-labelledby="takeaways-title">
                 <p className="eyebrow">{copy.takeaways}</p>
-                <h2 id="takeaways-title">{article.title}</h2>
+                <h2 id="takeaways-title">{copy.takeaways}</h2>
                 <ol>{article.takeaways.map((takeaway, index) => <li key={takeaway}><span>0{index + 1}</span><p>{takeaway}</p></li>)}</ol>
               </section>
 

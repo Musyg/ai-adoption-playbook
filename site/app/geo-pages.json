@@ -19,9 +19,9 @@
       "caption": "The three integration levels",
       "headers": ["Level", "Work moved", "Human role", "Useful measure"],
       "rows": [
-        ["Copilot A0/A1", "One assisted step", "Operator", "Accepted time per task"],
-        ["Business agent A2/A3", "One bounded case from intake to approved effect", "Approver and exception owner", "Accepted cases per owner-hour"],
-        ["Orchestrated agency A3/A4", "Several specialist roles under one policy", "Governor", "Accepted end-to-end outcomes and coordination cost"]
+        ["Copilot A0–A1", "One assisted step", "Operator", "Accepted time per task"],
+        ["Business agent A2–A3", "One bounded case from intake to approved effect", "Approver and exception owner", "Accepted cases per owner-hour"],
+        ["Orchestrated agency A3–A4", "Several specialist roles under one policy", "Governor", "Accepted end-to-end outcomes and coordination cost"]
       ]
     },
     "sections": [
@@ -278,7 +278,7 @@
     ],
     "comparison": {
       "caption": "Noroît Mécanique synthetic pilot",
-      "headers": ["Measure", "Baseline", "Observed example", "Decision use"],
+      "headers": ["Measure", "Initial state", "Simulated result", "Decision use"],
       "rows": [
         ["Human active time", "76 minutes", "27 minutes", "Value gate"],
         ["Initial eligibility", "All requests counted", "238 of 316", "Transfer boundary"],
@@ -320,29 +320,29 @@
     "eyebrow": "GUIDE D’INTÉGRATION IA",
     "title": "Copilote IA ou agent métier : quelle différence ?",
     "description": "Une comparaison pratique entre copilote IA, agent métier borné et agence orchestrée, avec mesures réalistes et critères de décision.",
-    "answer": "Un copilote IA aide une personne sur une étape, par exemple la recherche ou la rédaction. Un agent métier prend en charge un dossier borné sur plusieurs étapes, utilise des outils autorisés, journalise ses actions et escalade les exceptions. Une agence orchestrée coordonne plusieurs agents spécialisés. Le bon choix dépend du workflow, des permissions, des preuves et des conséquences, pas du nom du modèle.",
+    "answer": "Un copilote IA aide une personne sur une étape, par exemple la recherche ou la rédaction. Un agent métier prend en charge un dossier borné sur plusieurs étapes, utilise des outils autorisés, journalise ses actions et transmet les exceptions. Une agence orchestrée coordonne plusieurs agents spécialisés. Le bon choix dépend du processus, des permissions, des preuves et des conséquences, pas du nom du modèle.",
     "updated": "19 août 2026",
     "readingTime": "6 min de lecture",
     "takeaways": [
       "Choisissez un copilote lorsque la personne doit rester opératrice à chaque cycle.",
-      "Choisissez un agent métier seulement si le workflow, les outils, les limites et les exceptions peuvent être écrits.",
+      "Choisissez un agent métier seulement si le processus, les outils, les limites et les exceptions peuvent être décrits précisément.",
       "Utilisez une agence orchestrée uniquement si les rôles spécialisés créent une valeur mesurable face à un agent plus simple."
     ],
     "comparison": {
       "caption": "Les trois niveaux d’intégration",
       "headers": ["Niveau", "Travail déplacé", "Rôle humain", "Mesure utile"],
       "rows": [
-        ["Copilote A0/A1", "Une étape assistée", "Opérateur", "Temps accepté par tâche"],
-        ["Agent métier A2/A3", "Un dossier borné jusqu’à l’effet approuvé", "Validateur et responsable des exceptions", "Cas acceptés par heure du responsable"],
-        ["Agence orchestrée A3/A4", "Plusieurs rôles spécialisés sous les mêmes règles", "Gouverneur", "Résultats acceptés de bout en bout et coût de coordination"]
+        ["Copilote A0–A1", "Une étape assistée", "Opérateur", "Temps accepté par tâche"],
+        ["Agent métier A2–A3", "Un dossier borné jusqu’à l’effet approuvé", "Validateur et responsable des exceptions", "Cas acceptés par heure du responsable"],
+        ["Agence orchestrée A3–A4", "Plusieurs rôles spécialisés sous les mêmes règles", "Gouverneur", "Résultats acceptés de bout en bout et coût de coordination"]
       ]
     },
     "sections": [
       {
         "title": "Le modèle le plus rapide n’est pas forcément le système le plus autonome",
         "paragraphs": [
-          "L’autonomie vient du dispositif qui entoure le modèle. Un agent métier a besoin de frontières d’identité, de permissions d’outils, d’un état, de validations, de journaux, d’une gestion des exceptions et d’un rollback. Sans cela, même un excellent modèle reste un assistant.",
-          "Cette distinction change la lecture des gains. Un gain de 30 % sur la rédaction ne se compare pas directement à une baisse de 70 % du temps humain sur un workflow intégré. Le volume de travail déplacé n’est pas le même."
+          "L’autonomie vient du dispositif qui entoure le modèle. Un agent métier a besoin de frontières d’identité, de permissions d’outils, d’un état, de validations, de journaux, d’une gestion des exceptions et d’un retour arrière. Sans cela, même un excellent modèle reste un assistant.",
+          "Cette distinction change la lecture des gains. Un gain de 30 % sur la rédaction ne se compare pas directement à une baisse de 70 % du temps humain sur un processus intégré. Le volume de travail déplacé n’est pas le même."
         ]
       },
       {
@@ -354,12 +354,12 @@
     ],
     "caseStudy": {
       "title": "Exemple : le même consultant, trois systèmes différents",
-      "text": "Le copilote transforme des notes de réunion en brouillon de suivi. L’agent métier lit le contexte CRM autorisé, prépare le suivi, attend l’approbation, puis met à jour le CRM et envoie. L’agence orchestrée ajoute des rôles de recherche et de contrôle pour un diagnostic complet. Chaque niveau exige sa propre baseline et son propre pilote.",
-      "metrics": ["A1 : une étape rédigée", "A2 : un workflow approuvé", "A3 : plusieurs rôles coordonnés"]
+      "text": "Le copilote transforme des notes de réunion en brouillon de suivi. L’agent métier lit le contexte CRM autorisé, prépare le suivi, attend l’approbation, puis met à jour le CRM et envoie. L’agence orchestrée ajoute des rôles de recherche et de contrôle pour un diagnostic complet. Chaque niveau exige sa propre situation initiale et son propre pilote.",
+      "metrics": ["A1 : une étape préparée", "A2 : un processus approuvé", "A3 : plusieurs rôles coordonnés"]
     },
     "sources": [
-      {"label": "The Agent-Centric Enterprise", "url": "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3", "note": "Exemples hauts de workflows intégrés."},
-      {"label": "Cas IBM AskHR", "url": "https://www.ibm.com/case-studies/ibm-askhr", "note": "Un grand workflow RH borné avec des chiffres publiés."},
+      {"label": "The Agent-Centric Enterprise", "url": "https://hdsr.mitpress.mit.edu/pub/0mrfxamu/release/3", "note": "Exemples hauts de processus intégrés."},
+      {"label": "Cas IBM AskHR", "url": "https://www.ibm.com/case-studies/ibm-askhr", "note": "Un grand processus RH borné avec des chiffres publiés."},
       {"label": "Remote Labor Index", "url": "https://scale.com/blog/rli", "note": "Contre-preuve pour le travail autonome généraliste."}
     ],
     "relatedIds": ["roi", "pilot", "agency"]
@@ -384,8 +384,8 @@
       "caption": "Trois résultats différents, pas une plage universelle",
       "headers": ["Preuve", "Contexte mesuré", "Résultat observé", "Lecture correcte"],
       "rows": [
-        ["ECR petite entreprise", "Conseil métier ouvert", "0 % en moyenne ; environ −8 % à +15 % selon le niveau initial", "Le jugement et l’exécution déterminent le signe"],
-        ["ECR agent métier", "Échanges standardisés de support client", "−16,8 % sur la durée éligible ; −3,2 % sur tout le flux", "L’éligibilité et la qualité bornent le gain annoncé"],
+        ["Essai terrain en petite entreprise", "Conseil métier ouvert", "0 % en moyenne ; environ −8 % à +15 % selon le niveau initial", "Le jugement et l’exécution déterminent le signe"],
+        ["Essai terrain sur un agent métier", "Échanges standardisés de support client", "−16,8 % sur la durée éligible ; −3,2 % sur tout le flux", "L’éligibilité et la qualité bornent le gain annoncé"],
         ["Benchmark d’agence", "46 tâches d’entreprise simulées en parallèle", "15,2 % terminées ; facteur relatif de 3,5 face à 4,3 %", "Signal de capacité, pas ROI de production"]
       ]
     },
@@ -393,7 +393,7 @@
       {
         "title": "Gardez le dénominateur complet",
         "paragraphs": [
-          "Si 70 % des demandes sont éligibles et que l’agent réduit de 60 % le temps humain sur ces demandes, la baisse brute sur toutes les demandes est de 42 % avant coûts d’exploitation. Les demandes exclues, échouées et escaladées doivent rester visibles.",
+          "Si 70 % des demandes sont éligibles et que l’agent réduit de 60 % le temps humain sur ces demandes, la baisse brute sur toutes les demandes est de 42 % avant coûts d’exploitation. Les demandes exclues, échouées et transmises à une personne doivent rester visibles.",
           "Cette règle évite de publier un excellent taux sur les cas acceptés tout en cachant ceux qui ne sont jamais entrés dans le système."
         ]
       },
@@ -429,22 +429,22 @@
     "readingTime": "8 min de lecture",
     "takeaways": [
       "Écrivez les décisions de passage, correction et arrêt avant d’observer les résultats.",
-      "Testez pannes, doublons, abstentions et rollback, pas seulement les cas faciles.",
+      "Testez pannes, doublons, abstentions et retour arrière, pas seulement les cas faciles.",
       "N’augmentez l’autonomie qu’après le passage du niveau actuel sur preuves réelles."
     ],
     "comparison": {
       "caption": "Quatre étapes de pilote",
       "headers": ["Étape", "Effet du système", "Preuve", "Condition de sortie"],
       "rows": [
-        ["Baseline", "Aucun", "Temps manuel, qualité, volume, éligibilité", "Décision et seuils figés"],
+        ["Situation initiale", "Aucun", "Temps manuel, qualité, volume, éligibilité", "Décision et seuils figés"],
         ["Hors ligne", "Aucun", "Cas réels figés et cas adverses", "Aucun échec critique"],
-        ["Shadow", "Aucun effet externe", "Traces du workflow complet", "Qualité acceptée stable"],
-        ["Réel borné", "Effets réversibles approuvés", "Résultats, exceptions, rollback", "Passer, corriger ou arrêter"]
+        ["Mode observation", "Aucun effet externe", "Traces du processus complet", "Qualité acceptée stable"],
+        ["Réel borné", "Effets réversibles approuvés", "Résultats, exceptions, retour arrière", "Passer, corriger ou arrêter"]
       ]
     },
     "sections": [
       {
-        "title": "Définissez cinq gates séparées",
+        "title": "Définissez cinq seuils de décision séparés",
         "paragraphs": [
           "La valeur demande si le travail accepté s’améliore. La qualité vérifie le respect du standard de revue. La sécurité cherche tout effet critique ou non autorisé. La traçabilité permet de reconstruire validations et effets. L’éligibilité montre quelle part de la charge réelle est couverte."
         ]
@@ -490,8 +490,8 @@
       "rows": [
         ["Mandat", "Que peut faire l’agent ?", "Périmètre et effets interdits", "Responsable métier"],
         ["Identité", "Quelles données et quels systèmes ?", "Comptes et carte des permissions", "Responsable système"],
-        ["Décision", "Quels effets exigent une validation ?", "Journal des validations et vetos", "Validateur"],
-        ["Exploitation", "L’effet peut-il être contenu et annulé ?", "Test d’incident et de rollback", "Opérateur"]
+        ["Décision", "Quels effets exigent une validation ?", "Journal des validations et conditions bloquantes", "Validateur"],
+        ["Exploitation", "L’effet peut-il être contenu et annulé ?", "Test d’incident et de retour arrière", "Opérateur"]
       ]
     },
     "sections": [
@@ -510,8 +510,8 @@
       }
     ],
     "caseStudy": {
-      "title": "Un rollback en cinq étapes",
-      "text": "Désactivez les écritures, révoquez l’identité de l’agent, conservez la trace, restaurez le dernier état sûr et redirigez le travail vers le processus manuel. Le rollback n’est crédible que s’il a été testé avant la production et peut être exécuté par une personne nommée.",
+      "title": "Un retour arrière en cinq étapes",
+      "text": "Désactivez les écritures, révoquez l’identité de l’agent, conservez la trace, restaurez le dernier état sûr et redirigez le travail vers le processus manuel. Le retour arrière n’est crédible que s’il a été testé avant la production et peut être exécuté par une personne nommée.",
       "metrics": ["Autorité d’arrêt nommée", "Permissions versionnées", "Fallback manuel testé"]
     },
     "sources": [
@@ -541,7 +541,7 @@
       "caption": "Agent unique ou agence orchestrée",
       "headers": ["Question", "Agent unique", "Agence orchestrée", "Preuve nécessaire"],
       "rows": [
-        ["Forme du travail", "Séquentiel et uniforme", "Rôles distincts séparables", "Carte du workflow"],
+        ["Forme du travail", "Séquentiel et uniforme", "Rôles distincts séparables", "Carte du processus"],
         ["Qualité", "Auto-contrôle ou un validateur", "Revue indépendante spécialisée", "Comparaison d’acceptation à l’aveugle"],
         ["Exploitation", "Une frontière d’outil et d’état", "État partagé et plusieurs outils", "Trace de bout en bout"],
         ["Coût", "Coordination plus légère", "Orchestration plus coûteuse", "Coût par résultat accepté"]
@@ -551,7 +551,7 @@
       {
         "title": "Testez l’architecture, pas l’étiquette",
         "paragraphs": [
-          "Un système peut ressembler à Talos ou Hermes sans avoir démontré sa valeur sur un workflow métier. Mesurez les mêmes cas figés dans quatre conditions : manuel, copilote, agent métier unique et agence orchestrée. Publiez résultats acceptés, temps humain, traitement de bout en bout, corrections, coût et échecs critiques."
+          "Un système peut ressembler à Talos ou Hermes sans avoir démontré sa valeur sur un processus métier. Mesurez les mêmes cas figés dans quatre conditions : manuel, copilote, agent métier unique et agence orchestrée. Publiez résultats acceptés, temps humain, traitement de bout en bout, corrections, coût et échecs critiques."
         ]
       },
       {
@@ -563,7 +563,7 @@
     ],
     "caseStudy": {
       "title": "Exemple : un diagnostic standard",
-      "text": "Un agent recherche dans les sources autorisées, un autre analyse les preuves, un troisième contrôle la qualité et un exécuteur prépare les mises à jour approuvées. L’orchestrateur gère l’état du dossier et les exceptions. Si un agent unique fournit le même résultat à moindre coût, l’orchestration échoue à sa gate.",
+      "text": "Un agent recherche dans les sources autorisées, un autre analyse les preuves, un troisième contrôle la qualité et un exécuteur prépare les mises à jour approuvées. L’orchestrateur gère l’état du dossier et les exceptions. Si un agent unique fournit le même résultat à moindre coût, l’orchestration échoue à ce point de décision.",
       "metrics": ["Un service borné", "Quatre conditions mesurées", "A4 reste non démontré sans test propre"]
     },
     "sources": [
@@ -587,11 +587,11 @@
     "takeaways": [
       "La préparation du devis s’automatise plus sûrement que l’autorité de prix.",
       "Chaque demande exclue reste dans le dénominateur métier.",
-      "La gate économique peut échouer même si l’agent fonctionne techniquement."
+      "Le seuil économique peut ne pas être atteint même si l’agent fonctionne techniquement."
     ],
     "comparison": {
       "caption": "Pilote synthétique Noroît Mécanique",
-      "headers": ["Mesure", "Baseline", "Exemple observé", "Usage dans la décision"],
+      "headers": ["Mesure", "Situation initiale", "Résultat simulé", "Usage dans la décision"],
       "rows": [
         ["Temps humain actif", "76 minutes", "27 minutes", "Gate de valeur"],
         ["Éligibilité initiale", "Toutes les demandes comptées", "238 sur 316", "Limite de transfert"],
@@ -609,13 +609,13 @@
       {
         "title": "Ce que le résultat ne prouve pas",
         "paragraphs": [
-          "Une baisse de 76 à 27 minutes sur les cas acceptés ne signifie pas 64 % de travail en moins dans toute l’entreprise. Seules 238 demandes sur 316 entrent dans le workflow, chaque devis garde une approbation humaine, et la mise en place, les coûts récurrents, les exceptions et l’usage de la capacité libérée restent séparés."
+          "Une baisse de 76 à 27 minutes sur les cas acceptés ne signifie pas 64 % de travail en moins dans toute l’entreprise. Seules 238 demandes sur 316 entrent dans le processus, chaque devis garde une approbation humaine, et la mise en place, les coûts récurrents, les exceptions et l’usage de la capacité libérée restent séparés."
         ]
       }
     ],
     "caseStudy": {
       "title": "La décision réaliste",
-      "text": "Continuez A2 sur les mêmes devis catalogue si les gates de valeur, qualité, sécurité, traçabilité et éligibilité passent. Gardez nouveaux prix, changements contractuels, jugement technique et envoi autonome hors périmètre. Recalculez le cas économique après coûts récurrents et usage réel de la capacité.",
+      "text": "Continuez à A2 sur les mêmes devis catalogue si les seuils de valeur, qualité, sécurité, traçabilité et éligibilité sont atteints. Gardez les nouveaux prix, changements contractuels, jugements techniques et envois autonomes hors périmètre. Recalculez le cas économique après les coûts récurrents et l’usage réel de la capacité.",
       "metrics": ["316 demandes totales", "238 initialement éligibles", "Zéro décision autonome de prix"]
     },
     "sources": [

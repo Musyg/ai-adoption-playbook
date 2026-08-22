@@ -21,6 +21,7 @@ const input = {
     use_pattern: "retrieval",
     jurisdiction: "BOTH",
     integration_level: "agent",
+    architecture: "workflow",
     autonomy_level: 2,
     risk_level: 2,
   },
@@ -65,12 +66,15 @@ test("accepts a valid object or JSON string and rejects unsafe variants", () => 
 test("migrates a valid 0.1.0 dossier without losing lifecycle data", () => {
   const current = buildProjectDossier(input);
   const legacy = { ...current, schema_version: "0.1.0" };
+  legacy.context = { ...legacy.context };
+  delete legacy.context.architecture;
   delete legacy.artifacts;
   delete legacy.change_review;
   const parsed = parseProjectDossier(legacy);
   assert.equal(parsed.ok, true);
   assert.equal(parsed.migratedFrom, "0.1.0");
   assert.equal(parsed.value.fields.project, "Neutral project");
+  assert.equal(parsed.value.context.architecture, "workflow");
   assert.deepEqual(parsed.value.artifacts, createEmptyProjectArtifacts());
   assert.equal(parsed.value.change_review, null);
 });
@@ -78,12 +82,40 @@ test("migrates a valid 0.1.0 dossier without losing lifecycle data", () => {
 test("migrates a valid 0.2.0 dossier additively", () => {
   const current = buildProjectDossier(input);
   const legacy = { ...current, schema_version: "0.2.0" };
+  legacy.context = { ...legacy.context };
+  delete legacy.context.architecture;
   delete legacy.change_review;
   const parsed = parseProjectDossier(legacy);
   assert.equal(parsed.ok, true);
   assert.equal(parsed.migratedFrom, "0.2.0");
   assert.deepEqual(parsed.value.artifacts, current.artifacts);
   assert.equal(parsed.value.change_review, null);
+});
+
+test("migrates a valid 0.3.0 dossier and preserves its review", () => {
+  const current = buildProjectDossier(input);
+  const changed = createProjectSnapshot(current);
+  changed.context.architecture = "agent";
+  current.change_review = createProjectChangeReview(current, changed, "2026-08-21T12:00:00.000Z", "0.3.0");
+  const legacy = { ...current, schema_version: "0.3.0", context: { ...current.context } };
+  delete legacy.context.architecture;
+  legacy.change_review = {
+    ...legacy.change_review,
+    baseline: {
+      ...legacy.change_review.baseline,
+      snapshot: {
+        ...legacy.change_review.baseline.snapshot,
+        context: { ...legacy.change_review.baseline.snapshot.context },
+      },
+    },
+  };
+  delete legacy.change_review.baseline.snapshot.context.architecture;
+
+  const parsed = parseProjectDossier(legacy);
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.migratedFrom, "0.3.0");
+  assert.equal(parsed.value.context.architecture, "workflow");
+  assert.equal(parsed.value.change_review.baseline.snapshot.context.architecture, "workflow");
 });
 
 test("keeps linked artifact values current and preserves manual decisions", () => {
@@ -117,6 +149,7 @@ test("compares decision-relevant changes and resets stale review decisions", () 
   baseline.artifacts.implementation_checklist.items["phase:0"] = { status: "done", status_mode: "manual", owner: "", due_date: "", evidence_ref: "" };
   const current = createProjectSnapshot(baseline);
   current.context.integration_level = "agency";
+  current.context.architecture = "agency";
   current.context.autonomy_level = 3;
   current.fields.riskImpact = "high";
   current.conditioned_controls["SEC-ACTION"] = false;
@@ -126,6 +159,7 @@ test("compares decision-relevant changes and resets stale review decisions", () 
   const review = createProjectChangeReview(baseline, current, "2026-08-21T12:00:00.000Z", "0.2.0");
   assert.equal(review.baseline.schema_version, "0.2.0");
   assert.equal(review.items["context:integration_level"].recommended_action, "restart");
+  assert.equal(review.items["context:architecture"].recommended_action, "restart");
   assert.equal(review.items["lifecycle:riskImpact"].domain, "risk");
   assert.equal(review.items["security:SEC-ACTION"].recommended_action, "reassess");
   assert.equal(review.items["evaluation_plan:stop_rule"].domain, "evaluation");

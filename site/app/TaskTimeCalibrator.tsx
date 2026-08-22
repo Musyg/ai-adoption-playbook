@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import taskTimeEvidence from "../public/data/task-time-evidence.v1.json";
+import { integrationTaxonomy } from "./integration-taxonomy";
 import {
   buildEvidenceTransfer,
   buildNetPlanningRange,
@@ -51,6 +52,20 @@ export type TaskTimePlanningRange = {
   };
 };
 
+export type TaskTimeScenarioState = {
+  profileId: string;
+  qualityGate: QualityGate;
+  expertiseLevel: ExpertiseLevel;
+  selectedEvidenceId: string;
+  preparationMinutes: number;
+  supervisionMinutes: number;
+  verificationMinutes: number;
+  correctionMinutes: number;
+  exceptionRate: number;
+  exceptionMinutes: number;
+  amortizationMonths: number;
+};
+
 const registry = taskTimeEvidence as unknown as TaskTimeRegistry;
 const setupPresets: Record<IntegrationMode, number> = { copilot: 8, agent: 40, agency: 120 };
 const defaultProfileByPattern: Record<UsePatternId, string> = {
@@ -63,6 +78,20 @@ const defaultProfileByPattern: Record<UsePatternId, string> = {
   agentic: "hard_automation_project",
 };
 
+export const createDefaultTaskTimeScenario = (usePattern: UsePatternId): TaskTimeScenarioState => ({
+  profileId: defaultProfileByPattern[usePattern],
+  qualityGate: "draft",
+  expertiseLevel: "mixed",
+  selectedEvidenceId: "",
+  preparationMinutes: 5,
+  supervisionMinutes: 5,
+  verificationMinutes: 15,
+  correctionMinutes: 5,
+  exceptionRate: 20,
+  exceptionMinutes: 15,
+  amortizationMonths: 12,
+});
+
 const content = {
   en: {
     taskStep: "01 · Define one task",
@@ -74,12 +103,14 @@ const content = {
     taskHelp: "Choose one precise, repeated task, such as drafting an email or reviewing a case. We compare the work first, not the size of the organization.",
     evidenceStep: "02 · Compare it with a real study",
     evidenceHelp: "We look for research on work close to yours. A sufficiently similar study can suggest a starting range. Other studies remain useful examples but do not change the calculation.",
-    evidenceGrade: "Measure type",
+    evidenceGrade: "Study method",
     sample: "Sample",
     source: "Open the study or original source",
     gradeHelpLabel: "What do A to E mean?",
-    gradeHelpTitle: "The letter describes how the figure was obtained, not whether it is good or bad.",
-    gradeHelpItems: ["A · People using AI were compared with people not using it", "B · Time was measured during real work", "C · Users estimated their own time", "D · The organization made an internal estimate", "E · The model made an estimate, or the figure is only a starting assumption"],
+    gradeHelpTitle: "This letter describes only the selected source. It is unrelated to the A0 to A4 autonomy codes.",
+    gradeScaleIntro: "A means the strongest direct comparison in this register. E means a synthetic estimate or planning assumption. The selected source is highlighted below.",
+    gradeNames: { A: "Observed comparison between work with and without AI", B: "Operational measure from real work", C: "Time reported by users", D: "Estimate published by an organization", E: "Synthetic estimate or planning assumption" },
+    gradeCode: "evidence grade",
     statuses: { compatible: "Can guide this estimate", partial: "Use with caution", context: "Example only", incompatible: "Too different" },
     reasons: { task_profile: "different work", integration_mode: "different use of AI", quality_gate: "different finish level", expertise_level: "different experience", context_only: "no direct before-and-after human-time measure" },
     noEvidence: "No study in the register measures this work closely enough. Start with your own human-time estimate below, then replace it with observations from the pilot.",
@@ -122,9 +153,10 @@ const content = {
       localFloor: "your total for preparation, oversight, checking, corrections, and exceptions",
       localScenario: "Your starting scenario",
       noRange: "Only one editable scenario is shown because the selected study does not provide a reliable range for this calculation.",
+      collapsedRange: "The cautious, middle, and favourable calculations currently lead to the same result, so one value is shown.",
     },
     modeEffect: "WHY THE RESULT CHANGES",
-    modeEffectLead: "This choice mainly changes the setup effort and which studies can be compared. It does not automatically add a productivity gain.",
+    modeEffectLead: "The work mode changes the setup effort and which studies are comparable. It does not add a fixed productivity bonus. Architecture and A0 to A4 authority are chosen separately.",
     modeEffectRecurring: "For each case, you entered this much remaining human work:",
     modeEffectNet: "Before counting setup, this represents",
     modeEffectNetSuffix: "less human time. The net result then adds",
@@ -149,12 +181,14 @@ const content = {
     taskHelp: "Choisissez une tâche précise et répétée, par exemple rédiger un courriel ou examiner un dossier. Nous comparons d’abord le travail à faire, pas la taille de l’organisation.",
     evidenceStep: "02 · Comparer avec une étude réelle",
     evidenceHelp: "Nous cherchons une étude portant sur un travail proche du vôtre. Si elle est assez similaire, elle peut proposer une fourchette de départ. Les autres études restent des exemples, mais ne modifient pas le calcul.",
-    evidenceGrade: "Type de mesure",
+    evidenceGrade: "Méthode de l’étude",
     sample: "Échantillon",
     source: "Ouvrir l’étude ou la source d’origine",
     gradeHelpLabel: "Que signifient les lettres A à E ?",
-    gradeHelpTitle: "La lettre indique comment le chiffre a été obtenu, pas s’il est bon ou mauvais.",
-    gradeHelpItems: ["A · Des personnes avec IA ont été comparées à des personnes sans IA", "B · Le temps a été mesuré pendant un vrai travail", "C · Les utilisateurs ont estimé eux-mêmes leur temps", "D · L’organisation a produit une estimation interne", "E · Le modèle a produit une estimation, ou le chiffre est seulement une hypothèse de départ"],
+    gradeHelpTitle: "Cette lettre décrit uniquement la source choisie. Elle n’a aucun lien avec les codes d’autonomie A0 à A4.",
+    gradeScaleIntro: "A désigne ici la comparaison directe la plus solide. E désigne une estimation synthétique ou une hypothèse de planification. La source choisie est mise en évidence ci-dessous.",
+    gradeNames: { A: "Comparaison observée entre travail avec et sans IA", B: "Mesure opérationnelle issue du travail réel", C: "Temps déclaré par les utilisateurs", D: "Estimation publiée par une organisation", E: "Estimation synthétique ou hypothèse de planification" },
+    gradeCode: "niveau de preuve",
     statuses: { compatible: "Peut guider cette estimation", partial: "À utiliser avec prudence", context: "Exemple seulement", incompatible: "Trop différente" },
     reasons: { task_profile: "travail différent", integration_mode: "usage de l’IA différent", quality_gate: "niveau de finition différent", expertise_level: "expérience différente", context_only: "aucune mesure directe du temps humain avant et après" },
     noEvidence: "Aucune étude du registre ne mesure un travail suffisamment proche. Commencez avec votre propre estimation du temps humain ci-dessous, puis remplacez-la par les observations du pilote.",
@@ -197,9 +231,10 @@ const content = {
       localFloor: "votre total de préparation, supervision, vérification, corrections et exceptions",
       localScenario: "Votre scénario de départ",
       noRange: "Un seul scénario modifiable est affiché, car l’étude sélectionnée ne fournit pas de fourchette fiable pour ce calcul.",
+      collapsedRange: "Les calculs prudent, central et favorable aboutissent actuellement au même résultat ; une seule valeur est donc affichée.",
     },
     modeEffect: "POURQUOI LE RÉSULTAT CHANGE",
-    modeEffectLead: "Ce choix modifie surtout le temps de mise en place et les études que l’on peut comparer. Il n’ajoute pas automatiquement un gain de productivité.",
+    modeEffectLead: "Le mode de travail modifie l’effort de mise en place et les études comparables. Il n’ajoute aucun bonus de productivité fixe. L’architecture et l’autorité A0 à A4 sont choisies séparément.",
     modeEffectRecurring: "Pour chaque cas, vous avez indiqué ce temps humain restant :",
     modeEffectNet: "Avant de compter la mise en place, cela représente",
     modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
@@ -218,48 +253,57 @@ const content = {
 
 const formatPercent = (value: number, locale: Locale) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: 1, signDisplay: value < 0 ? "always" : "auto" }).format(value * 100);
 const formatNumber = (value: number, locale: Locale, digits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: digits }).format(value);
+const formatRange = (values: number[], formatter: (value: number) => string) => {
+  const formatted = values.map(formatter);
+  return new Set(formatted).size === 1 ? formatted[0] : formatted.join("–");
+};
 
 export function TaskTimeCalibrator({
   locale,
   integrationMode,
-  usePattern,
   baselineMinutes,
   monthlyCases,
   eligibleShare,
   setupHours,
+  scenario,
   onIntegrationModeChange,
   onBaselineMinutesChange,
   onMonthlyCasesChange,
   onEligibleShareChange,
   onSetupHoursChange,
   onPlanningRangeChange,
+  onScenarioChange,
 }: {
   locale: Locale;
   integrationMode: IntegrationMode;
-  usePattern: UsePatternId;
   baselineMinutes: number;
   monthlyCases: number;
   eligibleShare: number;
   setupHours: number;
+  scenario: TaskTimeScenarioState;
   onIntegrationModeChange: (value: IntegrationMode) => void;
   onBaselineMinutesChange: (value: number) => void;
   onMonthlyCasesChange: (value: number) => void;
   onEligibleShareChange: (value: number) => void;
   onSetupHoursChange: (value: number) => void;
   onPlanningRangeChange: (value: TaskTimePlanningRange) => void;
+  onScenarioChange: (value: TaskTimeScenarioState) => void;
 }) {
   const t = content[locale];
-  const [profileId, setProfileId] = useState(defaultProfileByPattern[usePattern]);
-  const [qualityGate, setQualityGate] = useState<QualityGate>("draft");
-  const [expertiseLevel, setExpertiseLevel] = useState<ExpertiseLevel>("mixed");
-  const [selectedEvidenceId, setSelectedEvidenceId] = useState("");
-  const [preparationMinutes, setPreparationMinutes] = useState(5);
-  const [supervisionMinutes, setSupervisionMinutes] = useState(5);
-  const [verificationMinutes, setVerificationMinutes] = useState(15);
-  const [correctionMinutes, setCorrectionMinutes] = useState(5);
-  const [exceptionRate, setExceptionRate] = useState(20);
-  const [exceptionMinutes, setExceptionMinutes] = useState(15);
-  const [amortizationMonths, setAmortizationMonths] = useState(12);
+  const {
+    profileId,
+    qualityGate,
+    expertiseLevel,
+    selectedEvidenceId,
+    preparationMinutes,
+    supervisionMinutes,
+    verificationMinutes,
+    correctionMinutes,
+    exceptionRate,
+    exceptionMinutes,
+    amortizationMonths,
+  } = scenario;
+  const updateScenario = (patch: Partial<TaskTimeScenarioState>) => onScenarioChange({ ...scenario, ...patch });
   const selectedProfile = registry.task_profiles.find((profile) => profile.profile_id === profileId) ?? registry.task_profiles[0];
   const target = useMemo<EvidenceTarget>(() => ({
     task_profile_id: profileId,
@@ -299,10 +343,13 @@ export function TaskTimeCalibrator({
 
   const selectProfile = (nextProfileId: string) => {
     const profile = registry.task_profiles.find((item) => item.profile_id === nextProfileId) ?? registry.task_profiles[0];
-    setProfileId(profile.profile_id);
-    setQualityGate(profile.quality_gates.includes("reviewed") ? "reviewed" : profile.quality_gates[0]);
-    setExpertiseLevel(profile.profile_id === "software_mature_repo" || profile.profile_id === "hard_automation_project" ? "experienced" : "mixed");
-    setSelectedEvidenceId("");
+    onScenarioChange({
+      ...scenario,
+      profileId: profile.profile_id,
+      qualityGate: profile.quality_gates.includes("reviewed") ? "reviewed" : profile.quality_gates[0],
+      expertiseLevel: profile.profile_id === "software_mature_repo" || profile.profile_id === "hard_automation_project" ? "experienced" : "mixed",
+      selectedEvidenceId: "",
+    });
   };
   const reasonText = (status: CompatibilityStatus, reasons: string[]) => {
     if (status === "context") return t.statuses.context;
@@ -310,6 +357,7 @@ export function TaskTimeCalibrator({
     return translated.length ? `${t.statuses[status]}: ${translated.join(", ")}` : t.statuses[status];
   };
   const transferableRange = evidenceTransfer.ok ? evidenceTransfer.scenarios : null;
+  const readerQuantitativeUse: "usable" | "context_only" = evidenceTransfer.ok ? "usable" : "context_only";
   const netScenarios = netPlanningRange.scenarios;
   const netCalculable = netPlanningRange.calculable;
   const planningBasis = !netCalculable
@@ -318,7 +366,8 @@ export function TaskTimeCalibrator({
       ? t.results.planningEvidence
       : t.results.planningLocal;
   const paybacks = [netScenarios.low.setup_payback_months, netScenarios.high.setup_payback_months].filter((value): value is number => value != null);
-  const paybackRange = paybacks.length ? `${formatNumber(Math.min(...paybacks), locale)}–${formatNumber(Math.max(...paybacks), locale)} ${t.units.months}` : "n/a";
+  const paybackRange = paybacks.length ? `${formatRange([Math.min(...paybacks), Math.max(...paybacks)], (value) => formatNumber(value, locale))} ${t.units.months}` : "n/a";
+  const netRangeVaries = new Set([netScenarios.low.reduction_fraction, netScenarios.central.reduction_fraction, netScenarios.high.reduction_fraction].map((value) => value == null ? "n/a" : formatPercent(value, locale))).size > 1;
   const inputNumber = (value: string, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, Number(value) || minimum));
 
   return (
@@ -328,21 +377,21 @@ export function TaskTimeCalibrator({
           <header><span>01</span><div><h3 id="task-time-definition-title">{t.taskStep}</h3><p>{t.taskHelp}</p></div></header>
           <div className="task-time-selects">
             <label><span>{t.taskProfile}</span><select onChange={(event) => selectProfile(event.target.value)} value={profileId}>{registry.task_profiles.map((profile) => <option key={profile.profile_id} value={profile.profile_id}>{profile.label[locale]}</option>)}</select></label>
-            <label><span>{t.quality}</span><select onChange={(event) => setQualityGate(event.target.value as QualityGate)} value={qualityGate}>{selectedProfile.quality_gates.map((gate) => <option key={gate} value={gate}>{t.qualityOptions[gate]}</option>)}</select></label>
-            <label><span>{t.expertise}</span><select onChange={(event) => setExpertiseLevel(event.target.value as ExpertiseLevel)} value={expertiseLevel}>{(["developing", "mixed", "experienced"] as ExpertiseLevel[]).map((level) => <option key={level} value={level}>{t.expertiseOptions[level]}</option>)}</select></label>
+            <label><span>{t.quality}</span><select onChange={(event) => updateScenario({ qualityGate: event.target.value as QualityGate })} value={qualityGate}>{selectedProfile.quality_gates.map((gate) => <option key={gate} value={gate}>{t.qualityOptions[gate]}</option>)}</select></label>
+            <label><span>{t.expertise}</span><select onChange={(event) => updateScenario({ expertiseLevel: event.target.value as ExpertiseLevel })} value={expertiseLevel}>{(["developing", "mixed", "experienced"] as ExpertiseLevel[]).map((level) => <option key={level} value={level}>{t.expertiseOptions[level]}</option>)}</select></label>
           </div>
           <p className="task-profile-note"><strong>{selectedProfile.label[locale]}</strong>{selectedProfile.description[locale]} <span>{selectedProfile.output_unit[locale]}</span></p>
         </section>
 
         <section className="task-time-evidence" aria-labelledby="task-time-evidence-title">
           <header><span>02</span><div><h3 id="task-time-evidence-title">{t.evidenceStep}</h3><p>{t.evidenceHelp}</p></div></header>
-          <details className="task-time-grade-help">
+          {selectedRecord && <details className="task-time-grade-help">
             <summary>{t.gradeHelpLabel}<span aria-hidden="true">?</span></summary>
-            <div><strong>{t.gradeHelpTitle}</strong><ul>{t.gradeHelpItems.map((item) => <li key={item}>{item}</li>)}</ul></div>
-          </details>
-          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => setSelectedEvidenceId(record.evidence_id)} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade} {record.measurement.evidence_grade}{record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
+            <div><strong>{t.gradeHelpTitle}</strong><p>{t.gradeScaleIntro}</p><ol>{(["A", "B", "C", "D", "E"] as const).map((grade) => <li data-selected={selectedRecord.measurement.evidence_grade === grade} key={grade}><span>{grade}</span><p>{t.gradeNames[grade]}</p></li>)}</ol></div>
+          </details>}
+          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => updateScenario({ selectedEvidenceId: record.evidence_id })} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade}: {t.gradeNames[record.measurement.evidence_grade]} ({t.gradeCode} {record.measurement.evidence_grade}){record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
           {selectedRecord && <article className="task-time-evidence-detail" data-compatibility={selectedCompatibility?.status}>
-            <div className="task-time-evidence-plain"><span>{t.readerVerdicts[selectedRecord.transfer.quantitative_use]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{t.readerUse[selectedRecord.transfer.quantitative_use]}</p></div>
+            <div className="task-time-evidence-plain"><span>{t.readerVerdicts[readerQuantitativeUse]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{t.readerUse[readerQuantitativeUse]}</p></div>
             <a href={selectedRecord.sources[0].url} rel="noreferrer" target="_blank">{t.source} ↗</a>
             <details><summary>{t.readerDetails}<span aria-hidden="true">+</span></summary><dl><div><dt>{t.readerMeasured}</dt><dd>{selectedRecord.measurement.notes[locale]}</dd></div><div><dt>{t.readerConditions}</dt><dd>{selectedRecord.transfer.preconditions[locale]}</dd></div><div><dt>{t.readerLimits}</dt><dd>{selectedRecord.transfer.limits[locale]}</dd></div></dl></details>
           </article>}
@@ -351,21 +400,21 @@ export function TaskTimeCalibrator({
 
       <div className="calibrator-shell task-time-calibrator-shell">
         <div className="calibrator-controls">
-          <fieldset><legend>{t.timeStep}</legend><div className="calibrator-levels">{(["copilot", "agent", "agency"] as IntegrationMode[]).map((mode) => <button aria-pressed={integrationMode === mode} key={mode} onClick={() => onIntegrationModeChange(mode)} type="button"><strong>{mode === "copilot" ? (locale === "en" ? "Copilot" : "Copilote") : mode === "agent" ? (locale === "en" ? "Bounded automation" : "Automatisation bornée") : (locale === "en" ? "Hard automation" : "Automatisation forte")}</strong><span>{mode === "copilot" ? "A0–A1" : mode === "agent" ? "A1–A3" : "A3–A4"}</span></button>)}</div></fieldset>
+          <fieldset><legend>{t.timeStep}</legend><div className="calibrator-levels">{(["copilot", "agent", "agency"] as IntegrationMode[]).map((mode) => <button aria-pressed={integrationMode === mode} key={mode} onClick={() => onIntegrationModeChange(mode)} type="button"><strong>{integrationTaxonomy[locale][mode].label}</strong><span>{integrationTaxonomy[locale][mode].code}</span></button>)}</div></fieldset>
           <div className="calibrator-inputs task-time-core-inputs">
             <label><span>{t.baseline}</span><div><input aria-label={t.baseline} max="10080" min="1" onChange={(event) => onBaselineMinutesChange(inputNumber(event.target.value, 1, 10080))} step="1" type="number" value={baselineMinutes} /><small>{t.units.minutes}</small></div></label>
             <label><span>{t.cases}</span><div><input aria-label={t.cases} max="1000000" min="1" onChange={(event) => onMonthlyCasesChange(inputNumber(event.target.value, 1, 1000000))} step="1" type="number" value={monthlyCases} /><small>{t.units.cases}</small></div></label>
             <label><span>{t.eligible}</span><div><input aria-label={t.eligible} max="100" min="0" onChange={(event) => onEligibleShareChange(inputNumber(event.target.value, 0, 100))} step="1" type="number" value={eligibleShare} /><small>{t.units.percent}</small></div></label>
           </div>
           <details className="task-time-components"><summary>{t.components}<span>+</span></summary><p>{t.componentsHelp}</p><div className="calibrator-inputs">
-            <label><span>{t.preparation}</span><div><input aria-label={t.preparation} max="10080" min="0" onChange={(event) => setPreparationMinutes(inputNumber(event.target.value, 0, 10080))} type="number" value={preparationMinutes} /><small>{t.units.minutes}</small></div></label>
-            <label><span>{t.supervision}</span><div><input aria-label={t.supervision} max="10080" min="0" onChange={(event) => setSupervisionMinutes(inputNumber(event.target.value, 0, 10080))} type="number" value={supervisionMinutes} /><small>{t.units.minutes}</small></div></label>
-            <label><span>{t.verification}</span><div><input aria-label={t.verification} max="10080" min="0" onChange={(event) => setVerificationMinutes(inputNumber(event.target.value, 0, 10080))} type="number" value={verificationMinutes} /><small>{t.units.minutes}</small></div></label>
-            <label><span>{t.correction}</span><div><input aria-label={t.correction} max="10080" min="0" onChange={(event) => setCorrectionMinutes(inputNumber(event.target.value, 0, 10080))} type="number" value={correctionMinutes} /><small>{t.units.minutes}</small></div></label>
-            <label><span>{t.exceptionRate}</span><div><input aria-label={t.exceptionRate} max="100" min="0" onChange={(event) => setExceptionRate(inputNumber(event.target.value, 0, 100))} type="number" value={exceptionRate} /><small>{t.units.percent}</small></div></label>
-            <label><span>{t.exceptionMinutes}</span><div><input aria-label={t.exceptionMinutes} max="10080" min="0" onChange={(event) => setExceptionMinutes(inputNumber(event.target.value, 0, 10080))} type="number" value={exceptionMinutes} /><small>{t.units.minutes}</small></div></label>
+            <label><span>{t.preparation}</span><div><input aria-label={t.preparation} max="10080" min="0" onChange={(event) => updateScenario({ preparationMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={preparationMinutes} /><small>{t.units.minutes}</small></div></label>
+            <label><span>{t.supervision}</span><div><input aria-label={t.supervision} max="10080" min="0" onChange={(event) => updateScenario({ supervisionMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={supervisionMinutes} /><small>{t.units.minutes}</small></div></label>
+            <label><span>{t.verification}</span><div><input aria-label={t.verification} max="10080" min="0" onChange={(event) => updateScenario({ verificationMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={verificationMinutes} /><small>{t.units.minutes}</small></div></label>
+            <label><span>{t.correction}</span><div><input aria-label={t.correction} max="10080" min="0" onChange={(event) => updateScenario({ correctionMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={correctionMinutes} /><small>{t.units.minutes}</small></div></label>
+            <label><span>{t.exceptionRate}</span><div><input aria-label={t.exceptionRate} max="100" min="0" onChange={(event) => updateScenario({ exceptionRate: inputNumber(event.target.value, 0, 100) })} type="number" value={exceptionRate} /><small>{t.units.percent}</small></div></label>
+            <label><span>{t.exceptionMinutes}</span><div><input aria-label={t.exceptionMinutes} max="10080" min="0" onChange={(event) => updateScenario({ exceptionMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={exceptionMinutes} /><small>{t.units.minutes}</small></div></label>
             <label><span>{t.setup}</span><div><input aria-label={t.setup} max="1000000" min="0" onChange={(event) => onSetupHoursChange(inputNumber(event.target.value, 0, 1000000))} type="number" value={setupHours} /><small>{t.units.hours}</small></div><em>{locale === "en" ? "Mode preset" : "Repère du mode"}: {setupPresets[integrationMode]} h</em></label>
-            <label><span>{t.amortization}</span><div><input aria-label={t.amortization} max="120" min="1" onChange={(event) => setAmortizationMonths(inputNumber(event.target.value, 1, 120))} type="number" value={amortizationMonths} /><small>{t.units.months}</small></div></label>
+            <label><span>{t.amortization}</span><div><input aria-label={t.amortization} max="120" min="1" onChange={(event) => updateScenario({ amortizationMonths: inputNumber(event.target.value, 1, 120) })} type="number" value={amortizationMonths} /><small>{t.units.months}</small></div></label>
           </div></details>
           <div className="task-time-mode-effect" data-mode={integrationMode}>
             <strong>{t.modeEffect}</strong>
@@ -381,14 +430,14 @@ export function TaskTimeCalibrator({
             <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
             <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
             <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} + ${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : t.results.planningUnavailable}</small></p>
-            {transferableRange ? <>
+            {transferableRange && netRangeVaries ? <>
               <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
               <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
               <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{t.results.noRange}</small></p>}
+            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{transferableRange ? t.results.collapsedRange : t.results.noRange}</small></p>}
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
-          <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
+          <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatRange([transferableRange.low.reduction_fraction, transferableRange.central.reduction_fraction, transferableRange.high.reduction_fraction], (value) => formatPercent(value, locale))}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
           {netCalculable ? <details className="calibrator-equation calibrator-equation-details"><summary>{t.calculationLabel}<span aria-hidden="true">+</span></summary><p>{t.calculationPlain}</p><code>max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong></code></details> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
           {netCalculable && (netScenarios.low.reduction_fraction ?? 0) < 0 && <p className="task-time-negative">{t.negative}</p>}
         </output>

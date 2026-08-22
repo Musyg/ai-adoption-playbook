@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- Split the former integration choice into three independent decisions: work
+  mode, technical architecture, and the exact A0 to A4 action boundary. The
+  guided path, calculator, field draft, lifecycle dossier, change review, and
+  exports now use the same names and preserve all three dimensions.
+- Added editable demonstration values that remain clearly marked as simulated.
+  They explain the calculation without authorizing a real decision; only a
+  frozen plan and explicitly confirmed pilot observations can do that.
+- Centralized the R0 to R3 rules, preserved the complete calculator scenario
+  during language changes, aligned the field-cohort enumeration with its JSON
+  registry, and upgraded the additive project-dossier schema to `0.4.0`.
+- Completed a route-by-route readability and interaction audit across English,
+  French, desktop, dark mode, and mobile. Plain-language definitions now lead
+  into optional detail, large surfaces remain neutral, and all 93 browser
+  checks and 49 Node checks cover the resulting journey.
 - Added a plain-language evidence layer to the task-time guide. Every study now
   starts with a direct verdict, a short explanation of what happened, and a
   clear statement of whether its figures enter the estimate. Measurement
@@ -10,7 +24,7 @@
 - Added a versioned task-time evidence registry and strict JSON Schema. Nine
   external records separate measured task time, operational outcomes,
   self-reports, internal cases, and model estimates through grades A to E.
-- Replaced integration-level productivity bands with a task-based transfer
+- Replaced work-mode productivity bands with a task-based transfer
   engine. It checks task profile, operating mode, output state, and experience,
   preserves measured slowdowns, and blocks context-only values from automatic
   calculation.

@@ -1,4 +1,4 @@
-# Note de preuves : copilote, agent métier et agence orchestrée
+# Note de preuves : copilote, automatisation bornée et automatisation forte
 
 Dernière vérification : **19 août 2026**.
 
@@ -14,17 +14,21 @@ baseline afin de rendre la comparaison falsifiable.
 
 Le cas
 [Agence orchestrée A3 pour un diagnostic standard](../examples/fr/independant-agence-orchestree-diagnostic.md)
-étend la méthode à un benchmark manuel/A1/A2/A3, garde les demandes non éligibles
+étend la méthode à une comparaison manuel/A1/A2/A3, garde les demandes non éligibles
 dans le dénominateur global et sépare la ressemblance d’architecture avec
 Talos/Hermes de toute revendication de performance.
 
-## Trois niveaux d’intégration
+## Trois modes de travail
+
+Le mode de travail décrit le partage du travail humain/IA. Il ne décrit ni
+l’architecture technique, ni le droit d’agir exact. Un agent unique et une
+équipe orchestrée peuvent donc relever du même mode, à des niveaux A différents.
 
 | Niveau | Travail réellement déplacé | Rôle humain dominant | Ancrage public trouvé |
 |---|---|---|---|
-| **Copilote A0/A1** | Une étape : recherche, extraction, synthèse ou brouillon. L’humain apporte le contexte et effectue les actions externes. | Opérateur à chaque cycle | Les publications vont d’un ralentissement mesuré à de forts gains sur une tâche étroite. Elles ne définissent pas de plage universelle. |
-| **Agent métier A2/A3** | Un dossier borné de bout en bout, avec outils, mémoire, règles, contrôles et escalade des exceptions. | Validateur et responsable des exceptions | Le meilleur essai direct trouvé mesure 16,8 % de durée en moins sur les cas éligibles, 3,2 % sur tout le flux et une baisse de la note client sur les cas éligibles. |
-| **Agence orchestrée A3/A4** | Plusieurs agents spécialisés coordonnés pour rechercher, décider dans leurs limites, agir, vérifier et mettre à jour plusieurs systèmes. | Gouverne objectifs, permissions et exceptions | Aucun essai terrain indépendant trouvé ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés. CORPGEN atteint 15,2 % de réalisation dans un benchmark, pas en production. |
+| **Copilote A0–A1** | Une étape : recherche, extraction, synthèse ou brouillon. L’humain apporte le contexte et effectue les actions externes. | Opérateur à chaque cycle | Les publications vont d’un ralentissement mesuré à de forts gains sur une tâche étroite. Elles ne définissent pas de plage universelle. |
+| **Automatisation bornée A1–A3** | Un dossier borné de bout en bout, avec outils, mémoire, règles, contrôles et transmission des exceptions. | Validateur et responsable des exceptions | Le meilleur essai direct trouvé mesure 16,8 % de durée en moins sur les cas éligibles, 3,2 % sur tout le flux et une baisse de la note client sur les cas éligibles. |
+| **Automatisation forte A3–A4** | Un agent ou plusieurs agents coordonnés réalisent l’essentiel du travail éligible sous des contrôles renforcés. | Gouverne objectifs, permissions et exceptions | Aucun essai terrain indépendant trouvé ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés. CORPGEN atteint 15,2 % de réalisation dans un test comparatif, pas en production. |
 
 Les anciennes plages 20–40 %, 50–75 % et 80–92 %, ainsi que le facteur 5 à 12,
 ne doivent donc pas être présentés comme des bornes empiriques générales. Ils

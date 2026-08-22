@@ -1,6 +1,6 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-21 (Europe/Zurich)
+Snapshot: 2026-08-22 (Europe/Zurich)
 
 ## Current state
 
@@ -36,16 +36,15 @@ The path distinguishes seven ways of using AI: generation, retrieval,
 extraction and classification, prediction and recommendation, conversation,
 multimodal systems, and agentic action.
 
-It then keeps three integration levels distinct:
+It then keeps three decisions distinct:
 
-1. a copilot, where a person operates every cycle;
-2. a bounded business agent, where the system completes eligible cases and
-   escalates exceptions;
-3. an orchestrated agency, where specialist agents coordinate under shared
-   controls and must outperform a simpler design.
+1. work mode: copilot, bounded automation, or strong automation;
+2. architecture: one model, a tool-assisted workflow, one business agent, or
+   an orchestrated agent team;
+3. exact action boundary: A0 to A4.
 
-Use pattern, interaction, knowledge source, deployment, integration level,
-autonomy, risk, and jurisdiction are separate dimensions. The visual application
+Use pattern, interaction, knowledge source, deployment, work mode,
+architecture, exact action boundary, risk, and jurisdiction are separate dimensions. The visual application
 includes a task-time evidence selector and full human-time account, six
 primary-evidence reality checks, eleven synthetic worked cases, pilot
 preregistration, evidence gates, reversible operations, decision-dossier
@@ -93,8 +92,8 @@ prerequisites, and acceptance threshold are comparable. Organization type is a
 context overlay for scale, law, governance, data, procurement, and control
 requirements. It is not the benchmark unit.
 
-The implementation preserves the existing seven use patterns, three
-integration levels, A0 to A4 autonomy scale, R0 to R3 impact scale, Swiss and EU
+The implementation preserves the existing seven use patterns, three work
+modes, four architecture choices, A0 to A4 action scale, R0 to R3 impact scale, Swiss and EU
 routing, progressive interface, lifecycle, controls, dossier, and worked cases.
 The cases are normalized as applications of transferable mechanisms rather
 than discarded or rewritten from scratch.
@@ -105,7 +104,7 @@ The three operational modes remain distinct:
    operates every cycle, generally at A0 or A1;
 2. bounded automation: AI completes an explicitly eligible process with
    authorized tools and escalates exceptions, generally from A1 to A3;
-3. hard automation: long-horizon work uses several tools or agents, may run in
+3. strong automation: long-horizon work uses several tools or agents, may run in
    parallel, and requires stronger controls, generally at A3 or A4.
 
 Scale, multiple agents, or a frontier organization do not automatically imply
@@ -199,15 +198,14 @@ distinct from the observed layer required by the first-party admission contract.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.
-6. No `time_scenario` was added to the project dossier. The calculator is not
-   currently persisted or exported, so an additive schema migration would add
-   complexity without preserving any user-authorized record.
+6. No `time_scenario` was added to the project dossier. The calculator keeps
+   its editable scenario while switching routes and languages, but it does not
+   turn a demonstration into an authorized project record. A future additive
+   migration may store an explicitly frozen scenario.
 7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
-   palette, and browser checks pass on commit `43256662`. A fresh-context
-   independent final review reports no P0, P1, or P2 finding. GitHub Actions run
-   `32526763108` passes 43 Node tests and 45 browser scenarios. The review loop
-   also closed zero-eligibility propagation, provenance wording, and copied
-   brief reproducibility findings before this final gate.
+   palette, and browser checks pass on the current release candidate. Two
+   independent journey audits drive the exact-head merge gate and must remain
+   separate from the known first-party field-data limitation.
 8. The 0.3 field draft now consumes the same quantitative layer. It preserves
    the low, central, and high hypothesis, source or local basis, transfer
    contract, observed whole-workload result, range position, and recalibration
@@ -256,19 +254,19 @@ Latest local verification on 2026-08-22:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 44/44 pass
-- Playwright: 84/84 pass across both routes, desktop light, desktop dark, and
+- Node tests: 49/49 pass
+- Playwright: 93/93 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 114 Markdown files and 48 paired documents pass
+- repository validation: 115 Markdown files and 48 paired documents pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 44 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 49 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 84 Playwright checks across both routes, desktop light, desktop dark, and
+- 93 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;
@@ -291,7 +289,8 @@ public and do not deploy the application.
 ## Boundaries that must remain explicit
 
 - Planning ranges are not forecasts or confidence intervals.
-- Use pattern is not integration level, and integration level is not autonomy.
+- Use pattern is not work mode. Work mode is not architecture, and neither one
+  defines the exact A0 to A4 action boundary.
 - Swiss and EU legal routes must be qualified independently.
 - Percentages apply only to eligible work, not automatically to a whole role or
   organization.

@@ -1,18 +1,43 @@
 import { createEmptyProjectArtifacts } from "./project-artifacts.mjs";
 import { cloneProjectChangeReview, isProjectChangeReview } from "./project-change-review.mjs";
 
-export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.3.0";
+export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.4.0";
 export const PROJECT_DOSSIER_STORAGE_KEY = "ai-adoption-playbook:project-dossier:v1";
 export const PROJECT_DOSSIER_PLAYBOOK_VERSION = "0.2.2";
 
-const LEGACY_SCHEMA_VERSIONS = new Set(["0.1.0", "0.2.0"]);
+const LEGACY_SCHEMA_VERSIONS = new Set(["0.1.0", "0.2.0", "0.3.0"]);
 const baseKeys = ["schema_version", "playbook_version", "dossier_id", "created_at", "updated_at", "language", "status", "boundary", "context", "active_phase", "fields", "conditioned_controls", "matched_control_ids", "completed_phases"];
 
 const organizationTypes = new Set(["independent", "tpe", "pme", "nonprofit", "public"]);
 const usePatterns = new Set(["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"]);
 const jurisdictions = new Set(["CH", "EU", "BOTH"]);
 const integrationLevels = new Set(["copilot", "agent", "agency"]);
+const architectures = new Set(["model", "workflow", "agent", "agency"]);
 const languages = new Set(["en", "fr"]);
+
+function architectureForLegacyIntegration(level) {
+  if (level === "copilot") return "model";
+  if (level === "agency") return "agency";
+  return "workflow";
+}
+
+function migrateLegacyContext(context) {
+  return { ...context, architecture: architectureForLegacyIntegration(context.integration_level) };
+}
+
+function migrateLegacyChangeReview(review) {
+  if (!review) return null;
+  return {
+    ...review,
+    baseline: {
+      ...review.baseline,
+      snapshot: {
+        ...review.baseline.snapshot,
+        context: migrateLegacyContext(review.baseline.snapshot.context),
+      },
+    },
+  };
+}
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -123,12 +148,16 @@ export function parseProjectDossier(input) {
     || dossier.boundary.local_only !== true
     || dossier.boundary.no_raw_evidence !== true
     || dossier.boundary.not_certification !== true) return { ok: false, error: "invalid_boundary" };
+  const contextKeys = legacy
+    ? new Set(["organization_type", "use_pattern", "jurisdiction", "integration_level", "autonomy_level", "risk_level"])
+    : new Set(["organization_type", "use_pattern", "jurisdiction", "integration_level", "architecture", "autonomy_level", "risk_level"]);
   if (!isRecord(dossier.context)
-    || !hasOnlyKeys(dossier.context, new Set(["organization_type", "use_pattern", "jurisdiction", "integration_level", "autonomy_level", "risk_level"]))
+    || !hasOnlyKeys(dossier.context, contextKeys)
     || !organizationTypes.has(dossier.context.organization_type)
     || !usePatterns.has(dossier.context.use_pattern)
     || !jurisdictions.has(dossier.context.jurisdiction)
     || !integrationLevels.has(dossier.context.integration_level)
+    || (!legacy && !architectures.has(dossier.context.architecture))
     || !Number.isInteger(dossier.context.autonomy_level)
     || dossier.context.autonomy_level < 0
     || dossier.context.autonomy_level > 4
@@ -141,6 +170,8 @@ export function parseProjectDossier(input) {
   if (!isUniqueStringArray(dossier.matched_control_ids)) return { ok: false, error: "invalid_matched_controls" };
   if (!isUniquePhaseArray(dossier.completed_phases)) return { ok: false, error: "invalid_completed_phases" };
   if (dossier.schema_version !== "0.1.0" && !isProjectArtifacts(dossier.artifacts)) return { ok: false, error: "invalid_artifacts" };
+  const migratedReview = dossier.schema_version === "0.3.0" ? migrateLegacyChangeReview(dossier.change_review) : null;
+  if (dossier.schema_version === "0.3.0" && !isProjectChangeReview(migratedReview)) return { ok: false, error: "invalid_change_review" };
   if (!legacy && (!isProjectChangeReview(dossier.change_review)
     || (dossier.change_review !== null && dossier.change_review.baseline.dossier_id !== dossier.dossier_id))) return { ok: false, error: "invalid_change_review" };
 
@@ -152,8 +183,9 @@ export function parseProjectDossier(input) {
       value: /** @type {import("./project-dossier.mjs").ProjectDossier} */ ({
         ...dossier,
         schema_version: PROJECT_DOSSIER_SCHEMA_VERSION,
+        context: migrateLegacyContext(dossier.context),
         artifacts: dossier.schema_version === "0.1.0" ? createEmptyProjectArtifacts() : dossier.artifacts,
-        change_review: null,
+        change_review: migratedReview,
       }),
     };
   }

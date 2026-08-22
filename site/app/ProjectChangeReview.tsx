@@ -137,8 +137,8 @@ const copy = {
 };
 
 const contextLabels = {
-  en: { organization_type: "Organization type", use_pattern: "AI use pattern", jurisdiction: "Territory", integration_level: "Integration level", autonomy_level: "Autonomy level", risk_level: "Risk orientation" },
-  fr: { organization_type: "Type de structure", use_pattern: "Mode d’usage de l’IA", jurisdiction: "Territoire", integration_level: "Niveau d’intégration", autonomy_level: "Niveau d’autonomie", risk_level: "Orientation du risque" },
+  en: { organization_type: "Organization type", use_pattern: "AI use pattern", jurisdiction: "Territory", integration_level: "Work mode", autonomy_level: "Exact action boundary", risk_level: "Risk orientation" },
+  fr: { organization_type: "Type de structure", use_pattern: "Mode d’usage de l’IA", jurisdiction: "Territoire", integration_level: "Mode de travail", autonomy_level: "Limite d’action exacte", risk_level: "Orientation du risque" },
 };
 
 function checklistLabel(locale: Locale, taskId: string, property: string, props: Props) {
@@ -178,7 +178,7 @@ function phaseFor(item: ChangeReviewItem, props: Props) {
   if (group === "system_register") return ({ name: 0, owner: 0, purpose: 0, business_process: 2, affected_people: 0, data_classes: 2, provider_version: 5, human_approval: 5, next_review: 11, decision_reference: 11 } as Record<string, number>)[id];
   if (group === "risk_assessment") return ({ evaluator: 0, next_review: 11, data_categories: 4, data_provenance: 2, transparency_recourse: 4, harm_scenarios: 4, mitigations: 7, residual_risk_authority: 0, decision: 9, conditions: 9 } as Record<string, number>)[id];
   if (group === "evaluation_plan") return ({ decision_owner: 0, deadline: 0, frozen_cases: 6, baseline: 1, value_threshold: 6, quality_threshold: 6, critical_segments: 6, stop_rule: 6, reproducibility_refs: 11 } as Record<string, number>)[id];
-  if (group === "context") return ["jurisdiction", "risk_level"].includes(id) ? 4 : ["integration_level", "autonomy_level"].includes(id) ? 5 : 0;
+  if (group === "context") return ["jurisdiction", "risk_level"].includes(id) ? 4 : ["integration_level", "architecture", "autonomy_level"].includes(id) ? 5 : 0;
   if (group === "security" || group === "controls") return 7;
   return undefined;
 }
@@ -189,9 +189,10 @@ function displayValue(value: string, item: ChangeReviewItem, props: Props) {
   if (group === "context") {
     const maps: Record<string, Record<string, string>> = {
       organization_type: props.locale === "en" ? { independent: "Independent", tpe: "Micro-business", pme: "SME", nonprofit: "Nonprofit", public: "Public service" } : { independent: "Indépendant", tpe: "Très petite entreprise", pme: "PME", nonprofit: "Organisation sans but lucratif", public: "Service public" },
-      use_pattern: props.locale === "en" ? { generation: "Generation", retrieval: "Retrieval", classification: "Classification", prediction: "Prediction", conversation: "Conversation", multimodal: "Multimodal", agentic: "Agentic action" } : { generation: "Génération", retrieval: "Recherche documentaire", classification: "Classification", prediction: "Prédiction", conversation: "Conversation", multimodal: "Multimodal", agentic: "Action agentique" },
+      use_pattern: props.locale === "en" ? { generation: "Generation", retrieval: "Retrieval", classification: "Classification", prediction: "Prediction", conversation: "Conversation", multimodal: "Multimodal", agentic: "Action through tools" } : { generation: "Génération", retrieval: "Recherche documentaire", classification: "Classification", prediction: "Prédiction", conversation: "Conversation", multimodal: "Multimodal", agentic: "Action avec des outils" },
       jurisdiction: props.locale === "en" ? { CH: "Switzerland", EU: "European Union", BOTH: "Switzerland + EU" } : { CH: "Suisse", EU: "Union européenne", BOTH: "Suisse + UE" },
-      integration_level: props.locale === "en" ? { copilot: "Copilot", agent: "Business agent", agency: "Orchestrated agency" } : { copilot: "Copilote", agent: "Agent métier", agency: "Agence orchestrée" },
+      integration_level: props.locale === "en" ? { copilot: "Copilot", agent: "Bounded automation", agency: "Strong automation" } : { copilot: "Copilote", agent: "Automatisation bornée", agency: "Automatisation forte" },
+      architecture: props.locale === "en" ? { model: "One model or assistant", workflow: "Tool-assisted workflow", agent: "One business agent", agency: "Orchestrated agent team" } : { model: "Un modèle ou assistant", workflow: "Processus outillé", agent: "Un agent métier", agency: "Équipe d’agents orchestrée" },
     };
     return maps[id]?.[value] ?? (["autonomy_level", "risk_level"].includes(id) ? `${id === "autonomy_level" ? "A" : "R"}${value}` : value);
   }

@@ -59,10 +59,11 @@ a new dossier** to remove the browser copy.
 
 ## Compatibility and validation
 
-The current experimental schema is `0.3.0`. Valid `0.1.0` dossiers are migrated
+The current experimental schema is `0.4.0`. Valid `0.1.0` dossiers are migrated
 locally by adding empty connected records and an empty change review. Valid
 `0.2.0` dossiers keep their connected records and receive an empty change
-review. The migration is additive, records the source schema when a migrated
+review. Valid `0.3.0` dossiers preserve their change review and receive an
+architecture inferred from the earlier work mode. The migration is additive, records the source schema when a migrated
 file becomes a comparison reference, and never overwrites the imported file.
 
 Newer or unknown schema versions are rejected rather than guessed. Other

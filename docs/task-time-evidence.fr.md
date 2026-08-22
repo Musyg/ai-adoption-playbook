@@ -20,6 +20,14 @@ Plusieurs agents ou une grande échelle ne suffisent pas à classer un système 
 L’autonomie dépend des effets que le système peut produire sans personne, pas
 de la réputation ou de la taille de l’organisation qui l’utilise.
 
+Le registre conserve le nom technique historique `integration_mode`. Il
+désigne le mode de partage du travail présenté ci-dessus, pas l’architecture
+technique. Modèle, processus fixe, agent unique ou équipe orchestrée sont
+enregistrés séparément, tout comme le niveau d’autorité précis A0 à A4. Une
+étude reste transférable lorsque la tâche, le résultat accepté, le rôle humain
+et les conditions d’usage sont assez proches. Le type d’organisation ne suffit
+ni à autoriser ni à interdire ce transfert.
+
 ## Compter séparément temps humain, temps machine et temps écoulé
 
 Pour un cas éligible :

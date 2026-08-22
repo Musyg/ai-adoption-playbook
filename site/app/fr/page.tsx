@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   ...(englishUrl && frenchUrl ? { alternates: { canonical: frenchUrl, languages: { en: englishUrl, fr: frenchUrl, "x-default": englishUrl } } } : {}),
   openGraph: {
     title: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance",
-    description: "Choisir la bonne intégration IA, la tester sur un vrai workflow, mesurer le résultat et encadrer le passage en production.",
+    description: "Choisir la bonne intégration IA, la tester sur un vrai processus, mesurer le résultat et encadrer le passage en production.",
     ...(frenchUrl ? { url: frenchUrl } : {}),
     locale: "fr_FR",
     alternateLocale: "en_US",

@@ -68,10 +68,11 @@ utilisez **Créer un nouveau dossier** pour supprimer la copie du navigateur.
 
 ## Compatibilité et validation
 
-Le schéma expérimental actuel est `0.3.0`. Les dossiers `0.1.0` valides sont
+Le schéma expérimental actuel est `0.4.0`. Les dossiers `0.1.0` valides sont
 migrés localement par l’ajout de documents reliés vides et d’une revue des
 changements vide. Les dossiers `0.2.0` valides conservent leurs documents reliés
-et reçoivent une revue vide. La migration est additive, conserve la version du
+et reçoivent une revue vide. Les dossiers `0.3.0` valides conservent leur revue
+et reçoivent une architecture déduite de l’ancien mode de travail. La migration est additive, conserve la version du
 schéma source lorsqu’un fichier migré devient une référence de comparaison et
 ne modifie jamais le fichier importé.
 

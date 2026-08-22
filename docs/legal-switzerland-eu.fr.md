@@ -63,4 +63,4 @@ Ces obligations UE ne remplacent pas l’analyse LPD lorsque la Suisse est aussi
 - Quelles obligations de transparence, documentation, journalisation, supervision et formation ?
 - Quels mécanismes d’audit, de recours humain et de continuité sont exigés ?
 
-Utiliser le [registre des sources](../references/sources.md#droit-et-politiques-publiques) et dater la qualification dans chaque dossier.
+Utiliser le [registre des sources](../references/sources.fr.md#droit-et-politiques-publiques) et dater la qualification dans chaque dossier.

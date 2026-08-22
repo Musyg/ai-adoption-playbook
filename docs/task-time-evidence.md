@@ -14,11 +14,18 @@ category.
 |---|---|---:|
 | Copilot | Prepares, retrieves, analyzes, or suggests while a person operates every cycle | A0 to A1 |
 | Bounded automation | Completes an eligible process with authorized tools and escalates exceptions | A1 to A3 |
-| Hard automation | Coordinates long-horizon work across several agents or tools under stronger controls | A3 to A4 |
+| Strong automation | Coordinates long-horizon work across several agents or tools under stronger controls | A3 to A4 |
 
 Multiple agents or large scale do not automatically make a system A4. Autonomy
 is determined by the effects the system may produce without a person, not by
 the reputation or size of the organization using it.
+
+The registry keeps the historical field name `integration_mode`. It means the
+work-sharing mode in the table above, not the technical architecture. A model,
+fixed workflow, single agent, or orchestrated team is recorded separately, as
+is the exact A0 to A4 authority level. A study remains transferable when its
+task, accepted output, human role, and operating conditions are close enough;
+organization type alone neither permits nor prevents transfer.
 
 ## Count human time, machine time, and elapsed time separately
 
@@ -152,7 +159,7 @@ the synthetic case result.
 | Public planning dossiers | Information synthesis | Agent A2 | Analysis context only |
 | Independent client follow-up | Professional writing | Copilot A1 | Comparable range may be tested separately |
 | Independent follow-up agent | Customer support | Agent A2 | Output-rate context only |
-| Orchestrated diagnostic | Hard automation project | Agency A3 | Harness mechanism only |
+| Orchestrated diagnostic | Strong-automation project | Orchestrated team · A3 | Harness mechanism only |
 | Read-only procedure RAG | Information synthesis | Copilot A1 | No admitted time anchor |
 | Predictive demand forecast | Predictive decision support | Copilot A0 | No human-time ratio transferred |
 | External customer chatbot | Customer support | Copilot A1 | Staff-support outcome context only |
