@@ -60,11 +60,11 @@ test("use pattern and jurisdiction update the evidence profile", async ({ page }
   await expect(page.getByText("AAP-TRN-004", { exact: true })).toHaveCount(1);
 
   await page.locator(".use-pattern-grid button").nth(3).click();
-  await expect(page.getByLabel("Closest measured task")).toHaveValue("predictive_decision_support");
-  await expect(page.locator(".task-time-no-evidence")).toContainText("No source in the registry matches this task yet");
+  await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("predictive_decision_support");
+  await expect(page.locator(".task-time-no-evidence")).toContainText("No study in the register measures this work closely enough");
 
   await page.locator(".use-pattern-grid button").nth(5).click();
-  await expect(page.getByLabel("Closest measured task")).toHaveValue("multimodal_review");
+  await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("multimodal_review");
 });
 
 test("non-agentic cases expose four distinct evidence contracts", async ({ page }) => {
@@ -89,30 +89,33 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
 
-  await expect(page.getByLabel("Closest measured task")).toHaveValue("information_synthesis");
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
-  await expect(page.locator(".task-time-source-range")).toContainText("does not produce a transferable range");
-  await expect(page.locator(".calibrator-result-head small")).toContainText("editable local hypothesis");
+  await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("information_synthesis");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("No one measured the complete work before and after");
+  await expect(page.locator(".task-time-source-range")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
+  await expect(page.locator(".task-time-source-range")).toContainText("remain visible for information");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
   await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
   await expect(page.locator('.calibrator-result-grid p[data-metric="setup"]')).toContainText("7.1 min");
-  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("One local scenario, not a range");
+  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("Your starting scenario");
+  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("the selected study does not provide a reliable range");
   await expect(page.locator('.calibrator-result-grid p[data-range="low"]')).toHaveCount(0);
 
   await page.getByRole("button", { name: /Hard automation A3–A4/ }).click();
   await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
   await expect(page.locator('.calibrator-result-grid p[data-metric="setup"]')).toContainText("21.4 min");
   await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"]')).toContainText("54.4 min");
-  await expect(page.locator(".task-time-mode-effect")).toContainText("does not invent a recurring productivity gain");
+  await expect(page.locator(".task-time-mode-effect")).toContainText("does not automatically add a productivity gain");
 
-  await page.getByLabel("Closest measured task").selectOption("predictive_decision_support");
-  await expect(page.locator(".task-time-no-evidence")).toContainText("No source in the registry matches this task yet");
-  await expect(page.locator(".calibrator-result-head small")).toContainText("editable local hypothesis");
+  await page.getByLabel("What work do you want to estimate?").selectOption("predictive_decision_support");
+  await expect(page.locator(".task-time-no-evidence")).toContainText("No study in the register measures this work closely enough");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
 
-  await page.getByLabel("Closest measured task").selectOption("professional_writing");
+  await page.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await page.getByRole("button", { name: /Copilot A0–A1/ }).click();
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2023-NOY-ZHANG-WRITING");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("people completed one defined writing task about 40% faster");
+  await expect(page.locator(".task-time-source-range")).toContainText("TT-2023-NOY-ZHANG-WRITING");
   await expect(page.locator(".task-time-source-range")).toContainText("40–40–40%");
-  await expect(page.locator(".calibrator-result-head small")).toContainText("external evidence constrained");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("starting estimate based on a similar study");
   await expect(page.locator(".calibrator-result-head strong")).toContainText("37.6%");
   await expect(page.locator('.calibrator-result-grid p[data-range="central"]')).toContainText("37.6%");
 
@@ -121,11 +124,12 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".calibrator-result-head strong")).toContainText("-");
   await expect(page.locator(".task-time-negative")).toContainText("consumes more human time");
 
-  await page.getByLabel("Closest measured task").selectOption("software_mature_repo");
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("TT-2025-METR-MATURE-REPOS");
+  await page.getByLabel("What work do you want to estimate?").selectOption("software_mature_repo");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("Experienced developers took 19% longer");
+  await expect(page.locator(".task-time-source-range")).toContainText("TT-2025-METR-MATURE-REPOS");
   await expect(page.locator(".task-time-source-range")).toContainText("-39–-19–-2%");
 
-  await page.getByLabel("Share genuinely eligible").fill("0");
+  await page.getByLabel("Share of cases AI can actually handle").fill("0");
   await expect(page.locator(".calibrator-result-head strong")).toHaveText("n/a");
   await expect(page.locator(".calibrator-equation")).toContainText("No net range is calculated at 0% eligibility");
 
@@ -136,10 +140,57 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
 });
 
+for (const beginnerLocale of [
+  {
+    path: "/",
+    verdict: "EXAMPLE ONLY · NOT USED IN THE CALCULATION",
+    summary: "No one measured the complete work before and after, so these figures do not enter your calculation.",
+    use: "The figure remains visible for context, but it is not added to your estimated saving.",
+    details: "See what was measured and what it does not prove",
+    measured: "The study did not time people completing the same task with and without AI.",
+    gradeHelp: "What do A to E mean?",
+    gradeMeaning: "E · The model made an estimate",
+    calculation: "See the exact calculation",
+  },
+  {
+    path: "/fr/",
+    verdict: "EXEMPLE SEULEMENT · NON UTILISÉ DANS LE CALCUL",
+    summary: "Personne n’a mesuré le travail complet avant et après, donc ces chiffres n’entrent pas dans votre calcul.",
+    use: "Le chiffre reste visible pour vous informer, mais il n’est pas ajouté au gain estimé.",
+    details: "Voir ce qui a été mesuré et ce que cela ne prouve pas",
+    measured: "L’étude n’a pas chronométré des personnes réalisant la même tâche avec et sans IA.",
+    gradeHelp: "Que signifient les lettres A à E ?",
+    gradeMeaning: "E · Le modèle a produit une estimation",
+    calculation: "Voir le calcul exact",
+  },
+] as const) {
+  test(`${beginnerLocale.path} evidence starts with a beginner verdict and keeps methodology optional`, async ({ page }) => {
+    await page.goto(beginnerLocale.path);
+    await page.locator("#operational-workspace > summary").click();
+    const evidence = page.locator(".task-time-evidence-detail");
+    await expect(evidence.locator(".task-time-evidence-plain span")).toHaveText(beginnerLocale.verdict);
+    await expect(evidence.locator(".task-time-evidence-plain strong")).toContainText(beginnerLocale.summary);
+    await expect(evidence.locator(".task-time-evidence-plain p")).toHaveText(beginnerLocale.use);
+
+    const methodology = evidence.locator("> details");
+    await expect(methodology).not.toHaveAttribute("open", "");
+    await methodology.locator("summary").click();
+    await expect(methodology).toContainText(beginnerLocale.measured);
+
+    const gradeHelp = page.locator(".task-time-grade-help");
+    await gradeHelp.locator("summary").click();
+    await expect(gradeHelp).toContainText(beginnerLocale.gradeMeaning);
+
+    const calculation = page.locator(".calibrator-equation-details");
+    await expect(calculation).not.toHaveAttribute("open", "");
+    await expect(calculation.locator("summary")).toContainText(beginnerLocale.calculation);
+  });
+}
+
 test("zero eligibility keeps the recurring assumption separate from unavailable setup allocation", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
-  await page.getByLabel("Share genuinely eligible").fill("0");
+  await page.getByLabel("Share of cases AI can actually handle").fill("0");
 
   await expect(page.locator(".task-time-mode-effect")).toContainText("33 min");
   await expect(page.locator(".task-time-mode-effect")).toContainText("45%");
@@ -153,7 +204,7 @@ test("zero eligibility keeps the recurring assumption separate from unavailable 
 for (const zeroEligibilityLocale of [
   {
     path: "/",
-    eligible: "Share genuinely eligible",
+    eligible: "Share of cases AI can actually handle",
     plan: /Build the test plan/,
     freeze: "Freeze hypothesis v1",
     panel: /Prepare field feedback/,
@@ -165,7 +216,7 @@ for (const zeroEligibilityLocale of [
   },
   {
     path: "/fr/",
-    eligible: "Part réellement éligible",
+    eligible: "Part des cas que l’IA peut réellement traiter",
     plan: /Construire le plan de test/,
     freeze: "Figer l’hypothèse v1",
     panel: /Préparer le retour terrain/,
@@ -245,7 +296,7 @@ test("field comparison remains locked to v1 and a changed plan requires a separa
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
   const calibrator = page.locator("#calibrator");
-  await calibrator.getByLabel("Closest measured task").selectOption("professional_writing");
+  await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
@@ -295,7 +346,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
   const calibrator = page.locator("#calibrator");
-  await calibrator.getByLabel("Closest measured task").selectOption("professional_writing");
+  await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
   await calibrator.locator(".task-time-components > summary").click();
   await calibrator.getByLabel("Preparation and context").fill("7");
@@ -316,8 +367,8 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
 });
 
 for (const fieldLocale of [
-  { path: "/", task: "Closest measured task", level: /Copilot A0–A1/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", panel: /Prepare field feedback/, download: "Download the local draft", planned: "LOW · CENTRAL · HIGH", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
-  { path: "/fr/", task: "Tâche mesurée la plus proche", level: /Copilote A0–A1/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "BASSE · CENTRALE · HAUTE", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
+  { path: "/", task: "What work do you want to estimate?", level: /Copilot A0–A1/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", panel: /Prepare field feedback/, download: "Download the local draft", planned: "LOW · CENTRAL · HIGH", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
+  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote A0–A1/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "BASSE · CENTRALE · HAUTE", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
 ] as const) {
   test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
     await page.goto(fieldLocale.path);

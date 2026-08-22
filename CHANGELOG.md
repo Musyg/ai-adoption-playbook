@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added a plain-language evidence layer to the task-time guide. Every study now
+  starts with a direct verdict, a short explanation of what happened, and a
+  clear statement of whether its figures enter the estimate. Measurement
+  grades A to E have an expandable explanation, while methodology, conditions,
+  and limits stay available on demand instead of crowding the first reading.
 - Added a versioned task-time evidence registry and strict JSON Schema. Nine
   external records separate measured task time, operational outcomes,
   self-reports, internal cases, and model estimates through grades A to E.

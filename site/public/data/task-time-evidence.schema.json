@@ -137,10 +137,11 @@
     "evidenceRecord": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["evidence_id", "title", "organization_context", "task_contract", "measurement", "transfer", "sources"],
+      "required": ["evidence_id", "title", "reader_summary", "organization_context", "task_contract", "measurement", "transfer", "sources"],
       "properties": {
         "evidence_id": { "type": "string", "pattern": "^TT-[0-9]{4}-[A-Z0-9-]+$" },
         "title": { "$ref": "#/$defs/localized" },
+        "reader_summary": { "$ref": "#/$defs/localized" },
         "organization_context": {
           "type": "object",
           "additionalProperties": false,

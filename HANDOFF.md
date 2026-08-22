@@ -212,6 +212,10 @@ distinct from the observed layer required by the first-party admission contract.
    the low, central, and high hypothesis, source or local basis, transfer
    contract, observed whole-workload result, range position, and recalibration
    boundary in both routes.
+9. The evidence selector now begins with a non-technical verdict, a short
+   account of what was observed, and an explicit statement of whether the
+   figure enters the estimate. Grades A to E and the complete methodology stay
+   available through optional explanations in both routes.
 
 This quantitative evidence and transfer layer now feeds 0.3 directly. The field
 draft retains its source, transfer contract, net range, human-work assumptions,
@@ -252,8 +256,8 @@ Latest local verification on 2026-08-22:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 43/43 pass
-- Playwright: 78/78 pass across both routes, desktop light, desktop dark, and
+- Node tests: 44/44 pass
+- Playwright: 84/84 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
 - repository validation: 114 Markdown files and 48 paired documents pass
@@ -262,9 +266,9 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 43 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 44 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 78 Playwright checks across both routes, desktop light, desktop dark, and
+- 84 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;

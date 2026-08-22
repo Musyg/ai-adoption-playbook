@@ -506,6 +506,12 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .calibrator-result-grid p[data-range="central"] { box-shadow: inset 0 3px 0 var(--blue); }
 .calibrator-equation { border-left: 4px solid var(--blue); color: var(--dark-muted); font: 700 12px/1.55 "Courier New", monospace; margin: 22px 0 0; padding: 2px 0 2px 15px; }
 .calibrator-equation strong { color: var(--blue); }
+.calibrator-equation-details summary { align-items: center; cursor: pointer; display: flex; font-family: Arial, sans-serif; justify-content: space-between; list-style: none; }
+.calibrator-equation-details summary::-webkit-details-marker { display: none; }
+.calibrator-equation-details summary span { color: var(--blue); font: 700 18px "Courier New", monospace; }
+.calibrator-equation-details[open] summary span { transform: rotate(45deg); }
+.calibrator-equation-details p { font: 400 12px/1.55 Arial, sans-serif; margin: 12px 0 8px; }
+.calibrator-equation-details code { display: block; white-space: normal; }
 .calibrator-note { align-items: start; background: rgb(255 255 255 / 30%); border-left: 4px solid #071018; display: grid; gap: 20px 36px; grid-template-columns: .55fr 1.45fr; margin-top: 16px; padding: 24px 28px; }
 .calibrator-note strong { color: #071018; font: 700 12px/1.4 "Courier New", monospace; letter-spacing: .08em; }
 .calibrator-note p { color: #123448; font-size: 13px; line-height: 1.55; margin: 0; }
@@ -524,6 +530,14 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .task-profile-note { border-left: 4px solid var(--blue-deep); color: var(--muted); display: grid; font-size: 12px; gap: 5px; line-height: 1.5; margin: 18px 0 0; padding: 4px 0 4px 14px; }
 .task-profile-note strong { color: var(--ink); }
 .task-profile-note span { color: var(--blue-deep); font: 700 10px "Courier New", monospace; text-transform: uppercase; }
+.task-time-grade-help { border: 1px solid var(--line); margin-top: 18px; }
+.task-time-grade-help > summary { align-items: center; color: var(--ink); cursor: pointer; display: flex; font-size: 11px; font-weight: 800; justify-content: space-between; list-style: none; padding: 11px 13px; }
+.task-time-grade-help > summary::-webkit-details-marker { display: none; }
+.task-time-grade-help > summary span { align-items: center; border: 1px solid var(--blue-deep); border-radius: 50%; color: var(--blue-deep); display: flex; font: 800 11px/1 Arial, sans-serif; height: 24px; justify-content: center; width: 24px; }
+.task-time-grade-help > div { background: var(--paper); border-top: 1px solid var(--line); padding: 14px; }
+.task-time-grade-help > div > strong { font-size: 11px; line-height: 1.5; }
+.task-time-grade-help ul { display: grid; gap: 6px; list-style: none; margin: 12px 0 0; padding: 0; }
+.task-time-grade-help li { color: var(--muted); font-size: 10px; line-height: 1.45; }
 .task-time-evidence fieldset { border: 0; margin: 18px 0 0; padding: 0; }
 .task-time-evidence-options { display: grid; gap: 8px; }
 .task-time-evidence-options label { align-items: start; border: 1px solid var(--line); cursor: pointer; display: grid; gap: 10px; grid-template-columns: auto 1fr; padding: 13px; transition: background-color .18s ease, border-color .18s ease, transform .18s ease; }
@@ -536,13 +550,22 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .task-time-evidence-options em { color: var(--muted); font-size: 10px; font-style: normal; }
 .task-time-evidence-options label[data-compatibility="incompatible"] { opacity: .7; }
 .task-time-no-evidence { border-left: 4px solid var(--blue-deep); color: var(--muted); font-size: 12px; line-height: 1.55; margin: 18px 0 0; padding-left: 14px; }
-.task-time-evidence-detail { border-top: 1px solid var(--line); display: grid; gap: 18px; grid-template-columns: 1fr auto; margin-top: 18px; padding-top: 16px; }
-.task-time-evidence-detail > div { display: grid; gap: 7px; }
-.task-time-evidence-detail span { color: var(--blue-deep); font: 700 10px "Courier New", monospace; }
-.task-time-evidence-detail strong { font-size: 12px; line-height: 1.5; }
+.task-time-evidence-detail { border: 1px solid var(--line); border-left: 4px solid var(--blue-deep); display: grid; gap: 18px; grid-template-columns: 1fr auto; margin-top: 18px; padding: 18px; }
+.task-time-evidence-plain { display: grid; gap: 8px; }
+.task-time-evidence-detail span { color: var(--blue-deep); font: 700 10px/1.35 "Courier New", monospace; letter-spacing: .04em; }
+.task-time-evidence-detail strong { font-size: 13px; line-height: 1.55; }
 .task-time-evidence-detail p { color: var(--muted); font-size: 11px; line-height: 1.5; margin: 0; }
 .task-time-evidence-detail a { align-self: start; border: 1px solid var(--line); color: var(--ink); font-size: 10px; font-weight: 800; padding: 10px 12px; text-decoration: none; }
 .task-time-evidence-detail a:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.task-time-evidence-detail > details { border-top: 1px solid var(--line); grid-column: 1 / -1; padding-top: 4px; }
+.task-time-evidence-detail > details > summary { align-items: center; cursor: pointer; display: flex; font-size: 11px; font-weight: 800; justify-content: space-between; list-style: none; padding: 10px 0 4px; }
+.task-time-evidence-detail > details > summary::-webkit-details-marker { display: none; }
+.task-time-evidence-detail > details > summary span { font-size: 18px; transition: transform .18s ease; }
+.task-time-evidence-detail > details[open] > summary span { transform: rotate(45deg); }
+.task-time-evidence-detail dl { display: grid; gap: 0; margin: 12px 0 0; }
+.task-time-evidence-detail dl > div { border-top: 1px solid var(--line); display: grid; gap: 6px; grid-template-columns: minmax(130px, .42fr) minmax(0, 1.58fr); padding: 11px 0; }
+.task-time-evidence-detail dt { color: var(--blue-deep); font: 700 9px/1.4 "Courier New", monospace; text-transform: uppercase; }
+.task-time-evidence-detail dd { color: var(--muted); font-size: 11px; line-height: 1.55; margin: 0; }
 .task-time-calibrator-shell { grid-template-columns: .9fr 1.1fr; }
 .task-time-core-inputs { margin-top: 22px; }
 .task-time-components { border-top: 1px solid #d9dedc; margin-top: 8px; }
@@ -570,6 +593,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
   .task-time-guide, .task-time-calibrator-shell { grid-template-columns: 1fr; }
   .task-time-selects { grid-template-columns: 1fr; }
   .task-time-evidence-detail { grid-template-columns: 1fr; }
+  .task-time-evidence-detail dl > div { grid-template-columns: 1fr; }
   .task-time-evidence-detail a { justify-self: start; }
   .case-evidence-boundary { align-items: start; grid-template-columns: auto 1fr; }
   .case-evidence-boundary .button { grid-column: 1 / -1; justify-self: stretch; text-align: center; }

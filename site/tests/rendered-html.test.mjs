@@ -96,7 +96,8 @@ for (const [pathname, language, title] of [
     assert.match(html, /Define one task|Définir une seule tâche/i);
     assert.match(html, /TT-2025-ANTHROPIC-MODEL-ESTIMATE/);
     assert.match(renderedText, /33[.,]1%/);
-    assert.match(html, /How the net range is built|Comment la fourchette nette est construite/i);
+    assert.match(html, /How the estimated saving is calculated|Comment le gain de temps est calculé/i);
+    assert.match(html, /Example only · not used in the calculation|Exemple seulement · non utilisé dans le calcul/i);
     assert.match(html, /Pilot preregistered|Pilote préenregistré/i);
     assert.match(renderedText, /≥ 20%/);
     assert.match(html, /REWORK \+ RERUN|CORRIGER ET REJOUER/i);
