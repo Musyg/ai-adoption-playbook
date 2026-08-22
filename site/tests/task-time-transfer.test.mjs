@@ -25,6 +25,19 @@ test("publishes unique task profiles, evidence identifiers, and resolvable task 
   }
 });
 
+test("gives every evidence record a short beginner explanation before technical detail", () => {
+  for (const item of registry.records) {
+    assert.ok(item.reader_summary.en.length >= 80 && item.reader_summary.en.length <= 260);
+    assert.ok(item.reader_summary.fr.length >= 80 && item.reader_summary.fr.length <= 300);
+    assert.doesNotMatch(item.reader_summary.en, /denominator|paired|transferable|reported concentration|full real-world validation/i);
+    assert.doesNotMatch(item.reader_summary.fr, /dénominateur|appari(?:é|ée)|transférable|concentration annoncée|validation terrain complète/i);
+    if (item.transfer.quantitative_use === "context_only") {
+      assert.match(item.reader_summary.en, /do not enter|does not enter/);
+      assert.match(item.reader_summary.fr, /n’entrent pas|n’entre pas/);
+    }
+  }
+});
+
 test("maps every worked case once and keeps all synthetic numbers at grade E", () => {
   assert.equal(registry.case_applications.length, 11);
   assert.equal(new Set(registry.case_applications.map((item) => item.case_id)).size, 11);

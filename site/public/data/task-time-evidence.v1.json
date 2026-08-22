@@ -113,6 +113,7 @@
     {
       "evidence_id": "TT-2023-NOY-ZHANG-WRITING",
       "title": { "en": "Professional writing experiment", "fr": "Expérience de rédaction professionnelle" },
+      "reader_summary": { "en": "In a controlled experiment, people completed one defined writing task about 40% faster and reviewers rated the work more highly. This can guide a similar writing pilot, not every kind of document.", "fr": "Dans une expérience contrôlée, des personnes ont terminé une tâche de rédaction précise environ 40 % plus vite, avec une meilleure note de qualité. Ce résultat peut guider un pilote similaire, pas tous les documents." },
       "organization_context": { "kind": "controlled_experiment", "name": "MIT research experiment", "region": "United States" },
       "task_contract": {
         "profile_id": "professional_writing",
@@ -136,7 +137,7 @@
         "absolute_saving": null,
         "outcome_change": null,
         "quality_change": { "value": 18, "unit": "percent", "direction": "increase" },
-        "notes": { "en": "Average task time fell by 40% and evaluated quality rose by 18% in the experiment.", "fr": "Le temps moyen a baissé de 40 % et la qualité évaluée a progressé de 18 % dans l’expérience." }
+        "notes": { "en": "Participants completed the same defined writing exercise with or without AI. The AI group finished about 40% faster and received better quality scores.", "fr": "Les participants ont réalisé le même exercice de rédaction avec ou sans IA. Le groupe avec IA a terminé environ 40 % plus vite et obtenu de meilleures notes de qualité." }
       },
       "transfer": {
         "quantitative_use": "usable",
@@ -144,8 +145,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["reviewed"],
         "expertise_levels": ["developing", "mixed"],
-        "preconditions": { "en": "The target is a bounded professional document with comparable review and quality criteria.", "fr": "La cible est un document professionnel borné avec une revue et des critères de qualité comparables." },
-        "limits": { "en": "The experiment does not establish the same effect for confidential, high-stakes, long-form, or production decisions.", "fr": "L’expérience n’établit pas le même effet pour les décisions confidentielles, sensibles, longues ou mises en production." }
+        "preconditions": { "en": "Use this result only for a short professional document reviewed in a similar way.", "fr": "Utilisez ce résultat seulement pour un document professionnel court, relu de façon similaire." },
+        "limits": { "en": "The experiment does not show the same gain for long, confidential, sensitive, or production-critical documents.", "fr": "L’expérience ne montre pas le même gain pour des documents longs, confidentiels, sensibles ou critiques." }
       },
       "sources": [
         { "title": "Experimental evidence on the productivity effects of generative artificial intelligence", "url": "https://doi.org/10.1126/science.adh2586", "published": "2023-07-13", "accessed_on": "2026-08-21", "source_type": "peer_reviewed_paper" }
@@ -153,7 +154,8 @@
     },
     {
       "evidence_id": "TT-2026-BCG-JAGGED-FRONTIER",
-      "title": { "en": "Consulting tasks inside the AI frontier", "fr": "Tâches de conseil dans la frontière de capacité" },
+      "title": { "en": "Consulting tasks the model could or could not handle", "fr": "Tâches de conseil maîtrisées ou non par le modèle" },
+      "reader_summary": { "en": "People worked faster and produced better answers on 17 consulting tasks that the model handled well. Accuracy fell on a task it handled poorly. Test your task before reusing the gain.", "fr": "Les participants ont travaillé plus vite et produit de meilleures réponses sur 17 tâches que le modèle maîtrisait. Sur une tâche qu’il maîtrisait mal, la justesse a baissé. Il faut donc tester votre tâche avant de reprendre le gain." },
       "organization_context": { "kind": "controlled_experiment", "name": "Boston Consulting Group field experiment", "region": "Multiple countries" },
       "task_contract": {
         "profile_id": "knowledge_analysis",
@@ -177,7 +179,7 @@
         "absolute_saving": null,
         "outcome_change": { "value": 12.2, "unit": "percent more tasks completed", "direction": "increase" },
         "quality_change": { "value": 30, "unit": "percent or more", "direction": "increase" },
-        "notes": { "en": "The range reflects the two AI treatments for the first 17 inside-frontier tasks. One outside-frontier task produced worse correctness.", "fr": "La plage reflète les deux traitements IA sur les 17 premières tâches dans la frontière. Une tâche hors frontière a dégradé la justesse." }
+        "notes": { "en": "The study compared work with and without AI on 18 consulting tasks. AI helped on the first 17 tasks, but answers became less accurate on the task the model handled poorly.", "fr": "L’étude a comparé le travail avec et sans IA sur 18 tâches de conseil. L’IA a aidé sur les 17 premières, mais les réponses sont devenues moins justes sur la tâche que le modèle maîtrisait mal." }
       },
       "transfer": {
         "quantitative_use": "usable",
@@ -185,8 +187,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["reviewed"],
         "expertise_levels": ["mixed", "experienced"],
-        "preconditions": { "en": "The target analysis is demonstrably inside current model capabilities and uses an equivalent review standard.", "fr": "L’analyse cible se situe de façon démontrable dans les capacités actuelles du modèle et utilise une revue équivalente." },
-        "limits": { "en": "Do not transfer the figure to an apparently similar task until correctness has been tested. The study directly shows a jagged boundary.", "fr": "Ne transférez pas la valeur à une tâche seulement similaire en apparence avant d’en tester la justesse. L’étude montre directement une frontière irrégulière." }
+        "preconditions": { "en": "First verify that the model can complete your exact task reliably and that the review standard is similar.", "fr": "Vérifiez d’abord que le modèle réussit précisément votre tâche et que la relecture est comparable." },
+        "limits": { "en": "A task can look similar and still fail. Do not reuse the percentage before testing answer quality on your own cases.", "fr": "Une tâche peut sembler similaire et pourtant échouer. Ne reprenez pas le pourcentage avant d’avoir testé la qualité sur vos propres cas." }
       },
       "sources": [
         { "title": "Navigating the Jagged Technological Frontier", "url": "https://pubsonline.informs.org/doi/10.1287/orsc.2025.21838", "published": "2026-03-11", "accessed_on": "2026-08-21", "source_type": "peer_reviewed_paper" }
@@ -195,6 +197,7 @@
     {
       "evidence_id": "TT-2023-GITHUB-COPILOT-HTTP",
       "title": { "en": "Bounded greenfield coding task", "fr": "Tâche de code neuf et borné" },
+      "reader_summary": { "en": "Developers completed one small, self-contained coding task faster with Copilot. The study does not show the same gain in a large or mature codebase.", "fr": "Des développeurs ont terminé plus vite une petite tâche de code autonome avec Copilot. L’étude ne montre pas que le même gain existe dans un dépôt vaste ou ancien." },
       "organization_context": { "kind": "controlled_experiment", "name": "GitHub Copilot research experiment", "region": "International online sample" },
       "task_contract": {
         "profile_id": "software_greenfield",
@@ -218,7 +221,7 @@
         "absolute_saving": { "value": 89.72, "unit": "mean minutes per completed task", "direction": "decrease" },
         "outcome_change": null,
         "quality_change": null,
-        "notes": { "en": "Mean completion time was 160.89 minutes without Copilot and 71.17 minutes with it. The low and high values are the reported 95% confidence interval.", "fr": "Le temps moyen était de 160,89 minutes sans Copilot et de 71,17 minutes avec lui. Les bornes proviennent de l’intervalle de confiance à 95 %." }
+        "notes": { "en": "Participants built the same small HTTP server with or without Copilot. Average completion time fell from about 161 minutes to 71 minutes, but individual results varied widely.", "fr": "Les participants ont construit le même petit serveur HTTP avec ou sans Copilot. Le temps moyen est passé d’environ 161 à 71 minutes, avec de fortes différences entre les personnes." }
       },
       "transfer": {
         "quantitative_use": "usable",
@@ -226,8 +229,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["reviewed"],
         "expertise_levels": ["developing", "mixed"],
-        "preconditions": { "en": "The target is similarly bounded, self-contained, testable, and does not require mature repository context.", "fr": "La cible est tout aussi bornée, autonome et testable, sans exiger le contexte d’un dépôt mature." },
-        "limits": { "en": "The wide confidence interval and narrow task make this unsuitable as a generic software productivity rate.", "fr": "L’intervalle très large et la tâche étroite empêchent d’en faire un taux générique de productivité logicielle." }
+        "preconditions": { "en": "Use this result only for a similarly small, self-contained task that can be tested independently.", "fr": "Utilisez ce résultat seulement pour une tâche tout aussi petite, autonome et testable séparément." },
+        "limits": { "en": "One small coding exercise cannot predict the gain for maintaining a real product or a large existing codebase.", "fr": "Un petit exercice de code ne permet pas de prévoir le gain sur un produit réel ou un grand dépôt existant." }
       },
       "sources": [
         { "title": "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot", "url": "https://arxiv.org/abs/2302.06590", "published": "2023-02-13", "accessed_on": "2026-08-21", "source_type": "working_paper" }
@@ -236,6 +239,7 @@
     {
       "evidence_id": "TT-2025-METR-MATURE-REPOS",
       "title": { "en": "Experienced developers in mature repositories", "fr": "Développeurs expérimentés dans des dépôts matures" },
+      "reader_summary": { "en": "Experienced developers took 19% longer with early-2025 AI tools on repositories they knew well. This is a useful warning, not a universal rate for current tools.", "fr": "Des développeurs expérimentés ont mis 19 % de temps en plus avec des outils du début 2025 sur des dépôts qu’ils connaissaient bien. C’est un avertissement utile, pas un taux universel pour les outils actuels." },
       "organization_context": { "kind": "controlled_experiment", "name": "METR open-source developer study", "region": "International open-source projects" },
       "task_contract": {
         "profile_id": "software_mature_repo",
@@ -259,7 +263,7 @@
         "absolute_saving": null,
         "outcome_change": null,
         "quality_change": null,
-        "notes": { "en": "Tasks took 19% longer with early-2025 tools. The range represents the reported confidence interval for slowdown. A 2026 update says later-tool estimates were too selection-sensitive for a reliable replacement effect.", "fr": "Les tâches ont pris 19 % de temps supplémentaire avec les outils du début 2025. La plage reprend l’intervalle de confiance du ralentissement. Une mise à jour 2026 juge les estimations sur les outils ultérieurs trop sensibles à la sélection pour remplacer ce résultat de façon fiable." }
+        "notes": { "en": "Sixteen experienced developers completed real maintenance tasks in repositories they knew. With the tested early-2025 tools, the work took 19% longer on average.", "fr": "Seize développeurs expérimentés ont réalisé de vraies tâches de maintenance dans des dépôts qu’ils connaissaient. Avec les outils testés au début de 2025, le travail a pris 19 % de temps en plus en moyenne." }
       },
       "transfer": {
         "quantitative_use": "usable",
@@ -267,8 +271,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["production"],
         "expertise_levels": ["experienced"],
-        "preconditions": { "en": "The target is real maintenance work in a mature repository already known deeply by the developer, with project-level review expectations.", "fr": "La cible est un vrai travail de maintenance dans un dépôt mature déjà très bien connu du développeur, avec les exigences de revue du projet." },
-        "limits": { "en": "This is a snapshot of early-2025 tools in 16 developers and does not establish a current effect for other developers, repositories, or agent harnesses.", "fr": "Il s’agit d’une photographie des outils du début 2025 sur 16 développeurs, pas d’un effet actuel établi pour d’autres personnes, dépôts ou environnements agentiques." }
+        "preconditions": { "en": "Compare it only with real maintenance work performed by experienced developers in repositories they already know well.", "fr": "Comparez-la seulement à un vrai travail de maintenance réalisé par des développeurs expérimentés dans des dépôts qu’ils connaissent déjà bien." },
+        "limits": { "en": "The study covered 16 people and early-2025 tools. It does not prove the same slowdown for newer tools, other teams, or agent-driven projects.", "fr": "L’étude porte sur 16 personnes et des outils du début 2025. Elle ne prouve pas le même ralentissement avec des outils plus récents, d’autres équipes ou des projets pilotés par des agents." }
       },
       "sources": [
         { "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity", "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/", "published": "2025-07-10", "accessed_on": "2026-08-21", "source_type": "research_report" },
@@ -278,6 +282,7 @@
     {
       "evidence_id": "TT-2025-UK-M365-DAY",
       "title": { "en": "Cross-government office task bundle", "fr": "Ensemble de tâches bureautiques interadministrations" },
+      "reader_summary": { "en": "Employees reported saving time during mixed office work, but no one timed the same tasks before and after. These figures provide context and do not enter your calculation.", "fr": "Des employés ont déclaré gagner du temps dans un ensemble de tâches bureautiques, mais personne n’a chronométré les mêmes tâches avant et après. Ces chiffres donnent du contexte et n’entrent pas dans votre calcul." },
       "organization_context": { "kind": "public_administration", "name": "UK cross-government Microsoft 365 Copilot trial", "region": "United Kingdom" },
       "task_contract": {
         "profile_id": "office_day_bundle",
@@ -301,7 +306,7 @@
         "absolute_saving": { "value": 26, "unit": "self-reported minutes per workday", "direction": "decrease" },
         "outcome_change": null,
         "quality_change": null,
-        "notes": { "en": "The average uses midpoints of self-reported bands and caps the largest band at 60 minutes. It does not show how much of the saved time became delivered public outcomes.", "fr": "La moyenne utilise le milieu de plages déclarées et plafonne la plage la plus élevée à 60 minutes. Elle ne montre pas quelle part du temps déclaré a produit un résultat public livré." }
+        "notes": { "en": "Participants estimated how much time they saved across a mixed office day. The evaluation did not time each task before and after or connect every reported saving to a finished result.", "fr": "Les participants ont estimé le temps gagné pendant une journée bureautique variée. L’évaluation n’a pas chronométré chaque tâche avant et après ni relié chaque gain déclaré à un résultat terminé." }
       },
       "transfer": {
         "quantitative_use": "context_only",
@@ -309,8 +314,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["draft", "reviewed"],
         "expertise_levels": ["developing", "mixed", "experienced"],
-        "preconditions": { "en": "Use only as a comparison for a similarly mixed office day and collect objective task logs locally.", "fr": "Utilisez-la seulement comme comparaison pour une journée bureautique tout aussi mixte et collectez localement des temps objectifs par tâche." },
-        "limits": { "en": "No baseline denominator or paired active-time measurement supports a transferable percentage.", "fr": "Aucun dénominateur initial ni mesure appariée du temps actif ne permet de transférer un pourcentage." }
+        "preconditions": { "en": "Use it to decide which office tasks to measure locally, then record real time for each task.", "fr": "Utilisez-la pour choisir les tâches bureautiques à mesurer chez vous, puis chronométrez réellement chaque tâche." },
+        "limits": { "en": "Because the same tasks were not timed before and after, the reported percentage cannot be reused in your estimate.", "fr": "Comme les mêmes tâches n’ont pas été chronométrées avant et après, le pourcentage déclaré ne peut pas être repris dans votre estimation." }
       },
       "sources": [
         { "title": "Microsoft 365 Copilot Experiment: Cross-Government Findings Report", "url": "https://www.gov.uk/government/publications/microsoft-365-copilot-experiment-cross-government-findings-report", "published": "2025-06", "accessed_on": "2026-08-21", "source_type": "official_evaluation" }
@@ -319,6 +324,7 @@
     {
       "evidence_id": "TT-2025-UK-CODING-ASSISTANTS",
       "title": { "en": "Public-sector coding assistant trial", "fr": "Essai d’assistants de code dans le secteur public" },
+      "reader_summary": { "en": "Participants reported daily time savings from coding assistants, but the trial lacked a reliable before-and-after time for each task. These figures do not enter your calculation.", "fr": "Les participants ont déclaré gagner du temps chaque jour avec des assistants de code, mais l’essai ne disposait pas d’un temps fiable avant et après pour chaque tâche. Ces chiffres n’entrent pas dans votre calcul." },
       "organization_context": { "kind": "public_administration", "name": "UK Government Digital Service coding assistant trial", "region": "United Kingdom" },
       "task_contract": {
         "profile_id": "software_mature_repo",
@@ -342,7 +348,7 @@
         "absolute_saving": { "value": 56, "unit": "self-reported minutes per workday", "direction": "decrease" },
         "outcome_change": { "value": 15.8, "unit": "percent of suggested code lines accepted", "direction": "not_applicable" },
         "quality_change": null,
-        "notes": { "en": "The time result is self-reported, task categories may overlap, optimism bias is possible, and one month of telemetry was missing.", "fr": "Le temps est déclaré, les catégories de tâches peuvent se chevaucher, un biais d’optimisme est possible et un mois de télémétrie manque." }
+        "notes": { "en": "Participants estimated their own daily savings. Some task categories overlap, people may overestimate gains, and one month of usage records was missing.", "fr": "Les participants ont estimé eux-mêmes leur gain quotidien. Certaines catégories se recouvrent, les gains peuvent être surestimés et un mois de données d’usage manquait." }
       },
       "transfer": {
         "quantitative_use": "context_only",
@@ -350,8 +356,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["reviewed", "production"],
         "expertise_levels": ["developing", "mixed", "experienced"],
-        "preconditions": { "en": "Use the telemetry and survey findings to design local measurements, not to price a task.", "fr": "Utilisez la télémétrie et l’enquête pour concevoir les mesures locales, pas pour chiffrer une tâche." },
-        "limits": { "en": "The reported daily saving cannot be converted into a per-task percentage without a task denominator.", "fr": "Le gain quotidien déclaré ne peut pas être converti en pourcentage par tâche sans dénominateur." }
+        "preconditions": { "en": "Use the trial to choose what to observe in your own pilot, not to assign a saving to one task.", "fr": "Utilisez l’essai pour choisir ce qu’il faut observer dans votre pilote, pas pour attribuer un gain à une tâche." },
+        "limits": { "en": "Without a reliable time for each task before the trial, the daily saving cannot become a per-task percentage.", "fr": "Sans temps fiable pour chaque tâche avant l’essai, le gain quotidien ne peut pas devenir un pourcentage par tâche." }
       },
       "sources": [
         { "title": "AI coding assistant trial: UK public sector findings report", "url": "https://www.gov.uk/government/publications/ai-coding-assistant-trial/ai-coding-assistant-trial-uk-public-sector-findings-report", "published": "2025-09-12", "accessed_on": "2026-08-21", "source_type": "official_evaluation" }
@@ -360,6 +366,7 @@
     {
       "evidence_id": "TT-2023-NBER-CUSTOMER-SUPPORT",
       "title": { "en": "Customer-support output in the field", "fr": "Production du support client sur le terrain" },
+      "reader_summary": { "en": "The study observed more support requests resolved per hour, especially among less-experienced staff. It did not measure fewer human minutes per accepted request, so it does not enter the time-saving calculation.", "fr": "L’étude a observé davantage de demandes résolues par heure, surtout chez les personnes moins expérimentées. Elle n’a pas mesuré une baisse du temps humain par demande acceptée, donc elle n’entre pas dans le calcul du temps économisé." },
       "organization_context": { "kind": "field_organization", "name": "Fortune 500 customer-support software deployment", "region": "Multiple countries" },
       "task_contract": {
         "profile_id": "customer_support",
@@ -383,7 +390,7 @@
         "absolute_saving": null,
         "outcome_change": { "value": 14, "unit": "percent more issues resolved per hour", "direction": "increase" },
         "quality_change": null,
-        "notes": { "en": "The study measures issues resolved per hour, not human minutes saved per accepted issue. Less-experienced agents benefited more.", "fr": "L’étude mesure les demandes résolues par heure, pas les minutes humaines économisées par demande acceptée. Les agents moins expérimentés ont davantage progressé." }
+        "notes": { "en": "The study compared support teams with and without AI suggestions. Teams resolved more requests per hour, with larger improvements among less-experienced staff.", "fr": "L’étude a comparé des équipes de support avec et sans suggestions de l’IA. Les équipes ont résolu davantage de demandes par heure, avec un effet plus important chez les personnes moins expérimentées." }
       },
       "transfer": {
         "quantitative_use": "context_only",
@@ -391,8 +398,8 @@
         "integration_modes": ["copilot"],
         "quality_gates": ["production"],
         "expertise_levels": ["developing", "mixed"],
-        "preconditions": { "en": "Match live support, suggestion-only use, comparable escalation, and outcome definitions.", "fr": "Faites correspondre le support réel, l’usage limité aux suggestions, les escalades et la définition du résultat." },
-        "limits": { "en": "An output-rate change is not a task-time reduction and must stay a separate capacity metric.", "fr": "Une variation du débit n’est pas une réduction du temps de tâche et doit rester une mesure de capacité distincte." }
+        "preconditions": { "en": "Use it to plan a support pilot with AI suggestions, human decisions, and similar escalation rules.", "fr": "Utilisez-la pour préparer un pilote de support avec suggestions de l’IA, décisions humaines et règles de transmission similaires." },
+        "limits": { "en": "More requests per hour can come from several changes. It does not prove how many human minutes one accepted request saves.", "fr": "Davantage de demandes par heure peut venir de plusieurs changements. Cela ne prouve pas combien de minutes humaines une demande acceptée économise." }
       },
       "sources": [
         { "title": "Generative AI at Work", "url": "https://www.nber.org/papers/w31161", "published": "2023-04", "accessed_on": "2026-08-21", "source_type": "working_paper" }
@@ -400,7 +407,8 @@
     },
     {
       "evidence_id": "TT-2025-ANTHROPIC-MODEL-ESTIMATE",
-      "title": { "en": "Model-estimated Claude conversation savings", "fr": "Gains estimés par modèle sur des conversations Claude" },
+      "title": { "en": "Claude’s own estimates from conversations", "fr": "Estimations de Claude à partir de conversations" },
+      "reader_summary": { "en": "Claude estimated how long conversation-defined tasks would take with and without AI. No one measured the complete work before and after, so these figures do not enter your calculation.", "fr": "Claude a estimé lui-même la durée de tâches définies par des conversations, avec et sans IA. Personne n’a mesuré le travail complet avant et après, donc ces chiffres n’entrent pas dans votre calcul." },
       "organization_context": { "kind": "frontier_ai_company", "name": "Anthropic", "region": "Global Claude.ai sample" },
       "task_contract": {
         "profile_id": "information_synthesis",
@@ -424,7 +432,7 @@
         "absolute_saving": null,
         "outcome_change": null,
         "quality_change": null,
-        "notes": { "en": "The range describes the reported concentration of model estimates. The method cannot see validation, refinement, or work after the conversation and lacks full real-world validation.", "fr": "La plage décrit la concentration annoncée des estimations du modèle. La méthode ne voit ni validation, ni correction, ni travail après la conversation et ne dispose pas d’une validation terrain complète." }
+        "notes": { "en": "Claude produced these estimates from anonymized conversations. The study did not time people completing the same task with and without AI.", "fr": "Claude a produit ces estimations à partir de conversations anonymisées. L’étude n’a pas chronométré des personnes réalisant la même tâche avec et sans IA." }
       },
       "transfer": {
         "quantitative_use": "context_only",
@@ -432,8 +440,8 @@
         "integration_modes": ["copilot", "agent"],
         "quality_gates": ["draft"],
         "expertise_levels": ["developing", "mixed", "experienced"],
-        "preconditions": { "en": "Use only to define an upper planning hypothesis that will be replaced by observed human-time logs.", "fr": "Utilisez-la seulement pour définir une hypothèse haute de planification qui sera remplacée par des temps humains observés." },
-        "limits": { "en": "Never present the model estimate as measured productivity or use it automatically in the transfer calculation.", "fr": "Ne présentez jamais l’estimation du modèle comme une productivité mesurée et ne l’utilisez pas automatiquement dans le calcul de transfert." }
+        "preconditions": { "en": "Use it only to imagine a very favourable scenario that your own pilot will test with real human-time records.", "fr": "Utilisez-la seulement pour imaginer un scénario très favorable que votre pilote testera avec de vrais relevés de temps humain." },
+        "limits": { "en": "The study does not measure checking, corrections, or work completed after the conversation. It therefore does not prove a productivity gain.", "fr": "L’étude ne mesure ni la vérification, ni les corrections, ni le travail terminé après la conversation. Elle ne prouve donc pas un gain de productivité." }
       },
       "sources": [
         { "title": "Estimating AI productivity gains from Claude conversations", "url": "https://www.anthropic.com/research/estimating-productivity-gains", "published": "2025-11-25", "accessed_on": "2026-08-21", "source_type": "research_report" }
@@ -441,7 +449,8 @@
     },
     {
       "evidence_id": "TT-2026-OPENAI-HARNESS-PROJECT",
-      "title": { "en": "Agent-first software project estimate", "fr": "Estimation d’un projet logiciel conçu pour les agents" },
+      "title": { "en": "Internal estimate from an agent-ready software project", "fr": "Estimation interne d’un projet logiciel préparé pour les agents" },
+      "reader_summary": { "en": "The team estimated that writing the code took about one tenth of the usual manual effort in an agent-ready environment. The same project was not built both ways, so the figure does not enter your calculation.", "fr": "L’équipe estime que l’écriture du code a demandé environ un dixième de l’effort manuel habituel dans un environnement préparé pour les agents. Le même projet n’a pas été réalisé des deux façons, donc ce chiffre n’entre pas dans votre calcul." },
       "organization_context": { "kind": "frontier_ai_company", "name": "OpenAI", "region": "Internal product team" },
       "task_contract": {
         "profile_id": "hard_automation_project",
@@ -465,7 +474,7 @@
         "absolute_saving": null,
         "outcome_change": { "value": 0, "unit": "manually written code lines", "direction": "not_applicable" },
         "quality_change": null,
-        "notes": { "en": "The team estimated roughly one tenth of the manual coding time. This is an internal project estimate from a purpose-built environment, not paired task-time evidence.", "fr": "L’équipe estime environ un dixième du temps nécessaire à l’écriture manuelle du code. Il s’agit d’une estimation interne dans un environnement conçu à cet effet, pas d’une mesure appariée du temps de tâche." }
+        "notes": { "en": "The team estimated the code-writing effort after building an environment designed for agents. It did not build the same product manually for a direct time comparison.", "fr": "L’équipe a estimé l’effort d’écriture du code après avoir créé un environnement conçu pour les agents. Elle n’a pas réalisé le même produit manuellement pour comparer directement les temps." }
       },
       "transfer": {
         "quantitative_use": "context_only",
@@ -473,8 +482,8 @@
         "integration_modes": ["agency"],
         "quality_gates": ["production"],
         "expertise_levels": ["experienced"],
-        "preconditions": { "en": "Transfer the mechanism only: agent-readable repository, executable specifications, tests, observability, review, and feedback loops.", "fr": "Transférez seulement le mécanisme : dépôt lisible par les agents, spécifications exécutables, tests, observabilité, revue et boucles de retour." },
-        "limits": { "en": "Do not transfer the 90% estimate to another project, organization, or task without paired local measurement.", "fr": "Ne transférez pas l’estimation de 90 % à un autre projet, une autre organisation ou une autre tâche sans mesure locale appariée." }
+        "preconditions": { "en": "Reuse the working method, not the percentage: clear specifications, automated tests, visible agent actions, human review, and feedback loops.", "fr": "Reprenez la méthode de travail, pas le pourcentage : consignes claires, tests automatiques, actions visibles des agents, revue humaine et boucles de retour." },
+        "limits": { "en": "The 90% estimate does not predict the result for another project. Measure your own project before claiming a gain.", "fr": "L’estimation de 90 % ne prédit pas le résultat d’un autre projet. Mesurez votre propre projet avant d’annoncer un gain." }
       },
       "sources": [
         { "title": "Harness engineering: leveraging Codex in an agent-first world", "url": "https://openai.com/index/harness-engineering/", "published": "2026-02-11", "accessed_on": "2026-08-21", "source_type": "internal_case" }

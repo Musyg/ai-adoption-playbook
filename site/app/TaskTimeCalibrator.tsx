@@ -66,24 +66,33 @@ const defaultProfileByPattern: Record<UsePatternId, string> = {
 const content = {
   en: {
     taskStep: "01 · Define one task",
-    taskProfile: "Closest measured task",
-    quality: "Required output state",
-    expertise: "Operator experience",
+    taskProfile: "What work do you want to estimate?",
+    quality: "How finished must the result be?",
+    expertise: "Who does this work today?",
     qualityOptions: { draft: "Draft to review", reviewed: "Reviewed output", production: "Production-ready result" },
-    expertiseOptions: { developing: "Developing", mixed: "Mixed", experienced: "Experienced" },
-    taskHelp: "Choose the output unit you can count repeatedly. The organization is deliberately absent because it changes controls, not the task benchmark.",
-    evidenceStep: "02 · Choose an evidence anchor",
-    evidenceHelp: "A comparable source can frame a test. Context-only evidence stays visible but cannot generate a transferable percentage.",
-    evidenceGrade: "Evidence grade",
+    expertiseOptions: { developing: "Still learning", mixed: "Mixed experience", experienced: "Experienced" },
+    taskHelp: "Choose one precise, repeated task, such as drafting an email or reviewing a case. We compare the work first, not the size of the organization.",
+    evidenceStep: "02 · Compare it with a real study",
+    evidenceHelp: "We look for research on work close to yours. A sufficiently similar study can suggest a starting range. Other studies remain useful examples but do not change the calculation.",
+    evidenceGrade: "Measure type",
     sample: "Sample",
-    source: "Open the primary source",
-    statuses: { compatible: "Comparable", partial: "Hypothesis only", context: "Context only", incompatible: "Not transferable" },
-    reasons: { task_profile: "different task", integration_mode: "different operating mode", quality_gate: "different quality gate", expertise_level: "different experience", context_only: "no measured transferable human-time ratio" },
-    noEvidence: "No source in the registry matches this task yet. Use the human-time account below and replace it with pilot observations.",
+    source: "Open the study or original source",
+    gradeHelpLabel: "What do A to E mean?",
+    gradeHelpTitle: "The letter describes how the figure was obtained, not whether it is good or bad.",
+    gradeHelpItems: ["A · People using AI were compared with people not using it", "B · Time was measured during real work", "C · Users estimated their own time", "D · The organization made an internal estimate", "E · The model made an estimate, or the figure is only a starting assumption"],
+    statuses: { compatible: "Can guide this estimate", partial: "Use with caution", context: "Example only", incompatible: "Too different" },
+    reasons: { task_profile: "different work", integration_mode: "different use of AI", quality_gate: "different finish level", expertise_level: "different experience", context_only: "no direct before-and-after human-time measure" },
+    noEvidence: "No study in the register measures this work closely enough. Start with your own human-time estimate below, then replace it with observations from the pilot.",
+    readerVerdicts: { usable: "CAN GUIDE THE STARTING ESTIMATE", context_only: "EXAMPLE ONLY · NOT USED IN THE CALCULATION" },
+    readerUse: { usable: "The calculator may use this measure when your task and conditions are sufficiently similar.", context_only: "The figure remains visible for context, but it is not added to your estimated saving." },
+    readerDetails: "See what was measured and what it does not prove",
+    readerMeasured: "What the study actually measured",
+    readerConditions: "When it is useful",
+    readerLimits: "What you must not conclude",
     timeStep: "03 · Count the human time that remains",
     baseline: "Human minutes without AI",
     cases: "Cases per month",
-    eligible: "Share genuinely eligible",
+    eligible: "Share of cases AI can actually handle",
     components: "Open the human-time breakdown",
     componentsHelp: "Machine runtime is separate. Enter only minutes spent by people, including review and failed cases.",
     preparation: "Preparation and context",
@@ -96,57 +105,69 @@ const content = {
     amortization: "Spread setup over",
     units: { minutes: "min", cases: "cases", percent: "%", hours: "hours", months: "months" },
     results: {
-      heading: "Net human-time reduction during setup amortization",
-      planningEvidence: "external evidence constrained by your declared human work",
-      planningLocal: "editable local hypothesis, no transferable source",
+      heading: "Estimated time saving, including setup",
+      planningEvidence: "starting estimate based on a similar study and your settings",
+      planningLocal: "starting scenario to verify in your pilot",
       planningUnavailable: "enter at least one eligible case before calculating",
-      baseline: "Eligible human workload today",
-      recurring: "Recurring human time with AI",
-      recurringGain: "Recurring reduction before setup",
-      setupPerCase: "Setup allocated to each case",
-      withAi: "Net human time per case during amortization",
-      low: "Low net case",
-      central: "Central net case",
-      high: "High net case",
-      payback: "Setup payback range",
-      perMonth: "human hours per month",
-      localFloor: "local floor before setup",
-      localScenario: "One local scenario, not a range",
-      noRange: "No low / central / high range is shown because the selected source is not transferable.",
+      baseline: "Human time currently spent on relevant cases",
+      recurring: "Human time that would remain per case",
+      recurringGain: "Time saved before setup is included",
+      setupPerCase: "Setup minutes added to each case",
+      withAi: "Total human time per case, including setup",
+      low: "Cautious estimate",
+      central: "Middle estimate",
+      high: "Most favourable estimate",
+      payback: "Time until the savings cover setup",
+      perMonth: "human hours saved per month",
+      localFloor: "your total for preparation, oversight, checking, corrections, and exceptions",
+      localScenario: "Your starting scenario",
+      noRange: "Only one editable scenario is shown because the selected study does not provide a reliable range for this calculation.",
     },
-    modeEffect: "WHAT THIS MODE CHANGES",
-    modeEffectLead: "This level pre-fills setup effort and changes evidence comparability. It does not invent a recurring productivity gain.",
-    modeEffectRecurring: "Your declared recurring human work remains",
-    modeEffectNet: "Before setup allocation, that assumption represents",
+    modeEffect: "WHY THE RESULT CHANGES",
+    modeEffectLead: "This choice mainly changes the setup effort and which studies can be compared. It does not automatically add a productivity gain.",
+    modeEffectRecurring: "For each case, you entered this much remaining human work:",
+    modeEffectNet: "Before counting setup, this represents",
     modeEffectNetSuffix: "less human time. The net result then adds",
-    modeEffectSetupSuffix: "per case during amortization.",
+    modeEffectSetupSuffix: "per case during the period you chose for spreading the setup effort.",
     modeEffectSetupUnavailable: "Setup per case and the net result remain unavailable until at least one case is eligible.",
-    evidenceRange: "Unadjusted source range on the comparable task",
-    evidenceBlocked: "This source does not produce a transferable range for the selected contract.",
+    evidenceRange: "Figures published by the study",
+    evidenceReference: "Study reference",
+    evidenceBlocked: "These figures remain visible for information, but they are not added to your estimate.",
+    calculationLabel: "See the exact calculation",
+    calculationPlain: "The calculator keeps whichever is larger: the time suggested by the study or the human time you entered. It then adds the share of setup assigned to one case.",
     negative: "A negative value means the scenario consumes more human time than the current process.",
     zeroEligible: "No net range is calculated at 0% eligibility because setup cannot be allocated to an eligible case.",
-    boundary: "For each source point, the engine keeps the greater of the source-implied residual time and your declared human-work floor, then adds amortized setup. This avoids double counting while preventing hidden oversight. The pilot must replace every planning input with observations.",
+    boundary: "The calculator never removes the preparation, checking, corrections, and exception work that you entered. It then adds a share of the setup effort to each eligible case. Treat the result as a starting estimate and replace it with observed time during the pilot.",
   },
   fr: {
     taskStep: "01 · Définir une seule tâche",
-    taskProfile: "Tâche mesurée la plus proche",
-    quality: "État exigé du résultat",
-    expertise: "Expérience de l’opérateur",
+    taskProfile: "Quel travail voulez-vous estimer ?",
+    quality: "À quel point le résultat doit-il être terminé ?",
+    expertise: "Qui réalise ce travail aujourd’hui ?",
     qualityOptions: { draft: "Brouillon à relire", reviewed: "Résultat relu", production: "Résultat prêt pour la production" },
-    expertiseOptions: { developing: "En développement", mixed: "Mixte", experienced: "Expérimentée" },
-    taskHelp: "Choisissez une unité de résultat que vous pouvez compter plusieurs fois. L’organisation est volontairement absente, car elle modifie les contrôles, pas la référence de la tâche.",
-    evidenceStep: "02 · Choisir un ancrage de preuve",
-    evidenceHelp: "Une source comparable peut encadrer un test. Une source seulement contextuelle reste visible, mais ne peut pas générer un pourcentage transférable.",
-    evidenceGrade: "Niveau de preuve",
+    expertiseOptions: { developing: "Encore en apprentissage", mixed: "Expérience variée", experienced: "Expérimentée" },
+    taskHelp: "Choisissez une tâche précise et répétée, par exemple rédiger un courriel ou examiner un dossier. Nous comparons d’abord le travail à faire, pas la taille de l’organisation.",
+    evidenceStep: "02 · Comparer avec une étude réelle",
+    evidenceHelp: "Nous cherchons une étude portant sur un travail proche du vôtre. Si elle est assez similaire, elle peut proposer une fourchette de départ. Les autres études restent des exemples, mais ne modifient pas le calcul.",
+    evidenceGrade: "Type de mesure",
     sample: "Échantillon",
-    source: "Ouvrir la source primaire",
-    statuses: { compatible: "Comparable", partial: "Hypothèse seulement", context: "Contexte seulement", incompatible: "Non transférable" },
-    reasons: { task_profile: "tâche différente", integration_mode: "mode opératoire différent", quality_gate: "seuil de qualité différent", expertise_level: "expérience différente", context_only: "aucun ratio mesuré et transférable de temps humain" },
-    noEvidence: "Aucune source du registre ne correspond encore à cette tâche. Utilisez le décompte du temps humain ci-dessous, puis remplacez-le par les observations du pilote.",
+    source: "Ouvrir l’étude ou la source d’origine",
+    gradeHelpLabel: "Que signifient les lettres A à E ?",
+    gradeHelpTitle: "La lettre indique comment le chiffre a été obtenu, pas s’il est bon ou mauvais.",
+    gradeHelpItems: ["A · Des personnes avec IA ont été comparées à des personnes sans IA", "B · Le temps a été mesuré pendant un vrai travail", "C · Les utilisateurs ont estimé eux-mêmes leur temps", "D · L’organisation a produit une estimation interne", "E · Le modèle a produit une estimation, ou le chiffre est seulement une hypothèse de départ"],
+    statuses: { compatible: "Peut guider cette estimation", partial: "À utiliser avec prudence", context: "Exemple seulement", incompatible: "Trop différente" },
+    reasons: { task_profile: "travail différent", integration_mode: "usage de l’IA différent", quality_gate: "niveau de finition différent", expertise_level: "expérience différente", context_only: "aucune mesure directe du temps humain avant et après" },
+    noEvidence: "Aucune étude du registre ne mesure un travail suffisamment proche. Commencez avec votre propre estimation du temps humain ci-dessous, puis remplacez-la par les observations du pilote.",
+    readerVerdicts: { usable: "PEUT GUIDER L’ESTIMATION DE DÉPART", context_only: "EXEMPLE SEULEMENT · NON UTILISÉ DANS LE CALCUL" },
+    readerUse: { usable: "Le calculateur peut utiliser cette mesure si votre tâche et vos conditions sont suffisamment proches.", context_only: "Le chiffre reste visible pour vous informer, mais il n’est pas ajouté au gain estimé." },
+    readerDetails: "Voir ce qui a été mesuré et ce que cela ne prouve pas",
+    readerMeasured: "Ce que l’étude a réellement mesuré",
+    readerConditions: "Quand cette étude est utile",
+    readerLimits: "Ce qu’il ne faut pas en conclure",
     timeStep: "03 · Compter le temps humain qui reste",
     baseline: "Minutes humaines sans IA",
     cases: "Cas par mois",
-    eligible: "Part réellement éligible",
+    eligible: "Part des cas que l’IA peut réellement traiter",
     components: "Ouvrir la décomposition du temps humain",
     componentsHelp: "Le temps machine reste séparé. Saisissez uniquement les minutes des personnes, y compris la revue et les cas en échec.",
     preparation: "Préparation et contexte",
@@ -159,36 +180,39 @@ const content = {
     amortization: "Répartir la mise en place sur",
     units: { minutes: "min", cases: "cas", percent: "%", hours: "heures", months: "mois" },
     results: {
-      heading: "Réduction nette du temps humain pendant l’amortissement",
-      planningEvidence: "preuve externe contrainte par le travail humain déclaré",
-      planningLocal: "hypothèse locale modifiable, sans source transférable",
+      heading: "Gain de temps estimé, mise en place comprise",
+      planningEvidence: "estimation de départ fondée sur une étude similaire et vos réglages",
+      planningLocal: "scénario de départ à vérifier dans votre pilote",
       planningUnavailable: "saisissez au moins un cas éligible avant le calcul",
-      baseline: "Charge humaine éligible actuelle",
-      recurring: "Temps humain récurrent avec IA",
-      recurringGain: "Réduction récurrente hors mise en place",
-      setupPerCase: "Mise en place répartie sur chaque cas",
-      withAi: "Temps humain net par cas pendant l’amortissement",
-      low: "Cas net bas",
-      central: "Cas net central",
-      high: "Cas net haut",
-      payback: "Fourchette d’amortissement",
-      perMonth: "heures humaines par mois",
-      localFloor: "plancher local avant mise en place",
-      localScenario: "Un scénario local, pas une fourchette",
-      noRange: "Aucune fourchette basse / centrale / haute n’est affichée, car la source sélectionnée n’est pas transférable.",
+      baseline: "Temps humain actuel sur les cas concernés",
+      recurring: "Temps humain qui resterait par cas",
+      recurringGain: "Temps économisé avant de compter la mise en place",
+      setupPerCase: "Minutes de mise en place ajoutées à chaque cas",
+      withAi: "Temps humain total par cas, mise en place comprise",
+      low: "Estimation prudente",
+      central: "Estimation centrale",
+      high: "Estimation la plus favorable",
+      payback: "Temps nécessaire pour que les gains couvrent la mise en place",
+      perMonth: "heures humaines économisées par mois",
+      localFloor: "votre total de préparation, supervision, vérification, corrections et exceptions",
+      localScenario: "Votre scénario de départ",
+      noRange: "Un seul scénario modifiable est affiché, car l’étude sélectionnée ne fournit pas de fourchette fiable pour ce calcul.",
     },
-    modeEffect: "CE QUE CE MODE CHANGE",
-    modeEffectLead: "Ce niveau préremplit l’effort de mise en place et modifie la comparabilité des sources. Il n’invente pas un gain récurrent.",
-    modeEffectRecurring: "Votre travail humain récurrent déclaré reste de",
-    modeEffectNet: "Hors répartition de la mise en place, cette hypothèse représente",
+    modeEffect: "POURQUOI LE RÉSULTAT CHANGE",
+    modeEffectLead: "Ce choix modifie surtout le temps de mise en place et les études que l’on peut comparer. Il n’ajoute pas automatiquement un gain de productivité.",
+    modeEffectRecurring: "Pour chaque cas, vous avez indiqué ce temps humain restant :",
+    modeEffectNet: "Avant de compter la mise en place, cela représente",
     modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
-    modeEffectSetupSuffix: "par cas pendant l’amortissement.",
+    modeEffectSetupSuffix: "par cas pendant la période choisie pour répartir la mise en place.",
     modeEffectSetupUnavailable: "La mise en place par cas et le résultat net restent indisponibles tant qu’aucun cas n’est éligible.",
-    evidenceRange: "Plage brute de la source pour la tâche comparable",
-    evidenceBlocked: "Cette source ne produit aucune plage transférable pour le contrat sélectionné.",
+    evidenceRange: "Chiffres publiés par l’étude",
+    evidenceReference: "Référence de l’étude",
+    evidenceBlocked: "Ces chiffres restent visibles pour vous informer, mais ils ne sont pas ajoutés à votre estimation.",
+    calculationLabel: "Voir le calcul exact",
+    calculationPlain: "Le calculateur conserve le temps le plus élevé entre celui suggéré par l’étude et celui que vous avez saisi. Il ajoute ensuite la part du temps de mise en place attribuée à un cas.",
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
     zeroEligible: "Aucune fourchette nette n’est calculée avec 0 % d’éligibilité, car la mise en place ne peut être répartie sur un cas éligible.",
-    boundary: "Pour chaque point de la source, le moteur conserve le plus grand temps entre le résiduel déduit de la source et votre plancher de travail humain, puis ajoute la mise en place amortie. Cette règle évite le double comptage sans masquer le contrôle humain. Le pilote doit remplacer chaque paramètre par une observation.",
+    boundary: "Le calculateur ne supprime jamais le temps de préparation, de vérification, de correction et de gestion des exceptions que vous avez saisi. Il ajoute ensuite une part du temps de mise en place à chaque cas éligible. Considérez le résultat comme une estimation de départ, puis remplacez-le par le temps observé pendant le pilote.",
   },
 } as const;
 
@@ -281,6 +305,7 @@ export function TaskTimeCalibrator({
     setSelectedEvidenceId("");
   };
   const reasonText = (status: CompatibilityStatus, reasons: string[]) => {
+    if (status === "context") return t.statuses.context;
     const translated = reasons.map((reason) => t.reasons[reason as keyof typeof t.reasons]).filter(Boolean);
     return translated.length ? `${t.statuses[status]}: ${translated.join(", ")}` : t.statuses[status];
   };
@@ -311,8 +336,16 @@ export function TaskTimeCalibrator({
 
         <section className="task-time-evidence" aria-labelledby="task-time-evidence-title">
           <header><span>02</span><div><h3 id="task-time-evidence-title">{t.evidenceStep}</h3><p>{t.evidenceHelp}</p></div></header>
-          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => setSelectedEvidenceId(record.evidence_id)} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade} {record.measurement.evidence_grade}{record.measurement.sample_size ? ` · ${t.sample} ${record.measurement.sample_size}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
-          {selectedRecord && <article className="task-time-evidence-detail" data-compatibility={selectedCompatibility?.status}><div><span>{selectedRecord.evidence_id}</span><strong>{selectedRecord.measurement.notes[locale]}</strong><p>{selectedRecord.transfer.limits[locale]}</p></div><a href={selectedRecord.sources[0].url} rel="noreferrer" target="_blank">{t.source} ↗</a></article>}
+          <details className="task-time-grade-help">
+            <summary>{t.gradeHelpLabel}<span aria-hidden="true">?</span></summary>
+            <div><strong>{t.gradeHelpTitle}</strong><ul>{t.gradeHelpItems.map((item) => <li key={item}>{item}</li>)}</ul></div>
+          </details>
+          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => setSelectedEvidenceId(record.evidence_id)} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade} {record.measurement.evidence_grade}{record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
+          {selectedRecord && <article className="task-time-evidence-detail" data-compatibility={selectedCompatibility?.status}>
+            <div className="task-time-evidence-plain"><span>{t.readerVerdicts[selectedRecord.transfer.quantitative_use]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{t.readerUse[selectedRecord.transfer.quantitative_use]}</p></div>
+            <a href={selectedRecord.sources[0].url} rel="noreferrer" target="_blank">{t.source} ↗</a>
+            <details><summary>{t.readerDetails}<span aria-hidden="true">+</span></summary><dl><div><dt>{t.readerMeasured}</dt><dd>{selectedRecord.measurement.notes[locale]}</dd></div><div><dt>{t.readerConditions}</dt><dd>{selectedRecord.transfer.preconditions[locale]}</dd></div><div><dt>{t.readerLimits}</dt><dd>{selectedRecord.transfer.limits[locale]}</dd></div></dl></details>
+          </article>}
         </section>
       </div>
 
@@ -355,12 +388,12 @@ export function TaskTimeCalibrator({
             </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{t.results.noRange}</small></p>}
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
-          <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
-          {netCalculable ? <p className="calibrator-equation">max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong> {locale === "en" ? "net in the central case" : "nettes dans le cas central"}</p> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
+          <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatPercent(transferableRange.low.reduction_fraction, locale)}–{formatPercent(transferableRange.central.reduction_fraction, locale)}–{formatPercent(transferableRange.high.reduction_fraction, locale)}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
+          {netCalculable ? <details className="calibrator-equation calibrator-equation-details"><summary>{t.calculationLabel}<span aria-hidden="true">+</span></summary><p>{t.calculationPlain}</p><code>max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong></code></details> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
           {netCalculable && (netScenarios.low.reduction_fraction ?? 0) < 0 && <p className="task-time-negative">{t.negative}</p>}
         </output>
       </div>
-      <aside className="calibrator-note"><strong>{locale === "en" ? "HOW THE NET RANGE IS BUILT" : "COMMENT LA FOURCHETTE NETTE EST CONSTRUITE"}</strong><p>{t.boundary}</p></aside>
+      <aside className="calibrator-note"><strong>{locale === "en" ? "HOW THE ESTIMATED SAVING IS CALCULATED" : "COMMENT LE GAIN DE TEMPS EST CALCULÉ"}</strong><p>{t.boundary}</p></aside>
     </>
   );
 }

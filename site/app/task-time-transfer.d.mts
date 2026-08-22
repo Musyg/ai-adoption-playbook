@@ -13,6 +13,7 @@ export type FractionRange = { low: number; central: number; high: number };
 export type TaskTimeEvidenceRecord = {
   evidence_id: string;
   title: LocalizedText;
+  reader_summary: LocalizedText;
   organization_context: { kind: string; name: string; region: string };
   task_contract: {
     profile_id: string;
