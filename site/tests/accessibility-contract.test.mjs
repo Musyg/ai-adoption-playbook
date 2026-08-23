@@ -22,7 +22,8 @@ test("the brand accessible name matches its visible label", () => {
 
 test("theme-aware surfaces preserve readable control contrast", () => {
   assert.match(styles, /\.evidence-controls \{ background: var\(--surface\); color: var\(--ink\);/);
-  assert.match(styles, /\.evidence-controls input \{ background: var\(--paper\); border: 1px solid var\(--line\); color: var\(--ink\);/);
+  assert.match(styles, /\.evidence-controls > div input \{ background: var\(--paper\); border: 1px solid var\(--line\); color: var\(--ink\);/);
+  assert.match(styles, /\.evidence-prerequisite label input \{ accent-color: var\(--blue-deep\);/);
   assert.match(styles, /\.calibrator-levels button:hover \{ background: var\(--dark\); border-color: var\(--blue\); color: var\(--dark-text\);/);
   assert.match(styles, /\.calibrator-levels button:hover :is\(strong, span\) \{ color: var\(--dark-text\); \}/);
   assert.match(styles, /\.calibrator-levels button\[aria-pressed="true"\] span, \.calibrator-levels button\[aria-pressed="true"\]:hover span \{ color: var\(--blue\); \}/);

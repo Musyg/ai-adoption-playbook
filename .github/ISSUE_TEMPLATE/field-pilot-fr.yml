@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Coordination publique uniquement — aucune preuve brute
+        ## Coordination publique uniquement : aucune preuve brute
 
         Cette issue sert à coordonner un pilote possible. Ce n’est **pas** un rapport terrain et elle ne valide pas le playbook.
 
@@ -29,7 +29,7 @@ body:
         - Indépendant
         - TPE
         - PME
-        - Association ou fondation
+        - Association / fondation
         - Service public
     validations:
       required: true
@@ -38,27 +38,57 @@ body:
     id: use_pattern
     attributes:
       label: Mode d’usage de l’IA
-      description: Choisissez le travail principal du système. Cette question est distincte de l’autonomie et du niveau d’intégration.
+      description: Choisissez le travail principal du système. Cette question est distincte du mode de travail, de l’architecture et de la limite d’action.
       options:
-        - Génération assistée
-        - Recherche contrôlée ou RAG
-        - Classification ou extraction
-        - Prévision ou notation
-        - Conversation externe ou chatbot
-        - Traitement multimodal
-        - Action agentique
+        - Génération
+        - Recherche augmentée
+        - Extraction et classification
+        - Prédiction et recommandation
+        - Conversation
+        - Multimodal
+        - Action avec des outils
         - Non décidé
     validations:
       required: true
 
   - type: dropdown
-    id: integration
+    id: work_mode
     attributes:
-      label: Niveau d’intégration visé
+      label: Mode de travail visé
+      description: Choisissez comment les personnes et l’IA se partageront le travail.
       options:
-        - Copilote A0–A1
-        - Agent métier A2–A3
-        - Agence orchestrée A3–A4
+        - Copilote
+        - Automatisation bornée
+        - Automatisation forte
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture visée
+      description: Choisissez ce que contiendra le système. Ce choix ne fixe pas son autorité.
+      options:
+        - Un modèle ou assistant
+        - Processus outillé
+        - Un agent métier
+        - Équipe d’agents orchestrée
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: autonomy_level
+    attributes:
+      label: Limite d’action exacte
+      description: Choisissez ce que le système pourra faire sans qu’une personne réalise chaque étape.
+      options:
+        - A0 · conseil uniquement
+        - A1 · recherche ou brouillon
+        - A2 · action après approbation explicite
+        - A3 · actions autonomes bornées
+        - A4 · autonomie large et multi-systèmes
         - Non décidé
     validations:
       required: true
@@ -71,7 +101,7 @@ body:
       options:
         - Suisse
         - Union européenne
-        - Suisse et Union européenne
+        - Suisse + UE
     validations:
       required: true
 
@@ -80,7 +110,7 @@ body:
     attributes:
       label: Extension sectorielle
       options:
-        - Général ou transverse
+        - Général / transverse
         - Santé
         - Éducation
         - Finance

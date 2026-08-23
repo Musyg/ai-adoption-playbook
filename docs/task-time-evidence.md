@@ -8,17 +8,23 @@ an explicit acceptance threshold. Organization type is a context overlay for
 law, governance, data, procurement, scale, and controls. It is not the benchmark
 category.
 
-## Keep the operating modes separate
+## Keep work mode, architecture, and authority separate
 
-| Mode | What the system does | Typical autonomy |
-|---|---|---:|
-| Copilot | Prepares, retrieves, analyzes, or suggests while a person operates every cycle | A0 to A1 |
-| Bounded automation | Completes an eligible process with authorized tools and escalates exceptions | A1 to A3 |
-| Hard automation | Coordinates long-horizon work across several agents or tools under stronger controls | A3 to A4 |
+| Work mode | What moves | Human role |
+|---|---|---|
+| Copilot | One assisted step | Operates every cycle and performs the external actions |
+| Bounded automation | A defined share of an eligible process | Approves specified effects and handles exceptions |
+| Strong automation | Most eligible work from start to finish | Sets goals and limits, reviews results, and handles exceptions |
 
 Multiple agents or large scale do not automatically make a system A4. Autonomy
 is determined by the effects the system may produce without a person, not by
 the reputation or size of the organization using it.
+
+The registry uses `work_mode` for the work-sharing choice above. A model,
+fixed workflow, single agent, or orchestrated team is recorded separately, as
+is the exact A0 to A4 authority level. A study remains transferable when its
+task, accepted output, human role, and operating conditions are close enough;
+organization type alone neither permits nor prevents transfer.
 
 ## Count human time, machine time, and elapsed time separately
 
@@ -81,21 +87,23 @@ transfer.
 
 ## Transfer states
 
-The calculator checks four minimum gates:
+The calculator compares six parts of the task contract:
 
 1. the target task profile;
-2. the operating mode;
-3. the required output state;
-4. operator experience.
+2. the work mode;
+3. the architecture;
+4. the exact A0 to A4 action boundary;
+5. the required output state;
+6. operator experience.
 
 It returns one of four states:
 
 | State | Meaning |
 |---|---|
 | Comparable | The source may frame a low, central, and high test range |
-| Hypothesis only | The task matches, but one context gate differs and must be adjusted locally |
+| Use with caution | The task matches, but one or more conditions differ. The range remains usable as a starting point and the differences stay visible. |
 | Context only | The source informs design but has no transferable human-time ratio |
-| Not transferable | The task or operating mode is different |
+| Not transferable | The underlying task is too different for a quantitative transfer |
 
 These are minimum gates, not proof of equivalence. Before using a source, also
 compare input complexity, output unit, model and tool access, verifiability,
@@ -144,19 +152,19 @@ Every worked-case result remains a grade E planning hypothesis. An external
 anchor can explain a mechanism or frame a separate range, but it never upgrades
 the synthetic case result.
 
-| Worked case | Task profile | Mode | External anchor use |
-|---|---|---|---|
-| Micro-business customer requests | Customer support | Copilot A1 | Output-rate context only |
-| SME B2B quotes | Knowledge analysis | Agent A2 | Copilot mechanism context only |
-| Nonprofit grant dossiers | Information synthesis | Agent A2 | Analysis context only |
-| Public planning dossiers | Information synthesis | Agent A2 | Analysis context only |
-| Independent client follow-up | Professional writing | Copilot A1 | Comparable range may be tested separately |
-| Independent follow-up agent | Customer support | Agent A2 | Output-rate context only |
-| Orchestrated diagnostic | Hard automation project | Agency A3 | Harness mechanism only |
-| Read-only procedure RAG | Information synthesis | Copilot A1 | No admitted time anchor |
-| Predictive demand forecast | Predictive decision support | Copilot A0 | No human-time ratio transferred |
-| External customer chatbot | Customer support | Copilot A1 | Staff-support outcome context only |
-| Multimodal catalogue review | Multimodal review | Copilot A1 | No admitted time anchor |
+| Worked case | Task profile | Work mode | Architecture | A | External anchor use |
+|---|---|---|---|---:|---|
+| Micro-business customer requests | Customer support | Copilot | Tool-assisted workflow | A1 | Output-rate context only |
+| SME B2B quotes | Knowledge analysis | Bounded automation | Business agent | A2 | Copilot mechanism context only |
+| Nonprofit grant dossiers | Information synthesis | Bounded automation | Business agent | A2 | Analysis context only |
+| Public planning dossiers | Information synthesis | Bounded automation | Business agent | A2 | Analysis context only |
+| Independent client follow-up | Professional writing | Copilot | One model | A1 | Comparable range may be tested separately |
+| Independent follow-up agent | Customer support | Bounded automation | Business agent | A2 | Output-rate context only |
+| Orchestrated diagnostic | Strong-automation project | Strong automation | Orchestrated team | A3 | Harness mechanism only |
+| Read-only procedure RAG | Information synthesis | Copilot | Tool-assisted workflow | A1 | No admitted time anchor |
+| Predictive demand forecast | Predictive decision support | Copilot | One model | A0 | No human-time ratio transferred |
+| External customer chatbot | Customer support | Copilot | Tool-assisted workflow | A1 | Staff-support outcome context only |
+| Multimodal catalogue review | Multimodal review | Copilot | One model | A1 | No admitted time anchor |
 
 The registry stores the complete rationale and the corresponding example files.
 This mapping is based on the task contract, not the organization label.

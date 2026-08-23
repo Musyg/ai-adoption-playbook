@@ -13,6 +13,12 @@ Cette matrice sert au triage interne. Elle ne remplace ni une analyse juridique,
 
 Un cas passe au niveau supérieur dès qu’une caractéristique supérieure est présente. La fréquence et l’échelle peuvent également augmenter le niveau.
 
+Le triage interactif applique cette règle mécaniquement : une information ou un
+conseil A0 à faible impact relève de R0 ; la même situation avec une assistance
+A1 ou supérieure relève de R1 ; un impact significatif, des données personnelles
+ou sensibles, ou une interaction externe directe imposent au moins R2 ; un
+impact élevé ou une décision automatisée sur une personne impose R3.
+
 ## Axe 2 — Autonomie technique
 
 | Niveau | Capacité |
@@ -28,10 +34,16 @@ Un cas passe au niveau supérieur dès qu’une caractéristique supérieure est
 | Combinaison | Contrôle minimal |
 |---|---|
 | R0–R1 / A0–A1 | Propriétaire, règles de données, tests métier, journal des changements |
-| R1–R2 / A2 | Approbation qualifiée, validation des sorties, journal complet, rollback |
+| R1–R2 / A2 | Approbation qualifiée, validation des sorties, journal complet, retour testé |
 | R2 / A3 | Modèle de menace, moindre privilège, limites, surveillance, tests adversariaux |
 | R3 / tout niveau | Qualification juridique, évaluation d’impact, gouvernance formelle, audit et recours humain |
 | Tout risque / A4 | Exception de direction documentée, preuve qu’A3 est insuffisant, confinement renforcé et audit indépendant |
+
+Le tableau donne des repères minimaux, pas chaque paire possible. Pour une
+combinaison qui n’apparaît pas mot pour mot, appliquez toutes les lignes qui
+correspondent à l’un des deux axes et conservez le contrôle le plus strict. Par
+exemple, R2/A1 garde les protections R2 ; R1/A3 garde le modèle de menace, le
+moindre privilège, la surveillance et les tests adversariaux d’A3.
 
 ## Questions de triage
 

@@ -14,7 +14,8 @@ recalibrated result remain three distinct objects in the same learning cycle.
 Before live observation, record:
 
 - a non-identifying project alias and one exact workflow;
-- organization type, sector overlay, integration level, and system version;
+- organization type, sector overlay, work mode, architecture, exact A0–A4
+  action boundary, and system version;
 - manual baseline, full request denominator, eligibility rule, exclusions, and
   preregistered thresholds;
 - transferable sources, their comparability contract, the planned net range,

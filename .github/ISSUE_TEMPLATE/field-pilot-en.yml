@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Public intake only — no raw evidence
+        ## Public intake only: no raw evidence
 
         This issue coordinates a possible pilot. It is **not** a field report and cannot validate the playbook.
 
@@ -26,10 +26,10 @@ body:
     attributes:
       label: Organization path
       options:
-        - Independent professional
+        - Independent
         - Micro-business
         - SME
-        - Nonprofit or foundation
+        - Nonprofit / foundation
         - Public service
     validations:
       required: true
@@ -38,27 +38,57 @@ body:
     id: use_pattern
     attributes:
       label: AI use pattern
-      description: Choose the main job the system performs. This is separate from autonomy and integration level.
+      description: Choose the main job the system performs. This is separate from the work mode, architecture, and action boundary.
       options:
-        - Assisted generation
-        - Controlled retrieval or RAG
-        - Classification or extraction
-        - Prediction or scoring
-        - External conversation or chatbot
-        - Multimodal processing
+        - Generation
+        - Retrieval
+        - Extraction and classification
+        - Prediction and recommendation
+        - Conversation
+        - Multimodal
         - Agentic action
         - Not decided
     validations:
       required: true
 
   - type: dropdown
-    id: integration
+    id: work_mode
     attributes:
-      label: Intended integration level
+      label: Intended work mode
+      description: Choose how people and AI will share the work.
       options:
-        - Copilot A0–A1
-        - Business agent A2–A3
-        - Orchestrated agency A3–A4
+        - Copilot
+        - Bounded automation
+        - Strong automation
+        - Not decided
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Intended architecture
+      description: Choose what the system will contain. This does not set its authority.
+      options:
+        - One model or assistant
+        - Tool-assisted workflow
+        - One business agent
+        - Orchestrated agent team
+        - Not decided
+    validations:
+      required: true
+
+  - type: dropdown
+    id: autonomy_level
+    attributes:
+      label: Exact action boundary
+      description: Choose what the system may do without a person carrying each step.
+      options:
+        - A0 · advice only
+        - A1 · research or draft
+        - A2 · action after explicit approval
+        - A3 · bounded autonomous actions
+        - A4 · broad multi-system autonomy
         - Not decided
     validations:
       required: true
@@ -71,7 +101,7 @@ body:
       options:
         - Switzerland
         - European Union
-        - Switzerland and European Union
+        - Switzerland + EU
     validations:
       required: true
 
@@ -80,7 +110,7 @@ body:
     attributes:
       label: Sector overlay
       options:
-        - General or cross-sector
+        - General / cross-sector
         - Healthcare
         - Education
         - Finance

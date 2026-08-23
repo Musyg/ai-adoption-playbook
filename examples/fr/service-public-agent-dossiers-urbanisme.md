@@ -224,7 +224,7 @@ rédaction des motifs ou la priorisation constitue un nouveau système et repass
 par P0.
 
 La note
-[IA dans l'administration publique : cas, preuves et limites](../../references/public-sector-planning-ai-cases.md)
+[IA dans l'administration publique : cas, preuves et limites](../../references/public-sector-planning-ai-cases.fr.md)
 sépare résultats de terrain, borne de tâche, ambition publique, gouvernance,
 protection des données, audit et achat. Les sources rendent le cas plausible ;
 elles ne valident ni les chiffres ni le droit applicable à Mont-Rive.

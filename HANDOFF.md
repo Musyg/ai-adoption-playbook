@@ -1,6 +1,6 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-21 (Europe/Zurich)
+Snapshot: 2026-08-23 (Europe/Zurich)
 
 ## Current state
 
@@ -36,16 +36,15 @@ The path distinguishes seven ways of using AI: generation, retrieval,
 extraction and classification, prediction and recommendation, conversation,
 multimodal systems, and agentic action.
 
-It then keeps three integration levels distinct:
+It then keeps three decisions distinct:
 
-1. a copilot, where a person operates every cycle;
-2. a bounded business agent, where the system completes eligible cases and
-   escalates exceptions;
-3. an orchestrated agency, where specialist agents coordinate under shared
-   controls and must outperform a simpler design.
+1. work mode: copilot, bounded automation, or strong automation;
+2. architecture: one model, a tool-assisted workflow, one business agent, or
+   an orchestrated agent team;
+3. exact action boundary: A0 to A4.
 
-Use pattern, interaction, knowledge source, deployment, integration level,
-autonomy, risk, and jurisdiction are separate dimensions. The visual application
+Use pattern, interaction, knowledge source, deployment, work mode,
+architecture, exact action boundary, risk, and jurisdiction are separate dimensions. The visual application
 includes a task-time evidence selector and full human-time account, six
 primary-evidence reality checks, eleven synthetic worked cases, pilot
 preregistration, evidence gates, reversible operations, decision-dossier
@@ -93,8 +92,8 @@ prerequisites, and acceptance threshold are comparable. Organization type is a
 context overlay for scale, law, governance, data, procurement, and control
 requirements. It is not the benchmark unit.
 
-The implementation preserves the existing seven use patterns, three
-integration levels, A0 to A4 autonomy scale, R0 to R3 impact scale, Swiss and EU
+The implementation preserves the existing seven use patterns, three work
+modes, four architecture choices, A0 to A4 action scale, R0 to R3 impact scale, Swiss and EU
 routing, progressive interface, lifecycle, controls, dossier, and worked cases.
 The cases are normalized as applications of transferable mechanisms rather
 than discarded or rewritten from scratch.
@@ -105,7 +104,7 @@ The three operational modes remain distinct:
    operates every cycle, generally at A0 or A1;
 2. bounded automation: AI completes an explicitly eligible process with
    authorized tools and escalates exceptions, generally from A1 to A3;
-3. hard automation: long-horizon work uses several tools or agents, may run in
+3. strong automation: long-horizon work uses several tools or agents, may run in
    parallel, and requires stronger controls, generally at A3 or A4.
 
 Scale, multiple agents, or a frontier organization do not automatically imply
@@ -154,11 +153,12 @@ quality threshold, verifiability, data and tool access, operator experience,
 exception rate, and consequence of error. The transfer result has four states:
 
 1. compatible: produce a source-informed low, central, and high range;
-2. partially compatible: expose the adjustments and label the result as a
-   hypothesis to test;
+2. partially compatible: keep the range usable as a starting point, expose the
+   differences, and label the result for local verification;
 3. context only: retain the mechanism or reported outcome without transferring
    a human-time ratio;
-4. incompatible: do not transfer the quantitative result.
+4. incompatible: do not transfer the quantitative result when the underlying
+   task itself is too different.
 
 A percentage is never transferred merely because two organizations share a
 sector or size. Conversely, a source from a different organization type is not
@@ -183,9 +183,12 @@ distinct from the observed layer required by the first-party admission contract.
 1. `task-time-evidence.v1.json` and its strict JSON Schema contain ten task
    profiles, nine external evidence records, evidence grades A to E, and the
    classification of all eleven worked cases.
-2. The pure transfer engine checks the task profile, operating mode, output
-   state, and operator experience. It keeps measured slowdowns negative and
-   blocks context-only sources from automatic transfer.
+2. The pure transfer engine compares task profile, work mode, architecture,
+   exact A0 to A4 action boundary, output state, and operator experience. A
+   comparable measured task remains quantitatively usable across the other
+   dimensions with visible warnings; only a different task profile blocks the
+   transfer. Measured slowdowns stay negative and context-only sources remain
+   outside the automatic calculation.
 3. The progressive calculator exposes one task, one evidence anchor, and one
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
@@ -196,18 +199,21 @@ distinct from the observed layer required by the first-party admission contract.
    At zero eligible cases the net range is unavailable, source and local
    provenance labels remain distinct, and the copied pilot brief preserves the
    complete human-work and setup contract for reproduction.
+   Whole-workload percentages use the complete baseline human hours, not the
+   share of cases. Eligible cases, eligible human hours, and complete workload
+   hours remain visible separately, and a contradictory denominator blocks the
+   whole-workload calculation.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.
-6. No `time_scenario` was added to the project dossier. The calculator is not
-   currently persisted or exported, so an additive schema migration would add
-   complexity without preserving any user-authorized record.
+6. No `time_scenario` was added to the project dossier. The calculator keeps
+   its editable scenario while switching routes and languages, but it does not
+   turn a demonstration into an authorized project record. A future additive
+   migration may store an explicitly frozen scenario.
 7. Source, calculation, editorial, JSON, TypeScript, accessibility, responsive,
-   palette, and browser checks pass on commit `43256662`. A fresh-context
-   independent final review reports no P0, P1, or P2 finding. GitHub Actions run
-   `32526763108` passes 43 Node tests and 45 browser scenarios. The review loop
-   also closed zero-eligibility propagation, provenance wording, and copied
-   brief reproducibility findings before this final gate.
+   palette, and browser checks pass on the current release candidate. Two
+   independent journey audits drive the exact-head merge gate and must remain
+   separate from the known first-party field-data limitation.
 8. The 0.3 field draft now consumes the same quantitative layer. It preserves
    the low, central, and high hypothesis, source or local basis, transfer
    contract, observed whole-workload result, range position, and recalibration
@@ -216,6 +222,25 @@ distinct from the observed layer required by the first-party admission contract.
    account of what was observed, and an explicit statement of whether the
    figure enters the estimate. Grades A to E and the complete methodology stay
    available through optional explanations in both routes.
+10. Real-decision exports now preserve the use pattern, territory, frozen
+    system and workflow version, work mode, architecture, and exact action
+    boundary. The operating card additionally requires named owners, a dated
+    review, a tried manual fallback, and a rehearsed suspension and containment
+    procedure. Demonstration calculations remain freely available without
+    those real-evidence fields.
+11. The six case-specific evidence notes now follow the selected route. A route
+    no longer opens evidence text written for the other route.
+12. Every frozen planning hypothesis receives an immutable configuration ID.
+    Observations, the field draft, the evidence memo, and the operating card
+    can refer only to the explicitly confirmed frozen configuration. Any change
+    to the context, design, system version, or calculation requires a separate
+    recalibration snapshot before the result can authorize another action.
+13. Topic navigation updates the deep link, and a language change preserves the
+    current topic, calculator, snapshots, observations, field draft, owners,
+    review date, and tested fallback and containment controls.
+14. Repeated organization, use-pattern, work-mode, architecture, action-boundary,
+    territory, and sector labels are checked automatically against the GitHub
+    intake so a reader sees the same choice name throughout the journey.
 
 This quantitative evidence and transfer layer now feeds 0.3 directly. The field
 draft retains its source, transfer contract, net range, human-work assumptions,
@@ -251,24 +276,24 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-22:
+Latest local verification on 2026-08-23:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 44/44 pass
-- Playwright: 84/84 pass across both routes, desktop light, desktop dark, and
+- Node tests: 56/56 pass
+- Playwright: 117/117 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 114 Markdown files and 48 paired documents pass
+- repository validation: 121 Markdown files and 48 paired documents pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 44 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 56 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 84 Playwright checks across both routes, desktop light, desktop dark, and
+- 117 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;
@@ -291,7 +316,8 @@ public and do not deploy the application.
 ## Boundaries that must remain explicit
 
 - Planning ranges are not forecasts or confidence intervals.
-- Use pattern is not integration level, and integration level is not autonomy.
+- Use pattern is not work mode. Work mode is not architecture, and neither one
+  defines the exact A0 to A4 action boundary.
 - Swiss and EU legal routes must be qualified independently.
 - Percentages apply only to eligible work, not automatically to a whole role or
   organization.

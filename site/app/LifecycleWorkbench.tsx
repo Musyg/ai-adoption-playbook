@@ -12,12 +12,14 @@ import { createEmptyProjectArtifacts, materializeProjectArtifacts } from "./proj
 import { createProjectSnapshot, materializeProjectChangeReview } from "./project-change-review.mjs";
 import { ProjectArtifactsWorkbench } from "./ProjectArtifactsWorkbench";
 import { ProjectChangeReviewWorkbench } from "./ProjectChangeReview";
+import { deriveRiskLevel } from "./risk-classification.mjs";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
 type UsePatternId = "generation" | "retrieval" | "classification" | "prediction" | "conversation" | "multimodal" | "agentic";
 type JurisdictionId = "CH" | "EU" | "BOTH";
 type IntegrationId = "copilot" | "agent" | "agency";
+type ArchitectureId = "model" | "workflow" | "agent" | "agency";
 type Option = { value: string; label: string };
 type FieldDefinition = {
   id: string;
@@ -47,6 +49,7 @@ type RestorableContext = {
   usePatternId: UsePatternId;
   jurisdictionId: JurisdictionId;
   integrationId: IntegrationId;
+  architectureId: ArchitectureId;
   autonomy: number;
   risk: number;
 };
@@ -60,11 +63,16 @@ type Props = {
   jurisdictionLabel: string;
   integrationId: IntegrationId;
   integrationLabel: string;
+  architectureId: ArchitectureId;
+  architectureLabel: string;
   autonomy: number;
+  autonomyLabels: readonly string[];
   initialRisk: number;
+  riskLabels: readonly string[];
   matchedControls: MatchedControl[];
   onContextImport: (context: RestorableContext) => boolean;
   onRiskChange: (risk: number) => void;
+  onRiskQualificationChange: (complete: boolean) => void;
   schemaHref: string;
 };
 
@@ -138,8 +146,8 @@ const requiredByPhase = [
 ];
 
 const ui = {
-  en: { eyebrow: "INTERACTIVE LIFECYCLE", title: "Work through phases 0 to 11 without opening everything at once.", text: "Your entries can be saved in this browser and resumed later. Use non-identifying working information only. The workbench guides a decision; it does not certify compliance.", complete: "phases complete", current: "Current phase", why: "Why this matters", keep: "Evidence to keep", matched: "Controls already matched", noControls: "Complete the risk questions to refine the control list.", previous: "Previous phase", next: "Next phase", done: "Review the plan", copy: "Copy the working plan", copied: "Working plan copied", incomplete: "Complete the required fields to mark this phase ready.", ready: "Minimum record complete for this phase.", priority: "Priority orientation", hours: "Current human hours per month", risk: "Risk orientation", architecture: "Smallest plausible design", routes: "Questions to verify", security: "Confirm every conditioned control", local: "Local project dossier" },
-  fr: { eyebrow: "CYCLE DE VIE INTERACTIF", title: "Parcourez les phases 0 à 11 sans tout ouvrir en même temps.", text: "Vos saisies peuvent être enregistrées dans ce navigateur et reprises plus tard. Utilisez seulement des informations de travail non identifiantes. L’atelier guide une décision ; il ne certifie aucune conformité.", complete: "phases complètes", current: "Phase actuelle", why: "Pourquoi c’est important", keep: "Preuve à conserver", matched: "Contrôles déjà associés", noControls: "Complétez les questions de risque pour affiner la liste de contrôles.", previous: "Phase précédente", next: "Phase suivante", done: "Relire le plan", copy: "Copier le plan de travail", copied: "Plan de travail copié", incomplete: "Complétez les champs requis pour rendre cette phase prête.", ready: "Enregistrement minimal complet pour cette phase.", priority: "Orientation de priorité", hours: "Heures humaines actuelles par mois", risk: "Orientation du risque", architecture: "Architecture minimale plausible", routes: "Questions à vérifier", security: "Confirmez chaque contrôle conditionnel", local: "Dossier projet local" },
+  en: { eyebrow: "INTERACTIVE LIFECYCLE", title: "Work through phases 0 to 11 without opening everything at once.", text: "Your entries can be saved in this browser and resumed later. Use non-identifying working information only. The workbench guides a decision; it does not certify compliance.", complete: "phases complete", current: "Lifecycle phase", position: "position", why: "Why this matters", keep: "Evidence to keep", matched: "Controls already matched", noControls: "Complete the risk questions to refine the control list.", noControlsForPhase: "No catalogued control is assigned to this phase for the current profile.", previous: "Previous phase", next: "Next phase", done: "Review the plan", copy: "Copy the working plan", copied: "Working plan copied", incomplete: "Complete the required fields to mark this phase ready.", ready: "Minimum record complete for this phase.", priority: "Priority orientation", hours: "Current human hours per month", risk: "Risk orientation", architecture: "Selected design and simpler starting option", routes: "Questions to verify", security: "Confirm every conditioned control", local: "Local project dossier" },
+  fr: { eyebrow: "CYCLE DE VIE INTERACTIF", title: "Parcourez les phases 0 à 11 sans tout ouvrir en même temps.", text: "Vos saisies peuvent être enregistrées dans ce navigateur et reprises plus tard. Utilisez seulement des informations de travail non identifiantes. L’atelier guide une décision ; il ne certifie aucune conformité.", complete: "phases complètes", current: "Phase du cycle", position: "position", why: "Pourquoi c’est important", keep: "Preuve à conserver", matched: "Contrôles déjà associés", noControls: "Complétez les questions de risque pour affiner la liste de contrôles.", noControlsForPhase: "Aucun contrôle du catalogue n’est associé à cette phase pour le profil actuel.", previous: "Phase précédente", next: "Phase suivante", done: "Relire le plan", copy: "Copier le plan de travail", copied: "Plan de travail copié", incomplete: "Complétez les champs requis pour rendre cette phase prête.", ready: "Enregistrement minimal complet pour cette phase.", priority: "Orientation de priorité", hours: "Heures humaines actuelles par mois", risk: "Orientation du risque", architecture: "Système choisi et point de départ plus simple", routes: "Questions à vérifier", security: "Confirmez chaque contrôle conditionnel", local: "Dossier projet local" },
 };
 
 const dossierUi = {
@@ -198,7 +206,7 @@ function newDossierId() {
 }
 
 export function LifecycleWorkbench(props: Props) {
-  const { locale, onContextImport, onRiskChange } = props;
+  const { locale, onContextImport, onRiskChange, onRiskQualificationChange } = props;
   const phases = phaseDefinitions[locale];
   const labels = ui[locale];
   const dossierLabels = dossierUi[locale];
@@ -240,7 +248,8 @@ export function LifecycleWorkbench(props: Props) {
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
         jurisdictionId: parsed.value.context.jurisdiction,
-        integrationId: parsed.value.context.integration_level,
+        integrationId: parsed.value.context.work_mode,
+        architectureId: parsed.value.context.architecture,
         autonomy: parsed.value.context.autonomy_level,
         risk: parsed.value.context.risk_level,
       });
@@ -272,15 +281,19 @@ export function LifecycleWorkbench(props: Props) {
   const riskComplete = requiredByPhase[4].every((id) => values[id]);
   const derivedRisk = useMemo(() => {
     if (!riskComplete) return props.initialRisk;
-    let score = values.riskImpact === "high" ? 3 : values.riskImpact === "material" ? 2 : 1;
-    if (values.dataSensitivity === "sensitive" || values.automatedDecision === "yes") score += 1;
-    if (props.audienceId === "public" && values.riskImpact !== "low") score += 1;
-    return Math.min(3, score);
-  }, [props.audienceId, props.initialRisk, riskComplete, values.automatedDecision, values.dataSensitivity, values.riskImpact]);
+    return deriveRiskLevel({
+      impact: values.riskImpact as "low" | "material" | "high",
+      dataSensitivity: values.dataSensitivity as "none" | "personal" | "sensitive",
+      externalInteraction: values.externalInteraction as "no" | "yes",
+      automatedDecision: values.automatedDecision as "no" | "yes",
+      autonomy: props.autonomy,
+    });
+  }, [props.autonomy, props.initialRisk, riskComplete, values.automatedDecision, values.dataSensitivity, values.externalInteraction, values.riskImpact]);
 
   useEffect(() => {
     if (riskComplete) onRiskChange(derivedRisk);
   }, [derivedRisk, onRiskChange, riskComplete]);
+  useEffect(() => { onRiskQualificationChange(riskComplete); }, [onRiskQualificationChange, riskComplete]);
 
   const legalRoutes = useMemo(() => {
     const rows: string[] = [];
@@ -294,15 +307,15 @@ export function LifecycleWorkbench(props: Props) {
   }, [locale, props.jurisdictionId, values.automatedDecision, values.externalInteraction]);
 
   const architecture = useMemo(() => {
-    if (props.integrationId === "agency") return locale === "en" ? "Start with one bounded business agent. Add orchestration only after a like-for-like comparison proves a better accepted outcome." : "Commencer par un agent métier borné. Ajouter l’orchestration seulement si une comparaison à travail identique démontre un meilleur résultat accepté.";
+    if (props.architectureId === "agency") return locale === "en" ? "Start with one bounded business agent. Add orchestration only after a like-for-like comparison proves a better accepted outcome." : "Commencer par un agent métier borné. Ajouter l’orchestration seulement si une comparaison à travail identique démontre un meilleur résultat accepté.";
     if (props.usePatternId === "retrieval") return locale === "en" ? "Read-only retrieval over controlled, current, access-filtered sources." : "Recherche en lecture seule sur des sources contrôlées, actuelles et filtrées par droits d’accès.";
     if (props.usePatternId === "prediction") return locale === "en" ? "A conventional predictive model with calibrated errors and a non-AI operating path." : "Un modèle prédictif classique avec erreurs calibrées et voie d’exploitation sans IA.";
     if (props.usePatternId === "classification") return locale === "en" ? "Structured extraction or classification with confidence and explicit abstention." : "Extraction ou classification structurée avec confiance et abstention explicite.";
     if (props.usePatternId === "multimodal") return locale === "en" ? "A bounded multimodal processor with file validation and human review." : "Un traitement multimodal borné avec validation des fichiers et revue humaine.";
     if (props.usePatternId === "conversation") return locale === "en" ? "A disclosed assistant with supported answers and reliable human handoff." : "Un assistant déclaré comme IA, avec réponses fondées et transfert humain fiable.";
-    if (props.usePatternId === "agentic" || props.integrationId === "agent") return locale === "en" ? "One bounded agent with approved tools, least privilege, approval, effect read-back, and tested return." : "Un agent borné avec outils approuvés, moindre privilège, approbation, relecture des effets et retour testé.";
+    if (props.usePatternId === "agentic" || props.architectureId === "agent") return locale === "en" ? "One bounded agent with approved tools, least privilege, approval, effect read-back, and tested return." : "Un agent borné avec outils approuvés, moindre privilège, approbation, relecture des effets et retour testé.";
     return locale === "en" ? "One structured model call with human review and no external effect." : "Un appel de modèle structuré avec revue humaine et aucun effet externe.";
-  }, [locale, props.integrationId, props.usePatternId]);
+  }, [locale, props.architectureId, props.usePatternId]);
 
   const securityControls = useMemo(() => {
     const rows = [
@@ -316,14 +329,17 @@ export function LifecycleWorkbench(props: Props) {
     if (values.knowledgeSource === "retrieval" || props.usePatternId === "retrieval") rows.push({ id: "SEC-RETRIEVAL", en: "Source authorization, freshness, provenance, poisoning, and citation tests", fr: "Tests d’autorisation, actualité, provenance, empoisonnement et citation des sources" });
     if (props.usePatternId === "prediction") rows.push({ id: "SEC-PREDICTION", en: "Calibration, drift, subgroup, override, and feedback-loop controls", fr: "Contrôles de calibration, dérive, sous-groupes, dérogation et boucle de rétroaction" });
     if (props.usePatternId === "multimodal") rows.push({ id: "SEC-MULTIMODAL", en: "File validation, malware scanning, modality quality, rights, and accessibility", fr: "Validation des fichiers, analyse antimalware, qualité par modalité, droits et accessibilité" });
-    if ((values.externalEffects && values.externalEffects !== "none") || props.integrationId !== "copilot" || props.usePatternId === "agentic") {
+    if ((values.externalEffects && values.externalEffects !== "none") || props.integrationId !== "copilot" || props.usePatternId === "agentic" || props.autonomy >= 2) {
       rows.push({ id: "SEC-ACTION", en: "Tool allowlist, least privilege, destination binding, approval, and action limits", fr: "Liste d’outils autorisés, moindre privilège, destination liée, approbation et limites d’action" });
       rows.push({ id: "SEC-EFFECT", en: "Idempotency, effect receipt, external read-back, stop, and tested return", fr: "Idempotence, reçu d’effet, relecture externe, arrêt et retour testé" });
     }
-    if (props.integrationId === "agency") rows.push({ id: "SEC-AGENCY", en: "Coordinator limits, specialist isolation, guardian veto, loop and cost bounds", fr: "Limites de l’orchestrateur, isolation des spécialistes, blocage du gardien, bornes de boucle et de coût" });
+    if (props.autonomy >= 3) rows.push({ id: "SEC-AUTONOMY", en: "Written permission, budget, duration, destination, exception, and stop boundaries", fr: "Limites écrites de permission, budget, durée, destination, exception et arrêt" });
+    if (props.autonomy >= 4) rows.push({ id: "SEC-A4", en: "Executive exception, independent review, stronger containment, and evidence that A3 is insufficient", fr: "Exception de direction, revue indépendante, confinement renforcé et preuve qu’A3 ne suffit pas" });
+    if (props.architectureId === "agency") rows.push({ id: "SEC-AGENCY", en: "Coordinator limits, specialist isolation, guardian veto, loop and cost bounds", fr: "Limites de l’orchestrateur, isolation des spécialistes, blocage du gardien, bornes de boucle et de coût" });
     if (derivedRisk >= 2) rows.push({ id: "SEC-INDEPENDENT", en: "Independent review, critical segments, adversarial tests, and incident rehearsal", fr: "Revue indépendante, segments critiques, tests adversariaux et exercice d’incident" });
-    return rows.map((row) => ({ id: row.id, label: row[locale] }));
-  }, [derivedRisk, locale, props.integrationId, props.usePatternId, values.dataSensitivity, values.externalEffects, values.externalInteraction, values.knowledgeSource]);
+    for (const control of props.matchedControls.filter((item) => item.phases.includes(7))) rows.push({ id: control.id, en: control.title, fr: control.title });
+    return [...new Map(rows.map((row) => [row.id, { id: row.id, label: row[locale] }])).values()];
+  }, [derivedRisk, locale, props.architectureId, props.autonomy, props.integrationId, props.matchedControls, props.usePatternId, values.dataSensitivity, values.externalEffects, values.externalInteraction, values.knowledgeSource]);
 
   const phaseReady = phases.map((_, index) => index === 7
     ? securityControls.every((control) => checkedControls[control.id])
@@ -335,18 +351,19 @@ export function LifecycleWorkbench(props: Props) {
   const conditionedControls = useMemo(() => Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])), [checkedControls, securityControls]);
   const securityControlKey = securityControls.map((control) => control.id).join(",");
   const resolvedArtifacts = useMemo(() => materializeProjectArtifacts(artifacts, {
-    values,
+    values: { ...values, work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: props.autonomyLabels[props.autonomy] },
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     conditioned_controls: conditionedControls,
     security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
-  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, securityControlKey, values]);
+  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.autonomyLabels, props.integrationId, securityControlKey, values]);
   const currentSnapshot = useMemo(() => createProjectSnapshot({
     context: {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
       jurisdiction: props.jurisdictionId,
-      integration_level: props.integrationId,
+      work_mode: props.integrationId,
+      architecture: props.architectureId,
       autonomy_level: props.autonomy,
       risk_level: derivedRisk,
     },
@@ -355,7 +372,7 @@ export function LifecycleWorkbench(props: Props) {
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     artifacts: resolvedArtifacts,
-  }), [completedPhaseKey, conditionedControls, derivedRisk, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, values]);
+  }), [completedPhaseKey, conditionedControls, derivedRisk, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, values]);
   const resolvedChangeReview = useMemo(() => materializeProjectChangeReview(changeReview, currentSnapshot), [changeReview, currentSnapshot]);
   const fieldCatalog = useMemo(() => Object.fromEntries(phases.flatMap((phase, phaseIndex) => phase.fields.map((item) => [item.id, { label: item.label, phase: phaseIndex }]))), [phases]);
   const current = phases[activePhase];
@@ -374,7 +391,8 @@ export function LifecycleWorkbench(props: Props) {
           organization_type: props.audienceId,
           use_pattern: props.usePatternId,
           jurisdiction: props.jurisdictionId,
-          integration_level: props.integrationId,
+          work_mode: props.integrationId,
+          architecture: props.architectureId,
           autonomy_level: props.autonomy,
           risk_level: derivedRisk,
         },
@@ -395,7 +413,7 @@ export function LifecycleWorkbench(props: Props) {
       }
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, resolvedChangeReview, storageReady, values]);
+  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, resolvedChangeReview, storageReady, values]);
 
   const update = (id: string, value: string) => {
     setValues((previous) => ({ ...previous, [id]: value }));
@@ -418,7 +436,8 @@ export function LifecycleWorkbench(props: Props) {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
       jurisdiction: props.jurisdictionId,
-      integration_level: props.integrationId,
+      work_mode: props.integrationId,
+      architecture: props.architectureId,
       autonomy_level: props.autonomy,
       risk_level: derivedRisk,
     },
@@ -459,7 +478,8 @@ export function LifecycleWorkbench(props: Props) {
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
         jurisdictionId: parsed.value.context.jurisdiction,
-        integrationId: parsed.value.context.integration_level,
+        integrationId: parsed.value.context.work_mode,
+        architectureId: parsed.value.context.architecture,
         autonomy: parsed.value.context.autonomy_level,
         risk: parsed.value.context.risk_level,
       });
@@ -505,7 +525,8 @@ export function LifecycleWorkbench(props: Props) {
   const copyPlan = async () => {
     const lines = [
       locale === "en" ? "AI ADOPTION LIFECYCLE WORKING PLAN" : "PLAN DE TRAVAIL DU CYCLE DE VIE IA",
-      `${props.audienceLabel} · ${props.usePatternLabel} · ${props.integrationLabel} · ${props.jurisdictionLabel} · R${derivedRisk} × A${props.autonomy}`,
+      `${props.audienceLabel} · ${props.usePatternLabel} · ${props.integrationLabel} · ${props.architectureLabel} · ${props.jurisdictionLabel}`,
+      `${props.riskLabels[derivedRisk]} · ${props.autonomyLabels[props.autonomy]}`,
       "",
       ...phases.flatMap((phase, index) => [
         `${phase.code}. ${phase.title} · ${phaseReady[index] ? "COMPLETE" : "INCOMPLETE"}`,
@@ -529,7 +550,7 @@ export function LifecycleWorkbench(props: Props) {
     <div className="lifecycle-workbench" id="lifecycle-workbench">
       <header className="lifecycle-head">
         <div><p className="eyebrow">{labels.eyebrow}</p><h3>{labels.title}</h3><p>{labels.text}</p></div>
-        <output aria-live="polite"><strong>{completedCount}/12</strong><span>{labels.complete}</span><small>R{derivedRisk} × A{props.autonomy}</small></output>
+        <output aria-live="polite"><strong>{completedCount}/12</strong><span>{labels.complete}</span><small>{props.riskLabels[derivedRisk]}<br />{props.autonomyLabels[props.autonomy]}</small></output>
       </header>
 
       <nav aria-label={locale === "en" ? "Lifecycle phases" : "Phases du cycle de vie"} className="lifecycle-nav">
@@ -539,12 +560,13 @@ export function LifecycleWorkbench(props: Props) {
       <div className="lifecycle-context" aria-label={locale === "en" ? "Current context" : "Contexte actuel"}>
         <p><span>{locale === "en" ? "Organization" : "Structure"}</span><strong>{props.audienceLabel}</strong></p>
         <p><span>{locale === "en" ? "Use pattern" : "Mode d’usage"}</span><strong>{props.usePatternLabel}</strong></p>
-        <p><span>{locale === "en" ? "Integration" : "Intégration"}</span><strong>{props.integrationLabel}</strong></p>
+        <p><span>{locale === "en" ? "Work mode" : "Mode de travail"}</span><strong>{props.integrationLabel}</strong></p>
+        <p><span>{locale === "en" ? "Architecture" : "Architecture"}</span><strong>{props.architectureLabel}</strong></p>
         <p><span>{locale === "en" ? "Route" : "Territoire"}</span><strong>{props.jurisdictionLabel}</strong></p>
       </div>
 
       <section aria-labelledby="lifecycle-phase-title" className="lifecycle-phase" data-phase={current.code}>
-        <header><div><span>{labels.current} · {current.code}/11</span><h4 id="lifecycle-phase-title">{current.title}</h4><p>{current.question}</p></div><details><summary aria-label={labels.why}>?</summary><div role="note"><strong>{labels.why}</strong><p>{current.why}</p></div></details></header>
+        <header><div><span>{labels.current} {current.code} · {labels.position} {activePhase + 1}/12</span><h4 id="lifecycle-phase-title">{current.title}</h4><p>{current.question}</p></div><details><summary aria-label={labels.why}>?</summary><div role="note"><strong>{labels.why}</strong><p>{current.why}</p></div></details></header>
 
         {activePhase !== 7 && <div className="lifecycle-fields">{current.fields.map((item) => <label key={item.id}><span>{item.label}</span>{item.kind === "textarea"
           ? <textarea name={item.id} onChange={(event) => update(item.id, event.target.value)} rows={3} value={values[item.id] ?? ""} />
@@ -555,11 +577,11 @@ export function LifecycleWorkbench(props: Props) {
 
         {activePhase === 3 && priorityComplete && <output className="lifecycle-result"><span>{labels.priority}</span><strong>{priorityScore}/25</strong><p>{priorityLabel}. {locale === "en" ? "This is an orientation, not a business case." : "Il s’agit d’une orientation, pas d’un dossier économique."}</p></output>}
         {activePhase === 1 && baselineHours > 0 && <output className="lifecycle-result"><span>{labels.hours}</span><strong>{baselineHours.toFixed(1)} h</strong><p>{locale === "en" ? "Keep the complete denominator when calculating any later reduction." : "Conservez le dénominateur complet pour calculer toute réduction ultérieure."}</p></output>}
-        {activePhase === 4 && riskComplete && <div className="lifecycle-guidance"><output><span>{labels.risk}</span><strong>R{derivedRisk}</strong></output><div><p>{labels.routes}</p><ul>{legalRoutes.map((row) => <li key={row}>{row}</li>)}</ul></div></div>}
-        {activePhase === 5 && <output className="lifecycle-result"><span>{labels.architecture}</span><strong>{props.usePatternLabel} · {props.integrationLabel}</strong><p>{architecture}</p></output>}
+        {activePhase === 4 && riskComplete && <div className="lifecycle-guidance"><output><span>{labels.risk}</span><strong>R{derivedRisk}</strong><small>{props.riskLabels[derivedRisk].replace(/^R\d · /, "")}</small></output><div><p>{labels.routes}</p><ul>{legalRoutes.map((row) => <li key={row}>{row}</li>)}</ul></div></div>}
+        {activePhase === 5 && <output className="lifecycle-result"><span>{labels.architecture}</span><strong>{locale === "en" ? "Selected design" : "Système choisi"}: {props.usePatternLabel} · {props.architectureLabel}</strong><p><b>{locale === "en" ? "Recommended starting design" : "Système de départ recommandé"}:</b> {architecture}</p></output>}
         {activePhase === 7 && <fieldset className="security-builder"><legend>{labels.security}</legend>{securityControls.map((control) => <label key={control.id}><input checked={checkedControls[control.id] ?? false} name={control.id} onChange={(event) => { setCheckedControls((previous) => ({ ...previous, [control.id]: event.target.checked })); setHasLocalCopy(true); setDossierNotice(""); }} type="checkbox" /><span><strong>{control.id}</strong>{control.label}</span></label>)}</fieldset>}
 
-        <div className="lifecycle-evidence"><article><span>{labels.keep}</span><p>{current.evidence}</p></article><article><span>{labels.matched}</span>{controlsForPhase.length > 0 ? <ul>{controlsForPhase.map((control) => <li key={control.id}><strong>{control.id}</strong><span>{control.title}</span><small>{control.priority}</small></li>)}</ul> : <p>{labels.noControls}</p>}</article></div>
+        <div className="lifecycle-evidence"><article><span>{labels.keep}</span><p>{current.evidence}</p></article><article><span>{labels.matched}</span>{controlsForPhase.length > 0 ? <ul>{controlsForPhase.map((control) => <li key={control.id}><strong>{control.id}</strong><span>{control.title}</span><small>{control.priority}</small></li>)}</ul> : <p>{riskComplete ? labels.noControlsForPhase : labels.noControls}</p>}</article></div>
 
         <footer><p data-ready={phaseReady[activePhase]}>{phaseReady[activePhase] ? labels.ready : labels.incomplete}</p><div><button disabled={activePhase === 0} onClick={() => selectPhase(Math.max(0, activePhase - 1))} type="button">← {labels.previous}</button><button onClick={() => selectPhase(Math.min(11, activePhase + 1))} type="button">{activePhase === 11 ? labels.done : labels.next} →</button></div></footer>
       </section>
@@ -579,6 +601,7 @@ export function LifecycleWorkbench(props: Props) {
       />
 
       <ProjectChangeReviewWorkbench
+        autonomyLabels={props.autonomyLabels}
         currentSnapshot={currentSnapshot}
         dossierId={dossierId}
         fieldCatalog={fieldCatalog}
@@ -589,6 +612,7 @@ export function LifecycleWorkbench(props: Props) {
         onOpenPhase={(phase) => { selectPhase(phase); window.requestAnimationFrame(() => document.querySelector(".lifecycle-phase")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}
         phaseTitles={phases.map((phase) => phase.title)}
         review={resolvedChangeReview}
+        riskLabels={props.riskLabels}
         securityControls={securityControls}
       />
 

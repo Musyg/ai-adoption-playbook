@@ -108,7 +108,7 @@ Evaluate options in this order:
 
 Choose the model on real cases, not on a general leaderboard. Document latency, cost, region, retention, training on customer data, subprocessors, version changes, export, deletion, reversibility, and contractual liability in the [supplier assessment](../templates/vendor-assessment.md).
 
-The same integration level can contain different AI patterns. A retrieval
+The same work mode can contain different AI patterns. A retrieval
 assistant needs corpus and access-control evidence; a classifier needs per-class
 error and drift evidence; a public chatbot needs disclosure and handoff; a
 multimodal system needs consent and provenance. Apply every relevant profile in

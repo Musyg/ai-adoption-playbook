@@ -185,7 +185,7 @@ organisation n’est réutilisé comme résultat du pilote fictif :
   permettent pas d’inférer les performances d’une TPE suisse.
 
 Les liens, chiffres publiés et limites de transfert sont consignés dans la
-[note de preuves des cas](../../references/tpe-customer-support-cases.md).
+[note de preuves des cas](../../references/tpe-customer-support-cases.fr.md).
 
 ## 9. Dossier de preuves
 

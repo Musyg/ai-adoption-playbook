@@ -182,7 +182,7 @@ Le scénario s’appuie sur des études publiées sans copier leurs résultats :
   globale du travail.
 
 Les liens, observations et limites de transfert sont consignés dans la
-[note de preuves](../../references/independent-knowledge-work-cases.md).
+[note de preuves](../../references/independent-knowledge-work-cases.fr.md).
 
 ## 9. Dossier de preuves
 

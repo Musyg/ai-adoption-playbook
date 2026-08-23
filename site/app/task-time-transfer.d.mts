@@ -1,10 +1,13 @@
 export type IntegrationMode = "copilot" | "agent" | "agency";
+export type SystemArchitecture = "model" | "workflow" | "agent" | "agency";
 export type QualityGate = "draft" | "reviewed" | "production";
 export type ExpertiseLevel = "developing" | "mixed" | "experienced";
 export type CompatibilityStatus = "compatible" | "partial" | "context" | "incompatible";
 export type EvidenceTarget = {
   task_profile_id: string;
-  integration_mode: IntegrationMode;
+  work_mode: IntegrationMode;
+  architecture: SystemArchitecture;
+  autonomy_level: "A0" | "A1" | "A2" | "A3" | "A4";
   quality_gate: QualityGate;
   expertise_level: ExpertiseLevel;
 };
@@ -18,7 +21,8 @@ export type TaskTimeEvidenceRecord = {
   task_contract: {
     profile_id: string;
     description: LocalizedText;
-    integration_mode: IntegrationMode;
+    work_mode: IntegrationMode;
+    architectures: SystemArchitecture[];
     autonomy_levels: string[];
     output_unit: LocalizedText;
     quality_gate: QualityGate;
@@ -42,7 +46,7 @@ export type TaskTimeEvidenceRecord = {
   transfer: {
     quantitative_use: "usable" | "context_only";
     allowed_profiles: string[];
-    integration_modes: IntegrationMode[];
+    work_modes: IntegrationMode[];
     quality_gates: QualityGate[];
     expertise_levels: ExpertiseLevel[];
     preconditions: LocalizedText;
@@ -65,13 +69,13 @@ export type TaskTimeRegistry = {
   }>;
   records: TaskTimeEvidenceRecord[];
 };
-export type WorkloadInput = { baseline_human_minutes: number; monthly_cases: number; eligible_share: number };
+export type WorkloadInput = { baseline_human_minutes: number; monthly_cases: number; eligible_share: number; total_baseline_human_hours: number };
 export type EvidenceRangePoint = {
   reduction_fraction: number;
   human_time_with_ai_minutes: number;
   human_hours_saved_per_month: number;
   human_hours_saved_per_year: number;
-  whole_workload_reduction_fraction: number;
+  whole_workload_reduction_fraction: number | null;
 };
 export type EvidenceTransferResult = {
   ok: true;
@@ -99,6 +103,8 @@ export type HumanTimeScenario = {
   monthly_cases: number;
   eligible_share: number;
   eligible_cases: number;
+  total_baseline_human_hours: number;
+  workload_denominator_valid: boolean;
   calculable: boolean;
   baseline_eligible_human_hours: number;
   components: Record<string, number>;
@@ -108,7 +114,7 @@ export type HumanTimeScenario = {
   human_time_with_ai_minutes: number;
   human_time_saved_per_case: number;
   reduction_fraction: number;
-  whole_workload_reduction_fraction: number;
+  whole_workload_reduction_fraction: number | null;
   human_hours_saved_per_month: number;
   human_hours_saved_per_year: number;
   accepted_throughput_ratio: number | null;
@@ -133,7 +139,9 @@ export type NetPlanningRangePoint = {
 };
 export type NetPlanningRange = {
   calculable: boolean;
-  unavailable_reason: "no_eligible_cases" | null;
+  eligible_case_calculable: boolean;
+  whole_workload_calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
   compatibility: string;
   evidence_id: string | null;
@@ -147,7 +155,7 @@ export function calculateHumanTimeScenario(input: HumanTimeInput): HumanTimeScen
 export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario): NetPlanningRange;
 export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null): {
   calculable: boolean;
-  unavailable_reason: "no_eligible_cases" | null;
+  unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;

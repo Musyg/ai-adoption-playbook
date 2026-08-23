@@ -1,6 +1,6 @@
 # AI use patterns
 
-An integration level does not describe an AI system completely. A copilot, a
+A work mode does not describe an AI system completely. A copilot, a
 retrieval assistant, a classifier, and a public chatbot may all operate at A1,
 while requiring different data, evaluations, security tests, transparency, and
 human controls.

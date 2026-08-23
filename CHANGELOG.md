@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+- Closed the final journey-coherence gaps found by two independent reviews.
+  Hard design conflicts now block freezing and export, softer deviations and
+  exceptional A4 designs use distinct confirmations, evaluated field results
+  stay bound to the exact frozen version, and lifecycle answers separate the
+  selected design from the recommended starting design. Human-readable working
+  plans, field reports, and change reviews also retain the complete localized
+  R0 to R3 and A0 to A4 labels instead of reducing them to codes.
+- Made task-time results harder to misread. The headline now reports the
+  estimated saving across the complete workload, eligible-case percentages
+  are labelled separately, and contradictory workload inputs produce an
+  unavailable result instead of a misleading zero range.
+- Bound every observation and real-decision export to an immutable
+  configuration identifier. Changing the organization, use pattern, territory,
+  risk, work mode, architecture, action boundary, system version, or time
+  assumptions now requires a separate frozen recalibration and explicit
+  confirmation before the new configuration can be operated.
+- Corrected whole-workload percentages to use the complete baseline human
+  hours as their denominator. The interface now keeps eligible cases, eligible
+  hours, and the complete workload separate, and refuses a whole-workload
+  percentage when those inputs contradict one another.
+- Added plain-language coherence prompts for unusual work-mode, architecture,
+  and A0 to A4 combinations without prohibiting legitimate designs. A3 and A4
+  now also condition the pilot, security, containment, and review controls.
+- Preserved the exact open topic and complete operational state during language
+  changes, aligned repeated choice labels with the GitHub intake, blocked past
+  reassessment dates, and made field-publication confirmation unavailable until
+  the observations are bound to the frozen configuration.
+- Split the former integration choice into three independent decisions: work
+  mode, technical architecture, and the exact A0 to A4 action boundary. The
+  guided path, calculator, field draft, lifecycle dossier, change review, and
+  exports now use the same names and preserve all three dimensions.
+- Added editable demonstration values that remain clearly marked as simulated.
+  They explain the calculation without authorizing a real decision; only a
+  frozen plan and explicitly confirmed pilot observations can do that.
+- Centralized the R0 to R3 rules, preserved the complete calculator scenario
+  during language changes, aligned the field-cohort enumeration with its JSON
+  registry, and upgraded the additive project-dossier schema to `0.5.0`, with
+  `work_mode`, architecture, and the exact A0–A4 action boundary kept separate.
+- Completed a route-by-route readability and interaction audit across English,
+  French, desktop, dark mode, and mobile. Plain-language definitions now lead
+  into optional detail, large surfaces remain neutral, and all 117 browser
+  checks and 56 Node checks cover the resulting journey.
 - Added a plain-language evidence layer to the task-time guide. Every study now
   starts with a direct verdict, a short explanation of what happened, and a
   clear statement of whether its figures enter the estimate. Measurement
@@ -10,8 +52,9 @@
 - Added a versioned task-time evidence registry and strict JSON Schema. Nine
   external records separate measured task time, operational outcomes,
   self-reports, internal cases, and model estimates through grades A to E.
-- Replaced integration-level productivity bands with a task-based transfer
-  engine. It checks task profile, operating mode, output state, and experience,
+- Replaced work-mode productivity bands with a task-based transfer
+  engine. It checks task profile, work mode, architecture, exact action
+  boundary, output state, and experience,
   preserves measured slowdowns, and blocks context-only values from automatic
   calculation.
 - Rebuilt the calibrator as a progressive three-part guide. Its net low,
@@ -25,7 +68,7 @@
   the preregistered source and transfer contract, compare the extrapolated range
   with the observed whole-workload result, and state whether the result falls
   below, within, or above the range without merging their evidence labels.
-- Classified all eleven worked cases by task profile and operating mode in the
+- Classified all eleven worked cases by task profile and work mode in the
   machine-readable registry. Their results remain grade E planning hypotheses,
   even when an external record provides separate mechanism context.
 - Opened the 0.3 field-pilot cohort for Switzerland and the European Union with
@@ -87,7 +130,7 @@
   direct links restore the correct nested view.
 - Added a seven-pattern AI-use classification for generation,
   retrieval, classification, prediction, conversation, multimodal systems, and
-  agentic action. The classification stays separate from integration level,
+  agentic action. The classification stays separate from work mode,
   autonomy, deployment, and organizational risk.
 - Added mode-specific evaluation and threat profiles to the operating guides,
   security guidance, templates, AI-system register, and interactive pilot

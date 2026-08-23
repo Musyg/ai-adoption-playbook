@@ -8,17 +8,24 @@ comptable et un seuil d’acceptation explicite. Le type d’organisation ajoute
 contexte juridique, de gouvernance, de données, d’achat, d’échelle et de
 contrôle. Il ne définit pas la catégorie de référence.
 
-## Séparer les modes opératoires
+## Séparer mode de travail, architecture et autorité
 
-| Mode | Ce que fait le système | Autonomie typique |
-|---|---|---:|
-| Copilote | Prépare, recherche, analyse ou suggère pendant qu’une personne opère chaque cycle | A0 à A1 |
-| Automatisation bornée | Termine un processus éligible avec des outils autorisés et escalade les exceptions | A1 à A3 |
-| Automatisation forte | Coordonne un travail long entre plusieurs agents ou outils sous des contrôles renforcés | A3 à A4 |
+| Mode de travail | Travail déplacé | Rôle humain |
+|---|---|---|
+| Copilote | Une étape assistée | Opère à chaque cycle et réalise les actions externes |
+| Automatisation bornée | Une part définie d’un processus éligible | Valide certains effets et traite les exceptions |
+| Automatisation forte | L’essentiel du travail éligible de bout en bout | Fixe objectifs et limites, relit les résultats et traite les exceptions |
 
 Plusieurs agents ou une grande échelle ne suffisent pas à classer un système A4.
 L’autonomie dépend des effets que le système peut produire sans personne, pas
 de la réputation ou de la taille de l’organisation qui l’utilise.
+
+Le registre utilise `work_mode` pour le partage du travail présenté ci-dessus. L’architecture
+technique. Modèle, processus fixe, agent unique ou équipe orchestrée sont
+enregistrés séparément, tout comme le niveau d’autorité précis A0 à A4. Une
+étude reste transférable lorsque la tâche, le résultat accepté, le rôle humain
+et les conditions d’usage sont assez proches. Le type d’organisation ne suffit
+ni à autoriser ni à interdire ce transfert.
 
 ## Compter séparément temps humain, temps machine et temps écoulé
 
@@ -84,21 +91,23 @@ transfert.
 
 ## États du transfert
 
-Le calculateur vérifie quatre seuils minimaux :
+Le calculateur compare six parties du contrat de tâche :
 
 1. le profil de la tâche cible ;
-2. le mode opératoire ;
-3. l’état exigé du résultat ;
-4. l’expérience de l’opérateur.
+2. le mode de travail ;
+3. l’architecture ;
+4. la limite d’action exacte A0 à A4 ;
+5. l’état exigé du résultat ;
+6. l’expérience de l’opérateur.
 
 Il renvoie l’un des quatre états suivants :
 
 | État | Signification |
 |---|---|
 | Comparable | La source peut encadrer une plage basse, centrale et haute à tester |
-| Hypothèse seulement | La tâche correspond, mais un élément de contexte diffère et doit être ajusté localement |
+| À utiliser avec prudence | La tâche correspond, mais une ou plusieurs conditions diffèrent. La fourchette reste utilisable comme point de départ et les différences restent visibles. |
 | Contexte seulement | La source informe la conception sans fournir de ratio transférable de temps humain |
-| Non transférable | La tâche ou le mode opératoire diffère |
+| Non transférable | La tâche de fond est trop différente pour un transfert quantitatif |
 
 Ces seuils minimaux ne prouvent pas l’équivalence. Avant d’utiliser une source,
 comparez aussi complexité des entrées, unité de résultat, accès au modèle et aux
@@ -150,19 +159,19 @@ Chaque résultat de cas reste une hypothèse de planification de niveau E. Un
 repère externe peut expliquer un mécanisme ou encadrer une plage séparée, mais
 il ne rehausse jamais le niveau du résultat synthétique.
 
-| Cas d’école | Profil de tâche | Mode | Usage du repère externe |
-|---|---|---|---|
-| Demandes clients d’une TPE | Support client | Copilote A1 | Contexte de débit seulement |
-| Devis B2B d’une PME | Analyse de connaissances | Agent A2 | Contexte de mécanisme copilote seulement |
-| Dossiers de subvention | Synthèse d’information | Agent A2 | Contexte d’analyse seulement |
-| Dossiers publics d’urbanisme | Synthèse d’information | Agent A2 | Contexte d’analyse seulement |
-| Suivi client d’un indépendant | Rédaction professionnelle | Copilote A1 | Plage comparable à tester séparément |
-| Agent de suivi pour indépendant | Support client | Agent A2 | Contexte de débit seulement |
-| Diagnostic orchestré | Projet fortement automatisé | Agence A3 | Mécanisme de contrôle seulement |
-| RAG de procédures en lecture seule | Synthèse d’information | Copilote A1 | Aucun repère de temps admis |
-| Prévision de la demande | Aide à la décision prédictive | Copilote A0 | Aucun ratio de temps humain transféré |
-| Chatbot client externe | Support client | Copilote A1 | Contexte de support au personnel seulement |
-| Revue multimodale de catalogue | Revue multimodale | Copilote A1 | Aucun repère de temps admis |
+| Cas d’école | Profil de tâche | Mode de travail | Architecture | A | Usage du repère externe |
+|---|---|---|---|---:|---|
+| Demandes clients d’une TPE | Support client | Copilote | Processus outillé | A1 | Contexte de débit seulement |
+| Devis B2B d’une PME | Analyse de connaissances | Automatisation bornée | Agent métier | A2 | Contexte de mécanisme copilote seulement |
+| Dossiers de subvention | Synthèse d’information | Automatisation bornée | Agent métier | A2 | Contexte d’analyse seulement |
+| Dossiers publics d’urbanisme | Synthèse d’information | Automatisation bornée | Agent métier | A2 | Contexte d’analyse seulement |
+| Suivi client d’un indépendant | Rédaction professionnelle | Copilote | Un modèle | A1 | Plage comparable à tester séparément |
+| Agent de suivi pour indépendant | Support client | Automatisation bornée | Agent métier | A2 | Contexte de débit seulement |
+| Diagnostic orchestré | Projet fortement automatisé | Automatisation forte | Équipe orchestrée | A3 | Mécanisme de contrôle seulement |
+| RAG de procédures en lecture seule | Synthèse d’information | Copilote | Processus outillé | A1 | Aucun repère de temps admis |
+| Prévision de la demande | Aide à la décision prédictive | Copilote | Un modèle | A0 | Aucun ratio de temps humain transféré |
+| Chatbot client externe | Support client | Copilote | Processus outillé | A1 | Contexte de support au personnel seulement |
+| Revue multimodale de catalogue | Revue multimodale | Copilote | Un modèle | A1 | Aucun repère de temps admis |
 
 Le registre conserve le raisonnement complet et les fichiers d’exemple
 correspondants. Ce classement repose sur le contrat de tâche, pas sur

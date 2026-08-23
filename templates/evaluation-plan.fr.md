@@ -6,6 +6,9 @@
 - Système / version / configuration :
 - Cas d’usage :
 - Mode(s) de tâche IA :
+- Mode de travail : copilote / automatisation bornée / automatisation forte
+- Architecture : un modèle ou assistant / processus outillé / un agent métier / équipe d’agents orchestrée
+- Limite d’action exacte : A0 / A1 / A2 / A3 / A4
 - Profil interaction / connaissance / déploiement :
 - Juridictions et déclencheurs juridiques :
 - Décideur :

@@ -26,8 +26,9 @@ Version 0.3 requires at least three admitted reports:
    prediction, conversation, multimodal processing, or assisted generation;
 2. one bounded A2 business agent that carries a complete workflow while a
    human retains the defined approval or veto;
-3. one distinct Swiss or EU context that tests different work, people, sector
-   duties, or operating conditions.
+3. one additional context that makes the three-report cohort cover both
+   Switzerland and the European Union in total, while testing different work,
+   people, sector duties, or operating conditions.
 
 An orchestrated-agency candidate is useful only when a genuine system already
 exists and can be compared with a simpler design. It is not required for 0.3.

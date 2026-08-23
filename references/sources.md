@@ -1,105 +1,94 @@
-# Registre des sources primaires
+# Primary-source register
 
-Dernière vérification : **21 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
+Last checked: **21 August 2026**. Source status can change. Open the primary
+source and verify its current version before making a decision.
 
-Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu protégé des normes.
+The playbook summarizes and links these resources. It does not reproduce the
+protected text of standards.
 
-## Gouvernance, cycle de vie et risque
+## Governance, lifecycle, and risk
 
-- [ISO/IEC 42001:2023 — AI management systems](https://www.iso.org/standard/42001) — publiée ; système de management IA.
-- [ISO/IEC 5338:2023 — AI system life cycle processes](https://www.iso.org/standard/81118.html) — publiée ; processus de cycle de vie.
-- [ISO/IEC 23894:2023 — Guidance on AI risk management](https://www.iso.org/standard/77304.html) — publiée ; gestion du risque IA.
-- [ISO/IEC JTC 1/SC 42 catalogue](https://www.iso.org/committee/6794475/x/catalogue/) — série 5259 sur la qualité des données, incluant gouvernance et travaux 2026.
-- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) — AI RMF 1.0 volontaire ; révision en cours au 18 août 2026.
-- [NIST AI 600-1 — Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf) — profil intersectoriel publié en 2024.
-- [OCDE — Framework for the Classification of AI Systems](https://www.oecd.org/en/publications/oecd-framework-for-the-classification-of-ai-systems_cb6d9eca-en.html) — cinq dimensions pour décrire contexte, données, modèle, tâche et sortie ; cadre d’orientation, pas qualification juridique.
+- [ISO/IEC 42001:2023, AI management systems](https://www.iso.org/standard/42001), published management-system standard.
+- [ISO/IEC 5338:2023, AI system life cycle processes](https://www.iso.org/standard/81118.html), published lifecycle standard.
+- [ISO/IEC 23894:2023, guidance on AI risk management](https://www.iso.org/standard/77304.html), published risk-management guidance.
+- [ISO/IEC JTC 1/SC 42 catalogue](https://www.iso.org/committee/6794475/x/catalogue/), including the 5259 data-quality series and 2026 work items.
+- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), voluntary AI RMF 1.0; revision work was in progress on 18 August 2026.
+- [NIST AI 600-1, Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf), cross-sector profile published in 2024.
+- [OECD Framework for the Classification of AI Systems](https://www.oecd.org/en/publications/oecd-framework-for-the-classification-of-ai-systems_cb6d9eca-en.html), an orientation framework, not a legal classification.
 
-## Sécurité
+## Security
 
-- [OWASP Top 10 for LLM and GenAI](https://genai.owasp.org/llm-top-10/) — édition 2025 actuellement publiée.
-- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) — risques propres aux agents et workflows autonomes ; orientation communautaire à adapter à l’architecture réelle.
-- [NIST AI 100-2e2025 — Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final) — taxonomie couvrant IA prédictive et générative, avec errata officiel à vérifier.
-- [NIST AI 100-4 — Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/) — méthodes et limites de détection, authentification, marquage et provenance des contenus synthétiques.
-- [C2PA 2.2 — Content Credentials](https://spec.c2pa.org/specifications/specifications/2.2/index.html) — spécification technique de provenance ; ne prouve pas à elle seule l’authenticité du contenu ni la conformité juridique.
-- [MITRE ATLAS](https://atlas.mitre.org/) — base vivante de tactiques, techniques, mitigations et cas concernant l’IA prédictive, générative et agentique.
+- [OWASP Top 10 for LLM and GenAI](https://genai.owasp.org/llm-top-10/), currently published 2025 edition.
+- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/), community guidance to adapt to the actual architecture.
+- [NIST AI 100-2e2025, Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final), predictive and generative AI taxonomy; check the official errata.
+- [NIST AI 100-4, Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/), methods and limitations for detection, authentication, marking, and provenance.
+- [C2PA 2.2, Content Credentials](https://spec.c2pa.org/specifications/specifications/2.2/index.html), a provenance specification that alone proves neither authenticity nor legal compliance.
+- [MITRE ATLAS](https://atlas.mitre.org/), a living knowledge base of AI tactics, techniques, mitigations, and cases.
 
-## Droit et politiques publiques
+## Law and public policy
 
-### Suisse
+### Switzerland
 
-- [PFPDT — IA et protection des données](https://www.edoeb.admin.ch/en/ai-and-data-protection) — la LPD s’applique directement aux traitements assistés par IA.
-- [PFPDT — obligation d’informer](https://www.edoeb.admin.ch/en/duty-to-provide-information) — information sur les traitements et droits liés aux décisions individuelles automatisées selon l’article 21 LPD, avec exceptions à qualifier.
-- [PFPDT — déclaration commune sur les images générées par IA](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images) — orientation de 61 autorités sur images et vidéos réalistes de personnes identifiables ; ne remplace pas l’analyse du cas concret.
-- [PFPDT — Analyse d’impact relative à la protection des données](https://www.edoeb.admin.ch/en/data-protection-impact-assessment) — requise si le traitement est susceptible d’engendrer un risque élevé.
-- [PFPDT — Sous-traitance](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing) — le responsable reste responsable et doit encadrer le sous-traitant.
-- [Chancellerie fédérale — Réglementation de l’IA](https://www.bk.admin.ch/en/regulation) — projet à soumettre à consultation d’ici fin 2026 ; pas encore une loi générale en vigueur.
+- [FDPIC, AI and data protection](https://www.edoeb.admin.ch/en/ai-and-data-protection), confirming that the FADP applies to AI-supported processing.
+- [FDPIC, duty to provide information](https://www.edoeb.admin.ch/en/duty-to-provide-information), including rights related to automated individual decisions under Article 21 FADP, subject to qualification and exceptions.
+- [FDPIC, joint statement on AI-generated imagery](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images), orientation from 61 authorities, not a substitute for case analysis.
+- [FDPIC, data protection impact assessment](https://www.edoeb.admin.ch/en/data-protection-impact-assessment), required when processing is likely to result in high risk.
+- [FDPIC, outsourcing of data processing](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing), on controller responsibility and processor controls.
+- [Federal Chancellery, AI regulation](https://www.bk.admin.ch/en/regulation), a consultation project expected by the end of 2026, not a general law currently in force.
 
-### Union européenne
+### European Union
 
-- [Règlement (UE) 2024/1689 — AI Act, texte officiel](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=fr) — texte consolidé à vérifier avant qualification ; l’annexe III couvre notamment certains usages en éducation, crédit, assurance, services d’urgence et infrastructures critiques.
-- [Commission européenne — AI Omnibus en vigueur](https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force) — 27 juillet 2026 ; échéances haut risque au 2 décembre 2027 et 2 août 2028.
-- [Commission européenne — lignes directrices de transparence](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems) — article 50 applicable depuis le 2 août 2026.
-- [Commission européenne — fiche pratique article 50](https://digital-strategy.ec.europa.eu/en/factpages/quick-facts-transparency-rules-ai-systems) — synthèse officielle des obligations d’interaction et de contenu synthétique ; vérifier le texte et les exceptions avant qualification.
-- [Commission européenne — questions-réponses sur la culture IA](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers) — état post-Omnibus de l’article 4 et supervision 2026.
-- [Commission européenne — clauses contractuelles types pour l’achat public de systèmes IA](https://public-buyers-community.ec.europa.eu/communities/procurement-ai/resources/updated-eu-ai-model-contractual-clauses) — modèles à adapter au contexte juridique et au marché.
+- [Regulation (EU) 2024/1689, official AI Act text](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), whose consolidated text and scope must be checked before qualification.
+- [European Commission, AI Omnibus enters into force](https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force), 27 July 2026, including updated high-risk timelines.
+- [European Commission, transparency guidelines](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems), for Article 50 obligations applicable from 2 August 2026.
+- [European Commission, Article 50 quick facts](https://digital-strategy.ec.europa.eu/en/factpages/quick-facts-transparency-rules-ai-systems), an official summary whose underlying text and exceptions still require qualification.
+- [European Commission, AI literacy questions and answers](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers), post-Omnibus status of Article 4 and 2026 supervision.
+- [European Commission, updated AI model contractual clauses](https://public-buyers-community.ec.europa.eu/communities/procurement-ai/resources/updated-eu-ai-model-contractual-clauses), templates to adapt to the procurement and legal context.
 
-## Extensions sectorielles — sources vérifiées le 19 août 2026
+## Sector extensions
 
-Ces sources servent à poser des questions et des gates. Elles ne transforment pas
-le playbook en avis médical, juridique, prudentiel, pédagogique ou de sûreté.
+These sources help formulate questions and decision conditions. They do not
+turn the playbook into medical, legal, prudential, educational, or safety
+advice.
 
-### Santé
+### Healthcare
 
-- [Swissmedic — questions fréquentes sur les dispositifs médicaux](https://www.swissmedic.ch/swissmedic/fr/home/dispositifs-medicaux/reglementation-des-dispositifs-medicaux/faq.html) — renvoie au document 2026 sur la qualification et la classification des logiciels médicaux.
-- [Swissmedic — conditions-cadres pour l’IA dans le développement des médicaments](https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/artificiel-intelligence.html) — documentation complète, qualité, biais et suivi du cycle de vie ; page d’orientation, pas qualification d’un produit précis.
-- [Commission européenne — MDCG 2025-6, articulation MDR/IVDR et AI Act](https://health.ec.europa.eu/latest-updates/mdcg-2025-6-faq-interplay-between-medical-devices-regulation-vitro-diagnostic-medical-devices-2025-06-19_en) — FAQ de juin 2025 ; document d’orientation non contraignant.
-- [OMS — Regulatory considerations on artificial intelligence for health](https://www.who.int/publications/i/item/9789240078871) — considérations générales 2023, explicitement non exclusives et non assimilables à une réglementation locale.
-- [OMS — gouvernance des grands modèles multimodaux en santé](https://www.who.int/publications/i/item/9789240084759) — recommandations de gouvernance et d’éthique publiées en 2025.
+- [Swissmedic, medical-device FAQs](https://www.swissmedic.ch/swissmedic/fr/home/dispositifs-medicaux/reglementation-des-dispositifs-medicaux/faq.html).
+- [Swissmedic, framework conditions for AI in drug development](https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/artificiel-intelligence.html).
+- [European Commission, MDCG 2025-6 on MDR/IVDR and the AI Act](https://health.ec.europa.eu/latest-updates/mdcg-2025-6-faq-interplay-between-medical-devices-regulation-vitro-diagnostic-medical-devices-2025-06-19_en).
+- [WHO, regulatory considerations on AI for health](https://www.who.int/publications/i/item/9789240078871).
+- [WHO, governance of large multimodal models for health](https://www.who.int/publications/i/item/9789240084759).
 
-### Éducation
+### Education, finance, critical infrastructure, and accessibility
 
-- [Commission européenne — lignes directrices 2026 sur l’usage éthique de l’IA et des données dans l’enseignement](https://education.ec.europa.eu/focus-topics/digital-education/actions/plan/ethical-guidelines-for-educators-on-using-artificial-intelligence) — orientation pratique pour les équipes éducatives ; ne remplace pas le droit national ou cantonal.
-- [Educa — future politique d’utilisation des données dans la formation](https://www.educa.ch/fr/news/2025/future-politique-dutilisation-des-donnees-dans-la-formation) — rapport suisse 2025 et 51 mesures d’orientation ; sa mise en œuvre dépend des autorités compétentes.
-- [Educa — analyse juridique de l’IA dans l’espace suisse de formation](https://www.educa.ch/de/taetigkeiten/abgeschlossene-projekte/entwicklung-einer-datennutzungspolitik/rechtliche) — souligne la nécessité de vérifier les bases légales scolaires, notamment cantonales.
+- [European Commission, 2026 ethical AI and data guidelines for educators](https://education.ec.europa.eu/focus-topics/digital-education/actions/plan/ethical-guidelines-for-educators-on-using-artificial-intelligence).
+- [FINMA Supervisory Communication 08/2024 on AI governance and risk](https://www.finma.ch/en/news/2024/12/20241218-mm-finma-am-08-24/).
+- [FINMA Circular 2023/1, operational risks and resilience](https://www.finma.ch/en/news/2022/12/20221213-mm-anh-rs-op-risks/).
+- [Regulation (EU) 2022/2554, DORA](https://eur-lex.europa.eu/eli/reg/2022/2554/oj).
+- [Directive (EU) 2022/2555, NIS2](https://eur-lex.europa.eu/eli/dir/2022/2555/oj).
+- [Directive (EU) 2022/2557, resilience of critical entities](https://eur-lex.europa.eu/eli/dir/2022/2557/oj).
+- [W3C, Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/).
+- [eCH-0059 v3.0, Swiss accessibility standard](https://ech.ch/sites/default/files/dosvers/hauptdokument/STAN_f_DEF_2020-05-19_eCH-0059_V3.0_Accessibility%20Standard.pdf).
 
-### Finance
+## Published cases and field evidence
 
-- [FINMA — communication 08/2024 sur la gouvernance et le risque IA](https://www.finma.ch/en/news/2024/12/20241218-mm-finma-am-08-24/) — attentes observées sur inventaire, classification, données, tests, suivi, documentation, explicabilité et revue indépendante.
-- [FINMA — circulaire 2023/1, risques opérationnels et résilience des banques](https://www.finma.ch/en/news/2022/12/20221213-mm-anh-rs-op-risks/) — entrée en vigueur le 1er janvier 2024 avec dispositions transitoires ; vérifier l’applicabilité à l’établissement.
-- [Règlement (UE) 2022/2554 — DORA](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) — résilience opérationnelle numérique du secteur financier ; vérifier rôle, entité, activité et textes délégués applicables.
+- [Task-time evidence and transfer rules](../docs/task-time-evidence.md), including evidence grades A to E and the net human-time calculation. [French version](../docs/task-time-evidence.fr.md).
+- [2026 public-evidence review](field-evidence-review-2026.md), covering studies and deployments by evidence strength, work mode, measured outcome, and transfer limit. [French version](field-evidence-review-2026.fr.md).
+- [AI-assisted small-business customer support](tpe-customer-support-cases.md).
+- [AI-assisted independent knowledge work](independent-knowledge-work-cases.md).
+- [Copilot, business agent, and orchestrated agency](agentic-integration-levels.md).
+- [From copilot to an A2 business agent](../examples/en/independent-business-agent-follow-up.md), a synthetic comparative case.
+- [A3 orchestrated diagnostic agency](../examples/en/independent-orchestrated-agency-diagnostic.md), a synthetic manual/A1/A2/A3 comparison.
 
-### Infrastructures critiques
+## Repository citation rule
 
-- [OFCS — obligation suisse d’annoncer les cyberattaques](https://www.ncsc.admin.ch/ncsc/de/home/meldepflicht/meldepflicht-info.html) — en vigueur depuis le 1er avril 2025 pour les entités assujetties, annonce dans les 24 heures après découverte.
-- [Directive (UE) 2022/2555 — NIS2](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) — mesures de gestion du risque cyber et notification ; vérifier la transposition nationale et le champ de l’entité.
-- [Directive (UE) 2022/2557 — résilience des entités critiques](https://eur-lex.europa.eu/eli/dir/2022/2557/oj) — approche tous risques, continuité des services essentiels et dépendances intersectorielles ; vérifier la transposition nationale.
+For every claim that can change:
 
-### Accessibilité et droits fondamentaux
+1. link the most precise official page;
+2. state when it was checked;
+3. distinguish current law, proposal, recommendation, and internal choice;
+4. never present a consultation, draft, or developing standard as binding law.
 
-- [W3C — Web Content Accessibility Guidelines 2.2](https://www.w3.org/TR/WCAG22/) — recommandation technique ; l’atteinte d’un niveau exige le respect de l’ensemble des critères concernés sur les pages complètes.
-- [eCH-0059 v3.0 — norme suisse d’accessibilité](https://ech.ch/sites/default/files/dosvers/hauptdokument/STAN_f_DEF_2020-05-19_eCH-0059_V3.0_Accessibility%20Standard.pdf) — référence WCAG 2.1 AA pour son périmètre ; vérifier les exigences réellement applicables à l’organisation.
-- [AI Act — article 27, analyse d’impact sur les droits fondamentaux](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=fr) — obligation ciblée pour certains déployeurs et systèmes à haut risque ; le modèle du dépôt peut aussi être utilisé volontairement sans conclure à l’applicabilité légale.
-
-## Cas publiés et preuves de terrain
-
-- [Preuves de temps de tâche et règles de transfert](../docs/task-time-evidence.fr.md) : registre versionné, niveaux A à E, calcul du temps humain net et blocage des estimations non transférables. [English version](../docs/task-time-evidence.md).
-- [Revue approfondie des preuves publiques 2026](field-evidence-review-2026.fr.md) : 20 études et déploiements classés par force de preuve, niveau d’intégration, résultat mesuré et limite de transfert. [English version](field-evidence-review-2026.md).
-- [Support client assisté par IA dans une petite structure](tpe-customer-support-cases.md) : cas RIS, études de terrain QJE/NBER, cas industriel maritime et limites de transfert vers le scénario TPE.
-- [Travail intellectuel d’un indépendant assisté par IA](independent-knowledge-work-cases.md) — expériences sur le conseil et l’écriture professionnelle, enquête OCDE sur les PME et limites de transfert vers le pilote individuel.
-- [Copilote, agent métier et agence orchestrée](agentic-integration-levels.md) : définitions opérationnelles, ancrages de terrain, anciennes plages requalifiées en hypothèses et protocole de mesure pour une agence multi-agents.
-- [Du copilote à l’agent métier A2](../examples/fr/independant-agent-metier-suivi.md) — cas synthétique comparatif, workflow connecté, permissions, tests d’idempotence, résultats et gate vers A3.
-- [Agence orchestrée A3 pour un diagnostic standard](../examples/fr/independant-agence-orchestree-diagnostic.md) — benchmark manuel/A1/A2/A3, rôles spécialisés, contrôle partagé, dénominateur complet et frontière explicite avec A4 et Talos/Hermes.
-
-## Règle de citation du dépôt
-
-Pour toute affirmation susceptible de changer :
-
-1. lier la page officielle la plus précise ;
-2. indiquer la date de vérification ;
-3. distinguer texte en vigueur, proposition, recommandation et choix interne ;
-4. ne jamais promouvoir une consultation, un projet ou une norme en développement au rang d’obligation en vigueur.
-
-Le [référentiel de contrôles](../controls/README.md) conserve en complément une
-version et une date de vérification par source. Ces relations sont thématiques :
-elles ne constituent ni une équivalence article par article, ni une preuve de
-certification ou de conformité.
+The [control catalogue](../controls/README.md) also records a version and check
+date for each source. These links are thematic, not article-by-article
+equivalences and not evidence of certification or legal compliance.

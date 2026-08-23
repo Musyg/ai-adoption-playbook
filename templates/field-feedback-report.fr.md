@@ -24,7 +24,7 @@
 - ID des sources publiques ou hypothèse locale :
 - Version de la photographie figée, horodatage UTC et version du registre des temps :
 - Statut avant pilote : mesure transférée / hypothèse ajustée / hypothèse locale :
-- Contrat de transfert : profil de tâche, mode d’intégration, seuil de qualité et niveau d’expérience :
+- Contrat de transfert : profil de tâche, mode de travail, architecture, limite d’action exacte A0–A4, seuil de qualité et niveau d’expérience :
 - Comparabilité et adaptations nécessaires :
 - Minutes manuelles par cas, cas par mois et part éligible prévus :
 - Fourchettes nettes exactes basse, centrale et haute par cas éligible et sur toute la charge :
@@ -34,7 +34,7 @@
 ## Ce qui s’est passé
 
 - Processus initial et problème :
-- Niveau d’intégration et permissions :
+- Mode de travail, architecture, limite d’action exacte A0–A4 et permissions :
 - Protocole pilote et seuils préenregistrés :
 - Résultat métier observé :
 - Minutes humaines initiales totales pour tous les cas observés :

@@ -24,7 +24,7 @@
 - Public source IDs or local hypothesis:
 - Frozen snapshot version, UTC timestamp, and task-time registry version:
 - Pre-pilot status: transferred measurement / adjusted hypothesis / local hypothesis:
-- Transfer contract: task profile, integration mode, quality threshold, and experience level:
+- Transfer contract: task profile, work mode, architecture, exact A0–A4 action boundary, quality threshold, and experience level:
 - Comparability and required adjustments:
 - Planned manual minutes per case, cases per month, and eligible share:
 - Exact net low, central, and high ranges per eligible case and across the whole workload:
@@ -34,7 +34,7 @@
 ## What happened
 
 - Original process and problem:
-- Integration level and permissions:
+- Work mode, architecture, exact A0–A4 action boundary, and permissions:
 - Pilot protocol and preregistered thresholds:
 - Observed business outcome:
 - Total baseline human minutes for every observed case:

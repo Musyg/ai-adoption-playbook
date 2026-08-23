@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.3.0",
+  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.5.0",
   "title": "AI Adoption Playbook local project dossier",
   "type": "object",
   "additionalProperties": false,
@@ -23,7 +23,7 @@
     "change_review"
   ],
   "properties": {
-    "schema_version": { "const": "0.3.0" },
+    "schema_version": { "const": "0.5.0" },
     "playbook_version": { "const": "0.2.2" },
     "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
     "created_at": { "type": "string", "format": "date-time" },
@@ -43,12 +43,13 @@
     "context": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["organization_type", "use_pattern", "jurisdiction", "integration_level", "autonomy_level", "risk_level"],
+      "required": ["organization_type", "use_pattern", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"],
       "properties": {
         "organization_type": { "enum": ["independent", "tpe", "pme", "nonprofit", "public"] },
         "use_pattern": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
         "jurisdiction": { "enum": ["CH", "EU", "BOTH"] },
-        "integration_level": { "enum": ["copilot", "agent", "agency"] },
+        "work_mode": { "enum": ["copilot", "agent", "agency"] },
+        "architecture": { "enum": ["model", "workflow", "agent", "agency"] },
         "autonomy_level": { "type": "integer", "minimum": 0, "maximum": 4 },
         "risk_level": { "type": "integer", "minimum": 0, "maximum": 3 }
       }
@@ -94,7 +95,7 @@
               "properties": {
                 "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
                 "updated_at": { "type": "string", "format": "date-time" },
-                "schema_version": { "enum": ["0.1.0", "0.2.0", "0.3.0"] },
+                "schema_version": { "enum": ["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"] },
                 "playbook_version": { "const": "0.2.2" },
                 "snapshot": { "$ref": "#/$defs/projectSnapshot" }
               }

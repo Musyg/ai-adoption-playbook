@@ -6,6 +6,9 @@
 - System / version / configuration:
 - Use case:
 - AI task pattern(s):
+- Work mode: copilot / bounded automation / strong automation
+- Architecture: one model or assistant / tool-assisted workflow / one business agent / orchestrated agent team
+- Exact action boundary: A0 / A1 / A2 / A3 / A4
 - Interaction / knowledge / deployment profile:
 - Jurisdictions and legal triggers:
 - Decision-maker:

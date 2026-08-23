@@ -51,7 +51,7 @@ Un RAG, un prompt système ou un fine-tuning ne supprime pas l’injection.
 - échec partiel, réponse vide, délai dépassé et état incohérent ;
 - tentative de désactiver les logs, contrôles ou approbations.
 
-Mapper les scénarios pertinents sur [OWASP GenAI](../references/sources.md#sécurité), le Top 10 OWASP des applications agentiques lorsque des outils ou agents sont présents, les recommandations adversariales du NIST pour les systèmes prédictifs et [MITRE ATLAS](../references/sources.md#sécurité). Conserver les preuves et les limites des tests.
+Mapper les scénarios pertinents sur [OWASP GenAI](../references/sources.fr.md#sécurité), le Top 10 OWASP des applications agentiques lorsque des outils ou agents sont présents, les recommandations adversariales du NIST pour les systèmes prédictifs et [MITRE ATLAS](../references/sources.fr.md#sécurité). Conserver les preuves et les limites des tests.
 
 ## Incident
 

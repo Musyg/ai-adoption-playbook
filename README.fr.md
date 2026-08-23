@@ -2,7 +2,7 @@
 
 **Un parcours pratique, gouverné par la preuve, du premier processus métier utile jusqu’aux systèmes IA en production.**
 
-[Guide interactif](https://musyg.github.io/ai-adoption-playbook/fr/) · [Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
+[Guide interactif](https://musyg.github.io/ai-adoption-playbook/fr/) · [Source de l’application visuelle](site/README.md) · [English](README.md) · [Commencer](docs/universal-process.fr.md) · [Modes d’usage IA](docs/ai-use-patterns.fr.md) · [Contrôles JSON](controls/) · [Modèles](templates/) · [Sources](references/sources.fr.md) · [Contribuer](CONTRIBUTING.fr.md) · [Conduite](CODE_OF_CONDUCT.fr.md) · [Sécurité](SECURITY.md)
 
 ![AI Adoption Playbook : La preuve avant l’autonomie](site/public/og.png)
 
@@ -34,7 +34,7 @@ une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
 [assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
 Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.2**, dépôt public, photographie au **21 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
+> État : version **0.2.2**, dépôt public, photographie au **23 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
 **Preuves de temps de tâche :** le calculateur interactif part maintenant d’une
 tâche comptable, indique si une source publique est comparable et transforme sa
@@ -57,7 +57,7 @@ acceptés. Les extensions [santé](sectors/fr/healthcare.md),
 conditions bloquantes et des seuils de décision sans remplacer le processus
 universel.
 
-La version `0.3` utilise déjà les études publiques et le moteur de transposition
+La couche préparatoire de la version `0.3` utilise déjà les études publiques et le moteur de transposition
 des temps pour construire des hypothèses de planification préenregistrées. Chaque
 pilote conserve cette fourchette extrapolée, l’observation terrain ultérieure et
 leur écart. Ces éléments appartiennent au même cycle d’apprentissage avec des
@@ -197,7 +197,7 @@ Le playbook rend actionnables, sans reproduire le texte de normes propriétaires
 - les ressources OWASP GenAI et MITRE ATLAS ;
 - les orientations suisses et européennes en vigueur à la date de la photographie.
 
-Le [registre des sources](references/sources.md) précise les liens primaires, leur statut et la date de vérification.
+Le [registre des sources](references/sources.fr.md) précise les liens primaires, leur statut et la date de vérification.
 
 ## Contribution et licence
 

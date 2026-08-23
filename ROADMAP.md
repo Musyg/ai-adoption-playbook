@@ -19,7 +19,7 @@
   on-demand expert chapters.
 - [x] Reveal one topic per expert chapter and one worked case at a time, with
   responsive selectors and restorable deep links.
-- [x] Separate seven AI use patterns from integration level, autonomy, and risk.
+- [x] Separate seven AI use patterns from work mode, architecture, action boundary, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Complete the repository, history, security, community-file, language,
   title, accessibility, and browser audits.
@@ -84,11 +84,12 @@ become observed field results, and the first-party registry remains empty.
 - [ ] Test the complete workbench with independent professionals, SMEs, public
   services, and regulated or high-impact contexts.
 
-The first three 0.5 foundations are implemented with an experimental `0.3.0`
-dossier schema, additive migration from `0.1.0` and `0.2.0`, local comparison
-against an earlier export of the same dossier, and recorded reassessment
-decisions. Field usability testing and the stable 1.0 compatibility freeze
-remain open.
+The first three 0.5 foundations are implemented with experimental project
+dossier schema `0.5.0`, additive migrations from schema versions `0.1.0` through
+`0.4.0`, local comparison against an earlier export of the same dossier, and
+recorded reassessment decisions. Roadmap milestone 0.5 and schema version 0.5.0
+are separate identifiers. Field usability testing and the stable 1.0
+compatibility freeze remain open.
 
 ## 0.6: transferable task-time evidence
 
@@ -97,7 +98,7 @@ remain open.
 - [x] Publish a versioned registry and JSON Schema separating measured human
   time, elapsed time, output metrics, self-reports, internal cases, and model
   estimates through evidence grades A to E.
-- [x] Add a transfer engine that checks task profile, operating mode, output
+- [x] Add a transfer engine that checks task profile, work mode, output
   state, and operator experience, preserves negative findings, and blocks
   context-only values from automatic calculation.
 - [x] Replace the integration-level productivity bands with a progressive

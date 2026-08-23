@@ -6,7 +6,7 @@
     "target_admitted_reports": 3,
     "admitted_reports": 0,
     "recruiting_regions": ["CH", "EU"],
-    "required_profiles": ["non-agentic-or-copilot", "bounded-a2-business-agent", "distinct-context"],
+    "required_profiles": ["non-agentic-or-copilot", "bounded-a2-business-agent", "combined-ch-eu-coverage"],
     "orchestrated_agency_required": false
   },
   "limitations": {

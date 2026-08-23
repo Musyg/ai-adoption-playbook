@@ -14,6 +14,9 @@
 | Connaissance et état | modèle de base / recherche autorisée / outils temps réel / mémoire de session / mémoire persistante / fine-tuning |
 | Déploiement | SaaS fournisseur / API directe / auto-hébergé ou poids ouverts / embarqué ou edge |
 | Mode opératoire | batch / planifié / événementiel / temps réel |
+| Mode de travail | copilote / automatisation bornée / automatisation forte |
+| Architecture | un modèle ou assistant / processus outillé / un agent métier / équipe d’agents orchestrée |
+| Limite d’action exacte | A0 / A1 / A2 / A3 / A4 |
 | Informe, recommande, décide ou agit | |
 | IA exposée aux personnes | oui / non ; information et canal humain |
 | Actions possibles | |
@@ -32,5 +35,4 @@
 - Valeur (1–5) et justification :
 - Difficulté/risque (1–5) et justification :
 - Risque R0–R3 :
-- Autonomie A0–A4 :
 - Première expérience la moins complexe :

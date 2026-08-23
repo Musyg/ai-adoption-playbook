@@ -9,12 +9,16 @@ export function assessEvidenceCompatibility(record, target) {
 
   const transfer = record.transfer ?? {};
   const profileMatch = transfer.allowed_profiles?.includes(target.task_profile_id) === true;
-  const modeMatch = transfer.integration_modes?.includes(target.integration_mode) === true;
+  const modeMatch = transfer.work_modes?.includes(target.work_mode) === true;
+  const architectureMatch = target.architecture == null || record.task_contract?.architectures?.includes(target.architecture) === true;
+  const autonomyMatch = target.autonomy_level == null || record.task_contract?.autonomy_levels?.includes(target.autonomy_level) === true;
   const qualityMatch = transfer.quality_gates?.includes(target.quality_gate) === true;
   const expertiseMatch = transfer.expertise_levels?.includes(target.expertise_level) === true;
   const reasons = [];
   if (!profileMatch) reasons.push("task_profile");
-  if (!modeMatch) reasons.push("integration_mode");
+  if (!modeMatch) reasons.push("work_mode");
+  if (!architectureMatch) reasons.push("architecture");
+  if (!autonomyMatch) reasons.push("autonomy_level");
   if (!qualityMatch) reasons.push("quality_gate");
   if (!expertiseMatch) reasons.push("expertise_level");
 
@@ -22,9 +26,9 @@ export function assessEvidenceCompatibility(record, target) {
     && record.measurement?.human_active_time_measured === true
     && record.measurement?.human_time_reduction_fraction != null;
 
-  if (!profileMatch || !modeMatch) return { status: "incompatible", reasons };
+  if (!profileMatch) return { status: "incompatible", reasons };
   if (!hasQuantitativeTime) return { status: "context", reasons: ["context_only", ...reasons] };
-  if (!qualityMatch || !expertiseMatch) return { status: "partial", reasons };
+  if (!modeMatch || !qualityMatch || !expertiseMatch || !architectureMatch || !autonomyMatch) return { status: "partial", reasons };
   return { status: "compatible", reasons: [] };
 }
 
@@ -38,17 +42,18 @@ export function listEvidenceOptions(registry, target) {
     });
 }
 
-function calculateRangePoint(reductionFraction, baselineMinutes, monthlyCases, eligibleShare) {
+function calculateRangePoint(reductionFraction, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours) {
   const eligibleCases = monthlyCases * eligibleShare;
   const baselineEligibleHours = eligibleCases * baselineMinutes / 60;
   const humanTimeWithAiMinutes = baselineMinutes * (1 - reductionFraction);
   const humanHoursSavedPerMonth = baselineEligibleHours * reductionFraction;
+  const workloadDenominatorValid = totalBaselineHumanHours >= baselineEligibleHours && totalBaselineHumanHours > 0;
   return {
     reduction_fraction: reductionFraction,
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
     human_hours_saved_per_month: humanHoursSavedPerMonth,
     human_hours_saved_per_year: humanHoursSavedPerMonth * 12,
-    whole_workload_reduction_fraction: eligibleShare * reductionFraction,
+    whole_workload_reduction_fraction: workloadDenominatorValid ? humanHoursSavedPerMonth / totalBaselineHumanHours : null,
   };
 }
 
@@ -63,6 +68,7 @@ export function buildEvidenceTransfer(record, target, workload) {
   const baselineMinutes = bounded(workload?.baseline_human_minutes, 0.1, 10080);
   const monthlyCases = bounded(workload?.monthly_cases, 0, 1000000);
   const eligibleShare = bounded(workload?.eligible_share, 0, 100) / 100;
+  const totalBaselineHumanHours = bounded(workload?.total_baseline_human_hours, 0, 1000000000);
 
   return {
     ok: true,
@@ -74,11 +80,12 @@ export function buildEvidenceTransfer(record, target, workload) {
       monthly_cases: monthlyCases,
       eligible_share: eligibleShare,
       eligible_cases: monthlyCases * eligibleShare,
+      total_baseline_human_hours: totalBaselineHumanHours,
     },
     scenarios: {
-      low: calculateRangePoint(range.low, baselineMinutes, monthlyCases, eligibleShare),
-      central: calculateRangePoint(range.central, baselineMinutes, monthlyCases, eligibleShare),
-      high: calculateRangePoint(range.high, baselineMinutes, monthlyCases, eligibleShare),
+      low: calculateRangePoint(range.low, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
+      central: calculateRangePoint(range.central, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
+      high: calculateRangePoint(range.high, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
     },
   };
 }
@@ -88,6 +95,9 @@ export function calculateHumanTimeScenario(input) {
   const monthlyCases = bounded(input?.monthly_cases, 0, 1000000);
   const eligibleShare = bounded(input?.eligible_share, 0, 100) / 100;
   const eligibleCases = monthlyCases * eligibleShare;
+  const totalBaselineHumanHours = bounded(input?.total_baseline_human_hours, 0, 1000000000);
+  const baselineEligibleHumanHours = eligibleCases * baselineMinutes / 60;
+  const workloadDenominatorValid = totalBaselineHumanHours >= baselineEligibleHumanHours && totalBaselineHumanHours > 0;
   const calculable = eligibleCases > 0;
   const preparationMinutes = bounded(input?.preparation_minutes, 0, 10080);
   const supervisionMinutes = bounded(input?.supervision_minutes, 0, 10080);
@@ -112,8 +122,10 @@ export function calculateHumanTimeScenario(input) {
     monthly_cases: monthlyCases,
     eligible_share: eligibleShare,
     eligible_cases: eligibleCases,
+    total_baseline_human_hours: totalBaselineHumanHours,
+    workload_denominator_valid: workloadDenominatorValid,
     calculable,
-    baseline_eligible_human_hours: eligibleCases * baselineMinutes / 60,
+    baseline_eligible_human_hours: baselineEligibleHumanHours,
     components: {
       preparation_minutes: preparationMinutes,
       supervision_minutes: supervisionMinutes,
@@ -130,7 +142,7 @@ export function calculateHumanTimeScenario(input) {
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
     human_time_saved_per_case: humanTimeSavedPerCase,
     reduction_fraction: reductionFraction,
-    whole_workload_reduction_fraction: eligibleShare * reductionFraction,
+    whole_workload_reduction_fraction: workloadDenominatorValid ? monthlyHumanHoursSaved / totalBaselineHumanHours : null,
     human_hours_saved_per_month: monthlyHumanHoursSaved,
     human_hours_saved_per_year: monthlyHumanHoursSaved * 12,
     accepted_throughput_ratio: humanTimeWithAiMinutes > 0 ? baselineMinutes / humanTimeWithAiMinutes : null,
@@ -185,7 +197,9 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
     recurring_reduction_fraction: recurringTimeSavedPerCase / baselineMinutes,
     recurring_human_hours_saved_per_month: recurringHumanHoursSavedPerMonth,
     reduction_fraction: humanTimeSavedPerCase / baselineMinutes,
-    whole_workload_reduction_fraction: humanScenario.eligible_share * humanTimeSavedPerCase / baselineMinutes,
+    whole_workload_reduction_fraction: humanScenario.workload_denominator_valid
+      ? humanHoursSavedPerMonth / humanScenario.total_baseline_human_hours
+      : null,
     human_hours_saved_per_month: humanHoursSavedPerMonth,
     human_hours_saved_per_year: humanHoursSavedPerMonth * 12,
     setup_payback_months: recurringHumanHoursSavedPerMonth > 0
@@ -196,9 +210,15 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
 
 export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
   const evidenceScenarios = evidenceTransfer?.ok ? evidenceTransfer.scenarios : null;
+  const eligibleCaseCalculable = humanScenario.calculable;
+  const wholeWorkloadCalculable = eligibleCaseCalculable && humanScenario.workload_denominator_valid;
   return {
-    calculable: humanScenario.calculable,
-    unavailable_reason: humanScenario.calculable ? null : "no_eligible_cases",
+    calculable: eligibleCaseCalculable,
+    eligible_case_calculable: eligibleCaseCalculable,
+    whole_workload_calculable: wholeWorkloadCalculable,
+    unavailable_reason: !eligibleCaseCalculable
+      ? "no_eligible_cases"
+      : wholeWorkloadCalculable ? null : "invalid_workload_denominator",
     source: evidenceScenarios ? "external_evidence" : "local_hypothesis",
     compatibility: evidenceScenarios ? evidenceTransfer.compatibility.status : "not_available",
     evidence_id: evidenceScenarios ? evidenceTransfer.evidence_id : null,
@@ -215,12 +235,12 @@ export function derivePlanningRange(evidenceTransfer, humanScenario, target = nu
   const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario);
   const components = humanScenario.components;
   return {
-    calculable: netRange.calculable,
+    calculable: netRange.whole_workload_calculable,
     unavailable_reason: netRange.unavailable_reason,
     source: netRange.source,
-    low: netRange.calculable ? netRange.scenarios.low.reduction_fraction : 0,
-    central: netRange.calculable ? netRange.scenarios.central.reduction_fraction : 0,
-    high: netRange.calculable ? netRange.scenarios.high.reduction_fraction : 0,
+    low: netRange.whole_workload_calculable ? netRange.scenarios.low.reduction_fraction : 0,
+    central: netRange.whole_workload_calculable ? netRange.scenarios.central.reduction_fraction : 0,
+    high: netRange.whole_workload_calculable ? netRange.scenarios.high.reduction_fraction : 0,
     compatibility: netRange.compatibility,
     evidence_id: netRange.evidence_id,
     target,
