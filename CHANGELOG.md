@@ -6,7 +6,9 @@
   Hard design conflicts now block freezing and export, softer deviations and
   exceptional A4 designs use distinct confirmations, evaluated field results
   stay bound to the exact frozen version, and lifecycle answers separate the
-  selected design from the recommended starting design.
+  selected design from the recommended starting design. Human-readable working
+  plans and change reviews also retain the complete localized R0 to R3 and A0
+  to A4 labels instead of reducing them to codes.
 - Made task-time results harder to misread. The headline now reports the
   estimated saving across the complete workload, eligible-case percentages
   are labelled separately, and contradictory workload inputs produce an

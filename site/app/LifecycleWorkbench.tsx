@@ -66,7 +66,9 @@ type Props = {
   architectureId: ArchitectureId;
   architectureLabel: string;
   autonomy: number;
+  autonomyLabels: readonly string[];
   initialRisk: number;
+  riskLabels: readonly string[];
   matchedControls: MatchedControl[];
   onContextImport: (context: RestorableContext) => boolean;
   onRiskChange: (risk: number) => void;
@@ -349,12 +351,12 @@ export function LifecycleWorkbench(props: Props) {
   const conditionedControls = useMemo(() => Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])), [checkedControls, securityControls]);
   const securityControlKey = securityControls.map((control) => control.id).join(",");
   const resolvedArtifacts = useMemo(() => materializeProjectArtifacts(artifacts, {
-    values: { ...values, work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: `A${props.autonomy}` },
+    values: { ...values, work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: props.autonomyLabels[props.autonomy] },
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     conditioned_controls: conditionedControls,
     security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
-  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.integrationId, securityControlKey, values]);
+  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.autonomyLabels, props.integrationId, securityControlKey, values]);
   const currentSnapshot = useMemo(() => createProjectSnapshot({
     context: {
       organization_type: props.audienceId,
@@ -523,7 +525,8 @@ export function LifecycleWorkbench(props: Props) {
   const copyPlan = async () => {
     const lines = [
       locale === "en" ? "AI ADOPTION LIFECYCLE WORKING PLAN" : "PLAN DE TRAVAIL DU CYCLE DE VIE IA",
-      `${props.audienceLabel} · ${props.usePatternLabel} · ${props.integrationLabel} · ${props.architectureLabel} · ${props.jurisdictionLabel} · R${derivedRisk} × A${props.autonomy}`,
+      `${props.audienceLabel} · ${props.usePatternLabel} · ${props.integrationLabel} · ${props.architectureLabel} · ${props.jurisdictionLabel}`,
+      `${props.riskLabels[derivedRisk]} · ${props.autonomyLabels[props.autonomy]}`,
       "",
       ...phases.flatMap((phase, index) => [
         `${phase.code}. ${phase.title} · ${phaseReady[index] ? "COMPLETE" : "INCOMPLETE"}`,
@@ -547,7 +550,7 @@ export function LifecycleWorkbench(props: Props) {
     <div className="lifecycle-workbench" id="lifecycle-workbench">
       <header className="lifecycle-head">
         <div><p className="eyebrow">{labels.eyebrow}</p><h3>{labels.title}</h3><p>{labels.text}</p></div>
-        <output aria-live="polite"><strong>{completedCount}/12</strong><span>{labels.complete}</span><small>R{derivedRisk} × A{props.autonomy}</small></output>
+        <output aria-live="polite"><strong>{completedCount}/12</strong><span>{labels.complete}</span><small>{props.riskLabels[derivedRisk]}<br />{props.autonomyLabels[props.autonomy]}</small></output>
       </header>
 
       <nav aria-label={locale === "en" ? "Lifecycle phases" : "Phases du cycle de vie"} className="lifecycle-nav">
@@ -574,7 +577,7 @@ export function LifecycleWorkbench(props: Props) {
 
         {activePhase === 3 && priorityComplete && <output className="lifecycle-result"><span>{labels.priority}</span><strong>{priorityScore}/25</strong><p>{priorityLabel}. {locale === "en" ? "This is an orientation, not a business case." : "Il s’agit d’une orientation, pas d’un dossier économique."}</p></output>}
         {activePhase === 1 && baselineHours > 0 && <output className="lifecycle-result"><span>{labels.hours}</span><strong>{baselineHours.toFixed(1)} h</strong><p>{locale === "en" ? "Keep the complete denominator when calculating any later reduction." : "Conservez le dénominateur complet pour calculer toute réduction ultérieure."}</p></output>}
-        {activePhase === 4 && riskComplete && <div className="lifecycle-guidance"><output><span>{labels.risk}</span><strong>R{derivedRisk}</strong></output><div><p>{labels.routes}</p><ul>{legalRoutes.map((row) => <li key={row}>{row}</li>)}</ul></div></div>}
+        {activePhase === 4 && riskComplete && <div className="lifecycle-guidance"><output><span>{labels.risk}</span><strong>R{derivedRisk}</strong><small>{props.riskLabels[derivedRisk].replace(/^R\d · /, "")}</small></output><div><p>{labels.routes}</p><ul>{legalRoutes.map((row) => <li key={row}>{row}</li>)}</ul></div></div>}
         {activePhase === 5 && <output className="lifecycle-result"><span>{labels.architecture}</span><strong>{locale === "en" ? "Selected design" : "Système choisi"}: {props.usePatternLabel} · {props.architectureLabel}</strong><p><b>{locale === "en" ? "Recommended starting design" : "Système de départ recommandé"}:</b> {architecture}</p></output>}
         {activePhase === 7 && <fieldset className="security-builder"><legend>{labels.security}</legend>{securityControls.map((control) => <label key={control.id}><input checked={checkedControls[control.id] ?? false} name={control.id} onChange={(event) => { setCheckedControls((previous) => ({ ...previous, [control.id]: event.target.checked })); setHasLocalCopy(true); setDossierNotice(""); }} type="checkbox" /><span><strong>{control.id}</strong>{control.label}</span></label>)}</fieldset>}
 
@@ -598,6 +601,7 @@ export function LifecycleWorkbench(props: Props) {
       />
 
       <ProjectChangeReviewWorkbench
+        autonomyLabels={props.autonomyLabels}
         currentSnapshot={currentSnapshot}
         dossierId={dossierId}
         fieldCatalog={fieldCatalog}
@@ -608,6 +612,7 @@ export function LifecycleWorkbench(props: Props) {
         onOpenPhase={(phase) => { selectPhase(phase); window.requestAnimationFrame(() => document.querySelector(".lifecycle-phase")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}
         phaseTitles={phases.map((phase) => phase.title)}
         review={resolvedChangeReview}
+        riskLabels={props.riskLabels}
         securityControls={securityControls}
       />
 

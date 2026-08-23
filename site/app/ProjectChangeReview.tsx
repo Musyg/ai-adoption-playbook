@@ -13,9 +13,11 @@ type SecurityControl = { id: string; label: string };
 type FieldCatalog = Record<string, { label: string; phase: number }>;
 type Props = {
   locale: Locale;
+  autonomyLabels: readonly string[];
   dossierId: string;
   currentSnapshot: ProjectSnapshot;
   review: ProjectChangeReview | null;
+  riskLabels: readonly string[];
   phaseTitles: string[];
   fieldCatalog: FieldCatalog;
   securityControls: SecurityControl[];
@@ -195,7 +197,9 @@ function displayValue(value: string, item: ChangeReviewItem, props: Props) {
       work_mode: props.locale === "en" ? { copilot: "Copilot", agent: "Bounded automation", agency: "Strong automation" } : { copilot: "Copilote", agent: "Automatisation bornée", agency: "Automatisation forte" },
       architecture: props.locale === "en" ? { model: "One model or assistant", workflow: "Tool-assisted workflow", agent: "One business agent", agency: "Orchestrated agent team" } : { model: "Un modèle ou assistant", workflow: "Processus outillé", agent: "Un agent métier", agency: "Équipe d’agents orchestrée" },
     };
-    return maps[id]?.[value] ?? (["autonomy_level", "risk_level"].includes(id) ? `${id === "autonomy_level" ? "A" : "R"}${value}` : value);
+    if (id === "autonomy_level") return props.autonomyLabels[Number(value)] || `A${value}`;
+    if (id === "risk_level") return props.riskLabels[Number(value)] || `R${value}`;
+    return maps[id]?.[value] ?? value;
   }
   if (group === "security") return value === "true" ? (props.locale === "en" ? "Confirmed" : "Confirmé") : (props.locale === "en" ? "Not confirmed" : "Non confirmé");
   if (group === "controls") {

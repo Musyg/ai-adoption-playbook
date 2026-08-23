@@ -26,9 +26,10 @@ const canonical = {
 };
 
 test("keeps every repeated decision label identical in the guide, review, and GitHub intake", async () => {
-  const [playbook, taxonomy, review, issueEn, issueFr] = await Promise.all([
+  const [playbook, taxonomy, lifecycle, review, issueEn, issueFr] = await Promise.all([
     read("../app/Playbook.tsx"),
     read("../app/integration-taxonomy.ts"),
+    read("../app/LifecycleWorkbench.tsx"),
     read("../app/ProjectChangeReview.tsx"),
     read("../../.github/ISSUE_TEMPLATE/field-pilot-en.yml"),
     read("../../.github/ISSUE_TEMPLATE/field-pilot-fr.yml"),
@@ -46,6 +47,10 @@ test("keeps every repeated decision label identical in the guide, review, and Gi
       assert.ok(review.includes(label), `${locale} change review is missing canonical label: ${label}`);
     }
   }
+  assert.ok(lifecycle.includes("props.riskLabels[derivedRisk]"), "working plan must reuse the complete localized risk label");
+  assert.ok(lifecycle.includes("props.autonomyLabels[props.autonomy]"), "working plan must reuse the complete localized autonomy label");
+  assert.ok(review.includes('props.autonomyLabels[Number(value)]'), "change review must reuse complete autonomy labels");
+  assert.ok(review.includes('props.riskLabels[Number(value)]'), "change review must reuse complete risk labels");
 });
 
 test("keeps the runtime, schema, roadmap, changelog, and dossier guide on schema 0.5.0", async () => {

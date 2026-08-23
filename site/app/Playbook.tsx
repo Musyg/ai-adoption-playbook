@@ -2777,6 +2777,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             audienceId={selected.id}
             audienceLabel={selected.title}
             autonomy={autonomy}
+            autonomyLabels={t.autonomyOptions}
             initialRisk={risk}
             integrationId={calibrationLevel}
             integrationLabel={selectedGuideLevel.title}
@@ -2787,6 +2788,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             onContextImport={restoreLifecycleContext}
             onRiskChange={setRisk}
             onRiskQualificationChange={setRiskQualified}
+            riskLabels={t.impactOptions}
             schemaHref={sitePath("/data/project-dossier.schema.json")}
             usePatternId={usePattern}
             usePatternLabel={selectedUsePattern.title}

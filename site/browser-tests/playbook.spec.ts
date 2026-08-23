@@ -979,6 +979,8 @@ test("lifecycle workbench reveals one phase and derives decision guidance", asyn
   await workbench.getByRole("button", { name: "Copy the working plan" }).click();
   await expect(workbench.getByRole("button", { name: "Working plan copied" })).toBeVisible();
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("4. Risk and legal route · COMPLETE");
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("R3 · rights, health, employment, public authority");
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("A2 · action after explicit approval");
 });
 
 test("connected project records stay linked, editable, and persistent", async ({ page }) => {
@@ -1181,6 +1183,10 @@ test("change review compares one dossier version and reopens stale decisions", a
   await workbench.locator('[name="owner"]').fill("Service owner");
   await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.fields?.project, storageKey)).toBe("Reference service assistant");
   const baseline = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null"), storageKey);
+  const referenceBaseline = {
+    ...baseline,
+    context: { ...baseline.context, autonomy_level: 1, risk_level: 0 },
+  };
 
   await workbench.locator('[name="project"]').fill("Current service assistant");
   await expect.poll(() => page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? "null")?.fields?.project, storageKey)).toBe("Current service assistant");
@@ -1188,9 +1194,15 @@ test("change review compares one dossier version and reopens stale decisions", a
   await review.locator(".dossier-file-input").setInputFiles({
     name: "reference-project-dossier.json",
     mimeType: "application/json",
-    buffer: Buffer.from(JSON.stringify(baseline)),
+    buffer: Buffer.from(JSON.stringify(referenceBaseline)),
   });
   await expect(review.getByText("Reference loaded. Review every changed decision before closing the comparison.")).toBeVisible();
+  await review.locator('button[data-change="context:autonomy_level"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(review.locator('article[data-change="context:autonomy_level"] .change-values section').nth(0)).toContainText("A1 · research or draft");
+  await expect(review.locator('article[data-change="context:autonomy_level"] .change-values section').nth(1)).toContainText("A2 · action after explicit approval");
+  await review.locator('button[data-change="context:risk_level"]').evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(review.locator('article[data-change="context:risk_level"] .change-values section').nth(0)).toContainText("R0 · internal and easily checked");
+  await expect(review.locator('article[data-change="context:risk_level"] .change-values section').nth(1)).toContainText("R1 · assistance with review");
   await review.locator('button[data-change="lifecycle:project"]').evaluate((element) => (element as HTMLButtonElement).click());
   let change = review.locator('article[data-change="lifecycle:project"]');
   await expect(change.locator(".change-values section").nth(0)).toContainText("Reference service assistant");

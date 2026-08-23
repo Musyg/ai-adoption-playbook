@@ -1003,7 +1003,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .lifecycle-head > div > p:last-child { color: var(--muted); font-size: 13px; line-height: 1.55; margin: 18px 0 0; max-width: 760px; }
 .lifecycle-head output { border-left: 4px solid var(--blue-deep); display: flex; flex-direction: column; min-width: 170px; padding: 16px 18px; }
 .lifecycle-head output strong { font: 700 30px "Courier New", monospace; }
-.lifecycle-head output span, .lifecycle-head output small { color: var(--muted); font-size: 10px; margin-top: 4px; }
+.lifecycle-head output span, .lifecycle-head output small { color: var(--muted); font-size: 10px; line-height: 1.45; margin-top: 4px; }
 .lifecycle-nav { border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .lifecycle-nav button { background: var(--surface); border: 0; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); color: var(--ink); cursor: pointer; display: flex; flex-direction: column; min-height: 118px; padding: 14px; text-align: left; transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
 .lifecycle-nav button:nth-child(6n) { border-right: 0; }
@@ -1067,6 +1067,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .lifecycle-guidance output { border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; padding: 20px; }
 .lifecycle-guidance output span, .lifecycle-guidance > div > p { color: var(--blue-deep); font: 700 10px "Courier New", monospace; letter-spacing: .08em; margin: 0; }
 .lifecycle-guidance output strong { font: 700 40px "Courier New", monospace; margin-top: 12px; }
+.lifecycle-guidance output small { color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 6px; }
 .lifecycle-guidance > div { padding: 20px; }
 .lifecycle-guidance ul { margin: 12px 0 0; padding-left: 18px; }
 .lifecycle-guidance li { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 7px; }
