@@ -128,7 +128,7 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("the selected study does not provide a reliable range");
   await expect(page.locator('.calibrator-result-grid p[data-range="low"]')).toHaveCount(0);
 
-  await page.getByRole("button", { name: /Strong automation A3–A4/ }).click();
+  await page.getByRole("button", { name: /Strong automation 03/ }).click();
   await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
   await expect(page.locator('.calibrator-result-grid p[data-metric="setup"]')).toContainText("21.4 min");
   await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"]')).toContainText("54.4 min");
@@ -139,7 +139,7 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
 
   await page.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
-  await page.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await page.getByRole("button", { name: /Copilot 01/ }).click();
   await expect(page.locator(".task-time-evidence-detail")).toContainText("people completed one defined writing task about 40% faster");
   await expect(page.locator(".task-time-source-range")).toContainText("TT-2023-NOY-ZHANG-WRITING");
   await expect(page.locator(".task-time-source-range")).toContainText("40%");
@@ -182,6 +182,43 @@ test("demonstration results stay editable and cannot authorize a real decision",
   await expect(verdict).toContainText("SIMULATED RESULT · NOT AN AUTHORIZATION");
   await expect(page.locator(".evidence-prerequisite input")).toBeDisabled();
   await expect(page.locator("#evidence-gate .evidence-footer button")).toBeDisabled();
+});
+
+test("a real operating card requires the frozen version, named owners, fallback, and containment rehearsal", async ({ context, page }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Support workflow v3 · model release 2026-08");
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("All requests observed in the same period").fill("40");
+  await page.getByLabel("Eligible cases run in bounded live mode").fill("28");
+  await page.getByLabel("Human active-time reduction on accepted outputs").fill("30");
+  await page.getByLabel("Outputs accepted after defined review").fill("95");
+  await page.getByLabel("Total baseline human time for all observed requests").fill("2400");
+  await page.getByLabel("Total human time with AI for all observed requests").fill("1600");
+  await page.getByLabel("Complete effect and approval trace").fill("100");
+  await page.locator(".evidence-prerequisite input").check();
+  await router.getByRole("button", { name: /Operate within the proof/ }).click();
+
+  const copy = page.getByRole("button", { name: "Copy the operating card" });
+  await expect(copy).toBeDisabled();
+  await page.getByLabel("Workflow owner").fill("Operations lead");
+  await page.getByLabel("Reachable incident owner").fill("Incident lead");
+  await page.getByLabel("Next formal reassessment").fill("2026-10-01");
+  await page.getByLabel("The manual fallback is reachable and has been tried").check();
+  await expect(copy).toBeDisabled();
+  await page.getByLabel("The suspension and containment procedure has been rehearsed").check();
+  await expect(copy).toBeEnabled();
+  await copy.click();
+  const operatingCard = await page.evaluate(() => navigator.clipboard.readText());
+  expect(operatingCard).toContain("Use pattern: Retrieval");
+  expect(operatingCard).toContain("Territory: Switzerland + EU");
+  expect(operatingCard).toContain("Evaluated system and workflow version: Support workflow v3 · model release 2026-08");
+  expect(operatingCard).toContain("Manual fallback tried: yes");
+  expect(operatingCard).toContain("Suspension and containment rehearsed: yes");
 });
 
 test("language switch preserves the current topic and editable scenario", async ({ page }) => {
@@ -293,6 +330,7 @@ for (const zeroEligibilityLocale of [
     await page.getByLabel(zeroEligibilityLocale.eligible).fill("0");
     const router = page.locator("#operational-router");
     await router.getByRole("button", { name: zeroEligibilityLocale.plan }).click();
+    await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
     await page.getByRole("button", { name: zeroEligibilityLocale.freeze }).click();
     await router.getByRole("button", { name: zeroEligibilityLocale.panel }).click();
     const downloadPromise = page.waitForEvent("download");
@@ -314,6 +352,7 @@ test("whole-workload result uses total observed human time and rejects a positiv
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
   await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByLabel("All requests observed in the same period").fill("40");
@@ -340,6 +379,7 @@ for (const zeroAcceptanceLocale of [
     await page.locator("#operational-workspace > summary").click();
     const router = page.locator("#operational-router");
     await router.getByRole("button", { name: zeroAcceptanceLocale.plan }).click();
+    await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
     await page.getByRole("button", { name: zeroAcceptanceLocale.freeze }).click();
     await router.getByRole("button", { name: zeroAcceptanceLocale.evidence }).click();
     await page.getByLabel(zeroAcceptanceLocale.baseline).fill("1200");
@@ -364,8 +404,9 @@ test("field comparison remains locked to v1 and a changed plan requires a separa
   const router = page.locator("#operational-router");
   const calibrator = page.locator("#calibrator");
   await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
-  await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await calibrator.getByRole("button", { name: /Copilot 01/ }).click();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   const frozenRange = await page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong").innerText();
@@ -396,6 +437,7 @@ test("field comparison rounds negative half-values exactly as the interface disp
   await expect(calibrator.locator(".calibrator-result-head strong")).toHaveText("0%");
 
   await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByLabel("Eligible cases run in bounded live mode").fill("40");
@@ -418,7 +460,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   await page.locator("#operational-workspace > summary").click();
   const calibrator = page.locator("#calibrator");
   await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
-  await calibrator.getByRole("button", { name: /Copilot A0–A1/ }).click();
+  await calibrator.getByRole("button", { name: /Copilot 01/ }).click();
   await calibrator.locator(".task-time-components > summary").click();
   await calibrator.getByLabel("Preparation and context").fill("7");
   await calibrator.getByLabel("Supervision").fill("6");
@@ -432,7 +474,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   const brief = await page.evaluate(() => navigator.clipboard.readText());
   expect(brief).toContain("Work mode: Copilot");
   expect(brief).toContain("Architecture: Tool-assisted workflow");
-  expect(brief).toContain("Exact action boundary: A1");
+  expect(brief).toContain("Exact action boundary: A2");
   expect(brief).toContain("Transfer contract: professional_writing · copilot · reviewed · mixed");
   expect(brief).toContain("Net method: greater of source residual and local human-work floor, plus amortized setup");
   expect(brief).toContain("Human-work floor: 7 prep + 6 supervision + 18 verification + 4 correction + 3 expected exceptions = 38 min/case");
@@ -441,8 +483,8 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
 });
 
 for (const fieldLocale of [
-  { path: "/", task: "What work do you want to estimate?", level: /Copilot A0–A1/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
-  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote A0–A1/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
+  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
+  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
 ] as const) {
   test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
     await page.goto(fieldLocale.path);
@@ -451,6 +493,7 @@ for (const fieldLocale of [
     await page.locator("#calibrator").getByRole("button", { name: fieldLocale.level }).click();
     const router = page.locator("#operational-router");
     await router.getByRole("button", { name: fieldLocale.plan }).click();
+    await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
     await page.getByRole("button", { name: fieldLocale.freeze }).click();
     await router.getByRole("button", { name: fieldLocale.evidence }).click();
     await page.getByLabel(fieldLocale.baseline).fill("1200");
@@ -482,6 +525,7 @@ test("any field-report mutation invalidates confirmation and all six publication
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
   await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByRole("button", { name: "Load a demonstration result" }).click();
@@ -577,9 +621,20 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   await page.locator(".guide-patterns button").nth(4).click();
   await page.locator(".guided-controls .guide-next").click();
 
-  await page.locator(".guide-levels button").first().click();
-  await page.locator(".guide-architectures button").first().click();
-  await page.locator(".guide-autonomy button").nth(1).click();
+  const workModes = page.locator(".guide-levels button");
+  const architectures = page.locator(".guide-architectures button");
+  const actionBoundaries = page.locator(".guide-autonomy button");
+  await workModes.first().click();
+  await architectures.first().click();
+  await actionBoundaries.nth(4).click();
+  await workModes.nth(2).click();
+  await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
+  await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
+  await workModes.first().click();
+  await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
+  await actionBoundaries.nth(1).click();
+  await expect(workModes.first()).toHaveAttribute("aria-pressed", "true");
+  await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
   await page.locator(".guided-controls .guide-next").click();
   await page.locator(".guide-jurisdictions button").first().click();
   await page.locator(".guided-controls .guide-next").click();
@@ -741,7 +796,7 @@ test("connected project records stay linked, editable, and persistent", async ({
       taskStatus: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status,
       taskMode: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status_mode,
     };
-  }, storageKey)).toEqual({ schema: "0.4.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
+  }, storageKey)).toEqual({ schema: "0.5.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
 
   await page.reload();
   await openWorkbench();
@@ -801,7 +856,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
       organization_type: "public",
       use_pattern: "conversation",
       jurisdiction: "EU",
-      integration_level: "copilot",
+      work_mode: "copilot",
       architecture: "model",
       autonomy_level: 1,
       risk_level: 2,
@@ -820,7 +875,9 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   await expect(workbench.locator(".lifecycle-context")).toContainText("European Union");
   await expect(workbench.locator('[name="project"]')).toHaveValue("Imported public assistant");
 
-  const legacyDossier = { ...imported, context: { ...imported.context } };
+  const legacyContext = { ...imported.context, integration_level: imported.context.work_mode } as Partial<typeof imported.context> & { integration_level: string };
+  delete legacyContext.work_mode;
+  const legacyDossier = { ...imported, context: legacyContext };
   delete legacyDossier.change_review;
   delete (legacyDossier.context as Partial<typeof imported.context>).architecture;
   await workbench.locator(".project-dossier-manager .dossier-file-input").setInputFiles({
@@ -838,7 +895,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
       artifactGroups: Object.keys(dossier?.artifacts ?? {}).sort(),
     };
   }, storageKey)).toEqual({
-    schema: "0.4.0",
+    schema: "0.5.0",
     project: "Imported public assistant",
     artifactGroups: ["evaluation_plan", "implementation_checklist", "risk_assessment", "system_register"],
   });
@@ -904,7 +961,7 @@ test("change review compares one dossier version and reopens stale decisions", a
       decision: dossier?.change_review?.items?.["lifecycle:project"]?.decision,
       evidence: dossier?.change_review?.items?.["lifecycle:project"]?.evidence_ref,
     };
-  }, storageKey)).toEqual({ schema: "0.4.0", baseline: baseline.dossier_id, decision: "accepted", evidence: "CHANGE-001" });
+  }, storageKey)).toEqual({ schema: "0.5.0", baseline: baseline.dossier_id, decision: "accepted", evidence: "CHANGE-001" });
 
   await page.reload();
   await openWorkbench();
@@ -957,7 +1014,7 @@ test("large surfaces stay neutral and button hovers stay within the portfolio pa
     }
 
     await page.locator("#operational-workspace > summary").click();
-    const modeButton = page.locator("#calibrator").getByRole("button", { name: /Copilot A0–A1/ });
+    const modeButton = page.locator("#calibrator").getByRole("button", { name: /Copilot 01/ });
     await modeButton.hover();
     await page.waitForTimeout(250);
     const modeColors = await modeButton.evaluate((element) => ({

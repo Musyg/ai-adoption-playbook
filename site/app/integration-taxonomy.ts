@@ -3,20 +3,16 @@ export type ArchitectureId = "model" | "workflow" | "agent" | "agency";
 
 export const workModeTaxonomy = {
   en: {
-    copilot: { label: "Copilot", code: "A0–A1" },
-    agent: { label: "Bounded automation", code: "A1–A3" },
-    agency: { label: "Strong automation", code: "A3–A4" },
+    copilot: { label: "Copilot", code: "01" },
+    agent: { label: "Bounded automation", code: "02" },
+    agency: { label: "Strong automation", code: "03" },
   },
   fr: {
-    copilot: { label: "Copilote", code: "A0–A1" },
-    agent: { label: "Automatisation bornée", code: "A1–A3" },
-    agency: { label: "Automatisation forte", code: "A3–A4" },
+    copilot: { label: "Copilote", code: "01" },
+    agent: { label: "Automatisation bornée", code: "02" },
+    agency: { label: "Automatisation forte", code: "03" },
   },
 } as const;
-
-// Kept as an internal alias while the data registry still calls this field
-// `integration_mode`. All visible labels use the clearer work-mode wording.
-export const integrationTaxonomy = workModeTaxonomy;
 
 export const architectureTaxonomy = {
   en: {
@@ -44,11 +40,3 @@ export const defaultAutonomyByIntegration: Record<IntegrationId, number> = {
   agent: 2,
   agency: 3,
 };
-
-export function integrationForAutonomy(autonomy: number, current: IntegrationId): IntegrationId {
-  if (autonomy === 0) return "copilot";
-  if (autonomy === 1) return current === "agency" ? "agent" : current;
-  if (autonomy === 2) return "agent";
-  if (autonomy === 3) return current === "copilot" ? "agent" : current;
-  return "agency";
-}

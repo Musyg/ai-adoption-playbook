@@ -1,6 +1,6 @@
 # Modes d’usage de l’IA
 
-Un niveau d’intégration ne décrit pas complètement un système IA. Un copilote,
+Un mode de travail ne décrit pas complètement un système IA. Un copilote,
 un assistant documentaire, un classifieur et un chatbot public peuvent tous
 fonctionner au niveau A1, tout en exigeant des données, évaluations, tests de
 sécurité, règles de transparence et contrôles humains différents.

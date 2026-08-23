@@ -32,7 +32,7 @@ a [predictive demand forecast](examples/en/predictive-demand-forecast.md), an
 [multimodal catalogue assistant](examples/en/multimodal-catalog-accessibility.md).
 All eleven cases are synthetic and label their evidence limits explicitly.
 
-> Status: version **0.2.2**, public repository, snapshot **2026-08-22**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
+> Status: version **0.2.2**, public repository, snapshot **2026-08-23**. Operating guides, organization tracks, templates, worked examples, and the visual application are available at the approved GitHub Pages URL.
 
 **Task-time evidence:** the interactive calculator now starts from a countable
 task, shows whether a public source is comparable, and converts its low,

@@ -19,7 +19,7 @@
   on-demand expert chapters.
 - [x] Reveal one topic per expert chapter and one worked case at a time, with
   responsive selectors and restorable deep links.
-- [x] Separate seven AI use patterns from integration level, autonomy, and risk.
+- [x] Separate seven AI use patterns from work mode, architecture, action boundary, and risk.
 - [x] Add distinct Swiss and EU legal and transparency routing.
 - [x] Complete the repository, history, security, community-file, language,
   title, accessibility, and browser audits.
@@ -97,7 +97,7 @@ remain open.
 - [x] Publish a versioned registry and JSON Schema separating measured human
   time, elapsed time, output metrics, self-reports, internal cases, and model
   estimates through evidence grades A to E.
-- [x] Add a transfer engine that checks task profile, operating mode, output
+- [x] Add a transfer engine that checks task profile, work mode, output
   state, and operator experience, preserves negative findings, and blocks
   context-only values from automatic calculation.
 - [x] Replace the integration-level productivity bands with a progressive

@@ -1,10 +1,13 @@
 export type IntegrationMode = "copilot" | "agent" | "agency";
+export type SystemArchitecture = "model" | "workflow" | "agent" | "agency";
 export type QualityGate = "draft" | "reviewed" | "production";
 export type ExpertiseLevel = "developing" | "mixed" | "experienced";
 export type CompatibilityStatus = "compatible" | "partial" | "context" | "incompatible";
 export type EvidenceTarget = {
   task_profile_id: string;
-  integration_mode: IntegrationMode;
+  work_mode: IntegrationMode;
+  architecture: SystemArchitecture;
+  autonomy_level: "A0" | "A1" | "A2" | "A3" | "A4";
   quality_gate: QualityGate;
   expertise_level: ExpertiseLevel;
 };
@@ -18,7 +21,8 @@ export type TaskTimeEvidenceRecord = {
   task_contract: {
     profile_id: string;
     description: LocalizedText;
-    integration_mode: IntegrationMode;
+    work_mode: IntegrationMode;
+    architectures: SystemArchitecture[];
     autonomy_levels: string[];
     output_unit: LocalizedText;
     quality_gate: QualityGate;
@@ -42,7 +46,7 @@ export type TaskTimeEvidenceRecord = {
   transfer: {
     quantitative_use: "usable" | "context_only";
     allowed_profiles: string[];
-    integration_modes: IntegrationMode[];
+    work_modes: IntegrationMode[];
     quality_gates: QualityGate[];
     expertise_levels: ExpertiseLevel[];
     preconditions: LocalizedText;

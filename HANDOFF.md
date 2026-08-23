@@ -1,6 +1,6 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-22 (Europe/Zurich)
+Snapshot: 2026-08-23 (Europe/Zurich)
 
 ## Current state
 
@@ -153,11 +153,12 @@ quality threshold, verifiability, data and tool access, operator experience,
 exception rate, and consequence of error. The transfer result has four states:
 
 1. compatible: produce a source-informed low, central, and high range;
-2. partially compatible: expose the adjustments and label the result as a
-   hypothesis to test;
+2. partially compatible: keep the range usable as a starting point, expose the
+   differences, and label the result for local verification;
 3. context only: retain the mechanism or reported outcome without transferring
    a human-time ratio;
-4. incompatible: do not transfer the quantitative result.
+4. incompatible: do not transfer the quantitative result when the underlying
+   task itself is too different.
 
 A percentage is never transferred merely because two organizations share a
 sector or size. Conversely, a source from a different organization type is not
@@ -182,9 +183,12 @@ distinct from the observed layer required by the first-party admission contract.
 1. `task-time-evidence.v1.json` and its strict JSON Schema contain ten task
    profiles, nine external evidence records, evidence grades A to E, and the
    classification of all eleven worked cases.
-2. The pure transfer engine checks the task profile, operating mode, output
-   state, and operator experience. It keeps measured slowdowns negative and
-   blocks context-only sources from automatic transfer.
+2. The pure transfer engine compares task profile, work mode, architecture,
+   exact A0 to A4 action boundary, output state, and operator experience. A
+   comparable measured task remains quantitatively usable across the other
+   dimensions with visible warnings; only a different task profile blocks the
+   transfer. Measured slowdowns stay negative and context-only sources remain
+   outside the automatic calculation.
 3. The progressive calculator exposes one task, one evidence anchor, and one
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
@@ -214,6 +218,14 @@ distinct from the observed layer required by the first-party admission contract.
    account of what was observed, and an explicit statement of whether the
    figure enters the estimate. Grades A to E and the complete methodology stay
    available through optional explanations in both routes.
+10. Real-decision exports now preserve the use pattern, territory, frozen
+    system and workflow version, work mode, architecture, and exact action
+    boundary. The operating card additionally requires named owners, a dated
+    review, a tried manual fallback, and a rehearsed suspension and containment
+    procedure. Demonstration calculations remain freely available without
+    those real-evidence fields.
+11. The six case-specific evidence notes now follow the selected route. A route
+    no longer opens evidence text written for the other route.
 
 This quantitative evidence and transfer layer now feeds 0.3 directly. The field
 draft retains its source, transfer contract, net range, human-work assumptions,
@@ -249,24 +261,24 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-22:
+Latest local verification on 2026-08-23:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 49/49 pass
-- Playwright: 93/93 pass across both routes, desktop light, desktop dark, and
+- Node tests: 52/52 pass
+- Playwright: 96/96 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 115 Markdown files and 48 paired documents pass
+- repository validation: 121 Markdown files and 48 paired documents pass
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 49 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 52 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 93 Playwright checks across both routes, desktop light, desktop dark, and
+- 96 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;

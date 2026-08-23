@@ -11,11 +11,12 @@
   frozen plan and explicitly confirmed pilot observations can do that.
 - Centralized the R0 to R3 rules, preserved the complete calculator scenario
   during language changes, aligned the field-cohort enumeration with its JSON
-  registry, and upgraded the additive project-dossier schema to `0.4.0`.
+  registry, and upgraded the additive project-dossier schema to `0.5.0`, with
+  `work_mode`, architecture, and the exact A0–A4 action boundary kept separate.
 - Completed a route-by-route readability and interaction audit across English,
   French, desktop, dark mode, and mobile. Plain-language definitions now lead
-  into optional detail, large surfaces remain neutral, and all 93 browser
-  checks and 49 Node checks cover the resulting journey.
+  into optional detail, large surfaces remain neutral, and all 96 browser
+  checks and 52 Node checks cover the resulting journey.
 - Added a plain-language evidence layer to the task-time guide. Every study now
   starts with a direct verdict, a short explanation of what happened, and a
   clear statement of whether its figures enter the estimate. Measurement
@@ -25,7 +26,8 @@
   external records separate measured task time, operational outcomes,
   self-reports, internal cases, and model estimates through grades A to E.
 - Replaced work-mode productivity bands with a task-based transfer
-  engine. It checks task profile, operating mode, output state, and experience,
+  engine. It checks task profile, work mode, architecture, exact action
+  boundary, output state, and experience,
   preserves measured slowdowns, and blocks context-only values from automatic
   calculation.
 - Rebuilt the calibrator as a progressive three-part guide. Its net low,
@@ -39,7 +41,7 @@
   the preregistered source and transfer contract, compare the extrapolated range
   with the observed whole-workload result, and state whether the result falls
   below, within, or above the range without merging their evidence labels.
-- Classified all eleven worked cases by task profile and operating mode in the
+- Classified all eleven worked cases by task profile and work mode in the
   machine-readable registry. Their results remain grade E planning hypotheses,
   even when an external record provides separate mechanism context.
 - Opened the 0.3 field-pilot cohort for Switzerland and the European Union with
@@ -101,7 +103,7 @@
   direct links restore the correct nested view.
 - Added a seven-pattern AI-use classification for generation,
   retrieval, classification, prediction, conversation, multimodal systems, and
-  agentic action. The classification stays separate from integration level,
+  agentic action. The classification stays separate from work mode,
   autonomy, deployment, and organizational risk.
 - Added mode-specific evaluation and threat profiles to the operating guides,
   security guidance, templates, AI-system register, and interactive pilot

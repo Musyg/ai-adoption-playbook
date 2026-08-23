@@ -16,8 +16,8 @@ cycle d’apprentissage.
 Avant toute observation réelle, consignez :
 
 - un alias de projet non identifiant et un workflow précis ;
-- le type d’organisation, l’extension sectorielle, le niveau d’intégration et
-  la version du système ;
+- le type d’organisation, l’extension sectorielle, le mode de travail,
+  l’architecture, la limite d’action exacte A0–A4 et la version du système ;
 - la baseline manuelle, le dénominateur de toutes les demandes, la règle
   d’éligibilité, les exclusions et les seuils préenregistrés ;
 - les sources transférables, leur contrat de comparabilité, la fourchette nette

@@ -8,7 +8,7 @@ const frenchUrl = siteUrlFor("/fr/");
 export const metadata: Metadata = {
   title: { absolute: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance" },
   description:
-    "Un guide pratique pour choisir le bon niveau d’intégration IA, mener un vrai pilote, mesurer les gains et encadrer des agents métier.",
+    "Un guide pratique pour choisir le bon mode de travail, l’architecture et la limite d’action de l’IA, mener un vrai pilote et mesurer les gains.",
   ...(englishUrl && frenchUrl ? { alternates: { canonical: frenchUrl, languages: { en: englishUrl, fr: frenchUrl, "x-default": englishUrl } } } : {}),
   openGraph: {
     title: "Playbook d’adoption de l’IA : pilotes, agents et gouvernance",

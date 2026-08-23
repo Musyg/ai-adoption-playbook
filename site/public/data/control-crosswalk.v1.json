@@ -79,7 +79,7 @@
       "publisher": "Musyg",
       "version": "0.2.2 · 2026.08",
       "status": "internal_method",
-      "url": "https://github.com/Musyg/ai-adoption-playbook/blob/main/docs/universal-process.fr.md",
+      "url": "https://github.com/Musyg/ai-adoption-playbook/blob/main/docs/universal-process.md",
       "checked_on": "2026-08-21",
       "use_boundary": {
         "en": "Direct source for playbook lifecycle, evidence, and gate mappings.",
@@ -300,55 +300,55 @@
       "evidence_id": "EV-MANDATE",
       "name": { "en": "Signed mandate", "fr": "Mandat signé" },
       "minimum_record": ["owner", "measurable_outcome", "scope", "prohibited_actions", "decision_authority", "date"],
-      "template": "templates/mandate.fr.md"
+      "template": "templates/mandate.md"
     },
     {
       "evidence_id": "EV-SYSTEM-REGISTER",
       "name": { "en": "Versioned AI system register entry", "fr": "Entrée versionnée du registre IA" },
-      "minimum_record": ["system_id", "owner", "purpose", "use_patterns", "interaction_pattern", "knowledge_source", "deployment_mode", "provider", "model_or_version", "risk_level", "autonomy_level", "jurisdictions", "review_date"],
+      "minimum_record": ["system_id", "owner", "purpose", "use_patterns", "interaction_pattern", "knowledge_source", "deployment_mode", "work_mode", "architecture", "provider", "model_or_version", "risk_level", "autonomy_level", "jurisdictions", "review_date"],
       "template": "templates/ai-system-register.csv"
     },
     {
       "evidence_id": "EV-BASELINE",
       "name": { "en": "Measured baseline", "fr": "Baseline mesurée" },
       "minimum_record": ["population", "period", "volume", "human_active_time", "quality_or_error", "cost_or_service_value"],
-      "template": "templates/use-case-card.fr.md"
+      "template": "templates/use-case-card.md"
     },
     {
       "evidence_id": "EV-RISK-ASSESSMENT",
       "name": { "en": "Risk and autonomy assessment", "fr": "Évaluation risque et autonomie" },
       "minimum_record": ["use_patterns", "interaction_pattern", "deployment_mode", "impact_level", "autonomy_level", "jurisdictions", "affected_people", "harm_scenarios", "residual_risk_owner", "review_date"],
-      "template": "templates/fundamental-rights-impact-assessment.fr.md"
+      "template": "templates/fundamental-rights-impact-assessment.md"
     },
     {
       "evidence_id": "EV-DATA-MAP",
       "name": { "en": "Data and processing map", "fr": "Carte des données et traitements" },
       "minimum_record": ["purpose", "data_classes", "provenance", "access", "processing_regions", "retention", "deletion", "subprocessors"],
-      "template": "templates/risk-assessment.fr.md"
+      "template": "templates/risk-assessment.md"
     },
     {
       "evidence_id": "EV-VENDOR-DOSSIER",
       "name": { "en": "Supplier and exit dossier", "fr": "Dossier fournisseur et sortie" },
       "minimum_record": ["provider", "service_version", "change_notice", "audit_access", "subprocessors", "export", "deletion", "continuity", "exit_rights"],
-      "template": "templates/vendor-assessment.fr.md"
+      "template": "templates/vendor-assessment.md"
     },
     {
       "evidence_id": "EV-EVALUATION-PLAN",
       "name": { "en": "Preregistered evaluation plan", "fr": "Plan d’évaluation préenregistré" },
       "minimum_record": ["decision_gate", "use_patterns", "pattern_specific_metrics", "test_population", "critical_segments", "acceptance_thresholds", "stop_thresholds", "judge", "frozen_version"],
-      "template": "templates/evaluation-plan.fr.md"
+      "template": "templates/evaluation-plan.md"
     },
     {
       "evidence_id": "EV-EVALUATION-REPORT",
       "name": { "en": "Segmented evaluation report", "fr": "Rapport d’évaluation segmenté" },
       "minimum_record": ["test_set_id", "global_results", "segment_results", "critical_errors", "uncertainty", "deviations", "decision"],
-      "template": "templates/pilot-decision.fr.md"
+      "template": "templates/pilot-decision.md"
     },
     {
       "evidence_id": "EV-THREAT-MODEL",
       "name": { "en": "AI system threat model", "fr": "Modèle de menace du système IA" },
       "minimum_record": ["assets", "actors", "trust_boundaries", "attack_paths", "controls", "residual_risks", "owner"],
-      "template": "templates/risk-assessment.fr.md"
+      "template": "templates/risk-assessment.md"
     },
     {
       "evidence_id": "EV-SECURITY-TESTS",
@@ -378,19 +378,19 @@
       "evidence_id": "EV-OPERATING-CARD",
       "name": { "en": "Bounded operating and rollback card", "fr": "Fiche d’exploitation et rollback bornés" },
       "minimum_record": ["authorized_scope", "owners", "limits", "suspension_triggers", "manual_fallback", "rollback_steps", "review_date"],
-      "template": "templates/pilot-decision.fr.md"
+      "template": "templates/pilot-decision.md"
     },
     {
       "evidence_id": "EV-INCIDENT-RUNBOOK",
       "name": { "en": "Tested incident runbook", "fr": "Runbook d’incident testé" },
       "minimum_record": ["severity", "containment", "evidence_preservation", "notifications", "access_revocation", "recovery", "reassessment_rule"],
-      "template": "templates/incident-runbook.fr.md"
+      "template": "templates/incident-runbook.md"
     },
     {
       "evidence_id": "EV-CHANGE-REVIEW",
       "name": { "en": "Change and monitoring review", "fr": "Revue de changement et de surveillance" },
       "minimum_record": ["metric_period", "business_outcome", "quality", "incidents", "drift", "change_inventory", "gate_decision", "next_review"],
-      "template": "templates/pilot-decision.fr.md"
+      "template": "templates/pilot-decision.md"
     },
     {
       "evidence_id": "EV-RETIREMENT",
@@ -402,13 +402,13 @@
       "evidence_id": "EV-IMPACT-ASSESSMENT",
       "name": { "en": "Rights, privacy, access, and mission impact assessment", "fr": "Analyse d’impact droits, données, accès et mission" },
       "minimum_record": ["affected_population", "legal_basis", "rights_and_harms", "language_and_accessibility", "non_ai_option", "mitigations", "consulted_roles", "decision"],
-      "template": "templates/risk-assessment.fr.md"
+      "template": "templates/risk-assessment.md"
     },
     {
       "evidence_id": "EV-PUBLIC-PROCUREMENT",
       "name": { "en": "Auditable public procurement record", "fr": "Dossier d’achat public auditable" },
       "minimum_record": ["requirements", "evaluation_method", "audit_rights", "change_notice", "data_terms", "continuity", "exit", "award_authority"],
-      "template": "templates/vendor-assessment.fr.md"
+      "template": "templates/vendor-assessment.md"
     }
   ],
   "controls": [
@@ -423,7 +423,7 @@
       "gates": ["G1", "G3", "P0", "P5"],
       "evidence_ids": ["EV-MANDATE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
-      "implementation_refs": ["docs/universal-process.fr.md", "templates/mandate.fr.md"]
+      "implementation_refs": ["docs/universal-process.md", "templates/mandate.md"]
     },
     {
       "control_id": "AAP-GOV-002",
@@ -436,7 +436,7 @@
       "gates": ["G1", "G5", "P0", "P5"],
       "evidence_ids": ["EV-SYSTEM-REGISTER"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }],
-      "implementation_refs": ["templates/ai-system-register.csv", "docs/universal-process.fr.md"]
+      "implementation_refs": ["templates/ai-system-register.csv", "docs/universal-process.md"]
     },
     {
       "control_id": "AAP-VAL-001",
@@ -449,7 +449,7 @@
       "gates": ["G1", "G2", "G3", "G5", "P0", "P3", "P4", "P5"],
       "evidence_ids": ["EV-BASELINE", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
-      "implementation_refs": ["templates/use-case-card.fr.md", "docs/evaluations-and-gates.fr.md"]
+      "implementation_refs": ["templates/use-case-card.md", "docs/evaluations-and-gates.md"]
     },
     {
       "control_id": "AAP-RSK-001",
@@ -462,7 +462,7 @@
       "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-IMPACT-ASSESSMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-23894-2023", "relation": "contextual" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
-      "implementation_refs": ["docs/risk-autonomy.fr.md", "docs/legal-switzerland-eu.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/risk-autonomy.md", "docs/legal-switzerland-eu.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-DAT-001",
@@ -475,7 +475,7 @@
       "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
       "evidence_ids": ["EV-DATA-MAP", "EV-RISK-ASSESSMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
-      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/legal-switzerland-eu.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-SUP-001",
@@ -488,7 +488,7 @@
       "gates": ["G2", "G4", "G5", "P2", "P5"],
       "evidence_ids": ["EV-VENDOR-DOSSIER"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }, { "source_id": "EU-AI-PROCUREMENT-MCC", "relation": "contextual" }],
-      "implementation_refs": ["templates/vendor-assessment.fr.md", "tracks/fr/public-sector.md"]
+      "implementation_refs": ["templates/vendor-assessment.md", "tracks/en/public-sector.md"]
     },
     {
       "control_id": "AAP-EVA-001",
@@ -501,7 +501,7 @@
       "gates": ["G2", "G3", "G4", "P3", "P4"],
       "evidence_ids": ["EV-EVALUATION-PLAN"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "templates/evaluation-plan.fr.md"]
+      "implementation_refs": ["docs/evaluations-and-gates.md", "templates/evaluation-plan.md"]
     },
     {
       "control_id": "AAP-EVA-002",
@@ -514,7 +514,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
       "evidence_ids": ["EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "templates/evaluation-plan.fr.md", "templates/pilot-decision.fr.md"]
+      "implementation_refs": ["docs/evaluations-and-gates.md", "templates/evaluation-plan.md", "templates/pilot-decision.md"]
     },
     {
       "control_id": "AAP-SEC-001",
@@ -527,7 +527,7 @@
       "gates": ["G2", "G3", "G4", "P2", "P3", "P4"],
       "evidence_ids": ["EV-THREAT-MODEL", "EV-ACTION-CATALOG"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/security.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/security.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-SEC-002",
@@ -540,7 +540,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
       "evidence_ids": ["EV-THREAT-MODEL", "EV-SECURITY-TESTS"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/security.fr.md", "docs/evaluations-and-gates.fr.md"]
+      "implementation_refs": ["docs/security.md", "docs/evaluations-and-gates.md"]
     },
     {
       "control_id": "AAP-AUT-001",
@@ -553,7 +553,7 @@
       "gates": ["G2", "G3", "G4", "P2", "P3", "P4"],
       "evidence_ids": ["EV-ACTION-CATALOG", "EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/security.fr.md", "docs/evaluations-and-gates.fr.md"]
+      "implementation_refs": ["docs/security.md", "docs/evaluations-and-gates.md"]
     },
     {
       "control_id": "AAP-HUM-001",
@@ -566,7 +566,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
       "evidence_ids": ["EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
-      "implementation_refs": ["docs/risk-autonomy.fr.md", "tracks/fr/public-sector.md", "templates/pilot-decision.fr.md"]
+      "implementation_refs": ["docs/risk-autonomy.md", "tracks/en/public-sector.md", "templates/pilot-decision.md"]
     },
     {
       "control_id": "AAP-TRC-001",
@@ -579,7 +579,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
       "evidence_ids": ["EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
-      "implementation_refs": ["docs/evaluations-and-gates.fr.md", "docs/security.fr.md"]
+      "implementation_refs": ["docs/evaluations-and-gates.md", "docs/security.md"]
     },
     {
       "control_id": "AAP-OPS-001",
@@ -592,7 +592,7 @@
       "gates": ["G3", "G4", "G5", "P4", "P5"],
       "evidence_ids": ["EV-OPERATING-CARD", "EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }],
-      "implementation_refs": ["docs/universal-process.fr.md", "templates/pilot-decision.fr.md"]
+      "implementation_refs": ["docs/universal-process.md", "templates/pilot-decision.md"]
     },
     {
       "control_id": "AAP-OPS-002",
@@ -605,7 +605,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
       "evidence_ids": ["EV-INCIDENT-RUNBOOK"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }],
-      "implementation_refs": ["docs/security.fr.md", "templates/incident-runbook.fr.md"]
+      "implementation_refs": ["docs/security.md", "templates/incident-runbook.md"]
     },
     {
       "control_id": "AAP-MON-001",
@@ -618,7 +618,7 @@
       "gates": ["G3", "G4", "G5", "P4", "P5"],
       "evidence_ids": ["EV-CHANGE-REVIEW", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
-      "implementation_refs": ["docs/universal-process.fr.md", "templates/pilot-decision.fr.md"]
+      "implementation_refs": ["docs/universal-process.md", "templates/pilot-decision.md"]
     },
     {
       "control_id": "AAP-RET-001",
@@ -631,7 +631,7 @@
       "gates": ["G2", "G4", "G5", "P2", "P5"],
       "evidence_ids": ["EV-RETIREMENT", "EV-VENDOR-DOSSIER"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "ISO-IEC-5338-2023", "relation": "contextual" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
-      "implementation_refs": ["docs/universal-process.fr.md", "templates/vendor-assessment.fr.md"]
+      "implementation_refs": ["docs/universal-process.md", "templates/vendor-assessment.md"]
     },
     {
       "control_id": "AAP-MIS-001",
@@ -644,7 +644,7 @@
       "gates": ["G1", "G2", "G3", "G4", "G5", "P0", "P1", "P3", "P4", "P5"],
       "evidence_ids": ["EV-IMPACT-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
-      "implementation_refs": ["tracks/fr/nonprofit-foundation.md", "tracks/fr/public-sector.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["tracks/en/nonprofit-foundation.md", "tracks/en/public-sector.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-PUB-001",
@@ -657,7 +657,7 @@
       "gates": ["P0", "P1"],
       "evidence_ids": ["EV-MANDATE", "EV-BASELINE", "EV-IMPACT-ASSESSMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "NIST-AI-100-1", "relation": "supports" }],
-      "implementation_refs": ["tracks/fr/public-sector.md", "docs/legal-switzerland-eu.fr.md"]
+      "implementation_refs": ["tracks/en/public-sector.md", "docs/legal-switzerland-eu.md"]
     },
     {
       "control_id": "AAP-PUB-002",
@@ -670,7 +670,7 @@
       "gates": ["P2", "P3", "P4", "P5"],
       "evidence_ids": ["EV-PUBLIC-PROCUREMENT", "EV-SYSTEM-REGISTER", "EV-APPROVAL-RECOURSE", "EV-AUDIT-TRACE", "EV-RETIREMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "EU-AI-PROCUREMENT-MCC", "relation": "contextual" }, { "source_id": "ISO-IEC-42001-2023", "relation": "contextual" }],
-      "implementation_refs": ["tracks/fr/public-sector.md", "templates/vendor-assessment.fr.md", "templates/ai-system-register.csv"]
+      "implementation_refs": ["tracks/en/public-sector.md", "templates/vendor-assessment.md", "templates/ai-system-register.csv"]
     },
     {
       "control_id": "AAP-GOV-003",
@@ -683,7 +683,7 @@
       "gates": ["G1", "G2", "G5", "P1", "P2", "P5"],
       "evidence_ids": ["EV-SYSTEM-REGISTER", "EV-RISK-ASSESSMENT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OECD-AI-CLASSIFICATION-2022", "relation": "supports" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }],
-      "implementation_refs": ["docs/ai-use-patterns.fr.md", "templates/use-case-card.fr.md", "templates/ai-system-register.csv"]
+      "implementation_refs": ["docs/ai-use-patterns.md", "templates/use-case-card.md", "templates/ai-system-register.csv"]
     },
     {
       "control_id": "AAP-EVA-003",
@@ -696,7 +696,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P3", "P4", "P5"],
       "evidence_ids": ["EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "NIST-AI-600-1", "relation": "supports" }, { "source_id": "NIST-AI-100-2E2025", "relation": "supports" }],
-      "implementation_refs": ["docs/ai-use-patterns.fr.md", "templates/evaluation-plan.fr.md"]
+      "implementation_refs": ["docs/ai-use-patterns.md", "templates/evaluation-plan.md"]
     },
     {
       "control_id": "AAP-SEC-003",
@@ -709,7 +709,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P2", "P3", "P4", "P5"],
       "evidence_ids": ["EV-THREAT-MODEL", "EV-SECURITY-TESTS"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "OWASP-LLM-TOP10-2025", "relation": "supports" }, { "source_id": "OWASP-AGENTIC-TOP10-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-2E2025", "relation": "supports" }],
-      "implementation_refs": ["docs/security.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/security.md", "docs/ai-use-patterns.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-TRN-001",
@@ -722,7 +722,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-EVALUATION-REPORT"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }],
-      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/legal-switzerland-eu.md", "docs/ai-use-patterns.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-TRN-002",
@@ -735,7 +735,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P1", "P2", "P3", "P4", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT", "EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-SYNTHETIC-IMAGES-2026", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-4", "relation": "supports" }, { "source_id": "C2PA-2-2", "relation": "contextual" }],
-      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/evaluation-plan.fr.md"]
+      "implementation_refs": ["docs/legal-switzerland-eu.md", "docs/ai-use-patterns.md", "templates/evaluation-plan.md"]
     },
     {
       "control_id": "AAP-TRN-003",
@@ -748,7 +748,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P1", "P3", "P4", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-APPROVAL-RECOURSE", "EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-INFORMATION-DUTY", "relation": "supports" }, { "source_id": "CH-FDPIC-AI-DP", "relation": "supports" }],
-      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md"]
+      "implementation_refs": ["docs/legal-switzerland-eu.md", "docs/ai-use-patterns.md", "templates/risk-assessment.md"]
     },
     {
       "control_id": "AAP-TRN-004",
@@ -761,7 +761,7 @@
       "gates": ["G2", "G3", "G4", "G5", "P1", "P2", "P3", "P4", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT", "EV-AUDIT-TRACE"],
       "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }],
-      "implementation_refs": ["docs/legal-switzerland-eu.fr.md", "docs/ai-use-patterns.fr.md", "templates/risk-assessment.fr.md", "templates/evaluation-plan.fr.md"]
+      "implementation_refs": ["docs/legal-switzerland-eu.md", "docs/ai-use-patterns.md", "templates/risk-assessment.md", "templates/evaluation-plan.md"]
     }
   ]
 }

@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 
 import taskTimeEvidence from "../public/data/task-time-evidence.v1.json";
-import { integrationTaxonomy } from "./integration-taxonomy";
+import { workModeTaxonomy } from "./integration-taxonomy";
 import {
   buildEvidenceTransfer,
   buildNetPlanningRange,
@@ -112,7 +112,7 @@ const content = {
     gradeNames: { A: "Observed comparison between work with and without AI", B: "Operational measure from real work", C: "Time reported by users", D: "Estimate published by an organization", E: "Synthetic estimate or planning assumption" },
     gradeCode: "evidence grade",
     statuses: { compatible: "Can guide this estimate", partial: "Use with caution", context: "Example only", incompatible: "Too different" },
-    reasons: { task_profile: "different work", integration_mode: "different use of AI", quality_gate: "different finish level", expertise_level: "different experience", context_only: "no direct before-and-after human-time measure" },
+    reasons: { task_profile: "different work", work_mode: "different way of sharing work", architecture: "different system architecture", autonomy_level: "different action boundary", quality_gate: "different finish level", expertise_level: "different experience", context_only: "no direct before-and-after human-time measure" },
     noEvidence: "No study in the register measures this work closely enough. Start with your own human-time estimate below, then replace it with observations from the pilot.",
     readerVerdicts: { usable: "CAN GUIDE THE STARTING ESTIMATE", context_only: "EXAMPLE ONLY · NOT USED IN THE CALCULATION" },
     readerUse: { usable: "The calculator may use this measure when your task and conditions are sufficiently similar.", context_only: "The figure remains visible for context, but it is not added to your estimated saving." },
@@ -162,7 +162,7 @@ const content = {
     modeEffectNetSuffix: "less human time. The net result then adds",
     modeEffectSetupSuffix: "per case during the period you chose for spreading the setup effort.",
     modeEffectSetupUnavailable: "Setup per case and the net result remain unavailable until at least one case is eligible.",
-    evidenceRange: "Figures published by the study",
+    evidenceRange: "Figures published by the study · cautious / middle / favourable",
     evidenceReference: "Study reference",
     evidenceBlocked: "These figures remain visible for information, but they are not added to your estimate.",
     calculationLabel: "See the exact calculation",
@@ -190,7 +190,7 @@ const content = {
     gradeNames: { A: "Comparaison observée entre travail avec et sans IA", B: "Mesure opérationnelle issue du travail réel", C: "Temps déclaré par les utilisateurs", D: "Estimation publiée par une organisation", E: "Estimation synthétique ou hypothèse de planification" },
     gradeCode: "niveau de preuve",
     statuses: { compatible: "Peut guider cette estimation", partial: "À utiliser avec prudence", context: "Exemple seulement", incompatible: "Trop différente" },
-    reasons: { task_profile: "travail différent", integration_mode: "usage de l’IA différent", quality_gate: "niveau de finition différent", expertise_level: "expérience différente", context_only: "aucune mesure directe du temps humain avant et après" },
+    reasons: { task_profile: "travail différent", work_mode: "partage du travail différent", architecture: "architecture différente", autonomy_level: "limite d’action différente", quality_gate: "niveau de finition différent", expertise_level: "expérience différente", context_only: "aucune mesure directe du temps humain avant et après" },
     noEvidence: "Aucune étude du registre ne mesure un travail suffisamment proche. Commencez avec votre propre estimation du temps humain ci-dessous, puis remplacez-la par les observations du pilote.",
     readerVerdicts: { usable: "PEUT GUIDER L’ESTIMATION DE DÉPART", context_only: "EXEMPLE SEULEMENT · NON UTILISÉ DANS LE CALCUL" },
     readerUse: { usable: "Le calculateur peut utiliser cette mesure si votre tâche et vos conditions sont suffisamment proches.", context_only: "Le chiffre reste visible pour vous informer, mais il n’est pas ajouté au gain estimé." },
@@ -240,7 +240,7 @@ const content = {
     modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
     modeEffectSetupSuffix: "par cas pendant la période choisie pour répartir la mise en place.",
     modeEffectSetupUnavailable: "La mise en place par cas et le résultat net restent indisponibles tant qu’aucun cas n’est éligible.",
-    evidenceRange: "Chiffres publiés par l’étude",
+    evidenceRange: "Chiffres publiés par l’étude · prudent / central / favorable",
     evidenceReference: "Référence de l’étude",
     evidenceBlocked: "Ces chiffres restent visibles pour vous informer, mais ils ne sont pas ajoutés à votre estimation.",
     calculationLabel: "Voir le calcul exact",
@@ -261,6 +261,8 @@ const formatRange = (values: number[], formatter: (value: number) => string) => 
 export function TaskTimeCalibrator({
   locale,
   integrationMode,
+  architecture,
+  autonomy,
   baselineMinutes,
   monthlyCases,
   eligibleShare,
@@ -276,6 +278,8 @@ export function TaskTimeCalibrator({
 }: {
   locale: Locale;
   integrationMode: IntegrationMode;
+  architecture: "model" | "workflow" | "agent" | "agency";
+  autonomy: number;
   baselineMinutes: number;
   monthlyCases: number;
   eligibleShare: number;
@@ -307,10 +311,12 @@ export function TaskTimeCalibrator({
   const selectedProfile = registry.task_profiles.find((profile) => profile.profile_id === profileId) ?? registry.task_profiles[0];
   const target = useMemo<EvidenceTarget>(() => ({
     task_profile_id: profileId,
-    integration_mode: integrationMode,
+    work_mode: integrationMode,
+    architecture,
+    autonomy_level: `A${autonomy}` as EvidenceTarget["autonomy_level"],
     quality_gate: qualityGate,
     expertise_level: expertiseLevel,
-  }), [expertiseLevel, integrationMode, profileId, qualityGate]);
+  }), [architecture, autonomy, expertiseLevel, integrationMode, profileId, qualityGate]);
   const evidenceOptions = useMemo(() => listEvidenceOptions(registry, target).filter(({ record }) => (
     record.transfer.allowed_profiles.includes(profileId) || record.task_contract.profile_id === profileId
   )), [profileId, target]);
@@ -400,7 +406,7 @@ export function TaskTimeCalibrator({
 
       <div className="calibrator-shell task-time-calibrator-shell">
         <div className="calibrator-controls">
-          <fieldset><legend>{t.timeStep}</legend><div className="calibrator-levels">{(["copilot", "agent", "agency"] as IntegrationMode[]).map((mode) => <button aria-pressed={integrationMode === mode} key={mode} onClick={() => onIntegrationModeChange(mode)} type="button"><strong>{integrationTaxonomy[locale][mode].label}</strong><span>{integrationTaxonomy[locale][mode].code}</span></button>)}</div></fieldset>
+          <fieldset><legend>{t.timeStep}</legend><div className="calibrator-levels">{(["copilot", "agent", "agency"] as IntegrationMode[]).map((mode) => <button aria-pressed={integrationMode === mode} key={mode} onClick={() => onIntegrationModeChange(mode)} type="button"><strong>{workModeTaxonomy[locale][mode].label}</strong><span>{workModeTaxonomy[locale][mode].code}</span></button>)}</div></fieldset>
           <div className="calibrator-inputs task-time-core-inputs">
             <label><span>{t.baseline}</span><div><input aria-label={t.baseline} max="10080" min="1" onChange={(event) => onBaselineMinutesChange(inputNumber(event.target.value, 1, 10080))} step="1" type="number" value={baselineMinutes} /><small>{t.units.minutes}</small></div></label>
             <label><span>{t.cases}</span><div><input aria-label={t.cases} max="1000000" min="1" onChange={(event) => onMonthlyCasesChange(inputNumber(event.target.value, 1, 1000000))} step="1" type="number" value={monthlyCases} /><small>{t.units.cases}</small></div></label>

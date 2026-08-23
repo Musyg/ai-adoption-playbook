@@ -196,7 +196,7 @@ A2.
 ## 9. Ce qui rend le cas réaliste — et non transférable tel quel
 
 La note de preuves
-[Devis B2B en PME : repères externes et limites](../../references/pme-b2b-quote-cases.md)
+[Devis B2B en PME : repères externes et limites](../../references/pme-b2b-quote-cases.fr.md)
 sépare enquête PME, études de cas publiées par des fournisseurs et benchmarks
 d'agents. Les observations externes rendent les ordres de grandeur plausibles ;
 elles ne valident ni Noroît Mécanique SA, ni ses coûts, ni son résultat.

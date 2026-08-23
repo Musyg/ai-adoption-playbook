@@ -9,12 +9,16 @@ export function assessEvidenceCompatibility(record, target) {
 
   const transfer = record.transfer ?? {};
   const profileMatch = transfer.allowed_profiles?.includes(target.task_profile_id) === true;
-  const modeMatch = transfer.integration_modes?.includes(target.integration_mode) === true;
+  const modeMatch = transfer.work_modes?.includes(target.work_mode) === true;
+  const architectureMatch = target.architecture == null || record.task_contract?.architectures?.includes(target.architecture) === true;
+  const autonomyMatch = target.autonomy_level == null || record.task_contract?.autonomy_levels?.includes(target.autonomy_level) === true;
   const qualityMatch = transfer.quality_gates?.includes(target.quality_gate) === true;
   const expertiseMatch = transfer.expertise_levels?.includes(target.expertise_level) === true;
   const reasons = [];
   if (!profileMatch) reasons.push("task_profile");
-  if (!modeMatch) reasons.push("integration_mode");
+  if (!modeMatch) reasons.push("work_mode");
+  if (!architectureMatch) reasons.push("architecture");
+  if (!autonomyMatch) reasons.push("autonomy_level");
   if (!qualityMatch) reasons.push("quality_gate");
   if (!expertiseMatch) reasons.push("expertise_level");
 
@@ -22,9 +26,9 @@ export function assessEvidenceCompatibility(record, target) {
     && record.measurement?.human_active_time_measured === true
     && record.measurement?.human_time_reduction_fraction != null;
 
-  if (!profileMatch || !modeMatch) return { status: "incompatible", reasons };
+  if (!profileMatch) return { status: "incompatible", reasons };
   if (!hasQuantitativeTime) return { status: "context", reasons: ["context_only", ...reasons] };
-  if (!qualityMatch || !expertiseMatch) return { status: "partial", reasons };
+  if (!modeMatch || !qualityMatch || !expertiseMatch || !architectureMatch || !autonomyMatch) return { status: "partial", reasons };
   return { status: "compatible", reasons: [] };
 }
 

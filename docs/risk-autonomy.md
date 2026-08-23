@@ -38,6 +38,12 @@ at least R2; high impact or an automated decision about a person is R3.
 | R3 / any level | Legal qualification, impact assessment, formal governance, audit, and human recourse |
 | Any risk / A4 | Documented executive exception, evidence that A3 is insufficient, stronger containment, and independent audit |
 
+The table lists minimum anchors, not every possible pair. For a combination
+that is not written verbatim, apply every row that matches either axis and keep
+the stricter control. For example, R2/A1 still requires the R2 protections;
+R1/A3 still requires the A3 threat model, least privilege, monitoring, and
+adversarial testing.
+
 ## Triage questions
 
 - Could an error affect a right, benefit, job, health, or safety?

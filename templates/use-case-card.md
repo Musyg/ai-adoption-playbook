@@ -14,6 +14,9 @@
 | Knowledge and state | base model / authorized retrieval / live tools / session memory / persistent memory / fine-tuning |
 | Deployment | supplier SaaS / direct API / self-hosted or open weight / on-device or edge |
 | Operating mode | batch / scheduled / event-driven / real-time |
+| Work mode | copilot / bounded automation / strong automation |
+| Architecture | one model or assistant / tool-assisted workflow / one business agent / orchestrated agent team |
+| Exact action boundary | A0 / A1 / A2 / A3 / A4 |
 | Informs, recommends, decides, or acts | |
 | User-facing AI | yes / no; disclosure and human channel |
 | Possible actions | |
@@ -32,5 +35,4 @@
 - Value (1–5) and rationale:
 - Difficulty/risk (1–5) and rationale:
 - Risk R0–R3:
-- Autonomy A0–A4:
 - Least complex first experiment:

@@ -191,7 +191,7 @@ restent donc ceux d’un cas fictif calibré par des bornes externes, pas un ré
 Talos ou Hermes.
 
 Les sources, bornes et contre-preuves sont détaillées dans
-[Copilote, agent métier et agence orchestrée](../../references/agentic-integration-levels.md).
+[Copilote, agent métier et agence orchestrée](../../references/agentic-integration-levels.fr.md).
 
 ## 10. Dossier de preuves
 

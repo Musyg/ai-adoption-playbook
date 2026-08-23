@@ -29,8 +29,9 @@ La version 0.3 exige au moins trois rapports admis :
    génération assistée ;
 2. un agent métier A2 borné qui porte un processus complet pendant qu’une
    personne conserve l’approbation ou le blocage défini ;
-3. un contexte suisse ou européen distinct qui teste un autre travail, public,
-   secteur ou ensemble de conditions d’exploitation.
+3. un contexte additionnel qui garantit que les trois rapports couvrent
+   ensemble la Suisse et l’Union européenne, tout en testant un autre travail,
+   public, secteur ou ensemble de conditions d’exploitation.
 
 Un candidat avec agence orchestrée est utile seulement lorsqu’un véritable
 système existe déjà et peut être comparé à une architecture plus simple. Il

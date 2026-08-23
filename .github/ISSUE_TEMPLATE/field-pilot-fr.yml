@@ -38,7 +38,7 @@ body:
     id: use_pattern
     attributes:
       label: Mode d’usage de l’IA
-      description: Choisissez le travail principal du système. Cette question est distincte de l’autonomie et du niveau d’intégration.
+      description: Choisissez le travail principal du système. Cette question est distincte du mode de travail, de l’architecture et de la limite d’action.
       options:
         - Génération assistée
         - Recherche contrôlée ou RAG
@@ -52,13 +52,43 @@ body:
       required: true
 
   - type: dropdown
-    id: integration
+    id: work_mode
     attributes:
-      label: Niveau d’intégration visé
+      label: Mode de travail visé
+      description: Choisissez comment les personnes et l’IA se partageront le travail.
       options:
-        - Copilote A0–A1
-        - Agent métier A2–A3
-        - Agence orchestrée A3–A4
+        - Copilote
+        - Automatisation bornée
+        - Automatisation forte
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture visée
+      description: Choisissez ce que contiendra le système. Ce choix ne fixe pas son autorité.
+      options:
+        - Un modèle ou assistant
+        - Processus outillé
+        - Un agent métier
+        - Équipe d’agents orchestrée
+        - Non décidé
+    validations:
+      required: true
+
+  - type: dropdown
+    id: autonomy_level
+    attributes:
+      label: Limite d’action exacte
+      description: Choisissez ce que le système pourra faire sans qu’une personne réalise chaque étape.
+      options:
+        - A0 — information ou conseil seulement
+        - A1 — recherche, extraction, classement ou brouillon
+        - A2 — action seulement après approbation humaine explicite
+        - A3 — actions autonomes dans des limites écrites
+        - A4 — autonomie large ou auto-extension, désactivée par défaut
         - Non décidé
     validations:
       required: true

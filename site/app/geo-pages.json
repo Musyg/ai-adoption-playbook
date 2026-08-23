@@ -16,12 +16,12 @@
       "Use an orchestrated agency only when specialist roles produce measurable value beyond a simpler agent."
     ],
     "comparison": {
-      "caption": "The three integration levels",
-      "headers": ["Level", "Work moved", "Human role", "Useful measure"],
+      "caption": "Three separate decisions",
+      "headers": ["Decision", "Available choices", "Question it answers", "What it does not decide"],
       "rows": [
-        ["Copilot A0–A1", "One assisted step", "Operator", "Accepted time per task"],
-        ["Business agent A2–A3", "One bounded case from intake to approved effect", "Approver and exception owner", "Accepted cases per owner-hour"],
-        ["Orchestrated agency A3–A4", "Several specialist roles under one policy", "Governor", "Accepted end-to-end outcomes and coordination cost"]
+        ["Work mode", "Copilot, bounded automation, strong automation", "How do people and AI share the work?", "It does not choose the technical architecture."],
+        ["Architecture", "One model, tool-assisted workflow, one agent, orchestrated agent team", "What does the system contain?", "It does not choose what the system may do alone."],
+        ["Action boundary", "A0 to A4", "What may the system do without a person carrying each step?", "The same architecture can operate at different A levels."]
       ]
     },
     "sections": [
@@ -329,12 +329,12 @@
       "Utilisez une agence orchestrée uniquement si les rôles spécialisés créent une valeur mesurable face à un agent plus simple."
     ],
     "comparison": {
-      "caption": "Les trois niveaux d’intégration",
-      "headers": ["Niveau", "Travail déplacé", "Rôle humain", "Mesure utile"],
+      "caption": "Trois décisions distinctes",
+      "headers": ["Décision", "Choix proposés", "Question traitée", "Ce que ce choix ne décide pas"],
       "rows": [
-        ["Copilote A0–A1", "Une étape assistée", "Opérateur", "Temps accepté par tâche"],
-        ["Agent métier A2–A3", "Un dossier borné jusqu’à l’effet approuvé", "Validateur et responsable des exceptions", "Cas acceptés par heure du responsable"],
-        ["Agence orchestrée A3–A4", "Plusieurs rôles spécialisés sous les mêmes règles", "Gouverneur", "Résultats acceptés de bout en bout et coût de coordination"]
+        ["Mode de travail", "Copilote, automatisation bornée, automatisation forte", "Comment les personnes et l’IA se partagent-elles le travail ?", "Il ne choisit pas l’architecture technique."],
+        ["Architecture", "Un modèle, processus outillé, un agent, équipe d’agents orchestrée", "Que contient le système ?", "Elle ne choisit pas ce que le système peut faire seul."],
+        ["Limite d’action", "A0 à A4", "Que peut faire le système sans qu’une personne réalise chaque étape ?", "Une même architecture peut fonctionner à différents niveaux A."]
       ]
     },
     "sections": [

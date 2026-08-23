@@ -181,6 +181,8 @@ EXPECTED_REGISTER_COLUMNS = (
     "output_modality",
     "deployment_mode",
     "operating_mode",
+    "work_mode",
+    "architecture",
     "model_customization",
     "user_facing",
     "external_effect",
@@ -225,7 +227,8 @@ USE_PATTERNS = {"generation", "retrieval", "classification", "prediction", "conv
 JURISDICTIONS = {"CH", "EU"}
 GATES = {"G1", "G2", "G3", "G4", "G5", "P0", "P1", "P2", "P3", "P4", "P5"}
 PRIORITIES = {"baseline", "strengthened", "critical"}
-INTEGRATION_MODES = {"copilot", "agent", "agency"}
+WORK_MODES = {"copilot", "agent", "agency"}
+ARCHITECTURES = {"model", "workflow", "agent", "agency"}
 QUALITY_GATES = {"draft", "reviewed", "production"}
 EXPERTISE_LEVELS = {"developing", "mixed", "experienced"}
 EVIDENCE_GRADES = {"A", "B", "C", "D", "E"}
@@ -522,8 +525,11 @@ def check_task_time_registry(errors: list[str]) -> None:
         else:
             if task_contract.get("profile_id") not in profile_ids:
                 errors.append(f"{context}: task_contract references a missing profile")
-            if task_contract.get("integration_mode") not in INTEGRATION_MODES:
-                errors.append(f"{context}: invalid task_contract integration_mode")
+            if task_contract.get("work_mode") not in WORK_MODES:
+                errors.append(f"{context}: invalid task_contract work_mode")
+            architectures = task_contract.get("architectures")
+            if not isinstance(architectures, list) or not architectures or not set(architectures) <= ARCHITECTURES:
+                errors.append(f"{context}: invalid task_contract architectures")
             if task_contract.get("quality_gate") not in QUALITY_GATES:
                 errors.append(f"{context}: invalid task_contract quality_gate")
             if task_contract.get("operator_expertise") not in EXPERTISE_LEVELS:
@@ -599,11 +605,6 @@ def check_task_time_registry(errors: list[str]) -> None:
         case_applications = []
     case_ids: set[str] = set()
     mapped_files: set[tuple[str, str]] = set()
-    allowed_autonomy = {
-        "copilot": {"A0", "A1"},
-        "agent": {"A2", "A3"},
-        "agency": {"A3", "A4"},
-    }
     for index, application in enumerate(case_applications):
         context = f"task-time case_applications[{index}]"
         if not isinstance(application, dict):
@@ -620,12 +621,14 @@ def check_task_time_registry(errors: list[str]) -> None:
         expect_localized(application, "rationale", context, errors)
         if application.get("profile_id") not in profile_ids:
             errors.append(f"{context}: missing task profile")
-        integration_mode = application.get("integration_mode")
+        work_mode = application.get("work_mode")
         autonomy_level = application.get("autonomy_level")
-        if integration_mode not in INTEGRATION_MODES:
-            errors.append(f"{context}: invalid integration_mode")
-        elif autonomy_level not in allowed_autonomy[integration_mode]:
-            errors.append(f"{context}: autonomy_level does not match integration_mode")
+        if work_mode not in WORK_MODES:
+            errors.append(f"{context}: invalid work_mode")
+        if application.get("architecture") not in ARCHITECTURES:
+            errors.append(f"{context}: invalid architecture")
+        if autonomy_level not in AUTONOMY_LEVELS:
+            errors.append(f"{context}: invalid autonomy_level")
         if application.get("evidence_grade") != "E" or application.get("quantitative_use") != "planning_only":
             errors.append(f"{context}: worked-case numbers must remain grade E planning hypotheses")
         anchor_ids = application.get("external_anchor_ids")

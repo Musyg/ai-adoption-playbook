@@ -246,7 +246,7 @@ export function LifecycleWorkbench(props: Props) {
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
         jurisdictionId: parsed.value.context.jurisdiction,
-        integrationId: parsed.value.context.integration_level,
+        integrationId: parsed.value.context.work_mode,
         architectureId: parsed.value.context.architecture,
         autonomy: parsed.value.context.autonomy_level,
         risk: parsed.value.context.risk_level,
@@ -346,18 +346,18 @@ export function LifecycleWorkbench(props: Props) {
   const conditionedControls = useMemo(() => Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])), [checkedControls, securityControls]);
   const securityControlKey = securityControls.map((control) => control.id).join(",");
   const resolvedArtifacts = useMemo(() => materializeProjectArtifacts(artifacts, {
-    values,
+    values: { ...values, work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: `A${props.autonomy}` },
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     conditioned_controls: conditionedControls,
     security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
-  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, securityControlKey, values]);
+  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.integrationId, securityControlKey, values]);
   const currentSnapshot = useMemo(() => createProjectSnapshot({
     context: {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
       jurisdiction: props.jurisdictionId,
-      integration_level: props.integrationId,
+      work_mode: props.integrationId,
       architecture: props.architectureId,
       autonomy_level: props.autonomy,
       risk_level: derivedRisk,
@@ -386,7 +386,7 @@ export function LifecycleWorkbench(props: Props) {
           organization_type: props.audienceId,
           use_pattern: props.usePatternId,
           jurisdiction: props.jurisdictionId,
-          integration_level: props.integrationId,
+          work_mode: props.integrationId,
           architecture: props.architectureId,
           autonomy_level: props.autonomy,
           risk_level: derivedRisk,
@@ -431,7 +431,7 @@ export function LifecycleWorkbench(props: Props) {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
       jurisdiction: props.jurisdictionId,
-      integration_level: props.integrationId,
+      work_mode: props.integrationId,
       architecture: props.architectureId,
       autonomy_level: props.autonomy,
       risk_level: derivedRisk,
@@ -473,7 +473,7 @@ export function LifecycleWorkbench(props: Props) {
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
         jurisdictionId: parsed.value.context.jurisdiction,
-        integrationId: parsed.value.context.integration_level,
+        integrationId: parsed.value.context.work_mode,
         architectureId: parsed.value.context.architecture,
         autonomy: parsed.value.context.autonomy_level,
         risk: parsed.value.context.risk_level,

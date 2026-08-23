@@ -111,11 +111,11 @@
     "transfer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["quantitative_use", "allowed_profiles", "integration_modes", "quality_gates", "expertise_levels", "preconditions", "limits"],
+      "required": ["quantitative_use", "allowed_profiles", "work_modes", "quality_gates", "expertise_levels", "preconditions", "limits"],
       "properties": {
         "quantitative_use": { "enum": ["usable", "context_only"] },
         "allowed_profiles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
-        "integration_modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["copilot", "agent", "agency"] } },
+        "work_modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["copilot", "agent", "agency"] } },
         "quality_gates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["draft", "reviewed", "production"] } },
         "expertise_levels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["developing", "mixed", "experienced"] } },
         "preconditions": { "$ref": "#/$defs/localized" },
@@ -155,11 +155,12 @@
         "task_contract": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profile_id", "description", "integration_mode", "autonomy_levels", "output_unit", "quality_gate", "operator_expertise", "verifiability", "use_patterns"],
+          "required": ["profile_id", "description", "work_mode", "architectures", "autonomy_levels", "output_unit", "quality_gate", "operator_expertise", "verifiability", "use_patterns"],
           "properties": {
             "profile_id": { "type": "string", "minLength": 1 },
             "description": { "$ref": "#/$defs/localized" },
-            "integration_mode": { "enum": ["copilot", "agent", "agency"] },
+            "work_mode": { "enum": ["copilot", "agent", "agency"] },
+            "architectures": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["model", "workflow", "agent", "agency"] } },
             "autonomy_levels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["A0", "A1", "A2", "A3", "A4"] } },
             "output_unit": { "$ref": "#/$defs/localized" },
             "quality_gate": { "enum": ["draft", "reviewed", "production"] },
@@ -176,12 +177,13 @@
     "caseApplication": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["case_id", "title", "profile_id", "integration_mode", "autonomy_level", "evidence_grade", "quantitative_use", "external_anchor_ids", "rationale", "example_files"],
+      "required": ["case_id", "title", "profile_id", "work_mode", "architecture", "autonomy_level", "evidence_grade", "quantitative_use", "external_anchor_ids", "rationale", "example_files"],
       "properties": {
         "case_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
         "title": { "$ref": "#/$defs/localized" },
         "profile_id": { "type": "string", "minLength": 1 },
-        "integration_mode": { "enum": ["copilot", "agent", "agency"] },
+        "work_mode": { "enum": ["copilot", "agent", "agency"] },
+        "architecture": { "enum": ["model", "workflow", "agent", "agency"] },
         "autonomy_level": { "enum": ["A0", "A1", "A2", "A3", "A4"] },
         "evidence_grade": { "const": "E" },
         "quantitative_use": { "const": "planning_only" },

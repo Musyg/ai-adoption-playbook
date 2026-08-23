@@ -215,7 +215,7 @@ testé et une décision distincte du succès administratif.
 ## 10. Repères externes et limites
 
 La note
-[IA et instruction des subventions : repères et limites](../../references/nonprofit-grantmaking-ai-cases.md)
+[IA et instruction des subventions : repères et limites](../../references/nonprofit-grantmaking-ai-cases.fr.md)
 sépare enquête sectorielle, analogues fonctionnels, récit fournisseur, droit
 suisse et guide d'évaluation. Les sources rendent le workflow plausible ; elles
 ne valident ni les chiffres ni la frontière choisie pour la Fondation Lien Local.

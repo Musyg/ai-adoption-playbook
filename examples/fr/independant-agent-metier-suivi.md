@@ -170,7 +170,7 @@ différence d’architecture.
 
 Les ordres de grandeur externes, leurs limites et les contre-preuves sont
 consignés dans la note
-[Copilote, agent métier et agence orchestrée](../../references/agentic-integration-levels.md).
+[Copilote, agent métier et agence orchestrée](../../references/agentic-integration-levels.fr.md).
 
 ## 9. Dossier de preuves
 

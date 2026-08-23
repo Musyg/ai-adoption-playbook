@@ -6,8 +6,8 @@ needed and the playbook does not transmit the answers.
 
 ## What the dossier contains
 
-- the selected organization, use pattern, jurisdiction, integration level,
-  autonomy, and risk orientation;
+- the selected organization, use pattern, jurisdiction, work mode,
+  architecture, exact A0–A4 action boundary, and risk orientation;
 - the current lifecycle phase and the answers recorded across phases 0 to 11;
 - the conditioned security controls and the controls matched by the crosswalk;
 - the phases whose minimum fields are complete;
@@ -59,11 +59,13 @@ a new dossier** to remove the browser copy.
 
 ## Compatibility and validation
 
-The current experimental schema is `0.4.0`. Valid `0.1.0` dossiers are migrated
+The current experimental schema is `0.5.0`. Valid `0.1.0` dossiers are migrated
 locally by adding empty connected records and an empty change review. Valid
 `0.2.0` dossiers keep their connected records and receive an empty change
 review. Valid `0.3.0` dossiers preserve their change review and receive an
-architecture inferred from the earlier work mode. The migration is additive, records the source schema when a migrated
+architecture inferred from the earlier work mode. Valid `0.4.0` dossiers keep
+their architecture and rename the former `integration_level` field to the
+canonical `work_mode`. The migration is additive, records the source schema when a migrated
 file becomes a comparison reference, and never overwrites the imported file.
 
 Newer or unknown schema versions are rejected rather than guessed. Other

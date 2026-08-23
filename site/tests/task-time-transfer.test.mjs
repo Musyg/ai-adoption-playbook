@@ -48,13 +48,15 @@ test("maps every worked case once and keeps all synthetic numbers at grade E", (
     assert.equal(item.evidence_grade, "E");
     assert.equal(item.quantitative_use, "planning_only");
     assert.ok(profileIds.has(item.profile_id));
+    assert.ok(["model", "workflow", "agent", "agency"].includes(item.architecture));
+    assert.ok(/^A[0-4]$/.test(item.autonomy_level));
     assert.ok(item.external_anchor_ids.every((evidenceId) => evidenceIds.has(evidenceId)));
   }
 });
 
 test("ignores organization type and compares the task contract", () => {
   const writing = record("TT-2023-NOY-ZHANG-WRITING");
-  const target = { task_profile_id: "professional_writing", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" };
+  const target = { task_profile_id: "professional_writing", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" };
   assert.deepEqual(assessEvidenceCompatibility(writing, target), { status: "compatible", reasons: [] });
   assert.equal(Object.hasOwn(target, "organization_type"), false);
 });
@@ -63,12 +65,53 @@ test("marks a comparable task with a different review or experience context as p
   const writing = record("TT-2023-NOY-ZHANG-WRITING");
   const compatibility = assessEvidenceCompatibility(writing, {
     task_profile_id: "professional_writing",
-    integration_mode: "copilot",
+    work_mode: "copilot",
     quality_gate: "draft",
     expertise_level: "experienced",
   });
   assert.equal(compatibility.status, "partial");
   assert.deepEqual(compatibility.reasons, ["quality_gate", "expertise_level"]);
+});
+
+test("treats architecture and action-boundary differences as non-blocking transfer warnings", () => {
+  const writing = record("TT-2023-NOY-ZHANG-WRITING");
+  const target = {
+    task_profile_id: "professional_writing",
+    work_mode: "copilot",
+    architecture: "agent",
+    autonomy_level: "A3",
+    quality_gate: "reviewed",
+    expertise_level: "mixed",
+  };
+  assert.deepEqual(assessEvidenceCompatibility(writing, target), {
+    status: "partial",
+    reasons: ["architecture", "autonomy_level"],
+  });
+  assert.equal(buildEvidenceTransfer(writing, target, {
+    baseline_human_minutes: 60,
+    monthly_cases: 20,
+    eligible_share: 50,
+  }).ok, true);
+});
+
+test("keeps a measured comparable task transferable across work modes with a clear warning", () => {
+  const writing = record("TT-2023-NOY-ZHANG-WRITING");
+  const target = {
+    task_profile_id: "professional_writing",
+    work_mode: "agent",
+    architecture: "workflow",
+    autonomy_level: "A2",
+    quality_gate: "reviewed",
+    expertise_level: "mixed",
+  };
+  const compatibility = assessEvidenceCompatibility(writing, target);
+  assert.equal(compatibility.status, "partial");
+  assert.ok(compatibility.reasons.includes("work_mode"));
+  assert.equal(buildEvidenceTransfer(writing, target, {
+    baseline_human_minutes: 60,
+    monthly_cases: 40,
+    eligible_share: 70,
+  }).ok, true);
 });
 
 test("keeps self-reports, outcome metrics, model estimates, and internal estimates contextual", () => {
@@ -81,7 +124,7 @@ test("keeps self-reports, outcome metrics, model estimates, and internal estimat
   for (const [evidenceId, taskProfile, integrationMode, qualityGate, expertise] of targets) {
     const compatibility = assessEvidenceCompatibility(record(evidenceId), {
       task_profile_id: taskProfile,
-      integration_mode: integrationMode,
+      work_mode: integrationMode,
       quality_gate: qualityGate,
       expertise_level: expertise,
     });
@@ -93,7 +136,7 @@ test("keeps self-reports, outcome metrics, model estimates, and internal estimat
 test("transfers a compatible measured range without clipping uncertainty", () => {
   const transfer = buildEvidenceTransfer(
     record("TT-2023-GITHUB-COPILOT-HTTP"),
-    { task_profile_id: "software_greenfield", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" },
+    { task_profile_id: "software_greenfield", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" },
     { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 80 },
   );
   assert.equal(transfer.ok, true);
@@ -105,7 +148,7 @@ test("transfers a compatible measured range without clipping uncertainty", () =>
 test("preserves a measured slowdown as negative human time saved", () => {
   const transfer = buildEvidenceTransfer(
     record("TT-2025-METR-MATURE-REPOS"),
-    { task_profile_id: "software_mature_repo", integration_mode: "copilot", quality_gate: "production", expertise_level: "experienced" },
+    { task_profile_id: "software_mature_repo", work_mode: "copilot", quality_gate: "production", expertise_level: "experienced" },
     { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100 },
   );
   assert.equal(transfer.ok, true);
@@ -118,7 +161,7 @@ test("does not convert contextual evidence into a time transfer", () => {
   const item = record("TT-2025-UK-CODING-ASSISTANTS");
   const transfer = buildEvidenceTransfer(
     item,
-    { task_profile_id: "software_mature_repo", integration_mode: "copilot", quality_gate: "production", expertise_level: "mixed" },
+    { task_profile_id: "software_mature_repo", work_mode: "copilot", quality_gate: "production", expertise_level: "mixed" },
     { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100 },
   );
   assert.equal(transfer.ok, false);
@@ -147,7 +190,7 @@ test("accounts for every human component, exceptions, and amortized setup", () =
 });
 
 test("produces a net evidence range after the local human floor and amortized setup", () => {
-  const target = { task_profile_id: "knowledge_analysis", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
+  const target = { task_profile_id: "knowledge_analysis", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
   const options = listEvidenceOptions(registry, target);
   assert.equal(options[0].record.evidence_id, "TT-2026-BCG-JAGGED-FRONTIER");
   assert.equal(options[0].compatibility.status, "compatible");
@@ -199,7 +242,7 @@ test("produces a net evidence range after the local human floor and amortized se
 });
 
 test("blocks the net range when no case is eligible and setup cannot be allocated", () => {
-  const target = { task_profile_id: "knowledge_analysis", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
+  const target = { task_profile_id: "knowledge_analysis", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
   const evidence = buildEvidenceTransfer(record("TT-2026-BCG-JAGGED-FRONTIER"), target, {
     baseline_human_minutes: 60,
     monthly_cases: 40,
@@ -232,7 +275,7 @@ test("blocks the net range when no case is eligible and setup cannot be allocate
 });
 
 test("uses the declared human work as a floor without adding it twice", () => {
-  const target = { task_profile_id: "software_greenfield", integration_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" };
+  const target = { task_profile_id: "software_greenfield", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" };
   const evidence = buildEvidenceTransfer(record("TT-2023-GITHUB-COPILOT-HTTP"), target, {
     baseline_human_minutes: 120,
     monthly_cases: 10,
@@ -261,7 +304,7 @@ test("uses the declared human work as a floor without adding it twice", () => {
 });
 
 test("keeps an evidence-backed slowdown negative after local costs and setup", () => {
-  const target = { task_profile_id: "software_mature_repo", integration_mode: "copilot", quality_gate: "production", expertise_level: "experienced" };
+  const target = { task_profile_id: "software_mature_repo", work_mode: "copilot", quality_gate: "production", expertise_level: "experienced" };
   const evidence = buildEvidenceTransfer(record("TT-2025-METR-MATURE-REPOS"), target, {
     baseline_human_minutes: 120,
     monthly_cases: 10,

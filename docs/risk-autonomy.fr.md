@@ -39,6 +39,12 @@ impact élevé ou une décision automatisée sur une personne impose R3.
 | R3 / tout niveau | Qualification juridique, évaluation d’impact, gouvernance formelle, audit et recours humain |
 | Tout risque / A4 | Exception de direction documentée, preuve qu’A3 est insuffisant, confinement renforcé et audit indépendant |
 
+Le tableau donne des repères minimaux, pas chaque paire possible. Pour une
+combinaison qui n’apparaît pas mot pour mot, appliquez toutes les lignes qui
+correspondent à l’un des deux axes et conservez le contrôle le plus strict. Par
+exemple, R2/A1 garde les protections R2 ; R1/A3 garde le modèle de menace, le
+moindre privilège, la surveillance et les tests adversariaux d’A3.
+
 ## Questions de triage
 
 - Une erreur peut-elle affecter un droit, une prestation, un emploi, une santé ou une sécurité ?

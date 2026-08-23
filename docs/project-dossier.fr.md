@@ -7,8 +7,8 @@ réponses.
 
 ## Contenu du dossier
 
-- la structure, le mode d’usage, le territoire, le niveau d’intégration,
-  l’autonomie et l’orientation du risque sélectionnés ;
+- la structure, le mode d’usage, le territoire, le mode de travail,
+  l’architecture, la limite d’action exacte A0–A4 et l’orientation du risque ;
 - la phase actuelle et les réponses consignées dans les phases 0 à 11 ;
 - les contrôles de sécurité conditionnels et les contrôles associés par la
   matrice ;
@@ -68,11 +68,14 @@ utilisez **Créer un nouveau dossier** pour supprimer la copie du navigateur.
 
 ## Compatibilité et validation
 
-Le schéma expérimental actuel est `0.4.0`. Les dossiers `0.1.0` valides sont
+Le schéma expérimental actuel est `0.5.0`. Les dossiers `0.1.0` valides sont
 migrés localement par l’ajout de documents reliés vides et d’une revue des
 changements vide. Les dossiers `0.2.0` valides conservent leurs documents reliés
 et reçoivent une revue vide. Les dossiers `0.3.0` valides conservent leur revue
-et reçoivent une architecture déduite de l’ancien mode de travail. La migration est additive, conserve la version du
+et reçoivent une architecture déduite de l’ancien mode de travail. Les dossiers
+`0.4.0` conservent leur architecture et renomment l’ancien champ
+`integration_level` avec le nom canonique `work_mode`. La migration est
+additive, conserve la version du
 schéma source lorsqu’un fichier migré devient une référence de comparaison et
 ne modifie jamais le fichier importé.
 

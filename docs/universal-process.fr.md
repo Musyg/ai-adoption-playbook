@@ -108,7 +108,7 @@ Utiliser le guide [risque × autonomie](risk-autonomy.fr.md) et l’[orientation
 
 Choisir le modèle sur les cas réels, et non sur un classement général. Documenter latence, coût, région, rétention, entraînement avec les données client, sous-traitants, changements de version, export, suppression, réversibilité et responsabilité contractuelle dans le [dossier fournisseur](../templates/vendor-assessment.fr.md).
 
-Un même niveau d’intégration peut contenir plusieurs modes IA. Un assistant
+Un même mode de travail peut contenir plusieurs modes IA. Un assistant
 documentaire exige des preuves sur corpus et droits d’accès ; un classifieur sur
 les erreurs par classe et la dérive ; un chatbot public sur l’information et le
 transfert humain ; un système multimodal sur le consentement et la provenance.

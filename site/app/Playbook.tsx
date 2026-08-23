@@ -7,9 +7,10 @@ import controlCrosswalk from "../public/data/control-crosswalk.v1.json";
 import taskTimeEvidence from "../public/data/task-time-evidence.v1.json";
 import { decideEvidence } from "./evidence-decision.mjs";
 import { geoArticlePath, geoArticles } from "./geo-content";
-import { architectureTaxonomy, defaultArchitectureByIntegration, defaultAutonomyByIntegration, integrationForAutonomy, integrationTaxonomy } from "./integration-taxonomy";
+import { architectureTaxonomy, defaultArchitectureByIntegration, defaultAutonomyByIntegration, workModeTaxonomy } from "./integration-taxonomy";
 import type { ArchitectureId } from "./integration-taxonomy";
 import { LifecycleWorkbench } from "./LifecycleWorkbench";
+import { PROJECT_DOSSIER_PLAYBOOK_VERSION } from "./project-dossier.mjs";
 import { createDefaultTaskTimeScenario, TaskTimeCalibrator } from "./TaskTimeCalibrator";
 import type { TaskTimePlanningRange, TaskTimeScenarioState } from "./TaskTimeCalibrator";
 import { calculateHumanTimeScenario, derivePlanningRange } from "./task-time-transfer.mjs";
@@ -31,6 +32,7 @@ type PlanningSnapshot = {
   level: string;
   architecture: string;
   autonomy: number;
+  systemVersion: string;
   caseMinutes: number;
   monthlyCases: number;
   eligibleShare: number;
@@ -168,7 +170,7 @@ type UsePatternContent = {
 const usePatternContent: Record<Locale, UsePatternContent> = {
   en: {
     eyebrow: "FIRST AXIS · WHAT THE AI ACTUALLY DOES",
-    title: "Choose the use pattern before choosing the integration level.",
+    title: "Choose the use pattern before choosing the work mode.",
     text: "A chatbot, a predictor, a retrieval system, and an agent can use similar models but require different evidence. Select the dominant pattern, then record every secondary pattern in the use-case card.",
     labels: { task: "Task", evaluate: "Evaluate", threat: "Threat focus", jurisdiction: "Legal route" },
     guide: "Open the complete classification guide",
@@ -197,7 +199,7 @@ const usePatternContent: Record<Locale, UsePatternContent> = {
   },
   fr: {
     eyebrow: "PREMIER AXE · CE QUE FAIT RÉELLEMENT L’IA",
-    title: "Choisissez le mode d’usage avant le niveau d’intégration.",
+    title: "Choisissez le mode d’usage avant le mode de travail.",
     text: "Un chatbot, un prédicteur, un système de recherche et un agent peuvent utiliser des modèles proches, mais ils n’exigent pas les mêmes preuves. Sélectionnez le mode dominant, puis consignez chaque mode secondaire dans la fiche de cas d’usage.",
     labels: { task: "Tâche", evaluate: "Évaluer", threat: "Menaces à tester", jurisdiction: "Route juridique" },
     guide: "Ouvrir le guide complet de classification",
@@ -280,7 +282,7 @@ type GuidedContent = {
   progress: string[];
   stepLabel: string;
   steps: Array<{ eyebrow: string; title: string; text: string; helpLabel: string; help: string }>;
-  levels: Array<{ id: IntegrationId; code: string; title: string; text: string; recommendation: string; autonomy: number }>;
+  levels: Array<{ id: IntegrationId; code: string; title: string; text: string; recommendation: string }>;
   architectureTitle: string;
   architectureText: string;
   autonomyTitle: string;
@@ -325,20 +327,20 @@ const guidedContent: Record<Locale, GuidedContent> = {
   en: {
     eyebrow: "GUIDED START · ABOUT 3 MINUTES",
     title: "Build your route, one simple choice at a time.",
-    text: "Answer four short questions, then receive a starting plan. The guide explains each idea before showing a technical code. Nothing entered here is sent anywhere.",
-    progress: ["Your situation", "The AI task", "Its right to act", "Territory", "Starting plan"],
+    text: "Move through four short screens, then receive a starting plan. The operating-design screen contains three separate choices. The guide explains each idea before showing a technical code. Nothing entered here is sent anywhere.",
+    progress: ["Your situation", "The AI task", "Operating design", "Territory", "Starting plan"],
     stepLabel: "Step",
     steps: [
       { eyebrow: "START WITH YOUR REALITY", title: "What kind of organization are you guiding?", text: "This changes ownership, timing, and the first safeguards. It does not change the core method.", helpLabel: "Why ask this first?", help: "An independent professional can decide and correct alone. A public service must involve more roles, formal authority, accessibility, and recourse. The useful first pilot is therefore different." },
       { eyebrow: "NAME THE JOB", title: "What should the AI mainly do?", text: "Choose the dominant task. Similar models can create very different risks depending on the job they perform.", helpLabel: "What is a use pattern?", help: "A use pattern describes the job performed by the AI, such as finding information, predicting demand, holding a conversation, or taking action. It is not the same as autonomy." },
       { eyebrow: "DESCRIBE THE OPERATING DESIGN", title: "How should the work move, and how far may the system act?", text: "Choose a work mode, an architecture, and an exact action boundary. These are three separate decisions.", helpLabel: "Why three choices?", help: "The work mode describes the human role. The architecture describes what is connected. A0 to A4 describe what the system may do without a person carrying each step. A3 can therefore be one agent or an orchestrated team." },
       { eyebrow: "KEEP THE LEGAL ROUTES SEPARATE", title: "Where will it operate or affect people?", text: "This is an orientation, not a legal conclusion. Switzerland and the European Union require separate checks.", helpLabel: "Why two routes?", help: "A Swiss analysis does not prove compliance in the European Union, and an EU classification does not replace Swiss data-protection, public-law, cantonal, or sector checks." },
-      { eyebrow: "YOUR STARTING POINT", title: "A small first step, with clear limits.", text: "This recommendation combines your four choices. It is a starting hypothesis to test, not an authorization or a promised gain.", helpLabel: "What is an evidence contract?", help: "Before the pilot, write what will be tested, on which cases, what counts as success, what stops the test, and which records must remain. That written agreement is the evidence contract." },
+      { eyebrow: "YOUR STARTING POINT", title: "A small first step, with clear limits.", text: "This recommendation combines the choices in your route. It is a starting hypothesis to test, not an authorization or a promised gain.", helpLabel: "What is an evidence contract?", help: "Before the pilot, write what will be tested, on which cases, what counts as success, what stops the test, and which records must remain. That written agreement is the evidence contract." },
     ],
     levels: [
-      { id: "copilot", code: integrationTaxonomy.en.copilot.code, title: integrationTaxonomy.en.copilot.label, text: "It prepares one step; you check it and perform every external action.", recommendation: "Begin with a read-only or draft-only test. Keep every send, publication, approval, and system change human.", autonomy: 1 },
-      { id: "agent", code: integrationTaxonomy.en.agent.code, title: integrationTaxonomy.en.agent.label, text: "The system completes a defined share of the process; a person approves specified effects and handles exceptions.", recommendation: "Freeze eligibility, permissions, approval, and stop rules before connecting write tools.", autonomy: 2 },
-      { id: "agency", code: integrationTaxonomy.en.agency.code, title: integrationTaxonomy.en.agency.label, text: "The system completes most eligible work; people govern goals, limits, exceptions, and stopping.", recommendation: "Prove the exact bounded design before expanding its scope or authority.", autonomy: 3 },
+      { id: "copilot", code: workModeTaxonomy.en.copilot.code, title: workModeTaxonomy.en.copilot.label, text: "It prepares one step; you check it and perform every external action.", recommendation: "Begin with a read-only or draft-only test. Keep every send, publication, approval, and system change human." },
+      { id: "agent", code: workModeTaxonomy.en.agent.code, title: workModeTaxonomy.en.agent.label, text: "The system completes a defined share of the process; a person approves specified effects and handles exceptions.", recommendation: "Freeze eligibility, permissions, approval, and stop rules before connecting write tools." },
+      { id: "agency", code: workModeTaxonomy.en.agency.code, title: workModeTaxonomy.en.agency.label, text: "The system completes most eligible work; people govern goals, limits, exceptions, and stopping.", recommendation: "Prove the exact bounded design before expanding its scope or authority." },
     ],
     architectureTitle: "What will the system be made of?",
     architectureText: "Architecture counts components. It does not decide the system’s authority.",
@@ -356,7 +358,7 @@ const guidedContent: Record<Locale, GuidedContent> = {
     buttons: { back: "Back", next: "Continue", result: "See my starting plan", restart: "Review my choices", workspace: "Estimate the scenario", cases: "Explore comparable cases" },
     result: { eyebrow: "GUIDED RECOMMENDATION", title: "Your first test should remain smaller than your ambition.", intro: "The guide recommends this bounded starting point from the choices above.", pilot: "First pilot", measure: "What to prove", safeguards: "Safeguards from day one", selection: "Your choices" },
     chapters: [
-      { id: "concept-library", number: "01", title: "Understand the differences", text: "Use patterns, non-agentic cases, integration levels, and the public evidence review." },
+      { id: "concept-library", number: "01", title: "Understand the differences", text: "Use patterns, non-agentic cases, work modes, architectures, action boundaries, and the public evidence review." },
       { id: "operational-workspace", number: "02", title: "Build and operate a pilot", text: "Scenario, test plan, observed evidence, operating card, handoff, and field draft." },
       { id: "implementation-library", number: "03", title: "Explore cases and controls", text: "Organization paths, sectors, eleven cases, risk orientation, controls, and templates." },
     ],
@@ -364,20 +366,20 @@ const guidedContent: Record<Locale, GuidedContent> = {
   fr: {
     eyebrow: "DÉPART GUIDÉ · ENVIRON 3 MINUTES",
     title: "Construisez votre parcours, un choix simple à la fois.",
-    text: "Répondez à quatre questions courtes, puis obtenez un point de départ. Le guide explique chaque idée avant d’afficher un code technique. Rien de ce qui est saisi ici n’est transmis.",
-    progress: ["Votre situation", "La tâche de l’IA", "Son droit d’agir", "Le territoire", "Point de départ"],
+    text: "Parcourez quatre écrans courts, puis obtenez un point de départ. L’écran de fonctionnement contient trois choix distincts. Le guide explique chaque idée avant d’afficher un code technique. Rien de ce qui est saisi ici n’est transmis.",
+    progress: ["Votre situation", "La tâche de l’IA", "Fonctionnement", "Le territoire", "Point de départ"],
     stepLabel: "Étape",
     steps: [
       { eyebrow: "PARTIR DE VOTRE RÉALITÉ", title: "Quel type d’organisation accompagnez-vous ?", text: "Ce choix modifie les responsabilités, le rythme et les premières protections. La méthode centrale reste la même.", helpLabel: "Pourquoi commencer ici ?", help: "Un indépendant peut décider et corriger seul. Un service public doit réunir davantage de rôles, un mandat formel, l’accessibilité et une voie de recours. Le premier pilote utile n’est donc pas le même." },
       { eyebrow: "NOMMER LE TRAVAIL", title: "Que doit principalement faire l’IA ?", text: "Choisissez la tâche dominante. Des modèles proches créent des risques différents selon le travail demandé.", helpLabel: "Qu’est-ce qu’un mode d’usage ?", help: "Le mode d’usage décrit le travail confié à l’IA : trouver une information, prévoir une demande, tenir une conversation ou agir. Il ne décrit pas encore son autonomie." },
       { eyebrow: "DÉCRIRE LE FONCTIONNEMENT", title: "Comment le travail doit-il circuler, et jusqu’où le système peut-il agir ?", text: "Choisissez un mode de travail, une architecture et une limite d’action précise. Ce sont trois décisions distinctes.", helpLabel: "Pourquoi trois choix ?", help: "Le mode de travail décrit le rôle humain. L’architecture décrit ce qui est connecté. A0 à A4 décrivent ce que le système peut faire sans qu’une personne pilote chaque étape. A3 peut donc correspondre à un agent unique ou à une équipe orchestrée." },
       { eyebrow: "SÉPARER LES ROUTES JURIDIQUES", title: "Où opérera-t-il ou affectera-t-il des personnes ?", text: "Il s’agit d’une orientation, pas d’une conclusion juridique. La Suisse et l’Union européenne exigent des vérifications séparées.", helpLabel: "Pourquoi deux routes ?", help: "Une analyse suisse ne prouve pas la conformité dans l’Union européenne. Une classification européenne ne remplace pas les vérifications suisses sur les données, le droit public, les cantons ou le secteur." },
-      { eyebrow: "VOTRE POINT DE DÉPART", title: "Un premier pas modeste, avec des limites claires.", text: "Cette recommandation combine vos quatre choix. C’est une hypothèse à tester, pas une autorisation ni une promesse de gain.", helpLabel: "Qu’est-ce qu’un contrat de preuve ?", help: "Avant le pilote, écrivez ce qui sera testé, sur quels cas, ce qui compte comme réussite, ce qui arrête le test et quelles traces doivent rester. Cet accord écrit constitue le contrat de preuve." },
+      { eyebrow: "VOTRE POINT DE DÉPART", title: "Un premier pas modeste, avec des limites claires.", text: "Cette recommandation combine les choix de votre parcours. C’est une hypothèse à tester, pas une autorisation ni une promesse de gain.", helpLabel: "Qu’est-ce qu’un contrat de preuve ?", help: "Avant le pilote, écrivez ce qui sera testé, sur quels cas, ce qui compte comme réussite, ce qui arrête le test et quelles traces doivent rester. Cet accord écrit constitue le contrat de preuve." },
     ],
     levels: [
-      { id: "copilot", code: integrationTaxonomy.fr.copilot.code, title: integrationTaxonomy.fr.copilot.label, text: "Il prépare une étape ; vous la vérifiez et réalisez chaque action externe.", recommendation: "Commencez en lecture seule ou avec des brouillons. Chaque envoi, publication, validation et modification reste humain.", autonomy: 1 },
-      { id: "agent", code: integrationTaxonomy.fr.agent.code, title: integrationTaxonomy.fr.agent.label, text: "Le système réalise une part définie du processus ; une personne approuve certains effets et traite les exceptions.", recommendation: "Figez les cas éligibles, les permissions, l’approbation et les règles d’arrêt avant de connecter des outils d’écriture.", autonomy: 2 },
-      { id: "agency", code: integrationTaxonomy.fr.agency.code, title: integrationTaxonomy.fr.agency.label, text: "Le système réalise l’essentiel du travail éligible ; les personnes gouvernent objectifs, limites, exceptions et arrêt.", recommendation: "Prouvez le fonctionnement exact et borné avant d’élargir son périmètre ou son autorité.", autonomy: 3 },
+      { id: "copilot", code: workModeTaxonomy.fr.copilot.code, title: workModeTaxonomy.fr.copilot.label, text: "Il prépare une étape ; vous la vérifiez et réalisez chaque action externe.", recommendation: "Commencez en lecture seule ou avec des brouillons. Chaque envoi, publication, validation et modification reste humain." },
+      { id: "agent", code: workModeTaxonomy.fr.agent.code, title: workModeTaxonomy.fr.agent.label, text: "Le système réalise une part définie du processus ; une personne approuve certains effets et traite les exceptions.", recommendation: "Figez les cas éligibles, les permissions, l’approbation et les règles d’arrêt avant de connecter des outils d’écriture." },
+      { id: "agency", code: workModeTaxonomy.fr.agency.code, title: workModeTaxonomy.fr.agency.label, text: "Le système réalise l’essentiel du travail éligible ; les personnes gouvernent objectifs, limites, exceptions et arrêt.", recommendation: "Prouvez le fonctionnement exact et borné avant d’élargir son périmètre ou son autorité." },
     ],
     architectureTitle: "De quoi le système sera-t-il composé ?",
     architectureText: "L’architecture compte les composants. Elle ne décide pas de l’autorité du système.",
@@ -395,7 +397,7 @@ const guidedContent: Record<Locale, GuidedContent> = {
     buttons: { back: "Retour", next: "Continuer", result: "Voir mon point de départ", restart: "Revoir mes choix", workspace: "Estimer le scénario", cases: "Explorer des cas comparables" },
     result: { eyebrow: "RECOMMANDATION GUIDÉE", title: "Votre premier test doit rester plus petit que votre ambition.", intro: "Le guide propose ce point de départ borné à partir des choix précédents.", pilot: "Premier pilote", measure: "Ce qu’il faut prouver", safeguards: "Protections dès le premier jour", selection: "Vos choix" },
     chapters: [
-      { id: "concept-library", number: "01", title: "Comprendre les différences", text: "Modes d’usage, cas non agentiques, niveaux d’intégration et revue des preuves publiques." },
+      { id: "concept-library", number: "01", title: "Comprendre les différences", text: "Modes d’usage, cas non agentiques, modes de travail, architectures, limites d’action et revue des preuves publiques." },
       { id: "operational-workspace", number: "02", title: "Construire et exploiter un pilote", text: "Scénario, plan de test, preuves observées, fiche d’exploitation, transmission et brouillon terrain." },
       { id: "implementation-library", number: "03", title: "Explorer les cas et contrôles", text: "Parcours par structure, secteurs, onze cas, orientation du risque, contrôles et modèles." },
     ],
@@ -557,15 +559,15 @@ const copy = {
     stats: [["5", "organization starting paths"], ["8", "adoption method steps"], ["3", "checks before moving on"]],
     summaryEyebrow: "WHAT THIS PLAYBOOK HELPS YOU DECIDE",
     summaryTitle: "Choose the smallest AI system that can improve a real workflow.",
-    summaryText: "The guide separates three questions that are often confused: the job given to the AI, what it may do without you, and the rules that apply where it operates. It then turns those choices into a small, measurable first test.",
+    summaryText: "The guide separates ideas that are often confused: the kind of AI task, how people and AI share the work, what the system is made of, and what it may do without you. It then checks the rules for the territory and turns the route into a small, measurable first test.",
     integrationEyebrow: "NAME THE SYSTEM BEFORE QUOTING THE GAIN",
     integrationTitle: "Keep the work mode, architecture, and authority separate.",
     integrationText: "First ask how people and AI share the work. Then describe what the system is made of. Finally, set its exact right to act. A0 to A4 describe authority, not the number of agents. The same architecture can operate at different autonomy levels.",
     integrationLabels: { system: "What the system does", human: "Human role", planning: "What public evidence can tell us", flow: "What it cannot prove alone" },
     integrationLevels: [
-      { code: "A0–A1", title: "Copilot", system: "Researches, extracts, or drafts one step. The person starts the task, carries the context, checks the answer, and performs every external action.", human: "Operator at every cycle", planning: "Published effects run from a measured slowdown to large gains on narrow tasks. There is no universal range.", flow: "0% without human completion" },
-      { code: "A1–A3", title: "Bounded automation", system: "Completes a defined part of an eligible process. The design may be fixed steps or one agent, but its tools, inputs, outputs, and stop conditions are written down.", human: "Approves consequential actions and handles exceptions", planning: "One direct field experiment found eligible customer-support chats 16.8% faster. Because only 5.8% of all chats were eligible, the full flow improved by 3.2%.", flow: "That result measures one task and one operating design. It does not promise the same gain elsewhere." },
-      { code: "A3–A4", title: "Strong automation", system: "Completes most eligible work from start to finish. It may use one agent, a fixed process, or several coordinated agents. Architecture and autonomy are still recorded separately.", human: "Sets the objective and limits, reviews results, and takes exceptions", planning: "Public demonstrations and benchmarks show that long, parallel work is possible. They can shape a scenario when the underlying task is comparable.", flow: "No independent field study supports a generic 5x to 12x multiplier on accepted business outcomes." },
+      { code: "01", title: "Copilot", system: "Researches, extracts, or drafts one step. The person starts the task, carries the context, checks the answer, and performs every external action.", human: "Operator at every cycle", planning: "Published effects run from a measured slowdown to large gains on narrow tasks. There is no universal range.", flow: "It does not complete the workflow on its own." },
+      { code: "02", title: "Bounded automation", system: "Completes a defined part of an eligible process. The design may be fixed steps or one agent, but its tools, inputs, outputs, and stop conditions are written down.", human: "Approves consequential actions and handles exceptions", planning: "One direct field experiment found eligible customer-support chats 16.8% faster. Because only 5.8% of all chats were eligible, the full flow improved by 3.2%.", flow: "That result measures one task and one operating design. It does not promise the same gain elsewhere." },
+      { code: "03", title: "Strong automation", system: "Completes most eligible work from start to finish. It may use one agent, a fixed process, or several coordinated agents. Architecture and autonomy are still recorded separately.", human: "Sets the objective and limits, reviews results, and takes exceptions", planning: "Public demonstrations and benchmarks show that long, parallel work is possible. They can shape a scenario when the underlying task is comparable.", flow: "No independent field study supports a generic 5x to 12x multiplier on accepted business outcomes." },
     ],
     measurementTitle: "Five numbers that must stay separate",
     measurements: [["01", "Cycle time", "Elapsed time from request to result."], ["02", "Human active time", "Minutes actually spent by a person."], ["03", "Accepted throughput", "Outputs accepted per owner-hour."], ["04", "Straight-through rate", "Eligible cases completed without intervention."], ["05", "Shipped outcome", "A real downstream result, not model activity."]],
@@ -587,7 +589,7 @@ const copy = {
     calibratorEyebrow: "MEASURE THE TASK, NOT THE HYPE",
     calibratorTitle: "See what the evidence transfers, then count the human work that remains.",
     calibratorText: "Define one repeatable task, inspect a comparable source, and account for preparation, supervision, verification, corrections, exceptions, and setup. External evidence frames a test. Your pilot supplies the answer.",
-    calibratorLevels: [{ id: "copilot", label: `${integrationTaxonomy.en.copilot.label} · ${integrationTaxonomy.en.copilot.code}`, note: "One assisted step" }, { id: "agent", label: `${integrationTaxonomy.en.agent.label} · ${integrationTaxonomy.en.agent.code}`, note: "One bounded workflow" }, { id: "agency", label: `${integrationTaxonomy.en.agency.label} · ${integrationTaxonomy.en.agency.code}`, note: "Specialists under one policy" }],
+    calibratorLevels: [{ id: "copilot", label: workModeTaxonomy.en.copilot.label, note: "One assisted step" }, { id: "agent", label: workModeTaxonomy.en.agent.label, note: "One bounded workflow" }, { id: "agency", label: workModeTaxonomy.en.agency.label, note: "Most eligible work" }],
     pilotPlannerEyebrow: "FROM SCENARIO TO PROTOCOL",
     pilotPlannerTitle: "A range is not a plan. Make the next decision capable of failing cleanly.",
     pilotPlannerText: "The calibrator exposes the assumptions. This protocol now fixes the order, practical sample, evidence, and decision before the system touches live work.",
@@ -638,7 +640,7 @@ const copy = {
       stop: { label: "SUSPENDED", text: "Live operation is stopped. Rollback and incident handling take priority over further evaluation." },
     },
     operationOwnersTitle: "OPERATING CONTRACT",
-    operationFields: { owner: "Workflow owner", incident: "Reachable incident owner", review: "Next formal reassessment" },
+    operationFields: { owner: "Workflow owner", incident: "Reachable incident owner", review: "Next formal reassessment", version: "Evaluated system and workflow version", fallback: "The manual fallback is reachable and has been tried", containment: "The suspension and containment procedure has been rehearsed" },
     operationDefaults: { owner: "Workflow owner", incident: "Incident owner" },
     operationMetrics: { review: "Formal review cadence", containment: "Target time to contain", scope: "Authorized scope" },
     operationDays: "days",
@@ -921,15 +923,15 @@ const copy = {
     stats: [["5", "parcours de départ par structure"], ["8", "étapes de la méthode d’adoption"], ["3", "vérifications avant d’avancer"]],
     summaryEyebrow: "CE QUE CE PLAYBOOK VOUS AIDE À DÉCIDER",
     summaryTitle: "Choisir le système IA le plus simple qui améliore vraiment le travail.",
-    summaryText: "Le guide sépare trois questions souvent confondues : le travail confié à l’IA, ce qu’elle peut faire sans vous et les règles du territoire où elle opère. Il transforme ensuite ces choix en un premier test petit et mesurable.",
+    summaryText: "Le guide sépare des idées souvent confondues : le type de tâche confiée à l’IA, le partage du travail, la composition du système et ce qu’il peut faire sans vous. Il vérifie ensuite les règles du territoire et transforme le parcours en un premier test petit et mesurable.",
     integrationEyebrow: "NOMMEZ LE SYSTÈME AVANT D’ANNONCER LE GAIN",
     integrationTitle: "Séparez le mode de travail, l’architecture et le droit d’agir.",
     integrationText: "Demandez d’abord comment les personnes et l’IA se partagent le travail. Décrivez ensuite ce qui compose le système. Fixez enfin son droit d’agir précis. A0 à A4 décrivent l’autorité, pas le nombre d’agents. Une même architecture peut fonctionner à plusieurs niveaux d’autonomie.",
     integrationLabels: { system: "Ce que fait le système", human: "Rôle humain", planning: "Ce que les études publiques peuvent indiquer", flow: "Ce qu’elles ne prouvent pas seules" },
     integrationLevels: [
-      { code: "A0–A1", title: "Copilote", system: "Recherche, extrait ou rédige une étape. La personne déclenche, apporte le contexte, contrôle la réponse et réalise chaque action externe.", human: "Opérateur à chaque cycle", planning: "Les effets publiés vont d’un ralentissement mesuré à de forts gains sur des tâches étroites. Il n’existe pas de plage universelle.", flow: "0 % sans finalisation humaine" },
-      { code: "A1–A3", title: "Automatisation bornée", system: "Réalise une partie définie d’un processus éligible. Le système peut suivre des étapes fixes ou utiliser un agent, mais ses outils, entrées, sorties et règles d’arrêt sont écrits.", human: "Valide les actions importantes et traite les exceptions", planning: "Un essai terrain a mesuré des échanges de support éligibles 16,8 % plus rapides. Comme seuls 5,8 % des échanges étaient éligibles, le flux complet a gagné 3,2 %.", flow: "Ce résultat mesure une tâche et une organisation précises. Il ne promet pas le même gain ailleurs." },
-      { code: "A3–A4", title: "Automatisation forte", system: "Réalise l’essentiel du travail éligible du début à la fin. Elle peut utiliser un agent, un processus fixe ou plusieurs agents coordonnés. L’architecture et l’autonomie restent notées séparément.", human: "Fixe l’objectif et les limites, relit les résultats et reprend les exceptions", planning: "Des démonstrations et tests comparatifs publics montrent que le travail long et parallèle est possible. Ils peuvent nourrir un scénario lorsque la tâche de fond est comparable.", flow: "Aucune étude de terrain indépendante ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés." },
+      { code: "01", title: "Copilote", system: "Recherche, extrait ou rédige une étape. La personne déclenche, apporte le contexte, contrôle la réponse et réalise chaque action externe.", human: "Opérateur à chaque cycle", planning: "Les effets publiés vont d’un ralentissement mesuré à de forts gains sur des tâches étroites. Il n’existe pas de plage universelle.", flow: "Il ne termine pas seul l’ensemble du processus." },
+      { code: "02", title: "Automatisation bornée", system: "Réalise une partie définie d’un processus éligible. Le système peut suivre des étapes fixes ou utiliser un agent, mais ses outils, entrées, sorties et règles d’arrêt sont écrits.", human: "Valide les actions importantes et traite les exceptions", planning: "Un essai terrain a mesuré des échanges de support éligibles 16,8 % plus rapides. Comme seuls 5,8 % des échanges étaient éligibles, le flux complet a gagné 3,2 %.", flow: "Ce résultat mesure une tâche et une organisation précises. Il ne promet pas le même gain ailleurs." },
+      { code: "03", title: "Automatisation forte", system: "Réalise l’essentiel du travail éligible du début à la fin. Elle peut utiliser un agent, un processus fixe ou plusieurs agents coordonnés. L’architecture et l’autonomie restent notées séparément.", human: "Fixe l’objectif et les limites, relit les résultats et reprend les exceptions", planning: "Des démonstrations et tests comparatifs publics montrent que le travail long et parallèle est possible. Ils peuvent nourrir un scénario lorsque la tâche de fond est comparable.", flow: "Aucune étude de terrain indépendante ne soutient un multiplicateur générique de 5 à 12 sur les résultats métier acceptés." },
     ],
     measurementTitle: "Cinq chiffres à ne jamais mélanger",
     measurements: [["01", "Temps de cycle", "Délai écoulé entre demande et résultat."], ["02", "Temps humain actif", "Minutes réellement consacrées par une personne."], ["03", "Débit accepté", "Sorties acceptées par heure du responsable."], ["04", "Taux de bout en bout", "Cas éligibles terminés sans intervention."], ["05", "Résultat livré", "Effet réel en aval, pas l’activité du modèle."]],
@@ -951,7 +953,7 @@ const copy = {
     calibratorEyebrow: "MESURER LA TÂCHE, PAS LA PROMESSE",
     calibratorTitle: "Voyez ce que la preuve permet de transférer, puis comptez le travail humain qui reste.",
     calibratorText: "Définissez une tâche répétable, examinez une source comparable et comptez préparation, supervision, vérification, corrections, exceptions et mise en place. La source encadre le test. Votre pilote apporte la réponse.",
-    calibratorLevels: [{ id: "copilot", label: `${integrationTaxonomy.fr.copilot.label} · ${integrationTaxonomy.fr.copilot.code}`, note: "Une étape assistée" }, { id: "agent", label: `${integrationTaxonomy.fr.agent.label} · ${integrationTaxonomy.fr.agent.code}`, note: "Un processus borné" }, { id: "agency", label: `${integrationTaxonomy.fr.agency.label} · ${integrationTaxonomy.fr.agency.code}`, note: "Spécialistes soumis aux mêmes règles" }],
+    calibratorLevels: [{ id: "copilot", label: workModeTaxonomy.fr.copilot.label, note: "Une étape assistée" }, { id: "agent", label: workModeTaxonomy.fr.agent.label, note: "Un processus borné" }, { id: "agency", label: workModeTaxonomy.fr.agency.label, note: "L’essentiel du travail éligible" }],
     pilotPlannerEyebrow: "DU SCÉNARIO AU PROTOCOLE",
     pilotPlannerTitle: "Une fourchette n’est pas un plan. La prochaine décision doit pouvoir échouer proprement.",
     pilotPlannerText: "Le calibrateur rend les hypothèses visibles. Ce protocole fixe maintenant l’ordre, l’échantillon pratique, les preuves et la décision avant que le système ne touche au travail réel.",
@@ -1002,7 +1004,7 @@ const copy = {
       stop: { label: "SUSPENDU", text: "L’exploitation réelle est arrêtée. Le retour arrière et le traitement de l’incident passent avant toute nouvelle évaluation." },
     },
     operationOwnersTitle: "CONTRAT D’EXPLOITATION",
-    operationFields: { owner: "Responsable du processus", incident: "Responsable d’incident joignable", review: "Prochaine réévaluation formelle" },
+    operationFields: { owner: "Responsable du processus", incident: "Responsable d’incident joignable", review: "Prochaine réévaluation formelle", version: "Version évaluée du système et du processus", fallback: "La solution de repli manuelle est accessible et a été essayée", containment: "La procédure d’arrêt et de confinement a été répétée" },
     operationDefaults: { owner: "Responsable du processus", incident: "Responsable d’incident" },
     operationMetrics: { review: "Cadence de revue formelle", containment: "Objectif de délai de confinement", scope: "Périmètre autorisé" },
     operationDays: "jours",
@@ -1401,6 +1403,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [eligibleShare, setEligibleShare] = useState(70);
   const [planningRange, setPlanningRange] = useState<TaskTimePlanningRange>(initialPlanningRange);
   const [setupHours, setSetupHours] = useState(40);
+  const [systemVersion, setSystemVersion] = useState("");
   const [pilotPlanCopied, setPilotPlanCopied] = useState(false);
   const [observedCases, setObservedCases] = useState(0);
   const [observedTotalCases, setObservedTotalCases] = useState(0);
@@ -1413,9 +1416,11 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [observationsConfirmed, setObservationsConfirmed] = useState(false);
   const [evidenceExampleLoaded, setEvidenceExampleLoaded] = useState(false);
   const [evidenceCopied, setEvidenceCopied] = useState(false);
-  const [operationOwner, setOperationOwner] = useState<string>(t.operationDefaults.owner);
-  const [incidentOwner, setIncidentOwner] = useState<string>(t.operationDefaults.incident);
+  const [operationOwner, setOperationOwner] = useState("");
+  const [incidentOwner, setIncidentOwner] = useState("");
   const [reviewDate, setReviewDate] = useState("");
+  const [fallbackConfirmed, setFallbackConfirmed] = useState(false);
+  const [containmentConfirmed, setContainmentConfirmed] = useState(false);
   const [operationCopied, setOperationCopied] = useState(false);
   const [dossierCopied, setDossierCopied] = useState(false);
   const [fieldSectorId, setFieldSectorId] = useState<FieldSectorId>("general");
@@ -1524,15 +1529,12 @@ export function Playbook({ locale }: { locale: Locale }) {
   }, [invalidateFieldReview]);
   const selectCalibrationLevel = (level: IntegrationId) => {
     setCalibrationLevel(level);
-    setAutonomy(defaultAutonomyByIntegration[level]);
     setSetupHours(setupPresets[level]);
     setOperationCopied(false);
     setDossierCopied(false);
     invalidateFieldReview();
   };
   const selectAutonomy = (nextAutonomy: number) => {
-    const nextIntegration = integrationForAutonomy(nextAutonomy, calibrationLevel);
-    if (nextIntegration !== calibrationLevel) selectCalibrationLevel(nextIntegration);
     setAutonomy(nextAutonomy);
     invalidateFieldReview();
   };
@@ -1574,7 +1576,6 @@ export function Playbook({ locale }: { locale: Locale }) {
   }, [invalidateFieldReview, selectUsePattern]);
   const selectGuideLevel = (level: GuidedContent["levels"][number]) => {
     selectCalibrationLevel(level.id);
-    setAutonomy(level.autonomy);
   };
   const goToGuideStep = (step: number) => {
     const boundedStep = Math.max(0, Math.min(guideCopy.steps.length - 1, step));
@@ -1599,6 +1600,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   }, []);
   const openChapter = (chapterId: string, targetId: string) => {
     selectChapterTarget(targetId);
+    if (window.location.hash !== `#${targetId}`) window.history.pushState(null, "", `#${targetId}`);
     const chapter = document.getElementById(chapterId) as HTMLDetailsElement | null;
     if (chapter) chapter.open = true;
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" })));
@@ -1657,6 +1659,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     calibrationLevel,
     architecture,
     autonomy,
+    systemVersion: systemVersion.trim(),
     caseMinutes,
     monthlyCases,
     eligibleShare,
@@ -1668,6 +1671,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const recalibratedPlanning = planningSnapshots.length > 1 ? latestPlanningSnapshot : null;
   const planningChangedSinceFreeze = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.fingerprint !== currentPlanningFingerprint);
   const freezePlanningHypothesis = () => {
+    if (!systemVersion.trim()) return;
     const snapshot: PlanningSnapshot = {
       version: (latestPlanningSnapshot?.version ?? 0) + 1,
       frozenAt: new Date().toISOString(),
@@ -1676,6 +1680,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       level: pilotLevelLabel,
       architecture: selectedArchitecture.label,
       autonomy,
+      systemVersion: systemVersion.trim(),
       caseMinutes,
       monthlyCases,
       eligibleShare,
@@ -1692,19 +1697,23 @@ export function Playbook({ locale }: { locale: Locale }) {
       },
     };
     setPlanningSnapshots((current) => [...current, snapshot]);
+    setFieldVersion((current) => current || snapshot.systemVersion);
+    setFallbackConfirmed(false);
+    setContainmentConfirmed(false);
+    setOperationCopied(false);
     invalidateFieldReview();
   };
   const pilotCollectionWeeks = planningRange.calculable && calibration.eligibleCases > 0
     ? pilotSpec.live / calibration.eligibleCases * 4.35
     : null;
   const pilotBriefCore = locale === "en"
-    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning basis: ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "local human-time hypothesis"}`, `Transfer contract: ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.integration_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "initial local hypothesis"}`, `Net method: greater of source residual and local human-work floor, plus amortized setup`, `Human-work floor: ${formatNumber(planningRange.human_work.preparation_minutes)} prep + ${formatNumber(planningRange.human_work.supervision_minutes)} supervision + ${formatNumber(planningRange.human_work.verification_minutes)} verification + ${formatNumber(planningRange.human_work.correction_minutes)} correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} expected exceptions = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/case`, `Exception assumption: ${formatNumber(planningRange.human_work.exception_rate_percent)}% of eligible cases · ${formatNumber(planningRange.human_work.exception_minutes)} min each`, `Setup allocation: ${formatNumber(planningRange.setup.setup_hours)} h over ${formatNumber(planningRange.setup.amortization_months)} months · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/eligible case` : "unavailable at zero eligible cases"}`, planningRange.calculable ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Net planning range: unavailable until at least one case is eligible`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
-    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Base de planification : ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "hypothèse locale de temps humain"}`, `Contrat de transfert : ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.integration_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "hypothèse locale initiale"}`, `Méthode nette : plus grand temps entre le résiduel de la source et le plancher de travail humain, puis mise en place amortie`, `Plancher de travail humain : ${formatNumber(planningRange.human_work.preparation_minutes)} de préparation + ${formatNumber(planningRange.human_work.supervision_minutes)} de supervision + ${formatNumber(planningRange.human_work.verification_minutes)} de vérification + ${formatNumber(planningRange.human_work.correction_minutes)} de correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} d’exceptions attendues = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/dossier`, `Hypothèse d’exception : ${formatNumber(planningRange.human_work.exception_rate_percent)} % des cas éligibles · ${formatNumber(planningRange.human_work.exception_minutes)} min chacun`, `Répartition de la mise en place : ${formatNumber(planningRange.setup.setup_hours)} h sur ${formatNumber(planningRange.setup.amortization_months)} mois · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/cas éligible` : "indisponible sans cas éligible"}`, planningRange.calculable ? `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée` : `Fourchette nette : indisponible tant qu’aucun cas n’est éligible`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
+    ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning basis: ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "local human-time hypothesis"}`, `Transfer contract: ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.work_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "initial local hypothesis"}`, `Net method: greater of source residual and local human-work floor, plus amortized setup`, `Human-work floor: ${formatNumber(planningRange.human_work.preparation_minutes)} prep + ${formatNumber(planningRange.human_work.supervision_minutes)} supervision + ${formatNumber(planningRange.human_work.verification_minutes)} verification + ${formatNumber(planningRange.human_work.correction_minutes)} correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} expected exceptions = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/case`, `Exception assumption: ${formatNumber(planningRange.human_work.exception_rate_percent)}% of eligible cases · ${formatNumber(planningRange.human_work.exception_minutes)} min each`, `Setup allocation: ${formatNumber(planningRange.setup.setup_hours)} h over ${formatNumber(planningRange.setup.amortization_months)} months · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/eligible case` : "unavailable at zero eligible cases"}`, planningRange.calculable ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Net planning range: unavailable until at least one case is eligible`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
+    : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Base de planification : ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "hypothèse locale de temps humain"}`, `Contrat de transfert : ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.work_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "hypothèse locale initiale"}`, `Méthode nette : plus grand temps entre le résiduel de la source et le plancher de travail humain, puis mise en place amortie`, `Plancher de travail humain : ${formatNumber(planningRange.human_work.preparation_minutes)} de préparation + ${formatNumber(planningRange.human_work.supervision_minutes)} de supervision + ${formatNumber(planningRange.human_work.verification_minutes)} de vérification + ${formatNumber(planningRange.human_work.correction_minutes)} de correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} d’exceptions attendues = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/dossier`, `Hypothèse d’exception : ${formatNumber(planningRange.human_work.exception_rate_percent)} % des cas éligibles · ${formatNumber(planningRange.human_work.exception_minutes)} min chacun`, `Répartition de la mise en place : ${formatNumber(planningRange.setup.setup_hours)} h sur ${formatNumber(planningRange.setup.amortization_months)} mois · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/cas éligible` : "indisponible sans cas éligible"}`, planningRange.calculable ? `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée` : `Fourchette nette : indisponible tant qu’aucun cas n’est éligible`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
   const pilotBrief = pilotBriefCore.replace(
     locale === "en" ? `Level: ${pilotLevelLabel}` : `Niveau : ${pilotLevelLabel}`,
     locale === "en"
-      ? `Work mode: ${pilotLevelLabel}\nArchitecture: ${selectedArchitecture.label}\nExact action boundary: A${autonomy}`
-      : `Mode de travail : ${pilotLevelLabel}\nArchitecture : ${selectedArchitecture.label}\nLimite d’action exacte : A${autonomy}`,
+      ? `Work mode: ${pilotLevelLabel}\nArchitecture: ${selectedArchitecture.label}\nExact action boundary: A${autonomy}\nSystem and workflow version: ${systemVersion.trim() || "demonstration value, not frozen"}`
+      : `Mode de travail : ${pilotLevelLabel}\nArchitecture : ${selectedArchitecture.label}\nLimite d’action exacte : A${autonomy}\nVersion du système et du processus : ${systemVersion.trim() || "valeur de démonstration, non figée"}`,
   );
   const samplePass = observedCases >= pilotSpec.live;
   const hasAcceptedOutputs = observedQuality > 0;
@@ -1723,13 +1732,13 @@ export function Playbook({ locale }: { locale: Locale }) {
     ? decisionAdjustedHumanMinutesSaved / observedTotalCases * monthlyCases / 60
     : 0;
   const observedEligibility = observedTotalCases > 0 ? observedCases / observedTotalCases * 100 : 0;
-  const eligibilityWarning = observedEligibility < eligibleShare - 10;
-  const planningRecordReady = Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze);
+  const planningRecordReady = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.systemVersion && !planningChangedSinceFreeze);
   const observationCountsValid = observedTotalCases > 0 && observedCases <= observedTotalCases;
   const evidenceInputsReady = planningRecordReady && observationsConfirmed && observationCountsValid;
   const calculatedEvidenceDecision: EvidenceDecision = decideEvidence({ samplePass, valuePass, qualityPass, safetyPass, tracePass });
   const evidenceDecision: EvidenceDecision = evidenceInputsReady ? calculatedEvidenceDecision : "unknown";
   const evidenceCalculationVisible = evidenceInputsReady || evidenceExampleLoaded;
+  const eligibilityWarning = evidenceCalculationVisible && observedEligibility < eligibleShare - 10;
   const displayedEvidenceDecision = evidenceExampleLoaded && !evidenceInputsReady ? calculatedEvidenceDecision : evidenceDecision;
   const evidenceRows: Array<{ code: string; label: string; observed: string; status: EvidenceStatus }> = [
     { code: "01", label: t.evidenceMatrix.sample, observed: `${observedCases}/${pilotSpec.live}`, status: evidenceCalculationVisible ? (samplePass ? "pass" : "fail") : "incomplete" },
@@ -1746,9 +1755,15 @@ export function Playbook({ locale }: { locale: Locale }) {
   const reviewDateLabel = reviewDate
     ? new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${reviewDate}T12:00:00Z`))
     : (locale === "en" ? "Not set" : "Non définie");
-  const evidenceMemo = locale === "en"
-    ? [`AI PILOT GATE DECISION`, `Level: ${pilotLevelLabel}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} eligible bounded-live cases within ${observedTotalCases} total observed requests`, `Value: ${hasAcceptedOutputs ? `${observedTimeReduction}% human active-time reduction on accepted outputs` : "n/a because no output was accepted"} · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${formatNumber(observedEligibility)}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Raw whole-workload time change: ${formatNumber(rawObservedWholeReduction)}%`, `Decision-adjusted whole-workload reduction: ${formatNumber(decisionAdjustedWholeReduction)}%${hasAcceptedOutputs ? "" : " · capped at 0% because no output was accepted"}`, `Projected capacity: ${formatNumber(observedFreedHours)} human hours/month from the decision-adjusted result`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
-    : [`DÉCISION DU PILOTE IA`, `Niveau : ${pilotLevelLabel}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas éligibles en mode réel borné parmi ${observedTotalCases} demandes observées au total`, `Valeur : ${hasAcceptedOutputs ? `${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées` : "n/a, car aucune sortie n’a été acceptée"} · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${formatNumber(observedEligibility)} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Variation brute du temps sur toute la charge : ${formatNumber(rawObservedWholeReduction)} %`, `Réduction sur toute la charge retenue pour la décision : ${formatNumber(decisionAdjustedWholeReduction)} %${hasAcceptedOutputs ? "" : " · plafonnée à 0 %, car aucune sortie n’a été acceptée"}`, `Capacité projetée : ${formatNumber(observedFreedHours)} heures humaines/mois selon le résultat retenu pour la décision`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
+  const evidenceMemoCore = locale === "en"
+    ? [`AI PILOT GATE DECISION`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} eligible bounded-live cases within ${observedTotalCases} total observed requests`, `Value: ${hasAcceptedOutputs ? `${observedTimeReduction}% human active-time reduction on accepted outputs` : "n/a because no output was accepted"} · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${formatNumber(observedEligibility)}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Raw whole-workload time change: ${formatNumber(rawObservedWholeReduction)}%`, `Decision-adjusted whole-workload reduction: ${formatNumber(decisionAdjustedWholeReduction)}%${hasAcceptedOutputs ? "" : " · capped at 0% because no output was accepted"}`, `Projected capacity: ${formatNumber(observedFreedHours)} human hours/month from the decision-adjusted result`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
+    : [`DÉCISION DU PILOTE IA`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas éligibles en mode réel borné parmi ${observedTotalCases} demandes observées au total`, `Valeur : ${hasAcceptedOutputs ? `${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées` : "n/a, car aucune sortie n’a été acceptée"} · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${formatNumber(observedEligibility)} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Variation brute du temps sur toute la charge : ${formatNumber(rawObservedWholeReduction)} %`, `Réduction sur toute la charge retenue pour la décision : ${formatNumber(decisionAdjustedWholeReduction)} %${hasAcceptedOutputs ? "" : " · plafonnée à 0 %, car aucune sortie n’a été acceptée"}`, `Capacité projetée : ${formatNumber(observedFreedHours)} heures humaines/mois selon le résultat retenu pour la décision`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
+  const evidenceMemo = evidenceMemoCore.replace(
+    locale === "en" ? `Decision: ${evidenceDecisionCopy.label}` : `Décision : ${evidenceDecisionCopy.label}`,
+    locale === "en"
+      ? `Use pattern: ${selectedUsePattern.title}\nTerritory: ${selectedJurisdiction.label}\nEvaluated system and workflow version: ${preregisteredPlanning?.systemVersion ?? "[TO COMPLETE]"}\nDecision: ${evidenceDecisionCopy.label}`
+      : `Mode d’usage : ${selectedUsePattern.title}\nTerritoire : ${selectedJurisdiction.label}\nVersion évaluée du système et du processus : ${preregisteredPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nDécision : ${evidenceDecisionCopy.label}`,
+  );
   const fieldPlanningRange = preregisteredPlanning?.planningRange.calculable
     ? new Set([preregisteredPlanning.wholeWorkloadRange.low, preregisteredPlanning.wholeWorkloadRange.central, preregisteredPlanning.wholeWorkloadRange.high].map((value) => formatNumber(value))).size === 1
       ? `${formatNumber(preregisteredPlanning.wholeWorkloadRange.central)}%`
@@ -1764,27 +1779,37 @@ export function Playbook({ locale }: { locale: Locale }) {
         ? "above"
         : "within";
   const fieldComparisonLabel = t.fieldPilotComparison[fieldComparisonKey];
-  const operationCard = locale === "en"
-    ? [`BOUNDED AI OPERATING CARD`, `Level: ${pilotLevelLabel}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationSpec.containment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
-    : [`FICHE D’EXPLOITATION IA BORNÉE`, `Niveau : ${pilotLevelLabel}`, `État d’exploitation : ${operationState.label}`, `Responsable du processus : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationSpec.containment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Retour arrière : contenir → rediriger en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
-  const operationOwnerReady = operationOwner.trim().length > 0 && operationOwner.trim() !== t.operationDefaults.owner;
-  const incidentOwnerReady = incidentOwner.trim().length > 0 && incidentOwner.trim() !== t.operationDefaults.incident;
+  const operationCardCore = locale === "en"
+    ? [`BOUNDED AI OPERATING CARD`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationSpec.containment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
+    : [`FICHE D’EXPLOITATION IA BORNÉE`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `État d’exploitation : ${operationState.label}`, `Responsable du processus : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationSpec.containment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Retour arrière : contenir → rediriger en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
+  const operationCard = operationCardCore.replace(
+    locale === "en" ? `Operating state: ${operationState.label}` : `État d’exploitation : ${operationState.label}`,
+    locale === "en"
+      ? `Use pattern: ${selectedUsePattern.title}\nTerritory: ${selectedJurisdiction.label}\nEvaluated system and workflow version: ${preregisteredPlanning?.systemVersion ?? "[TO COMPLETE]"}\nManual fallback tried: ${fallbackConfirmed ? "yes" : "no"}\nSuspension and containment rehearsed: ${containmentConfirmed ? "yes" : "no"}\nOperating state: ${operationState.label}`
+      : `Mode d’usage : ${selectedUsePattern.title}\nTerritoire : ${selectedJurisdiction.label}\nVersion évaluée du système et du processus : ${preregisteredPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nSolution de repli manuelle essayée : ${fallbackConfirmed ? "oui" : "non"}\nArrêt et confinement répétés : ${containmentConfirmed ? "oui" : "non"}\nÉtat d’exploitation : ${operationState.label}`,
+  );
+  const operationOwnerReady = operationOwner.trim().length > 0;
+  const incidentOwnerReady = incidentOwner.trim().length > 0;
   const reviewDateReady = Boolean(reviewDate);
+  const versionReady = Boolean(preregisteredPlanning?.systemVersion);
   const evidenceRecordReady = evidenceInputsReady && evidenceDecision !== "unknown";
   const dossierMissingItems = [
     ...(!evidenceRecordReady ? [t.dossierEvidenceMissing] : []),
     ...(!operationOwnerReady ? [t.operationFields.owner] : []),
     ...(!incidentOwnerReady ? [t.operationFields.incident] : []),
     ...(!reviewDateReady ? [t.operationFields.review] : []),
+    ...(!versionReady ? [t.operationFields.version] : []),
+    ...(!fallbackConfirmed ? [t.operationFields.fallback] : []),
+    ...(!containmentConfirmed ? [t.operationFields.containment] : []),
   ];
-  const operationRecordReady = evidenceRecordReady && operationOwnerReady && incidentOwnerReady && reviewDateReady;
+  const operationRecordReady = evidenceRecordReady && operationOwnerReady && incidentOwnerReady && reviewDateReady && versionReady && fallbackConfirmed && containmentConfirmed;
   const dossierReady = planningRecordReady && dossierMissingItems.length === 0;
   const dossierArtifactStatuses: DossierStatus[] = [planningRecordReady ? "ready" : "incomplete", planningRecordReady ? "ready" : "incomplete", evidenceRecordReady ? "recorded" : "incomplete", operationRecordReady ? "ready" : "incomplete"];
   const dossierMarkdown = [
     `# ${locale === "en" ? "AI Adoption Decision Dossier" : "Dossier de décision d’adoption IA"}`,
     ``,
     `**${locale === "en" ? "Status" : "État"}:** ${dossierReady ? t.dossierReady : t.dossierDraft}`,
-    `**${locale === "en" ? "Playbook snapshot" : "Photographie du playbook"}:** 2026-08-18`,
+    `**${locale === "en" ? "Playbook version" : "Version du playbook"}:** ${PROJECT_DOSSIER_PLAYBOOK_VERSION}`,
     ...(dossierMissingItems.length ? [`**${locale === "en" ? "Missing" : "Manquant"}:** ${dossierMissingItems.join(" · ")}`] : []),
     ``,
     `## 1. ${t.dossierArtifacts[0][1]}`,
@@ -1793,7 +1818,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     `## 2. ${t.dossierArtifacts[1][1]}`,
     ``,
-    `${locale === "en" ? "Preregistered level and gate protocol" : "Niveau et protocole de décision préenregistrés"}: ${pilotLevelLabel} · ${pilotSpec.horizon} ${t.pilotPlanLabels.days} · ${pilotSpec.frozen} ${t.pilotPlanLabels.cases} ${locale === "en" ? "frozen" : "figés"} · ${pilotSpec.live} ${locale === "en" ? "bounded live" : "réels bornés"}.`,
+    `${locale === "en" ? "Preregistered operating design and gate protocol" : "Fonctionnement et protocole de décision préenregistrés"}: ${locale === "en" ? "work mode" : "mode de travail"} ${pilotLevelLabel} · ${locale === "en" ? "architecture" : "architecture"} ${selectedArchitecture.label} · ${locale === "en" ? "exact action boundary" : "limite d’action exacte"} A${autonomy} · ${pilotSpec.horizon} ${t.pilotPlanLabels.days} · ${pilotSpec.frozen} ${t.pilotPlanLabels.cases} ${locale === "en" ? "frozen" : "figés"} · ${pilotSpec.live} ${locale === "en" ? "bounded live" : "réels bornés"}.`,
     ``,
     `## 3. ${t.dossierArtifacts[2][1]}`,
     ``,
@@ -1822,8 +1847,9 @@ export function Playbook({ locale }: { locale: Locale }) {
     const eligibleVaries = new Set(eligibleValues.map((value) => formatNumber(value))).size > 1;
     return [
       `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
+      `- ${locale === "en" ? "System and workflow version" : "Version du système et du processus"}: ${snapshot.systemVersion}`,
       `- ${locale === "en" ? "Planning basis" : "Base de planification"}: ${range.evidence_id ? `${range.evidence_id} · ${range.compatibility}` : locale === "en" ? "editable local human-time hypothesis" : "hypothèse locale modifiable de temps humain"}`,
-      `- ${locale === "en" ? "Transfer contract" : "Contrat de transfert"}: ${range.target ? `${range.target.task_profile_id} · ${range.target.integration_mode} · ${range.target.quality_gate} · ${range.target.expertise_level}` : locale === "en" ? "initial local hypothesis" : "hypothèse locale initiale"}`,
+      `- ${locale === "en" ? "Transfer contract" : "Contrat de transfert"}: ${range.target ? `${range.target.task_profile_id} · ${range.target.work_mode} · ${range.target.quality_gate} · ${range.target.expertise_level}` : locale === "en" ? "initial local hypothesis" : "hypothèse locale initiale"}`,
       `- ${locale === "en" ? "Manual baseline, monthly volume, and planned eligibility" : "Situation manuelle, volume mensuel et éligibilité prévue"}: ${snapshot.caseMinutes} ${locale === "en" ? "min/case" : "min/dossier"} · ${snapshot.monthlyCases} ${locale === "en" ? "cases/month" : "cas/mois"} · ${snapshot.eligibleShare}%`,
       `- ${!range.calculable || wholeVaries ? (locale === "en" ? "Exact whole-workload range, low / central / high" : "Fourchette exacte sur toute la charge, basse / centrale / haute") : (locale === "en" ? "Exact whole-workload planning value" : "Valeur de planification exacte sur toute la charge")}: ${range.calculable ? wholeVaries ? `${wholeValues.join(" / ")}%` : `${wholeValues[1]}%` : locale === "en" ? "n/a · no eligible case" : "n/a · aucun cas éligible"}`,
       `- ${!range.calculable || eligibleVaries ? (locale === "en" ? "Exact eligible-case range, low / central / high" : "Fourchette exacte par cas éligible, basse / centrale / haute") : (locale === "en" ? "Exact eligible-case planning value" : "Valeur de planification exacte par cas éligible")}: ${range.calculable ? eligibleVaries ? `${eligibleValues.join(" / ")}%` : `${eligibleValues[1]}%` : locale === "en" ? "n/a · no eligible case" : "n/a · aucun cas éligible"}`,
@@ -2249,6 +2275,8 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="section-heading"><p className="eyebrow">{t.calibratorEyebrow}</p><h2 id="calibrator-title">{t.calibratorTitle}</h2><p>{t.calibratorText}</p></div>
           <aside className="demo-mode-note"><strong>{locale === "en" ? "STARTING EXAMPLE" : "EXEMPLE DE DÉPART"}</strong><p>{locale === "en" ? "The calculator starts with editable demonstration values. Use them to understand the method, then replace them with your own workload. A compatible study can inform the range when its task and conditions are close enough." : "Le calculateur commence avec des valeurs de démonstration modifiables. Utilisez-les pour comprendre la méthode, puis remplacez-les par votre propre charge de travail. Une étude compatible peut éclairer la fourchette si sa tâche et ses conditions sont assez proches."}</p></aside>
           <TaskTimeCalibrator
+            architecture={architecture}
+            autonomy={autonomy}
             baselineMinutes={caseMinutes}
             eligibleShare={eligibleShare}
             integrationMode={calibrationLevel}
@@ -2275,6 +2303,11 @@ export function Playbook({ locale }: { locale: Locale }) {
             <p><span>{t.pilotPlanLabels.live}</span><strong>{pilotSpec.live}</strong><small>{t.pilotPlanLabels.cases}</small></p>
             <p><span>{t.pilotPlanLabels.collection}</span><strong>{pilotCollectionWeeks == null ? "n/a" : `≈ ${formatNumber(pilotCollectionWeeks)}`}</strong><small>{pilotCollectionWeeks == null ? "" : t.pilotPlanLabels.weeks}</small></p>
           </div>
+          <aside className="pilot-version-entry">
+            <label htmlFor="pilot-system-version">{locale === "en" ? "System and workflow version" : "Version du système et du processus"}</label>
+            <input id="pilot-system-version" maxLength={160} onChange={(event) => { setSystemVersion(event.target.value); setPilotPlanCopied(false); setEvidenceCopied(false); setOperationCopied(false); setDossierCopied(false); }} placeholder={locale === "en" ? "Example: model release + workflow v3 + knowledge base 2026-08-22" : "Exemple : version du modèle + processus v3 + base documentaire 2026-08-22"} type="text" value={systemVersion} />
+            <p>{locale === "en" ? "You can explore the demonstration without filling this in. To freeze a real hypothesis, name what was evaluated so a later change cannot be mistaken for the same system." : "Vous pouvez explorer la démonstration sans remplir ce champ. Pour figer une hypothèse réelle, nommez ce qui est évalué afin qu’un changement ultérieur ne soit pas confondu avec le même système."}</p>
+          </aside>
           <div className="pilot-protocol">
             <ol className="pilot-steps">{t.pilotPlanSteps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
             <aside className="pilot-gates">
@@ -2295,7 +2328,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <div className="pilot-plan-footer">
             <p>{t.pilotPlanCaveat}</p>
-            <div><small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small><button className="button secondary" disabled={Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a></div>
+            <div><small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small><button className="button secondary" disabled={!systemVersion.trim() || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a></div>
           </div>
         </section>
 
@@ -2346,9 +2379,12 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="operation-contract">
             <output className="operation-state" data-state={evidenceDecision} aria-live="polite"><span>{locale === "en" ? "CURRENT OPERATING STATE" : "ÉTAT D’EXPLOITATION ACTUEL"}</span><strong>{operationState.label}</strong><p>{operationState.text}</p><small>{evidenceDecisionCopy.label} → {pilotLevelLabel}</small></output>
             <fieldset className="operation-owners"><legend>{t.operationOwnersTitle}</legend>
-              <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} type="text" value={operationOwner} /></label>
-              <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} type="text" value={incidentOwner} /></label>
+              <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} placeholder={t.operationDefaults.owner} type="text" value={operationOwner} /></label>
+              <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} placeholder={t.operationDefaults.incident} type="text" value={incidentOwner} /></label>
               <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} onChange={(event) => { setReviewDate(event.target.value); setOperationCopied(false); setDossierCopied(false); }} required type="date" value={reviewDate} /></label>
+              <p className="operation-version"><span>{t.operationFields.version}</span><strong>{preregisteredPlanning?.systemVersion ?? (locale === "en" ? "Freeze it in the pilot plan" : "À figer dans le plan de pilote")}</strong></p>
+              <label className="operation-check"><input checked={fallbackConfirmed} onChange={(event) => { setFallbackConfirmed(event.target.checked); setOperationCopied(false); setDossierCopied(false); }} type="checkbox" /><span>{t.operationFields.fallback}</span></label>
+              <label className="operation-check"><input checked={containmentConfirmed} onChange={(event) => { setContainmentConfirmed(event.target.checked); setOperationCopied(false); setDossierCopied(false); }} type="checkbox" /><span>{t.operationFields.containment}</span></label>
             </fieldset>
           </div>
           <div className="operation-metrics">
