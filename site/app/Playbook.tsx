@@ -2027,7 +2027,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     const eligibleVaries = new Set(eligibleValues.map((value) => formatNumber(value))).size > 1;
     return [
       `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: ${snapshot.configurationId} · v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
-      `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · R${snapshot.risk} · ${snapshot.level} · ${snapshot.architecture} · ${t.autonomyOptions[snapshot.autonomy]}`,
+      `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · ${t.impactOptions[snapshot.risk]} · ${snapshot.level} · ${snapshot.architecture} · ${t.autonomyOptions[snapshot.autonomy]}`,
       `- ${locale === "en" ? "System and workflow version" : "Version du système et du processus"}: ${snapshot.systemVersion}`,
       ...(snapshot.designDeviationAcknowledged ? [`- ${locale === "en" ? "Unusual-design check" : "Vérification de conception inhabituelle"}: ${locale === "en" ? "confirmed before freezing" : "confirmée avant le gel"}`] : []),
       ...(snapshot.a4ExceptionConfirmed ? [`- ${locale === "en" ? "A4 exception gate" : "Porte d’exception A4"}: ${locale === "en" ? "documented exception, independent review, stronger containment, and evidence against A3 confirmed" : "exception documentée, revue indépendante, confinement renforcé et preuve qu’A3 ne suffit pas confirmés"}`] : []),

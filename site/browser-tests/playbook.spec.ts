@@ -650,8 +650,8 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
 });
 
 for (const fieldLocale of [
-  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Evaluated frozen hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
-  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse figée évaluée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
+  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Evaluated frozen hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771", risk: "R1 · assistance with review" },
+  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse figée évaluée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771", risk: "R1 · assistance avec relecture" },
 ] as const) {
   test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
     await page.goto(fieldLocale.path);
@@ -686,6 +686,7 @@ for (const fieldLocale of [
     expect(report).toContain(fieldLocale.recalibration);
     expect(report).toContain(fieldLocale.volume);
     expect(report).toContain(fieldLocale.denominator);
+    expect(report).toContain(fieldLocale.risk);
     expect(report).toContain("1.0.0 · 2026-08-21");
   });
 }
