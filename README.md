@@ -53,7 +53,7 @@ support for a generic 5x to 12x accepted-outcome multiplier. The
 [critical infrastructure](sectors/en/critical-infrastructure.md) add explicit
 blocking conditions and evidence gates without replacing the universal process.
 
-Release `0.3` already uses public studies and the task-time transfer engine to
+The preparatory `0.3` layer already uses public studies and the task-time transfer engine to
 create preregistered planning hypotheses. Each pilot preserves that extrapolated
 range, the later field observation, and their gap. These are parts of the same
 learning cycle with different evidence labels. The public field registry is

@@ -24,6 +24,11 @@ type FieldSectorId = "general" | "healthcare" | "education" | "finance" | "criti
 type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
 type DossierStatus = "ready" | "recorded" | "incomplete";
+const SYSTEM_VERSION_MAX_LENGTH = 160;
+const hasHardDesignConflict = (integration: IntegrationId, architecture: ArchitectureId, autonomy: number) => (
+  (integration === "copilot" && autonomy >= 2)
+  || (architecture === "model" && autonomy >= 2)
+);
 type PlanningSnapshot = {
   configurationId: string;
   version: number;
@@ -42,6 +47,8 @@ type PlanningSnapshot = {
   architectureId: ArchitectureId;
   architecture: string;
   autonomy: number;
+  designDeviationAcknowledged: boolean;
+  a4ExceptionConfirmed: boolean;
   systemVersion: string;
   caseMinutes: number;
   monthlyCases: number;
@@ -1474,6 +1481,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [guideConfirmed, setGuideConfirmed] = useState([false, false, false, false]);
   const [designConfirmed, setDesignConfirmed] = useState({ mode: false, architecture: false, autonomy: false });
   const [designCoherenceAcknowledged, setDesignCoherenceAcknowledged] = useState(false);
+  const [a4ExceptionConfirmed, setA4ExceptionConfirmed] = useState(false);
   const [conceptPanel, setConceptPanel] = useState<ConceptPanelId>("use-patterns");
   const [operationalPanel, setOperationalPanel] = useState<OperationalPanelId>("calibrator");
   const [implementationPanel, setImplementationPanel] = useState<ImplementationPanelId>("paths");
@@ -1494,6 +1502,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
   const selectedGuideLevel = useMemo(() => guideCopy.levels.find((item) => item.id === calibrationLevel) ?? guideCopy.levels[0], [calibrationLevel, guideCopy.levels]);
   const selectedArchitecture = architectureTaxonomy[locale][architecture];
+  const currentAutonomyLabel = t.autonomyOptions[autonomy];
   const guidedPilotTask = ({
     en: {
       generation: "one repeated drafting task with a defined reviewer",
@@ -1515,8 +1524,8 @@ export function Playbook({ locale }: { locale: Locale }) {
     },
   } as const)[locale][usePattern];
   const guidedPilot = locale === "en"
-    ? `For ${selected.title}, test ${guidedPilotTask} in ${selectedGuideLevel.title.toLowerCase()} mode, using ${selectedArchitecture.label.toLowerCase()} at A${autonomy}, in ${selectedJurisdiction.label}.`
-    : `Pour ${selected.title}, testez ${guidedPilotTask} en mode ${selectedGuideLevel.title.toLowerCase()}, avec ${selectedArchitecture.label.toLowerCase()} à A${autonomy}, selon la route ${selectedJurisdiction.label}.`;
+    ? `For ${selected.title}, test ${guidedPilotTask} in ${selectedGuideLevel.title.toLowerCase()} mode, using ${selectedArchitecture.label.toLowerCase()} at ${currentAutonomyLabel}, in ${selectedJurisdiction.label}.`
+    : `Pour ${selected.title}, testez ${guidedPilotTask} en mode ${selectedGuideLevel.title.toLowerCase()}, avec ${selectedArchitecture.label.toLowerCase()} à ${currentAutonomyLabel}, selon la route ${selectedJurisdiction.label}.`;
   const applicableControls = useMemo(() => controlCatalog.filter((control) => (
     control.applicability.organization_types.includes(selected.id)
     && control.applicability.risk_levels.includes(`R${risk}`)
@@ -1549,6 +1558,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       guideConfirmed,
       designConfirmed,
       designCoherenceAcknowledged,
+      a4ExceptionConfirmed,
       caseMinutes,
       monthlyCases,
       eligibleShare,
@@ -1600,11 +1610,19 @@ export function Playbook({ locale }: { locale: Locale }) {
     setOperationCopied(false);
     setDossierCopied(false);
     setDesignCoherenceAcknowledged(false);
+    setA4ExceptionConfirmed(false);
+    invalidateFieldReview();
+  };
+  const selectArchitecture = (nextArchitecture: ArchitectureId) => {
+    setArchitecture(nextArchitecture);
+    setDesignCoherenceAcknowledged(false);
+    setA4ExceptionConfirmed(false);
     invalidateFieldReview();
   };
   const selectAutonomy = (nextAutonomy: number) => {
     setAutonomy(nextAutonomy);
     setDesignCoherenceAcknowledged(false);
+    setA4ExceptionConfirmed(false);
     invalidateFieldReview();
   };
   const restoreLifecycleContext = useCallback((context: {
@@ -1636,6 +1654,8 @@ export function Playbook({ locale }: { locale: Locale }) {
     setCalibrationLevel(level);
     setArchitecture(context.architectureId as ArchitectureId);
     setAutonomy(context.autonomy);
+    setDesignCoherenceAcknowledged(false);
+    setA4ExceptionConfirmed(false);
     setRisk(context.risk);
     setSetupHours(setupPresets[level]);
     setOperationCopied(false);
@@ -1651,14 +1671,21 @@ export function Playbook({ locale }: { locale: Locale }) {
     setGuideStep(boundedStep);
     setGuideFurthestStep((current) => Math.max(current, boundedStep));
   };
-  const designCoherenceWarnings = [
-    ...(calibrationLevel === "copilot" && autonomy >= 2 ? [locale === "en" ? "A copilot keeps a person as the operator for every external action, while A2 to A4 let the system act. Lower the action boundary or justify a different work mode." : "Un copilote garde une personne aux commandes de chaque action externe, alors que A2 à A4 permettent au système d’agir. Abaissez la limite d’action ou justifiez un autre mode de travail."] : []),
-    ...(calibrationLevel === "agency" && autonomy <= 1 ? [locale === "en" ? "Strong automation at A0 or A1 can be read-only, but the label should be kept only if long-running work truly proceeds without a person carrying every step." : "Une automatisation forte en A0 ou A1 peut rester en lecture seule, mais ce libellé ne convient que si le travail long avance réellement sans qu’une personne réalise chaque étape."] : []),
+  const designCoherenceBlockers = [
+    ...(calibrationLevel === "copilot" && autonomy >= 2 ? [locale === "en" ? "A copilot keeps a person as the operator for every external action, while A2 to A4 let the system act. Choose A0 or A1, or change the work mode." : "Un copilote garde une personne aux commandes de chaque action externe, alors que A2 à A4 permettent au système d’agir. Choisissez A0 ou A1, ou changez de mode de travail."] : []),
     ...(architecture === "model" && autonomy >= 2 ? [locale === "en" ? "One model without connected tools cannot perform an A2 to A4 action. Choose a tool-assisted design or lower the action boundary." : "Un modèle sans outil connecté ne peut pas réaliser une action A2 à A4. Choisissez un système outillé ou abaissez la limite d’action."] : []),
-    ...(autonomy === 4 ? [locale === "en" ? "A4 is disabled by default. It needs a documented exception, independent review, stronger containment, and evidence that A3 is insufficient." : "A4 est désactivé par défaut. Il exige une exception documentée, une revue indépendante, un confinement renforcé et la preuve qu’A3 ne suffit pas."] : []),
   ];
+  const designCoherenceWarnings = [
+    ...(calibrationLevel === "agency" && autonomy <= 1 ? [locale === "en" ? "Strong automation at A0 or A1 can be read-only, but the label should be kept only if long-running work truly proceeds without a person carrying every step." : "Une automatisation forte en A0 ou A1 peut rester en lecture seule, mais ce libellé ne convient que si le travail long avance réellement sans qu’une personne réalise chaque étape."] : []),
+  ];
+  const a4ExceptionRequirements = autonomy === 4
+    ? [locale === "en" ? "A4 is disabled by default. Continue only with a documented exception, independent review, stronger containment, and evidence that A3 is insufficient." : "A4 est désactivé par défaut. Continuez seulement avec une exception documentée, une revue indépendante, un confinement renforcé et la preuve qu’A3 ne suffit pas."]
+    : [];
+  const designCoherenceReady = designCoherenceBlockers.length === 0
+    && (designCoherenceWarnings.length === 0 || designCoherenceAcknowledged)
+    && (a4ExceptionRequirements.length === 0 || a4ExceptionConfirmed);
   const guideCanContinue = guideStep === 2
-    ? designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && (designCoherenceWarnings.length === 0 || designCoherenceAcknowledged)
+    ? designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceReady
     : guideStep >= 4 || guideConfirmed[guideStep];
   const selectChapterTarget = useCallback((targetId: string) => {
     const conceptTarget = conceptTargetMap[targetId];
@@ -1749,6 +1776,8 @@ export function Playbook({ locale }: { locale: Locale }) {
     calibrationLevel,
     architecture,
     autonomy,
+    designDeviationAcknowledged: designCoherenceWarnings.length > 0 && designCoherenceAcknowledged,
+    a4ExceptionConfirmed: autonomy === 4 && a4ExceptionConfirmed,
     systemVersion: systemVersion.trim(),
     caseMinutes,
     monthlyCases,
@@ -1760,10 +1789,9 @@ export function Playbook({ locale }: { locale: Locale }) {
   const preregisteredPlanning = planningSnapshots[0] ?? null;
   const latestPlanningSnapshot = planningSnapshots.at(-1) ?? null;
   const evaluatedPlanning = planningSnapshots.find((snapshot) => snapshot.version === evaluatedSnapshotVersion) ?? null;
-  const recalibratedPlanning = planningSnapshots.length > 1 ? latestPlanningSnapshot : null;
   const planningChangedSinceFreeze = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.fingerprint !== currentPlanningFingerprint);
   const freezePlanningHypothesis = () => {
-    if (!systemVersion.trim() || !calibration.wholeWorkloadCalculable) return;
+    if (!systemVersion.trim() || !calibration.wholeWorkloadCalculable || !designCoherenceReady) return;
     const snapshot: PlanningSnapshot = {
       configurationId: crypto.randomUUID(),
       version: (latestPlanningSnapshot?.version ?? 0) + 1,
@@ -1782,6 +1810,8 @@ export function Playbook({ locale }: { locale: Locale }) {
       architectureId: architecture,
       architecture: selectedArchitecture.label,
       autonomy,
+      designDeviationAcknowledged: designCoherenceWarnings.length > 0 && designCoherenceAcknowledged,
+      a4ExceptionConfirmed: autonomy === 4 && a4ExceptionConfirmed,
       systemVersion: systemVersion.trim(),
       caseMinutes,
       monthlyCases,
@@ -1823,12 +1853,17 @@ export function Playbook({ locale }: { locale: Locale }) {
         ? (locale === "en" ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`)
         : (locale === "en" ? "Net planning range across the complete workload: unavailable until the complete baseline is at least as large as the eligible baseline" : "Fourchette nette sur toute la charge : indisponible tant que la situation initiale complète est inférieure à celle des cas éligibles"),
     );
-  const pilotBrief = pilotBriefWithDenominator.replace(
+  const pilotBriefDesign = pilotBriefWithDenominator.replace(
     locale === "en" ? `Level: ${pilotLevelLabel}` : `Niveau : ${pilotLevelLabel}`,
     locale === "en"
-      ? `Work mode: ${pilotLevelLabel}\nArchitecture: ${selectedArchitecture.label}\nExact action boundary: A${autonomy}\nSystem and workflow version: ${systemVersion.trim() || "demonstration value, not frozen"}`
-      : `Mode de travail : ${pilotLevelLabel}\nArchitecture : ${selectedArchitecture.label}\nLimite d’action exacte : A${autonomy}\nVersion du système et du processus : ${systemVersion.trim() || "valeur de démonstration, non figée"}`,
+      ? `Work mode: ${pilotLevelLabel}\nArchitecture: ${selectedArchitecture.label}\nExact action boundary: ${currentAutonomyLabel}\nSystem and workflow version: ${systemVersion.trim() || "demonstration value, not frozen"}`
+      : `Mode de travail : ${pilotLevelLabel}\nArchitecture : ${selectedArchitecture.label}\nLimite d’action exacte : ${currentAutonomyLabel}\nVersion du système et du processus : ${systemVersion.trim() || "valeur de démonstration, non figée"}`,
   );
+  const pilotBrief = [
+    pilotBriefDesign,
+    ...(designCoherenceWarnings.length > 0 && designCoherenceAcknowledged ? [locale === "en" ? "Unusual-design check: confirmed before export" : "Vérification de conception inhabituelle : confirmée avant l’export"] : []),
+    ...(a4ExceptionRequirements.length > 0 && a4ExceptionConfirmed ? [locale === "en" ? "A4 exception gate: documented exception, independent review, stronger containment, and evidence against A3 confirmed" : "Porte d’exception A4 : exception documentée, revue indépendante, confinement renforcé et preuve qu’A3 ne suffit pas confirmés"] : []),
+  ].join("\n");
   const samplePass = observedCases >= pilotSpec.live;
   const hasAcceptedOutputs = observedQuality > 0;
   const qualityPass = observedQuality >= 90;
@@ -1846,7 +1881,11 @@ export function Playbook({ locale }: { locale: Locale }) {
     ? decisionAdjustedHumanMinutesSaved / observedTotalCases * monthlyCases / 60
     : 0;
   const observedEligibility = observedTotalCases > 0 ? observedCases / observedTotalCases * 100 : 0;
-  const planningRecordReady = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.systemVersion && !planningChangedSinceFreeze);
+  const latestPlanningDesignReady = Boolean(latestPlanningSnapshot
+    && !hasHardDesignConflict(latestPlanningSnapshot.integrationId, latestPlanningSnapshot.architectureId, latestPlanningSnapshot.autonomy)
+    && (latestPlanningSnapshot.integrationId !== "agency" || latestPlanningSnapshot.autonomy > 1 || latestPlanningSnapshot.designDeviationAcknowledged)
+    && (latestPlanningSnapshot.autonomy !== 4 || latestPlanningSnapshot.a4ExceptionConfirmed));
+  const planningRecordReady = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.systemVersion && latestPlanningDesignReady && !planningChangedSinceFreeze);
   const observationCountsValid = observedTotalCases > 0 && observedCases <= observedTotalCases;
   const evidenceInputsReady = Boolean(
     planningRecordReady
@@ -1886,7 +1925,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     : (locale === "en" ? "Not set" : "Non définie");
   const observedLevelLabel = evaluatedPlanning?.level ?? (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
   const observedArchitectureLabel = evaluatedPlanning?.architecture ?? (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
-  const observedAutonomyLabel = evaluatedPlanning ? `A${evaluatedPlanning.autonomy}` : (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
+  const observedAutonomyLabel = evaluatedPlanning ? t.autonomyOptions[evaluatedPlanning.autonomy] : (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
   const evidenceMemoCore = locale === "en"
     ? [`AI PILOT GATE DECISION`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} eligible bounded-live cases within ${observedTotalCases} total observed requests`, `Value: ${hasAcceptedOutputs ? `${observedTimeReduction}% human active-time reduction on accepted outputs` : "n/a because no output was accepted"} · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${formatNumber(observedEligibility)}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Raw whole-workload time change: ${formatNumber(rawObservedWholeReduction)}%`, `Decision-adjusted whole-workload reduction: ${formatNumber(decisionAdjustedWholeReduction)}%${hasAcceptedOutputs ? "" : " · capped at 0% because no output was accepted"}`, `Projected capacity: ${formatNumber(observedFreedHours)} human hours/month from the decision-adjusted result`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
     : [`DÉCISION DU PILOTE IA`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas éligibles en mode réel borné parmi ${observedTotalCases} demandes observées au total`, `Valeur : ${hasAcceptedOutputs ? `${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées` : "n/a, car aucune sortie n’a été acceptée"} · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${formatNumber(observedEligibility)} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Variation brute du temps sur toute la charge : ${formatNumber(rawObservedWholeReduction)} %`, `Réduction sur toute la charge retenue pour la décision : ${formatNumber(decisionAdjustedWholeReduction)} %${hasAcceptedOutputs ? "" : " · plafonnée à 0 %, car aucune sortie n’a été acceptée"}`, `Capacité projetée : ${formatNumber(observedFreedHours)} heures humaines/mois selon le résultat retenu pour la décision`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
@@ -1900,18 +1939,18 @@ export function Playbook({ locale }: { locale: Locale }) {
       ? `Configuration ID: ${evaluatedPlanning?.configurationId ?? "[TO COMPLETE]"}\nUse pattern: ${evaluatedPlanning?.usePatternLabel ?? "[TO COMPLETE]"}\nTerritory: ${evaluatedPlanning?.jurisdictionLabel ?? "[TO COMPLETE]"}\nEvaluated system and workflow version: ${evaluatedPlanning?.systemVersion ?? "[TO COMPLETE]"}\nDecision: ${evidenceDecisionCopy.label}`
       : `Identifiant de configuration : ${evaluatedPlanning?.configurationId ?? "[À COMPLÉTER]"}\nMode d’usage : ${evaluatedPlanning?.usePatternLabel ?? "[À COMPLÉTER]"}\nTerritoire : ${evaluatedPlanning?.jurisdictionLabel ?? "[À COMPLÉTER]"}\nVersion évaluée du système et du processus : ${evaluatedPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nDécision : ${evidenceDecisionCopy.label}`,
   );
-  const fieldPlanningRange = preregisteredPlanning?.planningRange.calculable
-    ? new Set([preregisteredPlanning.wholeWorkloadRange.low, preregisteredPlanning.wholeWorkloadRange.central, preregisteredPlanning.wholeWorkloadRange.high].map((value) => formatNumber(value))).size === 1
-      ? `${formatNumber(preregisteredPlanning.wholeWorkloadRange.central)}%`
-      : `${formatNumber(preregisteredPlanning.wholeWorkloadRange.low)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.central)} / ${formatNumber(preregisteredPlanning.wholeWorkloadRange.high)}%`
+  const fieldPlanningRange = evaluatedPlanning?.planningRange.calculable
+    ? new Set([evaluatedPlanning.wholeWorkloadRange.low, evaluatedPlanning.wholeWorkloadRange.central, evaluatedPlanning.wholeWorkloadRange.high].map((value) => formatNumber(value))).size === 1
+      ? `${formatNumber(evaluatedPlanning.wholeWorkloadRange.central)}%`
+      : `${formatNumber(evaluatedPlanning.wholeWorkloadRange.low)} / ${formatNumber(evaluatedPlanning.wholeWorkloadRange.central)} / ${formatNumber(evaluatedPlanning.wholeWorkloadRange.high)}%`
     : "n/a";
   const roundForDisplay = (value: number) => Number(new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, useGrouping: false }).format(value));
-  const fieldComparisonReady = Boolean(evidenceInputsReady && preregisteredPlanning?.planningRange.calculable && samplePass && qualityPass && tracePass && observedBaselineTotalMinutes > 0);
+  const fieldComparisonReady = Boolean(evidenceInputsReady && evaluatedPlanning?.planningRange.calculable && samplePass && qualityPass && tracePass && observedBaselineTotalMinutes > 0);
   const fieldComparisonKey = !fieldComparisonReady
     ? "unavailable"
-    : roundForDisplay(decisionAdjustedWholeReduction) < roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.low)
+    : roundForDisplay(decisionAdjustedWholeReduction) < roundForDisplay(evaluatedPlanning!.wholeWorkloadRange.low)
       ? "below"
-      : roundForDisplay(decisionAdjustedWholeReduction) > roundForDisplay(preregisteredPlanning!.wholeWorkloadRange.high)
+      : roundForDisplay(decisionAdjustedWholeReduction) > roundForDisplay(evaluatedPlanning!.wholeWorkloadRange.high)
         ? "above"
         : "within";
   const fieldComparisonLabel = t.fieldPilotComparison[fieldComparisonKey];
@@ -1959,7 +1998,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     `## 2. ${t.dossierArtifacts[1][1]}`,
     ``,
-    `${locale === "en" ? "Preregistered operating design and gate protocol" : "Fonctionnement et protocole de décision préenregistrés"}: ${locale === "en" ? "work mode" : "mode de travail"} ${pilotLevelLabel} · ${locale === "en" ? "architecture" : "architecture"} ${selectedArchitecture.label} · ${locale === "en" ? "exact action boundary" : "limite d’action exacte"} A${autonomy} · ${pilotSpec.horizon} ${t.pilotPlanLabels.days} · ${pilotSpec.frozen} ${t.pilotPlanLabels.cases} ${locale === "en" ? "frozen" : "figés"} · ${pilotSpec.live} ${locale === "en" ? "bounded live" : "réels bornés"}.`,
+    `${locale === "en" ? "Preregistered operating design and gate protocol" : "Fonctionnement et protocole de décision préenregistrés"}: ${locale === "en" ? "work mode" : "mode de travail"} ${pilotLevelLabel} · ${locale === "en" ? "architecture" : "architecture"} ${selectedArchitecture.label} · ${locale === "en" ? "exact action boundary" : "limite d’action exacte"} ${currentAutonomyLabel} · ${pilotSpec.horizon} ${t.pilotPlanLabels.days} · ${pilotSpec.frozen} ${t.pilotPlanLabels.cases} ${locale === "en" ? "frozen" : "figés"} · ${pilotSpec.live} ${locale === "en" ? "bounded live" : "réels bornés"}.`,
     ``,
     `## 3. ${t.dossierArtifacts[2][1]}`,
     ``,
@@ -1988,8 +2027,10 @@ export function Playbook({ locale }: { locale: Locale }) {
     const eligibleVaries = new Set(eligibleValues.map((value) => formatNumber(value))).size > 1;
     return [
       `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: ${snapshot.configurationId} · v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
-      `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · R${snapshot.risk} · ${snapshot.level} · ${snapshot.architecture} · A${snapshot.autonomy}`,
+      `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · R${snapshot.risk} · ${snapshot.level} · ${snapshot.architecture} · ${t.autonomyOptions[snapshot.autonomy]}`,
       `- ${locale === "en" ? "System and workflow version" : "Version du système et du processus"}: ${snapshot.systemVersion}`,
+      ...(snapshot.designDeviationAcknowledged ? [`- ${locale === "en" ? "Unusual-design check" : "Vérification de conception inhabituelle"}: ${locale === "en" ? "confirmed before freezing" : "confirmée avant le gel"}`] : []),
+      ...(snapshot.a4ExceptionConfirmed ? [`- ${locale === "en" ? "A4 exception gate" : "Porte d’exception A4"}: ${locale === "en" ? "documented exception, independent review, stronger containment, and evidence against A3 confirmed" : "exception documentée, revue indépendante, confinement renforcé et preuve qu’A3 ne suffit pas confirmés"}`] : []),
       `- ${locale === "en" ? "Planning basis" : "Base de planification"}: ${range.evidence_id ? `${range.evidence_id} · ${range.compatibility}` : locale === "en" ? "editable local human-time hypothesis" : "hypothèse locale modifiable de temps humain"}`,
       `- ${locale === "en" ? "Transfer contract" : "Contrat de transfert"}: ${range.target ? `${range.target.task_profile_id} · ${range.target.work_mode} · ${range.target.quality_gate} · ${range.target.expertise_level}` : locale === "en" ? "initial local hypothesis" : "hypothèse locale initiale"}`,
       `- ${locale === "en" ? "Manual baseline, monthly volume, and planned eligibility" : "Situation manuelle, volume mensuel et éligibilité prévue"}: ${snapshot.caseMinutes} ${locale === "en" ? "min/eligible case" : "min/cas éligible"} · ${snapshot.monthlyCases} ${locale === "en" ? "cases/month" : "cas/mois"} · ${snapshot.eligibleShare}% · ${snapshot.totalBaselineHumanHours} ${locale === "en" ? "total baseline human h/month" : "h humaines initiales/mois sur toute la charge"}`,
@@ -2032,7 +2073,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     `- ${locale === "en" ? "Jurisdiction route" : "Route juridique"}: ${evaluatedPlanning?.jurisdictionLabel ?? "[TO COMPLETE]"}`,
       `- ${t.fieldPilotLabels.integration}: ${evaluatedPlanning?.level ?? "[TO COMPLETE]"}`,
       `- ${t.fieldPilotLabels.architecture}: ${evaluatedPlanning?.architecture ?? "[TO COMPLETE]"}`,
-      `- ${t.fieldPilotLabels.autonomy}: ${evaluatedPlanning ? `A${evaluatedPlanning.autonomy}` : "[TO COMPLETE]"}`,
+      `- ${t.fieldPilotLabels.autonomy}: ${evaluatedPlanning ? t.autonomyOptions[evaluatedPlanning.autonomy] : "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.version}: ${fieldVersion.trim() || "[TO COMPLETE]"}`,
     `- ${locale === "en" ? "Observation period" : "Période d’observation"}: ${fieldStart || "[TO COMPLETE]"} → ${fieldEnd || "[TO COMPLETE]"}`,
     ``,
@@ -2040,9 +2081,9 @@ export function Playbook({ locale }: { locale: Locale }) {
     ``,
     `${fieldWorkflow.trim() || "[TO COMPLETE]"}`,
     ``,
-    `## ${locale === "en" ? "Preregistered transferred hypothesis" : "Hypothèse transférée préenregistrée"}`,
+    `## ${locale === "en" ? "Evaluated frozen hypothesis" : "Hypothèse figée évaluée"}`,
     ``,
-    ...planningSnapshotLines(preregisteredPlanning),
+    ...planningSnapshotLines(evaluatedPlanning),
     ``,
     `## ${locale === "en" ? "Observation and recalibration" : "Observation et recalibrage"}`,
     ``,
@@ -2051,17 +2092,16 @@ export function Playbook({ locale }: { locale: Locale }) {
     `- ${locale === "en" ? "Decision-adjusted whole-workload reduction" : "Réduction sur toute la charge retenue pour la décision"}: ${formatNumber(decisionAdjustedWholeReduction)}%`,
     `- ${locale === "en" ? "Decision adjustment" : "Ajustement de décision"}: ${hasAcceptedOutputs ? (locale === "en" ? "no zero-acceptance cap applied" : "aucun plafonnement lié à une acceptation nulle") : (locale === "en" ? "capped at 0% because no output was accepted; faster failed attempts are not an accepted gain" : "plafonnée à 0 %, car aucune sortie n’a été acceptée ; des tentatives infructueuses plus rapides ne constituent pas un gain accepté")}`,
     `- ${locale === "en" ? "Observed denominator rule" : "Règle du dénominateur observé"}: ${locale === "en" ? "both totals include accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases" : "les deux totaux incluent les cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants"}`,
-    `- ${locale === "en" ? "Position against the preregistered range" : "Position par rapport à la fourchette préenregistrée"}: ${fieldComparisonLabel}`,
+    `- ${locale === "en" ? "Position against the evaluated frozen range" : "Position par rapport à la fourchette figée évaluée"}: ${fieldComparisonLabel}`,
     `- ${locale === "en" ? "Comparison precision" : "Précision de comparaison"}: ${locale === "en" ? "the observed result and both boundaries are compared at the displayed precision of one decimal" : "le résultat observé et les deux bornes sont comparés à la précision affichée d’une décimale"}`,
     `- ${t.fieldPilotLabels.gap}: ${fieldGapExplanation.trim() || "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.recalibration}: ${fieldRecalibrationDecision.trim() || "[TO COMPLETE]"}`,
     ``,
-    `### ${locale === "en" ? "Recalibrated planning snapshot" : "Photographie de planification recalibrée"}`,
-    ``,
-    ...(recalibratedPlanning
-      ? planningSnapshotLines(recalibratedPlanning)
-      : [`- ${locale === "en" ? "Snapshot" : "Photographie"}: ${locale === "en" ? "No v2 snapshot frozen. Recorded decision" : "Aucune photographie v2 figée. Décision consignée"}: ${fieldRecalibrationDecision.trim() || "[TO COMPLETE]"}`]),
-    ``,
+    ...(!evaluatedPlanning && preregisteredPlanning
+      ? [`### ${locale === "en" ? "Initial v1 planning reference awaiting version confirmation" : "Référence de planification initiale v1 en attente de confirmation de version"}`, ``, ...planningSnapshotLines(preregisteredPlanning), ``]
+      : evaluatedPlanning && preregisteredPlanning && evaluatedPlanning.configurationId !== preregisteredPlanning.configurationId
+        ? [`### ${locale === "en" ? "Original v1 planning reference" : "Référence de planification initiale v1"}`, ``, ...planningSnapshotLines(preregisteredPlanning), ``]
+        : []),
     fieldEvidenceConfirmed ? evidenceMemo : `[${locale === "en" ? "TO COMPLETE: confirm that demonstration values were replaced with observed evidence" : "À COMPLÉTER : confirmer que les valeurs de démonstration ont été remplacées par des preuves observées"}]`,
     ``,
     `## ${locale === "en" ? "Transfer limits" : "Limites de transfert"}`,
@@ -2076,6 +2116,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     `> ${t.fieldPilotAlwaysDraft}`,
   ].join("\n");
   const copyPilotBrief = async () => {
+    if (!designCoherenceReady) return;
     try {
       await navigator.clipboard.writeText(pilotBrief);
       setPilotPlanCopied(true);
@@ -2100,6 +2141,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     }
   };
   const copyDossier = async () => {
+    if (!designCoherenceReady) return;
     try {
       await navigator.clipboard.writeText(dossierMarkdown);
       setDossierCopied(true);
@@ -2108,6 +2150,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     }
   };
   const downloadDossier = () => {
+    if (!designCoherenceReady) return;
     const blob = new Blob([dossierMarkdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -2146,6 +2189,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           guideConfirmed?: boolean[];
           designConfirmed?: { mode: boolean; architecture: boolean; autonomy: boolean };
           designCoherenceAcknowledged?: boolean;
+          a4ExceptionConfirmed?: boolean;
           caseMinutes?: number;
           monthlyCases?: number;
           eligibleShare?: number;
@@ -2196,16 +2240,21 @@ export function Playbook({ locale }: { locale: Locale }) {
         if (Array.isArray(context.guideConfirmed) && context.guideConfirmed.length === 4) setGuideConfirmed(context.guideConfirmed.map(Boolean));
         if (context.designConfirmed) setDesignConfirmed({ mode: Boolean(context.designConfirmed.mode), architecture: Boolean(context.designConfirmed.architecture), autonomy: Boolean(context.designConfirmed.autonomy) });
         if (typeof context.designCoherenceAcknowledged === "boolean") setDesignCoherenceAcknowledged(context.designCoherenceAcknowledged);
+        if (typeof context.a4ExceptionConfirmed === "boolean") setA4ExceptionConfirmed(context.a4ExceptionConfirmed);
         if (Number.isFinite(context.caseMinutes) && context.caseMinutes! >= 1 && context.caseMinutes! <= 10080) setCaseMinutes(context.caseMinutes!);
         if (Number.isFinite(context.monthlyCases) && context.monthlyCases! >= 1 && context.monthlyCases! <= 1000000) setMonthlyCases(context.monthlyCases!);
         if (Number.isFinite(context.eligibleShare) && context.eligibleShare! >= 0 && context.eligibleShare! <= 100) setEligibleShare(context.eligibleShare!);
         if (Number.isFinite(context.totalBaselineHumanHours) && context.totalBaselineHumanHours! > 0 && context.totalBaselineHumanHours! <= 1000000000) setTotalBaselineHumanHours(context.totalBaselineHumanHours!);
         if (Number.isFinite(context.setupHours) && context.setupHours! >= 0 && context.setupHours! <= 1000000) setSetupHours(context.setupHours!);
         if (context.taskTimeScenario && typeof context.taskTimeScenario.profileId === "string") setTaskTimeScenario(context.taskTimeScenario);
-        if (typeof context.systemVersion === "string") setSystemVersion(context.systemVersion.slice(0, 100));
+        if (typeof context.systemVersion === "string") setSystemVersion(context.systemVersion.slice(0, SYSTEM_VERSION_MAX_LENGTH));
         if (Array.isArray(context.planningSnapshots)) {
           const restoredSnapshots = context.planningSnapshots
-            .filter((snapshot) => typeof snapshot?.configurationId === "string" && Number.isInteger(snapshot?.version) && typeof snapshot?.systemVersion === "string")
+            .filter((snapshot) => typeof snapshot?.configurationId === "string"
+              && Number.isInteger(snapshot?.version)
+              && typeof snapshot?.systemVersion === "string"
+              && !hasHardDesignConflict(snapshot.integrationId, snapshot.architectureId, snapshot.autonomy)
+              && (snapshot.autonomy !== 4 || snapshot.a4ExceptionConfirmed === true))
             .map((snapshot) => ({
               ...snapshot,
               audienceLabel: audiences[locale].find((item) => item.id === snapshot.audienceId)?.title ?? snapshot.audienceLabel,
@@ -2235,7 +2284,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         if (["general", "healthcare", "education", "finance", "critical"].includes(context.fieldSectorId ?? "")) setFieldSectorId(context.fieldSectorId!);
         if (typeof context.fieldAlias === "string") setFieldAlias(context.fieldAlias.slice(0, 120));
         if (typeof context.fieldWorkflow === "string") setFieldWorkflow(context.fieldWorkflow.slice(0, 360));
-        if (typeof context.fieldVersion === "string") setFieldVersion(context.fieldVersion.slice(0, 100));
+        if (typeof context.fieldVersion === "string") setFieldVersion(context.fieldVersion.slice(0, SYSTEM_VERSION_MAX_LENGTH));
         if (typeof context.fieldStart === "string") setFieldStart(context.fieldStart);
         if (typeof context.fieldEnd === "string") setFieldEnd(context.fieldEnd);
         if (typeof context.fieldGapExplanation === "string") setFieldGapExplanation(context.fieldGapExplanation.slice(0, 520));
@@ -2316,9 +2365,11 @@ export function Playbook({ locale }: { locale: Locale }) {
 
               {guideStep === 2 && <div className="guide-design-choices">
                 <fieldset><legend>{locale === "en" ? "1. How will people and AI share the work?" : "1. Comment les personnes et l’IA se partagent-elles le travail ?"}</legend><div className="guide-choice-grid guide-levels">{guideCopy.levels.map((level) => <button aria-pressed={calibrationLevel === level.id && designConfirmed.mode} key={level.id} onClick={() => { selectGuideLevel(level); setDesignConfirmed((current) => ({ ...current, mode: true })); }} type="button"><span>{level.code}</span><strong>{level.title}</strong><small>{level.text}</small></button>)}</div></fieldset>
-                <fieldset><legend>{guideCopy.architectureTitle}</legend><p>{guideCopy.architectureText}</p><div className="guide-choice-grid guide-architectures">{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <button aria-pressed={architecture === id && designConfirmed.architecture} key={id} onClick={() => { setArchitecture(id); setDesignCoherenceAcknowledged(false); setDesignConfirmed((current) => ({ ...current, architecture: true })); invalidateFieldReview(); }} type="button"><strong>{architectureTaxonomy[locale][id].label}</strong><small>{architectureTaxonomy[locale][id].text}</small></button>)}</div></fieldset>
+                <fieldset><legend>{guideCopy.architectureTitle}</legend><p>{guideCopy.architectureText}</p><div className="guide-choice-grid guide-architectures">{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <button aria-pressed={architecture === id && designConfirmed.architecture} key={id} onClick={() => { selectArchitecture(id); setDesignConfirmed((current) => ({ ...current, architecture: true })); }} type="button"><strong>{architectureTaxonomy[locale][id].label}</strong><small>{architectureTaxonomy[locale][id].text}</small></button>)}</div></fieldset>
                 <fieldset><legend>{guideCopy.autonomyTitle}</legend><p>{guideCopy.autonomyText}</p><div className="guide-choice-grid guide-autonomy">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index && designConfirmed.autonomy} key={label} onClick={() => { selectAutonomy(index); setDesignConfirmed((current) => ({ ...current, autonomy: true })); }} type="button"><strong>{label}</strong></button>)}</div></fieldset>
-                {designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceWarnings.length > 0 && <aside className="design-coherence" role="alert"><strong>{locale === "en" ? "CHECK THIS COMBINATION" : "VÉRIFIEZ CETTE COMBINAISON"}</strong><ul>{designCoherenceWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul><label><input checked={designCoherenceAcknowledged} onChange={(event) => setDesignCoherenceAcknowledged(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I checked that these three labels describe the same real operating design." : "J’ai vérifié que ces trois libellés décrivent bien le même fonctionnement réel."}</span></label></aside>}
+                {designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceBlockers.length > 0 && <aside className="design-coherence design-coherence-blocker" role="alert"><strong>{locale === "en" ? "INCOMPATIBLE DESIGN" : "CONCEPTION INCOMPATIBLE"}</strong><ul>{designCoherenceBlockers.map((warning) => <li key={warning}>{warning}</li>)}</ul><p>{locale === "en" ? "This combination cannot be confirmed. Change the work mode, architecture, or action boundary." : "Cette combinaison ne peut pas être confirmée. Modifiez le mode de travail, l’architecture ou la limite d’action."}</p></aside>}
+                {designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceBlockers.length === 0 && designCoherenceWarnings.length > 0 && <aside className="design-coherence" role="alert"><strong>{locale === "en" ? "CHECK THIS UNUSUAL COMBINATION" : "VÉRIFIEZ CETTE COMBINAISON INHABITUELLE"}</strong><ul>{designCoherenceWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul><label><input checked={designCoherenceAcknowledged} onChange={(event) => setDesignCoherenceAcknowledged(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I checked that these three labels describe the same real operating design." : "J’ai vérifié que ces trois libellés décrivent bien le même fonctionnement réel."}</span></label></aside>}
+                {designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceBlockers.length === 0 && a4ExceptionRequirements.length > 0 && <aside className="design-coherence design-coherence-a4" role="alert"><strong>{locale === "en" ? "A4 EXCEPTION REQUIRED" : "EXCEPTION A4 OBLIGATOIRE"}</strong><ul>{a4ExceptionRequirements.map((requirement) => <li key={requirement}>{requirement}</li>)}</ul><label><input checked={a4ExceptionConfirmed} onChange={(event) => setA4ExceptionConfirmed(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I confirm that the documented exception, independent review, stronger containment, and evidence against A3 are all present." : "Je confirme que l’exception documentée, la revue indépendante, le confinement renforcé et la preuve qu’A3 ne suffit pas sont tous présents."}</span></label></aside>}
               </div>}
 
               {guideStep === 3 && <div className="guide-choice-grid guide-jurisdictions">{patternCopy.jurisdictions.map((option) => <button aria-pressed={jurisdiction === option.id && guideConfirmed[3]} key={option.id} onClick={() => { setJurisdiction(option.id); setGuideConfirmed((current) => current.map((value, index) => index === 3 ? true : value)); invalidateFieldReview(); }} type="button"><span>{option.id}</span><strong>{option.label}</strong><small>{option.note}</small></button>)}</div>}
@@ -2488,7 +2539,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         <ChapterNavigator active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
         <aside className="operational-context" aria-label={locale === "en" ? "Current route choices" : "Choix du parcours actuel"}>
           <strong>{locale === "en" ? "CURRENT ROUTE" : "PARCOURS ACTUEL"}</strong>
-          <ul><li>{selected.title}</li><li>{selectedUsePattern.title}</li><li>{selectedGuideLevel.title}</li><li>{selectedArchitecture.label}</li><li>A{autonomy}</li><li>{selectedJurisdiction.label}</li></ul>
+          <ul><li>{selected.title}</li><li>{selectedUsePattern.title}</li><li>{selectedGuideLevel.title}</li><li>{selectedArchitecture.label}</li><li>{currentAutonomyLabel}</li><li>{selectedJurisdiction.label}</li></ul>
         </aside>
 
         <section className="calibrator section-blue" hidden={operationalPanel !== "calibrator"} id="calibrator" aria-labelledby="calibrator-title">
@@ -2514,6 +2565,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             setupHours={setupHours}
             totalBaselineHumanHours={totalBaselineHumanHours}
           />
+          {!designCoherenceReady && <aside className="calibrator-coherence-gate" role="alert"><strong>{designCoherenceBlockers.length > 0 ? (locale === "en" ? "THIS OPERATING DESIGN IS INCOMPATIBLE" : "CE FONCTIONNEMENT EST INCOMPATIBLE") : (locale === "en" ? "THIS OPERATING DESIGN NEEDS AN EXPLICIT EXCEPTION" : "CE FONCTIONNEMENT EXIGE UNE EXCEPTION EXPLICITE")}</strong><ul>{[...designCoherenceBlockers, ...designCoherenceWarnings, ...a4ExceptionRequirements].map((message) => <li key={message}>{message}</li>)}</ul>{designCoherenceBlockers.length === 0 && designCoherenceWarnings.length > 0 && <label><input checked={designCoherenceAcknowledged} onChange={(event) => setDesignCoherenceAcknowledged(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I checked that the unusual labels describe the same real operating design." : "J’ai vérifié que ces libellés inhabituels décrivent le même fonctionnement réel."}</span></label>}{designCoherenceBlockers.length === 0 && a4ExceptionRequirements.length > 0 && <label><input checked={a4ExceptionConfirmed} onChange={(event) => setA4ExceptionConfirmed(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I confirm the documented A4 exception, independent review, stronger containment, and evidence that A3 is insufficient." : "Je confirme l’exception A4 documentée, la revue indépendante, le confinement renforcé et la preuve qu’A3 ne suffit pas."}</span></label>}<a href="#guided-start">{locale === "en" ? "Review the three design choices" : "Revoir les trois choix de conception"} ↑</a></aside>}
         </section>
 
         <section className="pilot-planner section-light" hidden={operationalPanel !== "pilot-plan"} id="pilot-plan" aria-labelledby="pilot-plan-title">
@@ -2527,7 +2579,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <aside className="pilot-version-entry">
             <label htmlFor="pilot-system-version">{locale === "en" ? "System and workflow version" : "Version du système et du processus"}</label>
-            <input id="pilot-system-version" maxLength={160} onChange={(event) => { setSystemVersion(event.target.value); setPilotPlanCopied(false); setEvidenceCopied(false); setOperationCopied(false); setDossierCopied(false); }} placeholder={locale === "en" ? "Example: model release + workflow v3 + knowledge base 2026-08-22" : "Exemple : version du modèle + processus v3 + base documentaire 2026-08-22"} type="text" value={systemVersion} />
+            <input id="pilot-system-version" maxLength={SYSTEM_VERSION_MAX_LENGTH} onChange={(event) => { setSystemVersion(event.target.value); setPilotPlanCopied(false); setEvidenceCopied(false); setOperationCopied(false); setDossierCopied(false); }} placeholder={locale === "en" ? "Example: model release + workflow v3 + knowledge base 2026-08-22" : "Exemple : version du modèle + processus v3 + base documentaire 2026-08-22"} type="text" value={systemVersion} />
             <p>{locale === "en" ? "You can explore the demonstration without filling this in. To freeze a real hypothesis, name what was evaluated so a later change cannot be mistaken for the same system." : "Vous pouvez explorer la démonstration sans remplir ce champ. Pour figer une hypothèse réelle, nommez ce qui est évalué afin qu’un changement ultérieur ne soit pas confondu avec le même système."}</p>
           </aside>
           <div className="pilot-protocol">
@@ -2548,12 +2600,13 @@ export function Playbook({ locale }: { locale: Locale }) {
             <p className="eyebrow">{t.pilotDecisionTitle}</p>
             <div>{t.pilotDecisions.map(([decision, text], index) => <article data-decision={index} key={decision}><span>0{index + 1}</span><h3>{decision}</h3><p>{text}</p></article>)}</div>
           </div>
+          {!designCoherenceReady && <aside className="planning-coherence-gate" role="alert"><strong>{designCoherenceBlockers.length > 0 ? (locale === "en" ? "CORRECT THE DESIGN BEFORE FREEZING OR EXPORTING" : "CORRIGEZ LA CONCEPTION AVANT DE FIGER OU D’EXPORTER") : (locale === "en" ? "CONFIRM THE EXCEPTION BEFORE FREEZING OR EXPORTING" : "CONFIRMEZ L’EXCEPTION AVANT DE FIGER OU D’EXPORTER")}</strong><ul>{[...designCoherenceBlockers, ...designCoherenceWarnings, ...a4ExceptionRequirements].map((message) => <li key={message}>{message}</li>)}</ul>{designCoherenceBlockers.length === 0 && designCoherenceWarnings.length > 0 && <label><input checked={designCoherenceAcknowledged} onChange={(event) => setDesignCoherenceAcknowledged(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I checked that the unusual labels describe the same real operating design." : "J’ai vérifié que ces libellés inhabituels décrivent le même fonctionnement réel."}</span></label>}{designCoherenceBlockers.length === 0 && a4ExceptionRequirements.length > 0 && <label><input checked={a4ExceptionConfirmed} onChange={(event) => setA4ExceptionConfirmed(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I confirm the documented A4 exception, independent review, stronger containment, and evidence that A3 is insufficient." : "Je confirme l’exception A4 documentée, la revue indépendante, le confinement renforcé et la preuve qu’A3 ne suffit pas."}</span></label>}</aside>}
           <div className="pilot-plan-footer">
             <p>{t.pilotPlanCaveat}</p>
             <div>
-              <small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{!calibration.wholeWorkloadCalculable ? (locale === "en" ? "The total workload cannot be smaller than the eligible workload" : "La charge totale ne peut pas être inférieure à la charge éligible") : latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small>
-              <button className="button secondary" disabled={!systemVersion.trim() || !calibration.wholeWorkloadCalculable || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button>
-              <button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button>
+              <small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{!designCoherenceReady ? (locale === "en" ? "Resolve the design gate above" : "Résolvez la porte de conception ci-dessus") : !calibration.wholeWorkloadCalculable ? (locale === "en" ? "The total workload cannot be smaller than the eligible workload" : "La charge totale ne peut pas être inférieure à la charge éligible") : latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small>
+              <button className="button secondary" disabled={!systemVersion.trim() || !calibration.wholeWorkloadCalculable || !designCoherenceReady || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button>
+              <button className="button primary" disabled={!designCoherenceReady} onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button>
               <a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a>
             </div>
           </div>
@@ -2637,7 +2690,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <article><p className="eyebrow">{t.dossierHandoffTitle}</p><ol>{t.dossierHandoff.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></li>)}</ol></article>
             <aside><span>{t.dossierBoundaryTitle}</span><p>{t.dossierBoundary}</p><div><strong>4</strong><small>{locale === "en" ? "decision artifacts in the export" : "artefacts de décision dans l’export"}</small></div></aside>
           </div>
-          <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
+          <div className="dossier-footer"><p>{locale === "en" ? "Export a readable summary now, then attach controlled evidence by identifier. The file remains explicitly marked as a draft until the missing ownership or evidence fields are completed." : "Exportez maintenant une synthèse lisible, puis joignez les preuves contrôlées par identifiant. Le fichier reste explicitement marqué brouillon tant que les responsabilités ou preuves manquantes ne sont pas complétées."}</p><div><button className="button dossier-copy" disabled={!designCoherenceReady} onClick={() => void copyDossier()} type="button">{dossierCopied ? t.dossierCopied : t.dossierCopy}</button><button className="button dossier-download" disabled={!designCoherenceReady} onClick={downloadDossier} type="button">{t.dossierDownload} ↓</button></div></div>
         </section>
 
         <section className="field-pilot section-blue" hidden={operationalPanel !== "field-pilot"} id="field-pilot" aria-labelledby="field-pilot-title">
@@ -2658,13 +2711,13 @@ export function Playbook({ locale }: { locale: Locale }) {
               <div className="field-pilot-selects">
                 <label><span>{t.fieldPilotLabels.organization}</span><select onChange={(event) => { setAudienceId(event.target.value as AudienceId); invalidateFieldReview(); }} value={audienceId}>{audiences[locale].map((audience) => <option key={audience.id} value={audience.id}>{audience.title}</option>)}</select></label>
                 <label><span>{t.fieldPilotLabels.integration}</span><select onChange={(event) => selectCalibrationLevel(event.target.value as IntegrationId)} value={calibrationLevel}>{t.calibratorLevels.map((level) => <option key={level.id} value={level.id}>{level.label}</option>)}</select></label>
-                <label><span>{t.fieldPilotLabels.architecture}</span><select onChange={(event) => { setArchitecture(event.target.value as ArchitectureId); invalidateFieldReview(); }} value={architecture}>{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <option key={id} value={id}>{architectureTaxonomy[locale][id].label}</option>)}</select></label>
-                <label><span>{t.fieldPilotLabels.autonomy}</span><select onChange={(event) => selectAutonomy(Number(event.target.value))} value={autonomy}>{[0, 1, 2, 3, 4].map((level) => <option key={level} value={level}>A{level}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.architecture}</span><select onChange={(event) => selectArchitecture(event.target.value as ArchitectureId)} value={architecture}>{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <option key={id} value={id}>{architectureTaxonomy[locale][id].label}</option>)}</select></label>
+                <label><span>{t.fieldPilotLabels.autonomy}</span><select onChange={(event) => selectAutonomy(Number(event.target.value))} value={autonomy}>{[0, 1, 2, 3, 4].map((level) => <option key={level} value={level}>{t.autonomyOptions[level]}</option>)}</select></label>
                 <label><span>{t.fieldPilotLabels.sector}</span><select onChange={(event) => { setFieldSectorId(event.target.value as FieldSectorId); invalidateFieldReview(); }} value={fieldSectorId}>{t.fieldPilotSectors.map((sector) => <option key={sector.id} value={sector.id}>{sector.label}</option>)}</select></label>
               </div>
               <div className="field-pilot-fields">
                 <label><span>{t.fieldPilotLabels.alias}</span><input maxLength={80} onChange={(event) => { setFieldAlias(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Example: Workshop North" : "Exemple : Atelier Nord"} type="text" value={fieldAlias} /></label>
-                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => { setFieldVersion(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} readOnly={Boolean(evaluatedPlanning)} type="text" value={fieldVersion} /><small>{evaluatedPlanning ? (locale === "en" ? `Locked to ${evaluatedPlanning.configurationId}` : `Verrouillée sur ${evaluatedPlanning.configurationId}`) : (locale === "en" ? "Confirm the observed frozen version first." : "Confirmez d’abord la version figée observée.")}</small></label>
+                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={SYSTEM_VERSION_MAX_LENGTH} onChange={(event) => { setFieldVersion(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} readOnly={Boolean(evaluatedPlanning)} type="text" value={fieldVersion} /><small>{evaluatedPlanning ? (locale === "en" ? `Locked to ${evaluatedPlanning.configurationId}` : `Verrouillée sur ${evaluatedPlanning.configurationId}`) : (locale === "en" ? "Confirm the observed frozen version first." : "Confirmez d’abord la version figée observée.")}</small></label>
                 <label className="field-pilot-wide"><span>{t.fieldPilotLabels.workflow}</span><textarea maxLength={360} onChange={(event) => { setFieldWorkflow(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Describe one bounded input-to-accepted-outcome workflow." : "Décrivez un seul processus borné, de l’entrée au résultat accepté."} rows={3} value={fieldWorkflow} /></label>
                 <label><span>{t.fieldPilotLabels.start}</span><input onChange={(event) => { setFieldStart(event.target.value); invalidateFieldReview(); }} type="date" value={fieldStart} /></label>
                 <label><span>{t.fieldPilotLabels.end}</span><input min={fieldStart || undefined} onChange={(event) => { setFieldEnd(event.target.value); invalidateFieldReview(); }} type="date" value={fieldEnd} /></label>
@@ -2676,7 +2729,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             </div>
             <aside className="field-pilot-review">
               <output className="field-pilot-status" data-ready={fieldReadyForReview} aria-live="polite"><span>{fieldReadyForReview ? t.fieldPilotState.review : t.fieldPilotState.draft}</span><strong>{fieldCompleted}/{fieldRequirements.length}</strong><small>{fieldReadyForReview ? t.fieldPilotState.completed : `${fieldRequirements.length - fieldCompleted} ${t.fieldPilotState.remaining}`}</small></output>
-              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></span><span><small>{locale === "en" ? "RAW TIME CHANGE" : "VARIATION BRUTE"}</small><strong>{formatNumber(rawObservedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{hasAcceptedOutputs ? `${observedTimeReduction}%` : "n/a"}</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!preregisteredPlanning ? (locale === "en" ? "Freeze the hypothesis in the test plan before comparing observations." : "Figez l’hypothèse dans le plan de test avant de comparer les observations.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to preregistered v${preregisteredPlanning.version}.` : `Comparaison verrouillée sur la version préenregistrée v${preregisteredPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!fieldComparisonReady || !evaluatedPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
+              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></span><span><small>{locale === "en" ? "RAW TIME CHANGE" : "VARIATION BRUTE"}</small><strong>{formatNumber(rawObservedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{hasAcceptedOutputs ? `${observedTimeReduction}%` : "n/a"}</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!evaluatedPlanning ? (locale === "en" ? "Confirm which frozen version produced these observations before comparing them." : "Confirmez la version figée qui a produit ces observations avant de les comparer.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to evaluated v${evaluatedPlanning.version}.` : `Comparaison verrouillée sur la version évaluée v${evaluatedPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!fieldComparisonReady || !evaluatedPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>

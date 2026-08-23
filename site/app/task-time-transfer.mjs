@@ -210,9 +210,15 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
 
 export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
   const evidenceScenarios = evidenceTransfer?.ok ? evidenceTransfer.scenarios : null;
+  const eligibleCaseCalculable = humanScenario.calculable;
+  const wholeWorkloadCalculable = eligibleCaseCalculable && humanScenario.workload_denominator_valid;
   return {
-    calculable: humanScenario.calculable,
-    unavailable_reason: humanScenario.calculable ? null : "no_eligible_cases",
+    calculable: eligibleCaseCalculable,
+    eligible_case_calculable: eligibleCaseCalculable,
+    whole_workload_calculable: wholeWorkloadCalculable,
+    unavailable_reason: !eligibleCaseCalculable
+      ? "no_eligible_cases"
+      : wholeWorkloadCalculable ? null : "invalid_workload_denominator",
     source: evidenceScenarios ? "external_evidence" : "local_hypothesis",
     compatibility: evidenceScenarios ? evidenceTransfer.compatibility.status : "not_available",
     evidence_id: evidenceScenarios ? evidenceTransfer.evidence_id : null,
@@ -229,12 +235,12 @@ export function derivePlanningRange(evidenceTransfer, humanScenario, target = nu
   const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario);
   const components = humanScenario.components;
   return {
-    calculable: netRange.calculable,
+    calculable: netRange.whole_workload_calculable,
     unavailable_reason: netRange.unavailable_reason,
     source: netRange.source,
-    low: netRange.calculable ? netRange.scenarios.low.reduction_fraction : 0,
-    central: netRange.calculable ? netRange.scenarios.central.reduction_fraction : 0,
-    high: netRange.calculable ? netRange.scenarios.high.reduction_fraction : 0,
+    low: netRange.whole_workload_calculable ? netRange.scenarios.low.reduction_fraction : 0,
+    central: netRange.whole_workload_calculable ? netRange.scenarios.central.reduction_fraction : 0,
+    high: netRange.whole_workload_calculable ? netRange.scenarios.high.reduction_fraction : 0,
     compatibility: netRange.compatibility,
     evidence_id: netRange.evidence_id,
     target,

@@ -212,6 +212,33 @@ test("weights the complete workload by baseline hours rather than by the share o
   assert.notEqual(scenario.whole_workload_reduction_fraction, 0.05);
 });
 
+test("keeps eligible-case math visible but blocks a whole-workload range with a contradictory denominator", () => {
+  const manual = calculateHumanTimeScenario({
+    baseline_human_minutes: 60,
+    monthly_cases: 40,
+    eligible_share: 70,
+    total_baseline_human_hours: 10,
+    preparation_minutes: 5,
+    supervision_minutes: 5,
+    verification_minutes: 10,
+    correction_minutes: 5,
+    exception_rate: 20,
+    exception_minutes: 20,
+    setup_hours: 0,
+    amortization_months: 12,
+  });
+  const net = buildNetPlanningRange({ ok: false }, manual);
+  const planning = derivePlanningRange({ ok: false }, manual);
+  assert.equal(net.eligible_case_calculable, true);
+  assert.equal(net.whole_workload_calculable, false);
+  assert.equal(net.unavailable_reason, "invalid_workload_denominator");
+  assert.equal(net.scenarios.central.reduction_fraction, 31 / 60);
+  assert.equal(net.scenarios.central.whole_workload_reduction_fraction, null);
+  assert.equal(planning.calculable, false);
+  assert.equal(planning.unavailable_reason, "invalid_workload_denominator");
+  assert.deepEqual([planning.low, planning.central, planning.high], [0, 0, 0]);
+});
+
 test("produces a net evidence range after the local human floor and amortized setup", () => {
   const target = { task_profile_id: "knowledge_analysis", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
   const options = listEvidenceOptions(registry, target);

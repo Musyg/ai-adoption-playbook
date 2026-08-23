@@ -144,8 +144,10 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".task-time-source-range")).toContainText("TT-2023-NOY-ZHANG-WRITING");
   await expect(page.locator(".task-time-source-range")).toContainText("40%");
   await expect(page.locator(".calibrator-result-head small")).toContainText("starting estimate based on a similar study");
-  await expect(page.locator(".calibrator-result-head strong")).toContainText("37.6%");
-  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("37.6%");
+  await expect(page.locator(".calibrator-result-head")).toContainText("complete workload");
+  await expect(page.locator(".calibrator-result-head strong")).toContainText("26.3%");
+  await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("26.3%");
+  await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"]')).toContainText("37.6% net saving on each eligible case");
 
   await page.locator(".task-time-components > summary").click();
   await page.getByLabel("Verification").fill("70");
@@ -185,6 +187,33 @@ test("task-time explanation separates the user's input from the study value", as
       await expect(explanation).toContainText("calcul conserve le temps le plus élevé : 44,9 min");
     }
   }
+});
+
+test("an invalid complete-workload denominator never becomes a zero planning range", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const calibrator = page.locator("#calibrator");
+  await calibrator.getByLabel("Total human hours per month for all cases").fill("1");
+  await expect(calibrator.locator(".calibrator-result-head strong")).toHaveText("n/a");
+  await expect(calibrator.locator(".task-time-negative")).toContainText("eligible cases already account for more baseline time");
+
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
+});
+
+test("changing a valid design to an incompatible mode blocks freeze and export", async ({ context, page }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  await page.locator("#calibrator").getByRole("button", { name: /Copilot 01/ }).click();
+  await expect(page.locator("#calibrator .calibrator-coherence-gate")).toContainText("A copilot keeps a person as the operator");
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Incompatible demonstration");
+  await expect(page.locator(".planning-coherence-gate")).toContainText("A copilot keeps a person as the operator");
+  await expect(page.getByRole("button", { name: "Freeze hypothesis v1" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Copy the pilot brief" })).toBeDisabled();
 });
 
 test("a transferable but imperfectly matched study stays usable and names every adjustment", async ({ page }) => {
@@ -280,11 +309,12 @@ test("language switch preserves the current topic and editable scenario", async 
 });
 
 test("language switch preserves the frozen evidence identity and operating controls", async ({ page }) => {
+  const longVersion = `Support workflow v3 · ${"verified-component-".repeat(7)}`;
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
   await router.getByRole("button", { name: /Build the test plan/ }).click();
-  await page.locator("#pilot-system-version").fill("Support workflow v3");
+  await page.locator("#pilot-system-version").fill(longVersion);
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByLabel("All requests observed in the same period").fill("40");
@@ -315,7 +345,7 @@ test("language switch preserves the frozen evidence identity and operating contr
   await expect(page.getByLabel("La procédure d’arrêt et de confinement a été répétée")).toBeChecked();
   await router.getByRole("button", { name: /Préparer le retour terrain/ }).click();
   const fieldVersion = page.locator("#field-pilot").getByLabel("Version du système et du processus");
-  await expect(fieldVersion).toHaveValue("Support workflow v3");
+  await expect(fieldVersion).toHaveValue(longVersion);
   await expect(fieldVersion.locator("..").locator("small")).toContainText(configurationId);
 });
 
@@ -488,6 +518,8 @@ test("evidence from v1 cannot authorize a changed v2 configuration without expli
   const calibrator = page.locator("#calibrator");
   await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await calibrator.getByRole("button", { name: /Copilot 01/ }).click();
+  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#field-pilot").getByLabel("Exact action boundary").selectOption("1");
   await router.getByRole("button", { name: /Build the test plan/ }).click();
   await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
@@ -547,7 +579,16 @@ test("evidence from v1 cannot authorize a changed v2 configuration without expli
   expect(v2OperatingCard).toContain("Evaluated system and workflow version: Demonstration workflow v2");
 
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
-  await expect(page.locator(".planning-freeze-warning")).toContainText("Comparison locked to preregistered v1");
+  await expect(page.locator(".planning-freeze-warning")).toContainText("Comparison locked to evaluated v2");
+  const fieldDownload = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download the local draft" }).click();
+  const fieldReportPath = await (await fieldDownload).path();
+  expect(fieldReportPath).not.toBeNull();
+  const fieldReport = await readFile(fieldReportPath!, "utf8");
+  expect(fieldReport).toContain("## Evaluated frozen hypothesis");
+  expect(fieldReport).toContain(`Snapshot identity: ${v2Configuration} · v2`);
+  expect(fieldReport).toContain("### Original v1 planning reference");
+  expect(fieldReport).toContain(`Snapshot identity: ${v1Configuration} · v1`);
 });
 
 test("field comparison rounds negative half-values exactly as the interface displays them", async ({ page }) => {
@@ -593,12 +634,14 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   await calibrator.getByLabel("Cases needing exception work").fill("25");
   await calibrator.getByLabel("Minutes per exception").fill("12");
 
+  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#field-pilot").getByLabel("Exact action boundary").selectOption("1");
   await page.locator("#operational-router").getByRole("button", { name: /Build the test plan/ }).click();
   await page.getByRole("button", { name: "Copy the pilot brief" }).click();
   const brief = await page.evaluate(() => navigator.clipboard.readText());
   expect(brief).toContain("Work mode: Copilot");
   expect(brief).toContain("Architecture: Tool-assisted workflow");
-  expect(brief).toContain("Exact action boundary: A2");
+  expect(brief).toContain("Exact action boundary: A1 · research or draft");
   expect(brief).toContain("Transfer contract: professional_writing · copilot · reviewed · mixed");
   expect(brief).toContain("Net method: greater of source residual and local human-work floor, plus amortized setup");
   expect(brief).toContain("Human-work floor: 7 prep + 6 supervision + 18 verification + 4 correction + 3 expected exceptions = 38 min/case");
@@ -607,8 +650,8 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
 });
 
 for (const fieldLocale of [
-  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Preregistered transferred hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
-  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse transférée préenregistrée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
+  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Evaluated frozen hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771" },
+  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse figée évaluée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771" },
 ] as const) {
   test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
     await page.goto(fieldLocale.path);
@@ -616,12 +659,16 @@ for (const fieldLocale of [
     await page.locator("#calibrator").getByLabel(fieldLocale.task).selectOption("professional_writing");
     await page.locator("#calibrator").getByRole("button", { name: fieldLocale.level }).click();
     const router = page.locator("#operational-router");
+    await router.getByRole("button", { name: fieldLocale.panel }).click();
+    await page.locator("#field-pilot .field-pilot-selects select").nth(3).selectOption("1");
     await router.getByRole("button", { name: fieldLocale.plan }).click();
     await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
     await page.getByRole("button", { name: fieldLocale.freeze }).click();
     await router.getByRole("button", { name: fieldLocale.evidence }).click();
+    await page.getByRole("button", { name: /Load a demonstration result|Charger un résultat de démonstration/ }).click();
     await page.getByLabel(fieldLocale.baseline).fill("1200");
     await page.getByLabel(fieldLocale.ai).fill("771");
+    await page.locator(".evidence-prerequisite input").check();
     await router.getByRole("button", { name: fieldLocale.panel }).click();
 
     const evidence = page.locator("#field-pilot .field-pilot-evidence");
@@ -691,7 +738,9 @@ test("any field-report mutation invalidates confirmation and all six publication
   expect(path).not.toBeNull();
   const readyReport = await readFile(path!, "utf8");
   expect(readyReport).not.toContain("[TO COMPLETE]");
-  expect(readyReport).toContain("No v2 snapshot frozen. Recorded decision: Retain v1; no recalibration required.");
+  expect(readyReport).toContain("## Evaluated frozen hypothesis");
+  expect(readyReport).toContain("Hypothesis and decision after observation: Retain v1; no recalibration required.");
+  expect(readyReport).not.toContain("Original v1 planning reference");
 
   await page.locator("#concept-library > summary").click();
   await page.locator("#use-patterns .jurisdiction-options button").first().click();
@@ -761,20 +810,28 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   await workModes.first().click();
   await architectures.first().click();
   await actionBoundaries.nth(4).click();
-  await expect(page.locator(".design-coherence")).toContainText("A copilot keeps a person as the operator");
-  await expect(page.locator(".design-coherence")).toContainText("One model without connected tools cannot perform an A2 to A4 action");
-  await expect(page.locator(".design-coherence")).toContainText("A4 is disabled by default");
+  const hardBlocker = page.locator(".design-coherence-blocker");
+  await expect(hardBlocker).toContainText("A copilot keeps a person as the operator");
+  await expect(hardBlocker).toContainText("One model without connected tools cannot perform an A2 to A4 action");
+  await expect(hardBlocker.locator("input")).toHaveCount(0);
   await expect(designNext).toBeDisabled();
-  await page.locator(".design-coherence input").check();
+  await workModes.nth(1).click();
+  await architectures.nth(2).click();
+  await expect(page.locator(".design-coherence-a4")).toContainText("A4 is disabled by default");
+  await expect(designNext).toBeDisabled();
+  await page.locator(".design-coherence-a4 input").check();
   await expect(designNext).toBeEnabled();
   await workModes.nth(2).click();
   await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
-  await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
+  await expect(architectures.nth(2)).toHaveAttribute("aria-pressed", "true");
   await expect(designNext).toBeDisabled();
   await actionBoundaries.first().click();
   await expect(page.locator(".design-coherence")).toContainText("Strong automation at A0 or A1");
+  await page.locator(".design-coherence input").check();
+  await expect(designNext).toBeEnabled();
   await workModes.first().click();
   await expect(actionBoundaries.first()).toHaveAttribute("aria-pressed", "true");
+  await architectures.first().click();
   await actionBoundaries.nth(1).click();
   await expect(workModes.first()).toHaveAttribute("aria-pressed", "true");
   await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
@@ -800,7 +857,7 @@ test("A4 adds its autonomy controls to the lifecycle and keeps the security phas
   await page.locator(".guide-levels button").nth(1).click();
   await page.locator(".guide-architectures button").nth(2).click();
   await page.locator(".guide-autonomy button").nth(4).click();
-  await page.locator(".design-coherence input").check();
+  await page.locator(".design-coherence-a4 input").check();
 
   await page.locator("#implementation-library > summary").click();
   await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
@@ -814,6 +871,22 @@ test("A4 adds its autonomy controls to the lifecycle and keeps the security phas
   const controls = workbench.locator(".security-builder input");
   for (let index = 0; index < await controls.count(); index += 1) await controls.nth(index).check();
   await expect(workbench.locator(".lifecycle-phase footer p")).toHaveAttribute("data-ready", "true");
+});
+
+test("the lifecycle separates the selected architecture from the simpler recommended start", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#field-pilot").getByLabel("Work mode").selectOption("agency");
+  await page.locator("#field-pilot").getByLabel("Architecture").selectOption("agency");
+
+  await page.locator("#implementation-library > summary").click();
+  await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+  const workbench = page.locator("#lifecycle-workbench");
+  await workbench.locator('.lifecycle-nav button[data-phase="5"]').click();
+  const result = workbench.locator(".lifecycle-result");
+  await expect(result).toContainText("Selected design: Retrieval · Orchestrated agent team");
+  await expect(result).toContainText("Recommended starting design: Start with one bounded business agent");
 });
 
 test("chapter routers reveal one topic at a time and restore deep links", async ({ page }) => {

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Closed the final journey-coherence gaps found by two independent reviews.
+  Hard design conflicts now block freezing and export, softer deviations and
+  exceptional A4 designs use distinct confirmations, evaluated field results
+  stay bound to the exact frozen version, and lifecycle answers separate the
+  selected design from the recommended starting design.
+- Made task-time results harder to misread. The headline now reports the
+  estimated saving across the complete workload, eligible-case percentages
+  are labelled separately, and contradictory workload inputs produce an
+  unavailable result instead of a misleading zero range.
 - Bound every observation and real-decision export to an immutable
   configuration identifier. Changing the organization, use pattern, territory,
   risk, work mode, architecture, action boundary, system version, or time
@@ -31,8 +40,8 @@
   `work_mode`, architecture, and the exact A0–A4 action boundary kept separate.
 - Completed a route-by-route readability and interaction audit across English,
   French, desktop, dark mode, and mobile. Plain-language definitions now lead
-  into optional detail, large surfaces remain neutral, and all 108 browser
-  checks and 55 Node checks cover the resulting journey.
+  into optional detail, large surfaces remain neutral, and all 117 browser
+  checks and 56 Node checks cover the resulting journey.
 - Added a plain-language evidence layer to the task-time guide. Every study now
   starts with a direct verdict, a short explanation of what happened, and a
   clear statement of whether its figures enter the estimate. Measurement

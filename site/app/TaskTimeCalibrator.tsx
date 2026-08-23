@@ -26,7 +26,7 @@ type UsePatternId = "generation" | "retrieval" | "classification" | "prediction"
 
 export type TaskTimePlanningRange = {
   calculable: boolean;
-  unavailable_reason: "no_eligible_cases" | null;
+  unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;
@@ -138,19 +138,20 @@ const content = {
     amortization: "Spread setup over",
     units: { minutes: "min", cases: "cases", percent: "%", hours: "hours", months: "months" },
     results: {
-      heading: "Estimated time saving, including setup",
+      heading: "Estimated human-time saving across the complete workload",
       planningEvidence: "starting estimate based on a similar study and your settings",
       planningLocal: "starting scenario to verify in your pilot",
       planningUnavailable: "enter at least one eligible case before calculating",
       baseline: "Human time currently spent on relevant cases",
       wholeBaseline: "Current human time for the complete workload",
       recurring: "Human time that would remain per case",
-      recurringGain: "Time saved before setup is included",
+      recurringGain: "Time saved on each eligible case before setup",
       setupPerCase: "Setup minutes added to each case",
-      withAi: "Total human time per case, including setup",
-      low: "Cautious estimate",
-      central: "Middle estimate",
-      high: "Most favourable estimate",
+      withAi: "Total human time per eligible case, including setup",
+      eligibleNet: "net saving on each eligible case",
+      low: "Cautious estimate · complete workload",
+      central: "Middle estimate · complete workload",
+      high: "Most favourable estimate · complete workload",
       payback: "Time until the savings cover setup",
       perMonth: "human hours saved per month",
       localFloor: "your total for preparation, oversight, checking, corrections, and exceptions",
@@ -222,19 +223,20 @@ const content = {
     amortization: "Répartir la mise en place sur",
     units: { minutes: "min", cases: "cas", percent: "%", hours: "heures", months: "mois" },
     results: {
-      heading: "Gain de temps estimé, mise en place comprise",
+      heading: "Gain de temps humain estimé sur toute la charge",
       planningEvidence: "estimation de départ fondée sur une étude similaire et vos réglages",
       planningLocal: "scénario de départ à vérifier dans votre pilote",
       planningUnavailable: "saisissez au moins un cas éligible avant le calcul",
       baseline: "Temps humain actuel sur les cas concernés",
       wholeBaseline: "Temps humain actuel pour toute la charge",
       recurring: "Temps humain qui resterait par cas",
-      recurringGain: "Temps économisé avant de compter la mise en place",
+      recurringGain: "Temps économisé sur chaque cas éligible avant la mise en place",
       setupPerCase: "Minutes de mise en place ajoutées à chaque cas",
-      withAi: "Temps humain total par cas, mise en place comprise",
-      low: "Estimation prudente",
-      central: "Estimation centrale",
-      high: "Estimation la plus favorable",
+      withAi: "Temps humain total par cas éligible, mise en place comprise",
+      eligibleNet: "gain net sur chaque cas éligible",
+      low: "Estimation prudente · toute la charge",
+      central: "Estimation centrale · toute la charge",
+      high: "Estimation la plus favorable · toute la charge",
       payback: "Temps nécessaire pour que les gains couvrent la mise en place",
       perMonth: "heures humaines économisées par mois",
       localFloor: "votre total de préparation, supervision, vérification, corrections et exceptions",
@@ -385,7 +387,8 @@ export function TaskTimeCalibrator({
     ? evidenceTransfer.compatibility.status === "partial" ? "partial" : "usable"
     : "context_only";
   const netScenarios = netPlanningRange.scenarios;
-  const netCalculable = netPlanningRange.calculable;
+  const netCalculable = netPlanningRange.eligible_case_calculable;
+  const wholeWorkloadCalculable = netPlanningRange.whole_workload_calculable;
   const planningBasis = !netCalculable
     ? t.results.planningUnavailable
     : netPlanningRange.source === "external_evidence"
@@ -393,7 +396,7 @@ export function TaskTimeCalibrator({
       : t.results.planningLocal;
   const paybacks = [netScenarios.low.setup_payback_months, netScenarios.high.setup_payback_months].filter((value): value is number => value != null);
   const paybackRange = paybacks.length ? `${formatRange([Math.min(...paybacks), Math.max(...paybacks)], (value) => formatNumber(value, locale))} ${t.units.months}` : "n/a";
-  const netRangeVaries = new Set([netScenarios.low.reduction_fraction, netScenarios.central.reduction_fraction, netScenarios.high.reduction_fraction].map((value) => value == null ? "n/a" : formatPercent(value, locale))).size > 1;
+  const netRangeVaries = new Set([netScenarios.low.whole_workload_reduction_fraction, netScenarios.central.whole_workload_reduction_fraction, netScenarios.high.whole_workload_reduction_fraction].map((value) => value == null ? "n/a" : formatPercent(value, locale))).size > 1;
   const inputNumber = (value: string, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, Number(value) || minimum));
 
   return (
@@ -450,19 +453,19 @@ export function TaskTimeCalibrator({
         </div>
 
         <output className="calibrator-results" aria-live="polite">
-          <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
+          <div className="calibrator-result-head" data-calculable={wholeWorkloadCalculable}><span>{t.results.heading}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
           <div className="calibrator-result-grid">
             <p><span>{t.results.wholeBaseline}</span><strong>{formatNumber(totalBaselineHumanHours, locale)} h</strong><small>{formatNumber(monthlyCases, locale)} {t.units.cases}</small></p>
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
             <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
             <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
             <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
-            <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.operating_human_minutes, locale)} + ${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : t.results.planningUnavailable}</small></p>
+            <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}% ${t.results.eligibleNet}` : t.results.planningUnavailable}</small></p>
             {transferableRange && netRangeVaries ? <>
-              <p data-range="low"><span>{t.results.low}</span><strong>{netCalculable ? `${formatPercent(netScenarios.low.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-              <p data-range="central"><span>{t.results.central}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-              <p data-range="high"><span>{t.results.high}</span><strong>{netCalculable ? `${formatPercent(netScenarios.high.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
-            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{transferableRange ? t.results.collapsedRange : t.results.noRange}</small></p>}
+              <p data-range="low"><span>{t.results.low}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.low.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="central"><span>{t.results.central}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+              <p data-range="high"><span>{t.results.high}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.high.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
+            </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{transferableRange ? t.results.collapsedRange : t.results.noRange}</small></p>}
             <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatRange([transferableRange.low.reduction_fraction, transferableRange.central.reduction_fraction, transferableRange.high.reduction_fraction], (value) => formatPercent(value, locale))}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>

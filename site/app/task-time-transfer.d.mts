@@ -139,7 +139,9 @@ export type NetPlanningRangePoint = {
 };
 export type NetPlanningRange = {
   calculable: boolean;
-  unavailable_reason: "no_eligible_cases" | null;
+  eligible_case_calculable: boolean;
+  whole_workload_calculable: boolean;
+  unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
   compatibility: string;
   evidence_id: string | null;
@@ -153,7 +155,7 @@ export function calculateHumanTimeScenario(input: HumanTimeInput): HumanTimeScen
 export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario): NetPlanningRange;
 export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null): {
   calculable: boolean;
-  unavailable_reason: "no_eligible_cases" | null;
+  unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
   low: number;
   central: number;

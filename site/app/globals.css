@@ -184,6 +184,8 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .design-coherence li { line-height: 1.5; margin-top: 6px; }
 .design-coherence label { align-items: flex-start; display: flex; font-weight: 700; gap: 10px; line-height: 1.45; }
 .design-coherence input { margin-top: 3px; }
+.design-coherence-blocker { border-color: var(--ink); box-shadow: inset 4px 0 0 var(--ink); }
+.design-coherence-blocker > strong { color: var(--ink); }
 .guide-patterns > button { min-height: 130px; }
 .guide-patterns > button strong { margin-top: 14px; }
 .guide-levels > button { min-height: 225px; }
@@ -657,6 +659,17 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .pilot-decision-board h3 { font-size: 16px; margin: 46px 0 10px; }
 .pilot-decision-board p { color: var(--dark-muted); font-size: 12px; line-height: 1.5; margin: 0; }
 .pilot-decision-board article[data-decision="2"] h3 { color: var(--blue); }
+.planning-coherence-gate { background: var(--surface); border: 1px solid var(--blue-deep); box-shadow: inset 4px 0 0 var(--blue-deep); color: var(--ink); margin-top: 16px; padding: 20px 24px; }
+.planning-coherence-gate > strong { color: var(--blue-deep); font: 800 11px "Courier New", monospace; letter-spacing: .08em; }
+.planning-coherence-gate ul { line-height: 1.5; margin: 12px 0; padding-left: 20px; }
+.planning-coherence-gate label { align-items: flex-start; display: flex; font-weight: 700; gap: 10px; line-height: 1.45; margin-top: 12px; }
+.planning-coherence-gate input { margin-top: 3px; }
+.calibrator-coherence-gate { background: var(--surface); border: 1px solid var(--ink); box-shadow: inset 4px 0 0 var(--ink); color: var(--ink); margin-top: 20px; padding: 20px 24px; }
+.calibrator-coherence-gate > strong { font: 800 11px "Courier New", monospace; letter-spacing: .08em; }
+.calibrator-coherence-gate ul { line-height: 1.5; margin: 12px 0; padding-left: 20px; }
+.calibrator-coherence-gate label { align-items: flex-start; display: flex; font-weight: 700; gap: 10px; line-height: 1.45; margin-top: 12px; }
+.calibrator-coherence-gate input { margin-top: 3px; }
+.calibrator-coherence-gate a { color: var(--blue-deep); display: inline-block; font-weight: 800; margin-top: 12px; }
 .pilot-plan-footer { align-items: center; border: 1px solid var(--line); display: grid; gap: 28px; grid-template-columns: 1fr auto; margin-top: 16px; padding: 24px 28px; }
 .pilot-plan-footer > p { color: var(--muted); font-size: 12px; line-height: 1.55; margin: 0; }
 .pilot-plan-footer > div { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }

@@ -281,8 +281,8 @@ Latest local verification on 2026-08-23:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 55/55 pass
-- Playwright: 108/108 pass across both routes, desktop light, desktop dark, and
+- Node tests: 56/56 pass
+- Playwright: 117/117 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
 - repository validation: 121 Markdown files and 48 paired documents pass
@@ -291,9 +291,9 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 55 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 56 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 108 Playwright checks across both routes, desktop light, desktop dark, and
+- 117 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;
