@@ -178,6 +178,12 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .guide-choice-grid > button strong { font-size: 17px; line-height: 1.2; margin-top: 18px; }
 .guide-choice-grid > button small { color: var(--muted); font-size: 12px; line-height: 1.45; margin-top: 8px; }
 .guide-choice-grid > button em { color: var(--blue-deep); font-size: 11px; font-style: normal; font-weight: 800; margin-top: auto; padding-top: 18px; }
+.design-coherence { background: var(--surface); border: 1px solid var(--blue-deep); box-shadow: inset 4px 0 0 var(--blue-deep); margin-top: 18px; padding: 18px 20px; }
+.design-coherence > strong { color: var(--blue-deep); font: 800 11px "Courier New", monospace; letter-spacing: .08em; }
+.design-coherence ul { margin: 12px 0; padding-left: 20px; }
+.design-coherence li { line-height: 1.5; margin-top: 6px; }
+.design-coherence label { align-items: flex-start; display: flex; font-weight: 700; gap: 10px; line-height: 1.45; }
+.design-coherence input { margin-top: 3px; }
 .guide-patterns > button { min-height: 130px; }
 .guide-patterns > button strong { margin-top: 14px; }
 .guide-levels > button { min-height: 225px; }

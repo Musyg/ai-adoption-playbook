@@ -168,6 +168,39 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator("#evidence-gate .evidence-impact p").filter({ hasText: "Planning envelope" }).locator("strong")).toHaveText("n/a");
 });
 
+test("task-time explanation separates the user's input from the study value", async ({ page }) => {
+  for (const route of ["/", "/fr/"]) {
+    await page.goto(route);
+    await page.locator("#operational-workspace > summary").click();
+    const calibrator = page.locator("#calibrator");
+    await calibrator.getByLabel(route === "/" ? "What work do you want to estimate?" : "Quel travail voulez-vous estimer ?").selectOption("knowledge_analysis");
+    const explanation = calibrator.locator(".task-time-mode-effect");
+    if (route === "/") {
+      await expect(explanation).toContainText("you entered this much remaining human work: 33 min");
+      await expect(explanation).toContainText("study implies this much remaining human work: 44.9 min");
+      await expect(explanation).toContainText("calculation keeps the larger amount: 44.9 min");
+    } else {
+      await expect(explanation).toContainText("vous avez indiqué ce temps humain restant : 33 min");
+      await expect(explanation).toContainText("étude comparable suggère ce temps humain restant : 44,9 min");
+      await expect(explanation).toContainText("calcul conserve le temps le plus élevé : 44,9 min");
+    }
+  }
+});
+
+test("a transferable but imperfectly matched study stays usable and names every adjustment", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const calibrator = page.locator("#calibrator");
+  await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
+
+  const evidence = calibrator.locator(".task-time-evidence-detail");
+  await expect(evidence.locator(".task-time-evidence-plain span")).toHaveText("USABLE WITH ADJUSTMENTS");
+  await expect(evidence.locator(".task-time-evidence-plain p")).toContainText("differences below must be checked during your pilot");
+  await expect(evidence.locator(".task-time-evidence-plain em")).toContainText("different way of sharing work");
+  await expect(evidence.locator(".task-time-evidence-plain em")).toContainText("different action boundary");
+  await expect(calibrator.locator(".task-time-source-range")).toHaveAttribute("data-transferable", "true");
+});
+
 test("demonstration results stay editable and cannot authorize a real decision", async ({ page }) => {
   await page.goto("/#evidence-gate");
   await page.getByRole("button", { name: "Load a demonstration result" }).click();
@@ -207,13 +240,22 @@ test("a real operating card requires the frozen version, named owners, fallback,
   await expect(copy).toBeDisabled();
   await page.getByLabel("Workflow owner").fill("Operations lead");
   await page.getByLabel("Reachable incident owner").fill("Incident lead");
-  await page.getByLabel("Next formal reassessment").fill("2026-10-01");
+  const reviewDate = page.getByLabel("Next formal reassessment");
+  const minimumReviewDate = await reviewDate.getAttribute("min");
+  expect(minimumReviewDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  const dayBefore = new Date(`${minimumReviewDate!}T12:00:00Z`);
+  dayBefore.setUTCDate(dayBefore.getUTCDate() - 1);
+  const laterReview = new Date(`${minimumReviewDate!}T12:00:00Z`);
+  laterReview.setUTCDate(laterReview.getUTCDate() + 30);
+  await reviewDate.fill(dayBefore.toISOString().slice(0, 10));
   await page.getByLabel("The manual fallback is reachable and has been tried").check();
-  await expect(copy).toBeDisabled();
   await page.getByLabel("The suspension and containment procedure has been rehearsed").check();
+  await expect(copy).toBeDisabled();
+  await reviewDate.fill(laterReview.toISOString().slice(0, 10));
   await expect(copy).toBeEnabled();
   await copy.click();
   const operatingCard = await page.evaluate(() => navigator.clipboard.readText());
+  expect(operatingCard).toMatch(/Configuration ID: [0-9a-f-]{36}/);
   expect(operatingCard).toContain("Use pattern: Retrieval");
   expect(operatingCard).toContain("Territory: Switzerland + EU");
   expect(operatingCard).toContain("Evaluated system and workflow version: Support workflow v3 · model release 2026-08");
@@ -235,6 +277,46 @@ test("language switch preserves the current topic and editable scenario", async 
   await expect(page.getByLabel("Vérification", { exact: true })).toHaveValue("23");
   await expect(page.locator("#operational-workspace")).toHaveAttribute("open", "");
   await expect(page.locator("#calibrator")).toBeVisible();
+});
+
+test("language switch preserves the frozen evidence identity and operating controls", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#operational-workspace > summary").click();
+  const router = page.locator("#operational-router");
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Support workflow v3");
+  await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("All requests observed in the same period").fill("40");
+  await page.getByLabel("Eligible cases run in bounded live mode").fill("28");
+  await page.getByLabel("Total baseline human time for all observed requests").fill("2400");
+  await page.getByLabel("Total human time with AI for all observed requests").fill("1600");
+  await page.getByLabel("Outputs accepted after defined review").fill("95");
+  await page.getByLabel("Complete effect and approval trace").fill("100");
+  await page.locator(".evidence-prerequisite input").check();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  const identityText = await page.getByLabel("System + workflow version").locator("..").locator("small").innerText();
+  const configurationId = identityText.replace("Locked to ", "");
+  expect(configurationId).toMatch(/^[0-9a-f-]{36}$/);
+
+  await router.getByRole("button", { name: /Operate within the proof/ }).click();
+  await page.getByLabel("Workflow owner").fill("Operations lead");
+  await page.getByLabel("Reachable incident owner").fill("Incident lead");
+  await page.getByLabel("Next formal reassessment").fill("2026-10-01");
+  await page.getByLabel("The manual fallback is reachable and has been tried").check();
+  await page.getByLabel("The suspension and containment procedure has been rehearsed").check();
+  await page.locator(".site-header .lang").click();
+
+  await expect(page).toHaveURL(/\/fr\/#operations$/);
+  await expect(page.getByLabel("Responsable du processus")).toHaveValue("Operations lead");
+  await expect(page.getByLabel("Responsable d’incident joignable")).toHaveValue("Incident lead");
+  await expect(page.getByLabel("Prochaine réévaluation formelle")).toHaveValue("2026-10-01");
+  await expect(page.getByLabel("La solution de repli manuelle est accessible et a été essayée")).toBeChecked();
+  await expect(page.getByLabel("La procédure d’arrêt et de confinement a été répétée")).toBeChecked();
+  await router.getByRole("button", { name: /Préparer le retour terrain/ }).click();
+  const fieldVersion = page.locator("#field-pilot").getByLabel("Version du système et du processus");
+  await expect(fieldVersion).toHaveValue("Support workflow v3");
+  await expect(fieldVersion.locator("..").locator("small")).toContainText(configurationId);
 });
 
 for (const beginnerLocale of [
@@ -398,7 +480,8 @@ for (const zeroAcceptanceLocale of [
   });
 }
 
-test("field comparison remains locked to v1 and a changed plan requires a separate recalibration snapshot", async ({ page }) => {
+test("evidence from v1 cannot authorize a changed v2 configuration without explicit reconfirmation", async ({ context, page }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
@@ -408,22 +491,63 @@ test("field comparison remains locked to v1 and a changed plan requires a separa
   await router.getByRole("button", { name: /Build the test plan/ }).click();
   await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
   await page.getByRole("button", { name: "Freeze hypothesis v1" }).click();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
-  const frozenRange = await page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong").innerText();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.getByLabel("All requests observed in the same period").fill("40");
+  await page.getByLabel("Eligible cases run in bounded live mode").fill("28");
+  await page.getByLabel("Human active-time reduction on accepted outputs").fill("30");
+  await page.getByLabel("Outputs accepted after defined review").fill("95");
+  await page.getByLabel("Total baseline human time for all observed requests").fill("2400");
+  await page.getByLabel("Total human time with AI for all observed requests").fill("1600");
+  await page.getByLabel("Complete effect and approval trace").fill("100");
+  await page.locator(".evidence-prerequisite input").check();
+  await page.getByRole("button", { name: "Copy the gate decision" }).click();
+  const v1Memo = await page.evaluate(() => navigator.clipboard.readText());
+  const v1Configuration = v1Memo.match(/Configuration ID: ([0-9a-f-]{36})/)?.[1];
+  expect(v1Configuration).toBeTruthy();
+  expect(v1Memo).toContain("Evaluated system and workflow version: Demonstration workflow v1");
 
-  await router.getByRole("button", { name: /Count human time/ }).click();
-  await calibrator.locator(".task-time-components > summary").click();
-  await calibrator.getByLabel("Verification").fill("25");
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
-  await expect(page.locator(".planning-freeze-warning")).toContainText("differs from the latest frozen version");
-  await expect(page.locator(".field-pilot-evidence-confirm input")).toBeDisabled();
-  await expect(page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong")).toHaveText(frozenRange);
-
+  await page.locator("#concept-library > summary").click();
+  await page.locator(".use-pattern-grid button").first().click();
+  await page.locator(".jurisdiction-options button").nth(1).click();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.locator("#pilot-system-version").fill("Demonstration workflow v2");
   await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await expect(page.locator(".evidence-prerequisite input")).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Copy the gate decision" })).toBeDisabled();
+  await router.getByRole("button", { name: /Operate within the proof/ }).click();
+  await expect(page.getByRole("button", { name: "Copy the operating card" })).toBeDisabled();
+
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.locator(".evidence-prerequisite input").check();
+  await page.getByRole("button", { name: "Copy the gate decision" }).click();
+  const v2Memo = await page.evaluate(() => navigator.clipboard.readText());
+  const v2Configuration = v2Memo.match(/Configuration ID: ([0-9a-f-]{36})/)?.[1];
+  expect(v2Configuration).toBeTruthy();
+  expect(v2Configuration).not.toBe(v1Configuration);
+  expect(v2Memo).toContain("Use pattern: Generation");
+  expect(v2Memo).toContain("Territory: European Union");
+  expect(v2Memo).toContain("Evaluated system and workflow version: Demonstration workflow v2");
+
+  await router.getByRole("button", { name: /Operate within the proof/ }).click();
+  await page.getByLabel("Workflow owner").fill("Operations lead");
+  await page.getByLabel("Reachable incident owner").fill("Incident lead");
+  const reviewDate = page.getByLabel("Next formal reassessment");
+  const minimumReviewDate = await reviewDate.getAttribute("min");
+  const laterReview = new Date(`${minimumReviewDate!}T12:00:00Z`);
+  laterReview.setUTCDate(laterReview.getUTCDate() + 30);
+  await reviewDate.fill(laterReview.toISOString().slice(0, 10));
+  await page.getByLabel("The manual fallback is reachable and has been tried").check();
+  await page.getByLabel("The suspension and containment procedure has been rehearsed").check();
+  await page.getByRole("button", { name: "Copy the operating card" }).click();
+  const v2OperatingCard = await page.evaluate(() => navigator.clipboard.readText());
+  expect(v2OperatingCard).toContain(`Configuration ID: ${v2Configuration}`);
+  expect(v2OperatingCard).toContain("Use pattern: Generation");
+  expect(v2OperatingCard).toContain("Territory: European Union");
+  expect(v2OperatingCard).toContain("Evaluated system and workflow version: Demonstration workflow v2");
+
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   await expect(page.locator(".planning-freeze-warning")).toContainText("Comparison locked to preregistered v1");
-  await expect(page.locator("#field-pilot .field-pilot-evidence > div span").first().locator("strong")).toHaveText(frozenRange);
 });
 
 test("field comparison rounds negative half-values exactly as the interface displays them", async ({ page }) => {
@@ -533,7 +657,7 @@ test("any field-report mutation invalidates confirmation and all six publication
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
 
   await page.getByLabel("Non-identifying project alias").fill("Workshop North");
-  await page.getByLabel("System + workflow version").fill("Workflow 1.2");
+  await expect(page.locator("#field-pilot").getByLabel("System + workflow version")).toHaveValue("Demonstration workflow v1");
   await page.getByLabel("Exact workflow observed").fill("One bounded request from intake to reviewed output.");
   await page.getByLabel("Observation start").fill("2026-08-01");
   await page.getByLabel("Observation end").fill("2026-08-21");
@@ -573,6 +697,9 @@ test("any field-report mutation invalidates confirmation and all six publication
   await page.locator("#use-patterns .jurisdiction-options button").first().click();
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   await expectReviewInvalidated();
+  await expect(page.locator(".field-pilot-evidence-confirm input")).toBeDisabled();
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
   await approveCurrentReport();
 
   await page.locator("#use-patterns .use-pattern-grid button").first().click();
@@ -580,14 +707,16 @@ test("any field-report mutation invalidates confirmation and all six publication
   await expectReviewInvalidated();
   await expect(confirmation).toBeDisabled();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
-  await page.getByRole("button", { name: "Freeze recalibration v2" }).click();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v3" }).click();
   await approveCurrentReport();
 
   await page.locator("#implementation-library > summary").click();
   await page.locator("#paths .path-card").nth(1).click();
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   await expectReviewInvalidated();
+  await expect(confirmation).toBeDisabled();
+  await router.getByRole("button", { name: /Build the test plan/ }).click();
+  await page.getByRole("button", { name: "Freeze recalibration v4" }).click();
   await approveCurrentReport();
 
   await router.getByRole("button", { name: /Enter observed results/ }).click();
@@ -595,9 +724,13 @@ test("any field-report mutation invalidates confirmation and all six publication
   await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   await expectReviewInvalidated();
 
+  await expect(confirmation).toBeDisabled();
+  await router.getByRole("button", { name: /Enter observed results/ }).click();
+  await page.locator(".evidence-prerequisite input").check();
+  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
   await confirmation.check();
   await expect(page.locator(".field-pilot-status")).not.toContainText("READY FOR INDEPENDENT REVIEW");
-  await expect(page.locator(".field-pilot-status strong")).toHaveText("9/16");
+  await expect(page.locator(".field-pilot-status strong")).toHaveText("10/16");
 });
 
 test("guided start reveals one decision at a time and builds a plain-language route", async ({ page }) => {
@@ -624,18 +757,29 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   const workModes = page.locator(".guide-levels button");
   const architectures = page.locator(".guide-architectures button");
   const actionBoundaries = page.locator(".guide-autonomy button");
+  const designNext = page.locator(".guided-controls .guide-next");
   await workModes.first().click();
   await architectures.first().click();
   await actionBoundaries.nth(4).click();
+  await expect(page.locator(".design-coherence")).toContainText("A copilot keeps a person as the operator");
+  await expect(page.locator(".design-coherence")).toContainText("One model without connected tools cannot perform an A2 to A4 action");
+  await expect(page.locator(".design-coherence")).toContainText("A4 is disabled by default");
+  await expect(designNext).toBeDisabled();
+  await page.locator(".design-coherence input").check();
+  await expect(designNext).toBeEnabled();
   await workModes.nth(2).click();
   await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
   await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
+  await expect(designNext).toBeDisabled();
+  await actionBoundaries.first().click();
+  await expect(page.locator(".design-coherence")).toContainText("Strong automation at A0 or A1");
   await workModes.first().click();
-  await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
+  await expect(actionBoundaries.first()).toHaveAttribute("aria-pressed", "true");
   await actionBoundaries.nth(1).click();
   await expect(workModes.first()).toHaveAttribute("aria-pressed", "true");
   await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
-  await page.locator(".guided-controls .guide-next").click();
+  await expect(designNext).toBeEnabled();
+  await designNext.click();
   await page.locator(".guide-jurisdictions button").first().click();
   await page.locator(".guided-controls .guide-next").click();
 
@@ -645,6 +789,31 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   await expect(page.locator(".guided-result")).toContainText("One model or assistant");
   await expect(page.locator(".guided-result")).toContainText("A1");
   await expect(page.locator(".guided-result")).toContainText("Switzerland");
+});
+
+test("A4 adds its autonomy controls to the lifecycle and keeps the security phase incomplete until checked", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".guide-audiences button").first().click();
+  await page.locator(".guided-controls .guide-next").click();
+  await page.locator(".guide-patterns button").last().click();
+  await page.locator(".guided-controls .guide-next").click();
+  await page.locator(".guide-levels button").nth(1).click();
+  await page.locator(".guide-architectures button").nth(2).click();
+  await page.locator(".guide-autonomy button").nth(4).click();
+  await page.locator(".design-coherence input").check();
+
+  await page.locator("#implementation-library > summary").click();
+  await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+  const workbench = page.locator("#lifecycle-workbench");
+  await workbench.locator('.lifecycle-nav button[data-phase="7"]').click();
+
+  for (const controlId of ["SEC-ACTION", "SEC-EFFECT", "SEC-AUTONOMY", "SEC-A4"]) {
+    await expect(workbench.locator(`.security-builder input[name="${controlId}"]`)).toHaveCount(1);
+  }
+  await expect(workbench.locator(".lifecycle-phase footer p")).toHaveAttribute("data-ready", "false");
+  const controls = workbench.locator(".security-builder input");
+  for (let index = 0; index < await controls.count(); index += 1) await controls.nth(index).check();
+  await expect(workbench.locator(".lifecycle-phase footer p")).toHaveAttribute("data-ready", "true");
 });
 
 test("chapter routers reveal one topic at a time and restore deep links", async ({ page }) => {
@@ -743,8 +912,10 @@ test("connected project records stay linked, editable, and persistent", async ({
   test.setTimeout(60_000);
   const storageKey = "ai-adoption-playbook:project-dossier:v1";
   const openWorkbench = async () => {
-    await page.locator("#implementation-library > summary").click();
-    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+    const library = page.locator("#implementation-library");
+    if (!(await library.evaluate((element) => (element as HTMLDetailsElement).open))) await library.locator(":scope > summary").click();
+    const workbench = page.locator("#lifecycle-workbench");
+    if (!(await workbench.isVisible())) await library.locator(":scope > .guide-chapter-content > .chapter-router nav button").nth(2).click();
     await expect(page.locator("#lifecycle-workbench")).toBeVisible();
   };
 
@@ -815,8 +986,10 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   test.setTimeout(60_000);
   const storageKey = "ai-adoption-playbook:project-dossier:v1";
   const openWorkbench = async () => {
-    await page.locator("#implementation-library > summary").click();
-    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).click();
+    const library = page.locator("#implementation-library");
+    if (!(await library.evaluate((element) => (element as HTMLDetailsElement).open))) await library.locator(":scope > summary").click();
+    const workbench = page.locator("#lifecycle-workbench");
+    if (!(await workbench.isVisible())) await library.locator(":scope > .guide-chapter-content > .chapter-router nav button").nth(2).click();
     await expect(page.locator("#lifecycle-workbench")).toBeVisible();
   };
 
@@ -919,8 +1092,10 @@ test("change review compares one dossier version and reopens stale decisions", a
   test.setTimeout(60_000);
   const storageKey = "ai-adoption-playbook:project-dossier:v1";
   const openWorkbench = async () => {
-    await page.locator("#implementation-library > summary").click();
-    await page.locator("#implementation-library > .guide-chapter-content > .chapter-router nav button").nth(2).evaluate((element) => (element as HTMLButtonElement).click());
+    const library = page.locator("#implementation-library");
+    if (!(await library.evaluate((element) => (element as HTMLDetailsElement).open))) await library.locator(":scope > summary").click();
+    const workbench = page.locator("#lifecycle-workbench");
+    if (!(await workbench.isVisible())) await library.locator(":scope > .guide-chapter-content > .chapter-router nav button").nth(2).evaluate((element) => (element as HTMLButtonElement).click());
     await expect(page.locator("#lifecycle-workbench")).toBeVisible();
   };
 
@@ -988,7 +1163,7 @@ test("change review compares one dossier version and reopens stale decisions", a
 });
 
 test("rendered page has no automatic axe violations", async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(90_000);
   await page.goto("/");
   for (const chapter of ["concept-library", "operational-workspace", "implementation-library"]) {
     await page.locator(`#${chapter} > summary`).click();

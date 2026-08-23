@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Public intake only — no raw evidence
+        ## Public intake only: no raw evidence
 
         This issue coordinates a possible pilot. It is **not** a field report and cannot validate the playbook.
 
@@ -26,10 +26,10 @@ body:
     attributes:
       label: Organization path
       options:
-        - Independent professional
+        - Independent
         - Micro-business
         - SME
-        - Nonprofit or foundation
+        - Nonprofit / foundation
         - Public service
     validations:
       required: true
@@ -40,12 +40,12 @@ body:
       label: AI use pattern
       description: Choose the main job the system performs. This is separate from the work mode, architecture, and action boundary.
       options:
-        - Assisted generation
-        - Controlled retrieval or RAG
-        - Classification or extraction
-        - Prediction or scoring
-        - External conversation or chatbot
-        - Multimodal processing
+        - Generation
+        - Retrieval
+        - Extraction and classification
+        - Prediction and recommendation
+        - Conversation
+        - Multimodal
         - Agentic action
         - Not decided
     validations:
@@ -84,11 +84,11 @@ body:
       label: Exact action boundary
       description: Choose what the system may do without a person carrying each step.
       options:
-        - A0 — information or advice only
-        - A1 — research, extraction, classification, or draft
-        - A2 — action only after explicit human approval
-        - A3 — autonomous actions inside written limits
-        - A4 — broad or self-extending autonomy, disabled by default
+        - A0 · advice only
+        - A1 · research or draft
+        - A2 · action after explicit approval
+        - A3 · bounded autonomous actions
+        - A4 · broad multi-system autonomy
         - Not decided
     validations:
       required: true
@@ -101,7 +101,7 @@ body:
       options:
         - Switzerland
         - European Union
-        - Switzerland and European Union
+        - Switzerland + EU
     validations:
       required: true
 
@@ -110,7 +110,7 @@ body:
     attributes:
       label: Sector overlay
       options:
-        - General or cross-sector
+        - General / cross-sector
         - Healthcare
         - Education
         - Finance

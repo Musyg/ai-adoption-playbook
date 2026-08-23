@@ -25,17 +25,28 @@ type EvidenceDecision = "continue" | "rework" | "unknown" | "stop";
 type EvidenceStatus = "pass" | "fail" | "incomplete" | "signal";
 type DossierStatus = "ready" | "recorded" | "incomplete";
 type PlanningSnapshot = {
+  configurationId: string;
   version: number;
   frozenAt: string;
   fingerprint: string;
   registryVersion: string;
+  audienceId: AudienceId;
+  audienceLabel: string;
+  usePatternId: UsePatternId;
+  usePatternLabel: string;
+  jurisdictionId: JurisdictionId;
+  jurisdictionLabel: string;
+  risk: number;
+  integrationId: IntegrationId;
   level: string;
+  architectureId: ArchitectureId;
   architecture: string;
   autonomy: number;
   systemVersion: string;
   caseMinutes: number;
   monthlyCases: number;
   eligibleShare: number;
+  totalBaselineHumanHours: number;
   planningRange: TaskTimePlanningRange;
   wholeWorkloadRange: { low: number; central: number; high: number };
 };
@@ -128,6 +139,7 @@ const initialHumanTimeScenario = calculateHumanTimeScenario({
   baseline_human_minutes: 60,
   monthly_cases: 40,
   eligible_share: 70,
+  total_baseline_human_hours: 40,
   preparation_minutes: 5,
   supervision_minutes: 5,
   verification_minutes: 15,
@@ -147,11 +159,25 @@ const pilotSpecs: Record<IntegrationId, { horizon: number; frozen: number; live:
   agent: { horizon: 30, frozen: 40, live: 20, valueFloor: 20 },
   agency: { horizon: 60, frozen: 60, live: 12, valueFloor: 35 },
 };
-const operationSpecs: Record<IntegrationId, { reviewDays: number; containment: string }> = {
-  copilot: { reviewDays: 30, containment: "4 h" },
-  agent: { reviewDays: 14, containment: "60 min" },
-  agency: { reviewDays: 7, containment: "15 min" },
+const operationSpecs: Record<IntegrationId, { reviewDays: number; containmentMinutes: number }> = {
+  copilot: { reviewDays: 30, containmentMinutes: 240 },
+  agent: { reviewDays: 14, containmentMinutes: 60 },
+  agency: { reviewDays: 7, containmentMinutes: 15 },
 };
+const autonomyPilotMinimums = [
+  { horizon: 14, frozen: 20, live: 14 },
+  { horizon: 14, frozen: 20, live: 14 },
+  { horizon: 30, frozen: 40, live: 20 },
+  { horizon: 60, frozen: 60, live: 12 },
+  { horizon: 90, frozen: 100, live: 20 },
+] as const;
+const autonomyOperationMinimums = [
+  { reviewDays: 30, containmentMinutes: 240 },
+  { reviewDays: 30, containmentMinutes: 240 },
+  { reviewDays: 14, containmentMinutes: 60 },
+  { reviewDays: 7, containmentMinutes: 15 },
+  { reviewDays: 7, containmentMinutes: 15 },
+] as const;
 
 type UsePatternContent = {
   eyebrow: string;
@@ -1106,7 +1132,7 @@ const copy = {
       ["03 · AVANT PILOTE", "Évaluer", "Quarante cas figés doivent franchir les seuils d’attribution, extraction, transfert à une personne, affirmation, correction et temps."],
       ["04 · JOURS 15–21", "Observer sans effet", "Le copilote propose sans influencer les réponses réelles ; chaque version de configuration est conservée."],
       ["05 · JOURS 22–30", "Utiliser en copilote", "Trois personnes formées acceptent, corrigent ou rejettent chaque catégorie et brouillon avant l’envoi."],
-      ["06 · GATE", "Continuer sous conditions", "Valeur et fiabilité passent. Envoi automatique et écriture restent interdits pendant que les segments faibles reçoivent plus de tests."],
+      ["06 · DÉCISION", "Continuer sous conditions", "Valeur et fiabilité passent. Envoi automatique et écriture restent interdits pendant que les segments faibles reçoivent plus de tests."],
     ],
     caseDecision: "La décision utile n’est pas « l’IA fonctionne ».",
     caseDecisionText: "Elle est : conserver le copilote mesuré pendant 60 jours, revoir les erreurs chaque semaine, répéter le jeu gelé après chaque changement et n’envisager l’automatisation que pour un sous-ensemble stable et réversible.",
@@ -1189,7 +1215,7 @@ const copy = {
     soloPhases: [
       ["JOURS 01–02", "Mesurer", "Confirmer 22 suivis historiques, la solution manuelle de repli, les règles de données et un plafond de huit heures de préparation."],
       ["JOURS 03–07", "Geler", "Régler sur 12 cas autorisés, puis décider sur 12 cas distincts avec des seuils écrits à l’avance."],
-      ["JOURS 08–10", "Shadow", "Produire cinq brouillons, révélés seulement après la rédaction manuelle du véritable suivi."],
+      ["JOURS 08–10", "Observation sans effet", "Produire cinq brouillons, révélés seulement après la rédaction manuelle du véritable suivi."],
       ["JOURS 11–14", "Copilote", "Relire neuf brouillons avec les notes. Ajouter le commercial, choisir le destinataire et envoyer manuellement."],
     ],
     soloDecision: "Prolonger 30 jours le copilote de brouillon.",
@@ -1220,7 +1246,7 @@ const copy = {
     agencyOrchestrator: "Distribue le travail, impose la politique du dossier, résout les dépendances, s’arrête en cas de désaccord et n’accepte jamais le succès déclaré d’un spécialiste sans preuve de l’effet.",
     agencySpecialists: [["01", "Admission", "Identité, éligibilité, minimisation"], ["02", "Preuves", "Sources autorisées et citations traçables"], ["03", "Analyste", "Diagnostic, score et incertitude"], ["04", "Livraison", "Rapport, actions et structure client"], ["05", "Gardien", "Faits, contradictions, risque et permissions"], ["06", "Exécuteur", "Livraison, CRM, tâches et planification"]],
     agencyFoundationLabel: "PLAN DE CONTRÔLE PARTAGÉ",
-    agencyFoundation: ["État du dossier versionné", "Identités au moindre privilège", "Journal des événements et effets", "Évaluations gelées", "Limites de coût et concurrence", "Fallback manuel + coupe-circuit"],
+    agencyFoundation: ["État du dossier versionné", "Identités au moindre privilège", "Journal des événements et effets", "Évaluations gelées", "Limites de coût et concurrence", "Repli manuel + coupe-circuit"],
     agencyCompareTitle: "Temps humain actif pour le même diagnostic accepté",
     agencyCompare: [["Manuel", "7 h 40", "Référence"], ["A1 · Copilote", "5 h 50", "−24 %"], ["A2 · Agent unique", "2 h 35", "−66 %"], ["A3 · Agence orchestrée", "58 min", "−87 %"]],
     agencyMetrics: [["×7,9", "diagnostics acceptés par heure du responsable"], ["9/12", "acceptés sans reprise majeure"], ["8/12", "cas éligibles terminés de bout en bout"], ["4/12", "arrêtés et transmis à une personne avant effet"], ["5 h 20", "cycle interne médian contre 18 h"], ["0", "engagement ou écrit non autorisé"]],
@@ -1235,7 +1261,7 @@ const copy = {
     ladderEyebrow: "PROGRESSION TECHNIQUE",
     ladderTitle: "La complexité se mérite, elle ne se présume pas.",
     ladderText: "Montez d’un niveau à la fois. Arrêtez-vous dès qu’un système plus simple répond au besoin.",
-    ladder: ["Processus manuel documenté", "Règle déterministe", "Automatisation classique", "Appel de modèle unique", "Recherche contrôlée", "Workflow avec approbation", "Agent métier borné", "Orchestration multi-agents", "Agence multi-systèmes supervisée"],
+    ladder: ["Processus manuel documenté", "Règle déterministe", "Automatisation classique", "Appel de modèle unique", "Recherche contrôlée", "Processus avec approbation", "Agent métier borné", "Orchestration multi-agents", "Agence multi-systèmes supervisée"],
     riskEyebrow: "ORIENTATION RAPIDE DES CONTRÔLES",
     riskTitle: "Voyez comment l’impact et l’autonomie modifient le niveau de contrôle.",
     riskText: "Il s’agit d’un triage interne, pas d’une qualification juridique.",
@@ -1329,6 +1355,10 @@ function ChapterNavigator<T extends string>({
 }) {
   const selectedItem = items.find((item) => item.id === active) ?? items[0];
   const isCases = variant === "cases";
+  const select = (item: ChapterItem<T>) => {
+    onSelect(item.id);
+    window.history.replaceState(null, "", `#${item.id}`);
+  };
   return (
     <section className={`chapter-router ${isCases ? "case-router" : ""}`} aria-label={ariaLabel} id={routerId}>
       <div className="chapter-router-head">
@@ -1338,7 +1368,7 @@ function ChapterNavigator<T extends string>({
       </div>
       <nav aria-label={ariaLabel}>
         {items.map((item) => (
-          <button aria-pressed={active === item.id} key={item.id} onClick={() => onSelect(item.id)} type="button">
+          <button aria-pressed={active === item.id} key={item.id} onClick={() => select(item)} type="button">
             <span>{item.number}</span><strong>{item.title}</strong><small>{item.text}</small>
           </button>
         ))}
@@ -1372,6 +1402,7 @@ function ChapterStepper<T extends string>({
   const move = (item: ChapterItem<T> | undefined) => {
     if (!item) return;
     onSelect(item.id);
+    window.history.replaceState(null, "", `#${item.id}`);
     window.requestAnimationFrame(() => document.getElementById(routerId)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
   return (
@@ -1401,6 +1432,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [caseMinutes, setCaseMinutes] = useState(60);
   const [monthlyCases, setMonthlyCases] = useState(40);
   const [eligibleShare, setEligibleShare] = useState(70);
+  const [totalBaselineHumanHours, setTotalBaselineHumanHours] = useState(40);
   const [planningRange, setPlanningRange] = useState<TaskTimePlanningRange>(initialPlanningRange);
   const [setupHours, setSetupHours] = useState(40);
   const [systemVersion, setSystemVersion] = useState("");
@@ -1414,6 +1446,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [criticalEffects, setCriticalEffects] = useState(0);
   const [traceCompleteness, setTraceCompleteness] = useState(0);
   const [observationsConfirmed, setObservationsConfirmed] = useState(false);
+  const [evaluatedSnapshotVersion, setEvaluatedSnapshotVersion] = useState<number | null>(null);
   const [evidenceExampleLoaded, setEvidenceExampleLoaded] = useState(false);
   const [evidenceCopied, setEvidenceCopied] = useState(false);
   const [operationOwner, setOperationOwner] = useState("");
@@ -1440,12 +1473,14 @@ export function Playbook({ locale }: { locale: Locale }) {
   const [guideFurthestStep, setGuideFurthestStep] = useState(0);
   const [guideConfirmed, setGuideConfirmed] = useState([false, false, false, false]);
   const [designConfirmed, setDesignConfirmed] = useState({ mode: false, architecture: false, autonomy: false });
+  const [designCoherenceAcknowledged, setDesignCoherenceAcknowledged] = useState(false);
   const [conceptPanel, setConceptPanel] = useState<ConceptPanelId>("use-patterns");
   const [operationalPanel, setOperationalPanel] = useState<OperationalPanelId>("calibrator");
   const [implementationPanel, setImplementationPanel] = useState<ImplementationPanelId>("paths");
   const [casePanel, setCasePanel] = useState<CasePanelId>("case");
   const invalidateFieldReview = useCallback(() => {
     setObservationsConfirmed(false);
+    setEvaluatedSnapshotVersion(null);
     setFieldEvidenceConfirmed(false);
     setFieldReviewChecks((current) => current.some(Boolean) ? current.map(() => false) : current);
   }, []);
@@ -1513,11 +1548,43 @@ export function Playbook({ locale }: { locale: Locale }) {
       guideFurthestStep,
       guideConfirmed,
       designConfirmed,
+      designCoherenceAcknowledged,
       caseMinutes,
       monthlyCases,
       eligibleShare,
+      totalBaselineHumanHours,
       setupHours,
       taskTimeScenario,
+      systemVersion,
+      planningSnapshots,
+      observedCases,
+      observedTotalCases,
+      observedTimeReduction,
+      observedQuality,
+      observedBaselineTotalMinutes,
+      observedAiTotalMinutes,
+      criticalEffects,
+      traceCompleteness,
+      observationsConfirmed,
+      evaluatedSnapshotVersion,
+      evidenceExampleLoaded,
+      operationOwner,
+      incidentOwner,
+      reviewDate,
+      fallbackConfirmed,
+      containmentConfirmed,
+      fieldSectorId,
+      fieldAlias,
+      fieldWorkflow,
+      fieldVersion,
+      fieldStart,
+      fieldEnd,
+      fieldGapExplanation,
+      fieldRecalibrationDecision,
+      fieldTransfer,
+      fieldUnsupported,
+      fieldEvidenceConfirmed,
+      fieldReviewChecks,
     }));
     const target = document.createElement("a");
     target.href = `${langHref}${window.location.hash}`;
@@ -1532,10 +1599,12 @@ export function Playbook({ locale }: { locale: Locale }) {
     setSetupHours(setupPresets[level]);
     setOperationCopied(false);
     setDossierCopied(false);
+    setDesignCoherenceAcknowledged(false);
     invalidateFieldReview();
   };
   const selectAutonomy = (nextAutonomy: number) => {
     setAutonomy(nextAutonomy);
+    setDesignCoherenceAcknowledged(false);
     invalidateFieldReview();
   };
   const restoreLifecycleContext = useCallback((context: {
@@ -1582,8 +1651,14 @@ export function Playbook({ locale }: { locale: Locale }) {
     setGuideStep(boundedStep);
     setGuideFurthestStep((current) => Math.max(current, boundedStep));
   };
+  const designCoherenceWarnings = [
+    ...(calibrationLevel === "copilot" && autonomy >= 2 ? [locale === "en" ? "A copilot keeps a person as the operator for every external action, while A2 to A4 let the system act. Lower the action boundary or justify a different work mode." : "Un copilote garde une personne aux commandes de chaque action externe, alors que A2 à A4 permettent au système d’agir. Abaissez la limite d’action ou justifiez un autre mode de travail."] : []),
+    ...(calibrationLevel === "agency" && autonomy <= 1 ? [locale === "en" ? "Strong automation at A0 or A1 can be read-only, but the label should be kept only if long-running work truly proceeds without a person carrying every step." : "Une automatisation forte en A0 ou A1 peut rester en lecture seule, mais ce libellé ne convient que si le travail long avance réellement sans qu’une personne réalise chaque étape."] : []),
+    ...(architecture === "model" && autonomy >= 2 ? [locale === "en" ? "One model without connected tools cannot perform an A2 to A4 action. Choose a tool-assisted design or lower the action boundary." : "Un modèle sans outil connecté ne peut pas réaliser une action A2 à A4. Choisissez un système outillé ou abaissez la limite d’action."] : []),
+    ...(autonomy === 4 ? [locale === "en" ? "A4 is disabled by default. It needs a documented exception, independent review, stronger containment, and evidence that A3 is insufficient." : "A4 est désactivé par défaut. Il exige une exception documentée, une revue indépendante, un confinement renforcé et la preuve qu’A3 ne suffit pas."] : []),
+  ];
   const guideCanContinue = guideStep === 2
-    ? designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy
+    ? designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && (designCoherenceWarnings.length === 0 || designCoherenceAcknowledged)
     : guideStep >= 4 || guideConfirmed[guideStep];
   const selectChapterTarget = useCallback((targetId: string) => {
     const conceptTarget = conceptTargetMap[targetId];
@@ -1617,6 +1692,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     const eligibleHours = eligibleCases * caseMinutes / 60;
     const freedLow = eligibleHours * low;
     const freedHigh = eligibleHours * high;
+    const wholeWorkloadCalculable = totalBaselineHumanHours > 0 && totalBaselineHumanHours >= eligibleHours;
     return {
       low,
       high,
@@ -1626,17 +1702,26 @@ export function Playbook({ locale }: { locale: Locale }) {
       freedHigh,
       remainingLow: eligibleHours * (1 - high),
       remainingHigh: eligibleHours * (1 - low),
-      totalLow: eligibleShare * low,
-      totalCentral: eligibleShare * planningRange.central,
-      totalHigh: eligibleShare * high,
+      totalBaselineHumanHours,
+      wholeWorkloadCalculable,
+      totalLow: wholeWorkloadCalculable ? freedLow / totalBaselineHumanHours * 100 : 0,
+      totalCentral: wholeWorkloadCalculable ? eligibleHours * planningRange.central / totalBaselineHumanHours * 100 : 0,
+      totalHigh: wholeWorkloadCalculable ? freedHigh / totalBaselineHumanHours * 100 : 0,
       throughputLow: 1 / (1 - low),
       throughputHigh: 1 / (1 - high),
       paybackLow: freedHigh > 0 ? setupHours / freedHigh : null,
       paybackHigh: freedLow > 0 ? setupHours / freedLow : null,
     };
-  }, [caseMinutes, monthlyCases, eligibleShare, planningRange, setupHours]);
+  }, [caseMinutes, monthlyCases, eligibleShare, planningRange, setupHours, totalBaselineHumanHours]);
   const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
-  const pilotSpec = pilotSpecs[calibrationLevel];
+  const modePilotSpec = pilotSpecs[calibrationLevel];
+  const autonomyPilotSpec = autonomyPilotMinimums[autonomy];
+  const pilotSpec = {
+    horizon: Math.max(modePilotSpec.horizon, autonomyPilotSpec.horizon, risk >= 3 ? 60 : 0),
+    frozen: Math.max(modePilotSpec.frozen, autonomyPilotSpec.frozen, risk >= 3 ? 60 : 0),
+    live: Math.max(modePilotSpec.live, autonomyPilotSpec.live, risk >= 3 ? 20 : 0),
+    valueFloor: modePilotSpec.valueFloor,
+  };
   const loadEvidenceExample = () => {
     const total = Math.max(pilotSpec.live, Math.ceil(pilotSpec.live / 0.7));
     const baselineTotal = total * caseMinutes;
@@ -1649,6 +1734,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     setCriticalEffects(0);
     setTraceCompleteness(100);
     setObservationsConfirmed(false);
+    setEvaluatedSnapshotVersion(null);
     setEvidenceExampleLoaded(true);
     setEvidenceCopied(false);
     setFieldEvidenceConfirmed(false);
@@ -1656,6 +1742,10 @@ export function Playbook({ locale }: { locale: Locale }) {
   };
   const pilotLevelLabel = t.calibratorLevels.find((level) => level.id === calibrationLevel)?.label ?? calibrationLevel;
   const currentPlanningFingerprint = JSON.stringify({
+    audienceId,
+    usePattern,
+    jurisdiction,
+    risk,
     calibrationLevel,
     architecture,
     autonomy,
@@ -1663,27 +1753,40 @@ export function Playbook({ locale }: { locale: Locale }) {
     caseMinutes,
     monthlyCases,
     eligibleShare,
+    totalBaselineHumanHours,
     setupHours,
     planningRange,
   });
   const preregisteredPlanning = planningSnapshots[0] ?? null;
   const latestPlanningSnapshot = planningSnapshots.at(-1) ?? null;
+  const evaluatedPlanning = planningSnapshots.find((snapshot) => snapshot.version === evaluatedSnapshotVersion) ?? null;
   const recalibratedPlanning = planningSnapshots.length > 1 ? latestPlanningSnapshot : null;
   const planningChangedSinceFreeze = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.fingerprint !== currentPlanningFingerprint);
   const freezePlanningHypothesis = () => {
-    if (!systemVersion.trim()) return;
+    if (!systemVersion.trim() || !calibration.wholeWorkloadCalculable) return;
     const snapshot: PlanningSnapshot = {
+      configurationId: crypto.randomUUID(),
       version: (latestPlanningSnapshot?.version ?? 0) + 1,
       frozenAt: new Date().toISOString(),
       fingerprint: currentPlanningFingerprint,
       registryVersion: `${taskTimeEvidence.schema_version} · ${taskTimeEvidence.published_on}`,
+      audienceId,
+      audienceLabel: selected.title,
+      usePatternId: usePattern,
+      usePatternLabel: selectedUsePattern.title,
+      jurisdictionId: jurisdiction,
+      jurisdictionLabel: selectedJurisdiction.label,
+      risk,
+      integrationId: calibrationLevel,
       level: pilotLevelLabel,
+      architectureId: architecture,
       architecture: selectedArchitecture.label,
       autonomy,
       systemVersion: systemVersion.trim(),
       caseMinutes,
       monthlyCases,
       eligibleShare,
+      totalBaselineHumanHours,
       planningRange: {
         ...planningRange,
         target: planningRange.target ? { ...planningRange.target } : null,
@@ -1697,7 +1800,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       },
     };
     setPlanningSnapshots((current) => [...current, snapshot]);
-    setFieldVersion((current) => current || snapshot.systemVersion);
+    setFieldVersion(snapshot.systemVersion);
     setFallbackConfirmed(false);
     setContainmentConfirmed(false);
     setOperationCopied(false);
@@ -1709,7 +1812,18 @@ export function Playbook({ locale }: { locale: Locale }) {
   const pilotBriefCore = locale === "en"
     ? [`AI PILOT BRIEF`, `Use pattern: ${selectedUsePattern.title}`, `Jurisdiction route: ${selectedJurisdiction.label}`, `Level: ${pilotLevelLabel}`, `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible`, `Planning basis: ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "local human-time hypothesis"}`, `Transfer contract: ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.work_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "initial local hypothesis"}`, `Net method: greater of source residual and local human-work floor, plus amortized setup`, `Human-work floor: ${formatNumber(planningRange.human_work.preparation_minutes)} prep + ${formatNumber(planningRange.human_work.supervision_minutes)} supervision + ${formatNumber(planningRange.human_work.verification_minutes)} verification + ${formatNumber(planningRange.human_work.correction_minutes)} correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} expected exceptions = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/case`, `Exception assumption: ${formatNumber(planningRange.human_work.exception_rate_percent)}% of eligible cases · ${formatNumber(planningRange.human_work.exception_minutes)} min each`, `Setup allocation: ${formatNumber(planningRange.setup.setup_hours)} h over ${formatNumber(planningRange.setup.amortization_months)} months · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/eligible case` : "unavailable at zero eligible cases"}`, planningRange.calculable ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Net planning range: unavailable until at least one case is eligible`, `Protocol: ${pilotSpec.horizon} days minimum · ${pilotSpec.frozen} frozen cases · ${pilotSpec.live} bounded live cases`, `Value gate: at least ${pilotSpec.valueFloor}% less human active time on accepted cases`, `Critical gates: zero unauthorized or irreversible effect · 100% effect and approval trace`, `Decision: continue the same scope / rework and rerun / stop and roll back`].join("\n")
     : [`BRIEF DE PILOTE IA`, `Mode d’usage : ${selectedUsePattern.title}`, `Route juridique : ${selectedJurisdiction.label}`, `Niveau : ${pilotLevelLabel}`, `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`, `Base de planification : ${planningRange.evidence_id ? `${planningRange.evidence_id} · ${planningRange.compatibility}` : "hypothèse locale de temps humain"}`, `Contrat de transfert : ${planningRange.target ? `${planningRange.target.task_profile_id} · ${planningRange.target.work_mode} · ${planningRange.target.quality_gate} · ${planningRange.target.expertise_level}` : "hypothèse locale initiale"}`, `Méthode nette : plus grand temps entre le résiduel de la source et le plancher de travail humain, puis mise en place amortie`, `Plancher de travail humain : ${formatNumber(planningRange.human_work.preparation_minutes)} de préparation + ${formatNumber(planningRange.human_work.supervision_minutes)} de supervision + ${formatNumber(planningRange.human_work.verification_minutes)} de vérification + ${formatNumber(planningRange.human_work.correction_minutes)} de correction + ${formatNumber(planningRange.human_work.expected_exception_minutes)} d’exceptions attendues = ${formatNumber(planningRange.human_work.operating_human_minutes)} min/dossier`, `Hypothèse d’exception : ${formatNumber(planningRange.human_work.exception_rate_percent)} % des cas éligibles · ${formatNumber(planningRange.human_work.exception_minutes)} min chacun`, `Répartition de la mise en place : ${formatNumber(planningRange.setup.setup_hours)} h sur ${formatNumber(planningRange.setup.amortization_months)} mois · ${planningRange.calculable ? `${formatNumber(planningRange.setup.amortized_setup_minutes_per_case)} min/cas éligible` : "indisponible sans cas éligible"}`, planningRange.calculable ? `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée` : `Fourchette nette : indisponible tant qu’aucun cas n’est éligible`, `Protocole : ${pilotSpec.horizon} jours minimum · ${pilotSpec.frozen} cas figés · ${pilotSpec.live} cas réels bornés`, `Seuil de valeur : au moins ${pilotSpec.valueFloor} % de temps humain actif en moins sur les cas acceptés`, `Seuils critiques : zéro effet non autorisé ou irréversible · 100 % des effets et validations tracés`, `Décision : continuer le même périmètre / corriger et rejouer / arrêter et revenir en arrière`].join("\n");
-  const pilotBrief = pilotBriefCore.replace(
+  const pilotBriefWithDenominator = pilotBriefCore
+    .replace(
+      locale === "en" ? `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/case · ${eligibleShare}% eligible` : `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/dossier · ${eligibleShare} % éligibles`,
+      locale === "en" ? `Workflow assumption: ${monthlyCases} cases/month · ${caseMinutes} manual min/eligible case · ${eligibleShare}% of cases eligible · ${formatNumber(totalBaselineHumanHours)} total baseline human h/month` : `Hypothèse de processus : ${monthlyCases} dossiers/mois · ${caseMinutes} min manuelles/cas éligible · ${eligibleShare} % des cas éligibles · ${formatNumber(totalBaselineHumanHours)} h humaines initiales/mois sur toute la charge`,
+    )
+    .replace(
+      locale === "en" ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`,
+      calibration.wholeWorkloadCalculable
+        ? (locale === "en" ? `Net planning range, low / central / high: ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)}% across the whole measured workload` : `Fourchette nette basse / centrale / haute : ${formatNumber(calibration.totalLow)} / ${formatNumber(calibration.totalCentral)} / ${formatNumber(calibration.totalHigh)} % sur toute la charge mesurée`)
+        : (locale === "en" ? "Net planning range across the complete workload: unavailable until the complete baseline is at least as large as the eligible baseline" : "Fourchette nette sur toute la charge : indisponible tant que la situation initiale complète est inférieure à celle des cas éligibles"),
+    );
+  const pilotBrief = pilotBriefWithDenominator.replace(
     locale === "en" ? `Level: ${pilotLevelLabel}` : `Niveau : ${pilotLevelLabel}`,
     locale === "en"
       ? `Work mode: ${pilotLevelLabel}\nArchitecture: ${selectedArchitecture.label}\nExact action boundary: A${autonomy}\nSystem and workflow version: ${systemVersion.trim() || "demonstration value, not frozen"}`
@@ -1734,7 +1848,14 @@ export function Playbook({ locale }: { locale: Locale }) {
   const observedEligibility = observedTotalCases > 0 ? observedCases / observedTotalCases * 100 : 0;
   const planningRecordReady = Boolean(latestPlanningSnapshot && latestPlanningSnapshot.systemVersion && !planningChangedSinceFreeze);
   const observationCountsValid = observedTotalCases > 0 && observedCases <= observedTotalCases;
-  const evidenceInputsReady = planningRecordReady && observationsConfirmed && observationCountsValid;
+  const evidenceInputsReady = Boolean(
+    planningRecordReady
+    && observationsConfirmed
+    && observationCountsValid
+    && evaluatedPlanning
+    && latestPlanningSnapshot
+    && evaluatedPlanning.version === latestPlanningSnapshot.version,
+  );
   const calculatedEvidenceDecision: EvidenceDecision = decideEvidence({ samplePass, valuePass, qualityPass, safetyPass, tracePass });
   const evidenceDecision: EvidenceDecision = evidenceInputsReady ? calculatedEvidenceDecision : "unknown";
   const evidenceCalculationVisible = evidenceInputsReady || evidenceExampleLoaded;
@@ -1750,19 +1871,34 @@ export function Playbook({ locale }: { locale: Locale }) {
   ];
   const evidenceDecisionCopy = t.evidenceDecisions[evidenceDecision];
   const displayedEvidenceDecisionCopy = t.evidenceDecisions[displayedEvidenceDecision];
-  const operationSpec = operationSpecs[calibrationLevel];
+  const modeOperationSpec = operationSpecs[calibrationLevel];
+  const autonomyOperationSpec = autonomyOperationMinimums[autonomy];
+  const operationSpec = {
+    reviewDays: Math.min(modeOperationSpec.reviewDays, autonomyOperationSpec.reviewDays, risk >= 3 || architecture === "agency" ? 7 : 30),
+    containmentMinutes: Math.min(modeOperationSpec.containmentMinutes, autonomyOperationSpec.containmentMinutes, risk >= 3 || architecture === "agency" ? 15 : 240),
+  };
+  const operationContainment = operationSpec.containmentMinutes >= 60
+    ? `${operationSpec.containmentMinutes / 60} h`
+    : `${operationSpec.containmentMinutes} min`;
   const operationState = t.operationStates[evidenceDecision];
   const reviewDateLabel = reviewDate
     ? new Intl.DateTimeFormat(locale === "fr" ? "fr-CH" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${reviewDate}T12:00:00Z`))
     : (locale === "en" ? "Not set" : "Non définie");
+  const observedLevelLabel = evaluatedPlanning?.level ?? (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
+  const observedArchitectureLabel = evaluatedPlanning?.architecture ?? (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
+  const observedAutonomyLabel = evaluatedPlanning ? `A${evaluatedPlanning.autonomy}` : (locale === "en" ? "[TO COMPLETE]" : "[À COMPLÉTER]");
   const evidenceMemoCore = locale === "en"
     ? [`AI PILOT GATE DECISION`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Decision: ${evidenceDecisionCopy.label}`, `Sample: ${observedCases}/${pilotSpec.live} eligible bounded-live cases within ${observedTotalCases} total observed requests`, `Value: ${hasAcceptedOutputs ? `${observedTimeReduction}% human active-time reduction on accepted outputs` : "n/a because no output was accepted"} · floor ${pilotSpec.valueFloor}%`, `Quality: ${observedQuality}% accepted after defined review · floor 90%`, `Safety: ${criticalEffects} critical or unauthorized effects · required 0`, `Trace: ${traceCompleteness}% complete · required 100%`, `Eligibility: ${formatNumber(observedEligibility)}% observed · ${eligibleShare}% assumed`, `Whole-workload denominator: ${observedBaselineTotalMinutes} baseline human min · ${observedAiTotalMinutes} human min with AI, including accepted, rejected, failed, excluded, escalated, corrected, fallback, and missing cases`, `Raw whole-workload time change: ${formatNumber(rawObservedWholeReduction)}%`, `Decision-adjusted whole-workload reduction: ${formatNumber(decisionAdjustedWholeReduction)}%${hasAcceptedOutputs ? "" : " · capped at 0% because no output was accepted"}`, `Projected capacity: ${formatNumber(observedFreedHours)} human hours/month from the decision-adjusted result`, `Authorized next action: ${evidenceDecisionCopy.text}`].join("\n")
     : [`DÉCISION DU PILOTE IA`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `Décision : ${evidenceDecisionCopy.label}`, `Échantillon : ${observedCases}/${pilotSpec.live} cas éligibles en mode réel borné parmi ${observedTotalCases} demandes observées au total`, `Valeur : ${hasAcceptedOutputs ? `${observedTimeReduction} % de temps humain actif en moins sur les sorties acceptées` : "n/a, car aucune sortie n’a été acceptée"} · plancher ${pilotSpec.valueFloor} %`, `Qualité : ${observedQuality} % acceptés après la revue définie · plancher 90 %`, `Sécurité : ${criticalEffects} effet critique ou non autorisé · exigence 0`, `Trace : ${traceCompleteness} % complète · exigence 100 %`, `Éligibilité : ${formatNumber(observedEligibility)} % observés · ${eligibleShare} % supposés`, `Dénominateur sur toute la charge : ${observedBaselineTotalMinutes} min humaines initiales · ${observedAiTotalMinutes} min humaines avec IA, avec cas acceptés, refusés, échoués, exclus, transmis, corrigés, repris manuellement et manquants`, `Variation brute du temps sur toute la charge : ${formatNumber(rawObservedWholeReduction)} %`, `Réduction sur toute la charge retenue pour la décision : ${formatNumber(decisionAdjustedWholeReduction)} %${hasAcceptedOutputs ? "" : " · plafonnée à 0 %, car aucune sortie n’a été acceptée"}`, `Capacité projetée : ${formatNumber(observedFreedHours)} heures humaines/mois selon le résultat retenu pour la décision`, `Prochaine action autorisée : ${evidenceDecisionCopy.text}`].join("\n");
-  const evidenceMemo = evidenceMemoCore.replace(
+  const evidenceMemo = evidenceMemoCore
+    .replace(locale === "en" ? `Work mode: ${pilotLevelLabel}` : `Mode de travail : ${pilotLevelLabel}`, locale === "en" ? `Work mode: ${observedLevelLabel}` : `Mode de travail : ${observedLevelLabel}`)
+    .replace(locale === "en" ? `Architecture: ${selectedArchitecture.label}` : `Architecture : ${selectedArchitecture.label}`, locale === "en" ? `Architecture: ${observedArchitectureLabel}` : `Architecture : ${observedArchitectureLabel}`)
+    .replace(locale === "en" ? `Exact action boundary: A${autonomy}` : `Limite d’action exacte : A${autonomy}`, locale === "en" ? `Exact action boundary: ${observedAutonomyLabel}` : `Limite d’action exacte : ${observedAutonomyLabel}`)
+    .replace(
     locale === "en" ? `Decision: ${evidenceDecisionCopy.label}` : `Décision : ${evidenceDecisionCopy.label}`,
     locale === "en"
-      ? `Use pattern: ${selectedUsePattern.title}\nTerritory: ${selectedJurisdiction.label}\nEvaluated system and workflow version: ${preregisteredPlanning?.systemVersion ?? "[TO COMPLETE]"}\nDecision: ${evidenceDecisionCopy.label}`
-      : `Mode d’usage : ${selectedUsePattern.title}\nTerritoire : ${selectedJurisdiction.label}\nVersion évaluée du système et du processus : ${preregisteredPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nDécision : ${evidenceDecisionCopy.label}`,
+      ? `Configuration ID: ${evaluatedPlanning?.configurationId ?? "[TO COMPLETE]"}\nUse pattern: ${evaluatedPlanning?.usePatternLabel ?? "[TO COMPLETE]"}\nTerritory: ${evaluatedPlanning?.jurisdictionLabel ?? "[TO COMPLETE]"}\nEvaluated system and workflow version: ${evaluatedPlanning?.systemVersion ?? "[TO COMPLETE]"}\nDecision: ${evidenceDecisionCopy.label}`
+      : `Identifiant de configuration : ${evaluatedPlanning?.configurationId ?? "[À COMPLÉTER]"}\nMode d’usage : ${evaluatedPlanning?.usePatternLabel ?? "[À COMPLÉTER]"}\nTerritoire : ${evaluatedPlanning?.jurisdictionLabel ?? "[À COMPLÉTER]"}\nVersion évaluée du système et du processus : ${evaluatedPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nDécision : ${evidenceDecisionCopy.label}`,
   );
   const fieldPlanningRange = preregisteredPlanning?.planningRange.calculable
     ? new Set([preregisteredPlanning.wholeWorkloadRange.low, preregisteredPlanning.wholeWorkloadRange.central, preregisteredPlanning.wholeWorkloadRange.high].map((value) => formatNumber(value))).size === 1
@@ -1780,18 +1916,23 @@ export function Playbook({ locale }: { locale: Locale }) {
         : "within";
   const fieldComparisonLabel = t.fieldPilotComparison[fieldComparisonKey];
   const operationCardCore = locale === "en"
-    ? [`BOUNDED AI OPERATING CARD`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationSpec.containment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
-    : [`FICHE D’EXPLOITATION IA BORNÉE`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `État d’exploitation : ${operationState.label}`, `Responsable du processus : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationSpec.containment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Retour arrière : contenir → rediriger en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
-  const operationCard = operationCardCore.replace(
+    ? [`BOUNDED AI OPERATING CARD`, `Work mode: ${pilotLevelLabel}`, `Architecture: ${selectedArchitecture.label}`, `Exact action boundary: A${autonomy}`, `Operating state: ${operationState.label}`, `Workflow owner: ${operationOwner}`, `Incident owner: ${incidentOwner}`, `Formal review: ${reviewDateLabel} · default cadence ${operationSpec.reviewDays} days`, `Containment target: ${operationContainment}`, `Authorized scope: ${t.operationSameScope}`, `Immediate suspension triggers:`, ...t.operationStops.map((item) => `- ${item}`), `Rollback: contain → route safely → preserve → reconcile → re-authorize`, `Change rule: ${t.operationChangeRule}`].join("\n")
+    : [`FICHE D’EXPLOITATION IA BORNÉE`, `Mode de travail : ${pilotLevelLabel}`, `Architecture : ${selectedArchitecture.label}`, `Limite d’action exacte : A${autonomy}`, `État d’exploitation : ${operationState.label}`, `Responsable du processus : ${operationOwner}`, `Responsable d’incident : ${incidentOwner}`, `Revue formelle : ${reviewDateLabel} · cadence par défaut ${operationSpec.reviewDays} jours`, `Objectif de confinement : ${operationContainment}`, `Périmètre autorisé : ${t.operationSameScope}`, `Déclencheurs de suspension immédiate :`, ...t.operationStops.map((item) => `- ${item}`), `Retour arrière : contenir → rediriger en sécurité → préserver → réconcilier → réautoriser`, `Règle de changement : ${t.operationChangeRule}`].join("\n");
+  const operationCard = operationCardCore
+    .replace(locale === "en" ? `Work mode: ${pilotLevelLabel}` : `Mode de travail : ${pilotLevelLabel}`, locale === "en" ? `Work mode: ${observedLevelLabel}` : `Mode de travail : ${observedLevelLabel}`)
+    .replace(locale === "en" ? `Architecture: ${selectedArchitecture.label}` : `Architecture : ${selectedArchitecture.label}`, locale === "en" ? `Architecture: ${observedArchitectureLabel}` : `Architecture : ${observedArchitectureLabel}`)
+    .replace(locale === "en" ? `Exact action boundary: A${autonomy}` : `Limite d’action exacte : A${autonomy}`, locale === "en" ? `Exact action boundary: ${observedAutonomyLabel}` : `Limite d’action exacte : ${observedAutonomyLabel}`)
+    .replace(
     locale === "en" ? `Operating state: ${operationState.label}` : `État d’exploitation : ${operationState.label}`,
     locale === "en"
-      ? `Use pattern: ${selectedUsePattern.title}\nTerritory: ${selectedJurisdiction.label}\nEvaluated system and workflow version: ${preregisteredPlanning?.systemVersion ?? "[TO COMPLETE]"}\nManual fallback tried: ${fallbackConfirmed ? "yes" : "no"}\nSuspension and containment rehearsed: ${containmentConfirmed ? "yes" : "no"}\nOperating state: ${operationState.label}`
-      : `Mode d’usage : ${selectedUsePattern.title}\nTerritoire : ${selectedJurisdiction.label}\nVersion évaluée du système et du processus : ${preregisteredPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nSolution de repli manuelle essayée : ${fallbackConfirmed ? "oui" : "non"}\nArrêt et confinement répétés : ${containmentConfirmed ? "oui" : "non"}\nÉtat d’exploitation : ${operationState.label}`,
+      ? `Configuration ID: ${evaluatedPlanning?.configurationId ?? "[TO COMPLETE]"}\nUse pattern: ${evaluatedPlanning?.usePatternLabel ?? "[TO COMPLETE]"}\nTerritory: ${evaluatedPlanning?.jurisdictionLabel ?? "[TO COMPLETE]"}\nEvaluated system and workflow version: ${evaluatedPlanning?.systemVersion ?? "[TO COMPLETE]"}\nManual fallback tried: ${fallbackConfirmed ? "yes" : "no"}\nSuspension and containment rehearsed: ${containmentConfirmed ? "yes" : "no"}\nOperating state: ${operationState.label}`
+      : `Identifiant de configuration : ${evaluatedPlanning?.configurationId ?? "[À COMPLÉTER]"}\nMode d’usage : ${evaluatedPlanning?.usePatternLabel ?? "[À COMPLÉTER]"}\nTerritoire : ${evaluatedPlanning?.jurisdictionLabel ?? "[À COMPLÉTER]"}\nVersion évaluée du système et du processus : ${evaluatedPlanning?.systemVersion ?? "[À COMPLÉTER]"}\nSolution de repli manuelle essayée : ${fallbackConfirmed ? "oui" : "non"}\nArrêt et confinement répétés : ${containmentConfirmed ? "oui" : "non"}\nÉtat d’exploitation : ${operationState.label}`,
   );
   const operationOwnerReady = operationOwner.trim().length > 0;
   const incidentOwnerReady = incidentOwner.trim().length > 0;
-  const reviewDateReady = Boolean(reviewDate);
-  const versionReady = Boolean(preregisteredPlanning?.systemVersion);
+  const todayIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Zurich" }).format(new Date());
+  const reviewDateReady = Boolean(reviewDate && reviewDate >= todayIso);
+  const versionReady = Boolean(evaluatedPlanning?.systemVersion);
   const evidenceRecordReady = evidenceInputsReady && evidenceDecision !== "unknown";
   const dossierMissingItems = [
     ...(!evidenceRecordReady ? [t.dossierEvidenceMissing] : []),
@@ -1846,11 +1987,12 @@ export function Playbook({ locale }: { locale: Locale }) {
     const wholeVaries = new Set(wholeValues.map((value) => formatNumber(value))).size > 1;
     const eligibleVaries = new Set(eligibleValues.map((value) => formatNumber(value))).size > 1;
     return [
-      `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
+      `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: ${snapshot.configurationId} · v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
+      `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · R${snapshot.risk} · ${snapshot.level} · ${snapshot.architecture} · A${snapshot.autonomy}`,
       `- ${locale === "en" ? "System and workflow version" : "Version du système et du processus"}: ${snapshot.systemVersion}`,
       `- ${locale === "en" ? "Planning basis" : "Base de planification"}: ${range.evidence_id ? `${range.evidence_id} · ${range.compatibility}` : locale === "en" ? "editable local human-time hypothesis" : "hypothèse locale modifiable de temps humain"}`,
       `- ${locale === "en" ? "Transfer contract" : "Contrat de transfert"}: ${range.target ? `${range.target.task_profile_id} · ${range.target.work_mode} · ${range.target.quality_gate} · ${range.target.expertise_level}` : locale === "en" ? "initial local hypothesis" : "hypothèse locale initiale"}`,
-      `- ${locale === "en" ? "Manual baseline, monthly volume, and planned eligibility" : "Situation manuelle, volume mensuel et éligibilité prévue"}: ${snapshot.caseMinutes} ${locale === "en" ? "min/case" : "min/dossier"} · ${snapshot.monthlyCases} ${locale === "en" ? "cases/month" : "cas/mois"} · ${snapshot.eligibleShare}%`,
+      `- ${locale === "en" ? "Manual baseline, monthly volume, and planned eligibility" : "Situation manuelle, volume mensuel et éligibilité prévue"}: ${snapshot.caseMinutes} ${locale === "en" ? "min/eligible case" : "min/cas éligible"} · ${snapshot.monthlyCases} ${locale === "en" ? "cases/month" : "cas/mois"} · ${snapshot.eligibleShare}% · ${snapshot.totalBaselineHumanHours} ${locale === "en" ? "total baseline human h/month" : "h humaines initiales/mois sur toute la charge"}`,
       `- ${!range.calculable || wholeVaries ? (locale === "en" ? "Exact whole-workload range, low / central / high" : "Fourchette exacte sur toute la charge, basse / centrale / haute") : (locale === "en" ? "Exact whole-workload planning value" : "Valeur de planification exacte sur toute la charge")}: ${range.calculable ? wholeVaries ? `${wholeValues.join(" / ")}%` : `${wholeValues[1]}%` : locale === "en" ? "n/a · no eligible case" : "n/a · aucun cas éligible"}`,
       `- ${!range.calculable || eligibleVaries ? (locale === "en" ? "Exact eligible-case range, low / central / high" : "Fourchette exacte par cas éligible, basse / centrale / haute") : (locale === "en" ? "Exact eligible-case planning value" : "Valeur de planification exacte par cas éligible")}: ${range.calculable ? eligibleVaries ? `${eligibleValues.join(" / ")}%` : `${eligibleValues[1]}%` : locale === "en" ? "n/a · no eligible case" : "n/a · aucun cas éligible"}`,
       `- ${locale === "en" ? "Declared human-work breakdown" : "Décomposition du travail humain déclaré"}: ${range.human_work.preparation_minutes} ${locale === "en" ? "prep" : "préparation"} + ${range.human_work.supervision_minutes} ${locale === "en" ? "supervision" : "supervision"} + ${range.human_work.verification_minutes} ${locale === "en" ? "verification" : "vérification"} + ${range.human_work.correction_minutes} ${locale === "en" ? "correction" : "correction"} + ${range.human_work.expected_exception_minutes} ${locale === "en" ? "expected exceptions" : "exceptions attendues"} = ${range.human_work.operating_human_minutes} ${locale === "en" ? "min/eligible case" : "min/cas éligible"}`,
@@ -1859,10 +2001,10 @@ export function Playbook({ locale }: { locale: Locale }) {
     ];
   };
   const fieldRequirements = [
-    Boolean(preregisteredPlanning && latestPlanningSnapshot && !planningChangedSinceFreeze),
+    Boolean(preregisteredPlanning && evaluatedPlanning && evidenceInputsReady),
     fieldAlias.trim().length > 0,
     fieldWorkflow.trim().length > 0,
-    fieldVersion.trim().length > 0,
+    Boolean(evaluatedPlanning && fieldVersion.trim() === evaluatedPlanning.systemVersion),
     fieldDatesValid,
     fieldGapExplanation.trim().length > 0,
     fieldRecalibrationDecision.trim().length > 0,
@@ -1883,17 +2025,18 @@ export function Playbook({ locale }: { locale: Locale }) {
     `## ${locale === "en" ? "Pilot identity" : "Identité du pilote"}`,
     ``,
     `- ${t.fieldPilotLabels.alias}: ${fieldAlias.trim() || "[TO COMPLETE]"}`,
-    `- ${t.fieldPilotLabels.organization}: ${selected.title}`,
+    `- ${t.fieldPilotLabels.organization}: ${evaluatedPlanning?.audienceLabel ?? "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.sector}: ${fieldSector.label}`,
-    `- ${locale === "en" ? "Use pattern" : "Mode d’usage"}: ${selectedUsePattern.title}`,
-    `- ${locale === "en" ? "Jurisdiction route" : "Route juridique"}: ${selectedJurisdiction.label}`,
-      `- ${t.fieldPilotLabels.integration}: ${preregisteredPlanning?.level ?? "[TO COMPLETE]"}`,
-      `- ${t.fieldPilotLabels.architecture}: ${preregisteredPlanning?.architecture ?? "[TO COMPLETE]"}`,
-      `- ${t.fieldPilotLabels.autonomy}: ${preregisteredPlanning ? `A${preregisteredPlanning.autonomy}` : "[TO COMPLETE]"}`,
+    `- ${locale === "en" ? "Configuration ID" : "Identifiant de configuration"}: ${evaluatedPlanning?.configurationId ?? "[TO COMPLETE]"}`,
+    `- ${locale === "en" ? "Use pattern" : "Mode d’usage"}: ${evaluatedPlanning?.usePatternLabel ?? "[TO COMPLETE]"}`,
+    `- ${locale === "en" ? "Jurisdiction route" : "Route juridique"}: ${evaluatedPlanning?.jurisdictionLabel ?? "[TO COMPLETE]"}`,
+      `- ${t.fieldPilotLabels.integration}: ${evaluatedPlanning?.level ?? "[TO COMPLETE]"}`,
+      `- ${t.fieldPilotLabels.architecture}: ${evaluatedPlanning?.architecture ?? "[TO COMPLETE]"}`,
+      `- ${t.fieldPilotLabels.autonomy}: ${evaluatedPlanning ? `A${evaluatedPlanning.autonomy}` : "[TO COMPLETE]"}`,
     `- ${t.fieldPilotLabels.version}: ${fieldVersion.trim() || "[TO COMPLETE]"}`,
     `- ${locale === "en" ? "Observation period" : "Période d’observation"}: ${fieldStart || "[TO COMPLETE]"} → ${fieldEnd || "[TO COMPLETE]"}`,
     ``,
-    `## ${locale === "en" ? "Workflow and evidence boundary" : "Workflow et frontière des preuves"}`,
+    `## ${locale === "en" ? "Workflow and evidence boundary" : "Processus et frontière des preuves"}`,
     ``,
     `${fieldWorkflow.trim() || "[TO COMPLETE]"}`,
     ``,
@@ -2002,11 +2145,43 @@ export function Playbook({ locale }: { locale: Locale }) {
           guideFurthestStep?: number;
           guideConfirmed?: boolean[];
           designConfirmed?: { mode: boolean; architecture: boolean; autonomy: boolean };
+          designCoherenceAcknowledged?: boolean;
           caseMinutes?: number;
           monthlyCases?: number;
           eligibleShare?: number;
+          totalBaselineHumanHours?: number;
           setupHours?: number;
           taskTimeScenario?: TaskTimeScenarioState;
+          systemVersion?: string;
+          planningSnapshots?: PlanningSnapshot[];
+          observedCases?: number;
+          observedTotalCases?: number;
+          observedTimeReduction?: number;
+          observedQuality?: number;
+          observedBaselineTotalMinutes?: number;
+          observedAiTotalMinutes?: number;
+          criticalEffects?: number;
+          traceCompleteness?: number;
+          observationsConfirmed?: boolean;
+          evaluatedSnapshotVersion?: number | null;
+          evidenceExampleLoaded?: boolean;
+          operationOwner?: string;
+          incidentOwner?: string;
+          reviewDate?: string;
+          fallbackConfirmed?: boolean;
+          containmentConfirmed?: boolean;
+          fieldSectorId?: FieldSectorId;
+          fieldAlias?: string;
+          fieldWorkflow?: string;
+          fieldVersion?: string;
+          fieldStart?: string;
+          fieldEnd?: string;
+          fieldGapExplanation?: string;
+          fieldRecalibrationDecision?: string;
+          fieldTransfer?: string;
+          fieldUnsupported?: string;
+          fieldEvidenceConfirmed?: boolean;
+          fieldReviewChecks?: boolean[];
         };
         if (context.targetLocale !== locale) return;
         if (context.audienceId) setAudienceId(context.audienceId);
@@ -2020,11 +2195,55 @@ export function Playbook({ locale }: { locale: Locale }) {
         if (Number.isInteger(context.guideFurthestStep)) setGuideFurthestStep(Math.max(0, Math.min(4, context.guideFurthestStep!)));
         if (Array.isArray(context.guideConfirmed) && context.guideConfirmed.length === 4) setGuideConfirmed(context.guideConfirmed.map(Boolean));
         if (context.designConfirmed) setDesignConfirmed({ mode: Boolean(context.designConfirmed.mode), architecture: Boolean(context.designConfirmed.architecture), autonomy: Boolean(context.designConfirmed.autonomy) });
+        if (typeof context.designCoherenceAcknowledged === "boolean") setDesignCoherenceAcknowledged(context.designCoherenceAcknowledged);
         if (Number.isFinite(context.caseMinutes) && context.caseMinutes! >= 1 && context.caseMinutes! <= 10080) setCaseMinutes(context.caseMinutes!);
         if (Number.isFinite(context.monthlyCases) && context.monthlyCases! >= 1 && context.monthlyCases! <= 1000000) setMonthlyCases(context.monthlyCases!);
         if (Number.isFinite(context.eligibleShare) && context.eligibleShare! >= 0 && context.eligibleShare! <= 100) setEligibleShare(context.eligibleShare!);
+        if (Number.isFinite(context.totalBaselineHumanHours) && context.totalBaselineHumanHours! > 0 && context.totalBaselineHumanHours! <= 1000000000) setTotalBaselineHumanHours(context.totalBaselineHumanHours!);
         if (Number.isFinite(context.setupHours) && context.setupHours! >= 0 && context.setupHours! <= 1000000) setSetupHours(context.setupHours!);
         if (context.taskTimeScenario && typeof context.taskTimeScenario.profileId === "string") setTaskTimeScenario(context.taskTimeScenario);
+        if (typeof context.systemVersion === "string") setSystemVersion(context.systemVersion.slice(0, 100));
+        if (Array.isArray(context.planningSnapshots)) {
+          const restoredSnapshots = context.planningSnapshots
+            .filter((snapshot) => typeof snapshot?.configurationId === "string" && Number.isInteger(snapshot?.version) && typeof snapshot?.systemVersion === "string")
+            .map((snapshot) => ({
+              ...snapshot,
+              audienceLabel: audiences[locale].find((item) => item.id === snapshot.audienceId)?.title ?? snapshot.audienceLabel,
+              usePatternLabel: usePatternContent[locale].patterns.find((item) => item.id === snapshot.usePatternId)?.title ?? snapshot.usePatternLabel,
+              jurisdictionLabel: usePatternContent[locale].jurisdictions.find((item) => item.id === snapshot.jurisdictionId)?.label ?? snapshot.jurisdictionLabel,
+              level: workModeTaxonomy[locale][snapshot.integrationId]?.label ?? snapshot.level,
+              architecture: architectureTaxonomy[locale][snapshot.architectureId]?.label ?? snapshot.architecture,
+            }));
+          setPlanningSnapshots(restoredSnapshots);
+        }
+        if (Number.isFinite(context.observedCases) && context.observedCases! >= 0) setObservedCases(context.observedCases!);
+        if (Number.isFinite(context.observedTotalCases) && context.observedTotalCases! >= 0) setObservedTotalCases(context.observedTotalCases!);
+        if (Number.isFinite(context.observedTimeReduction)) setObservedTimeReduction(context.observedTimeReduction!);
+        if (Number.isFinite(context.observedQuality)) setObservedQuality(context.observedQuality!);
+        if (Number.isFinite(context.observedBaselineTotalMinutes) && context.observedBaselineTotalMinutes! >= 0) setObservedBaselineTotalMinutes(context.observedBaselineTotalMinutes!);
+        if (Number.isFinite(context.observedAiTotalMinutes) && context.observedAiTotalMinutes! >= 0) setObservedAiTotalMinutes(context.observedAiTotalMinutes!);
+        if (Number.isFinite(context.criticalEffects) && context.criticalEffects! >= 0) setCriticalEffects(context.criticalEffects!);
+        if (Number.isFinite(context.traceCompleteness)) setTraceCompleteness(context.traceCompleteness!);
+        if (typeof context.observationsConfirmed === "boolean") setObservationsConfirmed(context.observationsConfirmed);
+        if (context.evaluatedSnapshotVersion == null || Number.isInteger(context.evaluatedSnapshotVersion)) setEvaluatedSnapshotVersion(context.evaluatedSnapshotVersion ?? null);
+        if (typeof context.evidenceExampleLoaded === "boolean") setEvidenceExampleLoaded(context.evidenceExampleLoaded);
+        if (typeof context.operationOwner === "string") setOperationOwner(context.operationOwner.slice(0, 100));
+        if (typeof context.incidentOwner === "string") setIncidentOwner(context.incidentOwner.slice(0, 100));
+        if (typeof context.reviewDate === "string") setReviewDate(context.reviewDate);
+        if (typeof context.fallbackConfirmed === "boolean") setFallbackConfirmed(context.fallbackConfirmed);
+        if (typeof context.containmentConfirmed === "boolean") setContainmentConfirmed(context.containmentConfirmed);
+        if (["general", "healthcare", "education", "finance", "critical"].includes(context.fieldSectorId ?? "")) setFieldSectorId(context.fieldSectorId!);
+        if (typeof context.fieldAlias === "string") setFieldAlias(context.fieldAlias.slice(0, 120));
+        if (typeof context.fieldWorkflow === "string") setFieldWorkflow(context.fieldWorkflow.slice(0, 360));
+        if (typeof context.fieldVersion === "string") setFieldVersion(context.fieldVersion.slice(0, 100));
+        if (typeof context.fieldStart === "string") setFieldStart(context.fieldStart);
+        if (typeof context.fieldEnd === "string") setFieldEnd(context.fieldEnd);
+        if (typeof context.fieldGapExplanation === "string") setFieldGapExplanation(context.fieldGapExplanation.slice(0, 520));
+        if (typeof context.fieldRecalibrationDecision === "string") setFieldRecalibrationDecision(context.fieldRecalibrationDecision.slice(0, 520));
+        if (typeof context.fieldTransfer === "string") setFieldTransfer(context.fieldTransfer.slice(0, 520));
+        if (typeof context.fieldUnsupported === "string") setFieldUnsupported(context.fieldUnsupported.slice(0, 520));
+        if (typeof context.fieldEvidenceConfirmed === "boolean") setFieldEvidenceConfirmed(context.fieldEvidenceConfirmed);
+        if (Array.isArray(context.fieldReviewChecks) && context.fieldReviewChecks.length === t.fieldPilotChecklist.length) setFieldReviewChecks(context.fieldReviewChecks.map(Boolean));
       } catch {
         // Ignore malformed transient navigation state.
       } finally {
@@ -2032,7 +2251,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [locale]);
+  }, [locale, t.fieldPilotChecklist.length]);
 
   useEffect(() => {
     const revealHashTarget = () => {
@@ -2097,8 +2316,9 @@ export function Playbook({ locale }: { locale: Locale }) {
 
               {guideStep === 2 && <div className="guide-design-choices">
                 <fieldset><legend>{locale === "en" ? "1. How will people and AI share the work?" : "1. Comment les personnes et l’IA se partagent-elles le travail ?"}</legend><div className="guide-choice-grid guide-levels">{guideCopy.levels.map((level) => <button aria-pressed={calibrationLevel === level.id && designConfirmed.mode} key={level.id} onClick={() => { selectGuideLevel(level); setDesignConfirmed((current) => ({ ...current, mode: true })); }} type="button"><span>{level.code}</span><strong>{level.title}</strong><small>{level.text}</small></button>)}</div></fieldset>
-                <fieldset><legend>{guideCopy.architectureTitle}</legend><p>{guideCopy.architectureText}</p><div className="guide-choice-grid guide-architectures">{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <button aria-pressed={architecture === id && designConfirmed.architecture} key={id} onClick={() => { setArchitecture(id); setDesignConfirmed((current) => ({ ...current, architecture: true })); invalidateFieldReview(); }} type="button"><strong>{architectureTaxonomy[locale][id].label}</strong><small>{architectureTaxonomy[locale][id].text}</small></button>)}</div></fieldset>
+                <fieldset><legend>{guideCopy.architectureTitle}</legend><p>{guideCopy.architectureText}</p><div className="guide-choice-grid guide-architectures">{(Object.keys(architectureTaxonomy[locale]) as ArchitectureId[]).map((id) => <button aria-pressed={architecture === id && designConfirmed.architecture} key={id} onClick={() => { setArchitecture(id); setDesignCoherenceAcknowledged(false); setDesignConfirmed((current) => ({ ...current, architecture: true })); invalidateFieldReview(); }} type="button"><strong>{architectureTaxonomy[locale][id].label}</strong><small>{architectureTaxonomy[locale][id].text}</small></button>)}</div></fieldset>
                 <fieldset><legend>{guideCopy.autonomyTitle}</legend><p>{guideCopy.autonomyText}</p><div className="guide-choice-grid guide-autonomy">{t.autonomyOptions.map((label, index) => <button aria-pressed={autonomy === index && designConfirmed.autonomy} key={label} onClick={() => { selectAutonomy(index); setDesignConfirmed((current) => ({ ...current, autonomy: true })); }} type="button"><strong>{label}</strong></button>)}</div></fieldset>
+                {designConfirmed.mode && designConfirmed.architecture && designConfirmed.autonomy && designCoherenceWarnings.length > 0 && <aside className="design-coherence" role="alert"><strong>{locale === "en" ? "CHECK THIS COMBINATION" : "VÉRIFIEZ CETTE COMBINAISON"}</strong><ul>{designCoherenceWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul><label><input checked={designCoherenceAcknowledged} onChange={(event) => setDesignCoherenceAcknowledged(event.target.checked)} type="checkbox" /><span>{locale === "en" ? "I checked that these three labels describe the same real operating design." : "J’ai vérifié que ces trois libellés décrivent bien le même fonctionnement réel."}</span></label></aside>}
               </div>}
 
               {guideStep === 3 && <div className="guide-choice-grid guide-jurisdictions">{patternCopy.jurisdictions.map((option) => <button aria-pressed={jurisdiction === option.id && guideConfirmed[3]} key={option.id} onClick={() => { setJurisdiction(option.id); setGuideConfirmed((current) => current.map((value, index) => index === 3 ? true : value)); invalidateFieldReview(); }} type="button"><span>{option.id}</span><strong>{option.label}</strong><small>{option.note}</small></button>)}</div>}
@@ -2109,7 +2329,7 @@ export function Playbook({ locale }: { locale: Locale }) {
                 <div className="guided-result-grid">
                   <article><span>01</span><strong>{guideCopy.result.pilot}</strong><p>{guidedPilot}</p></article>
                   <article><span>02</span><strong>{guideCopy.result.measure}</strong><p>{guideCopy.proofByPattern[usePattern]}</p></article>
-                  <article><span>03</span><strong>{guideCopy.result.safeguards}</strong><ul>{(applicableControls.length ? applicableControls.slice(0, 3).map((control) => control.title[locale]) : selected.controls.slice(0, 3)).map((control) => <li key={control}>{control}</li>)}</ul></article>
+                  <article><span>03</span><strong>{guideCopy.result.safeguards}</strong><p>{locale === "en" ? "Provisional baseline. Complete the risk phase to condition the full list." : "Base provisoire. Complétez la phase de risque pour adapter la liste complète."}</p><ul>{(applicableControls.length ? applicableControls.slice(0, 3).map((control) => control.title[locale]) : selected.controls.slice(0, 3)).map((control) => <li key={control}>{control}</li>)}</ul></article>
                 </div>
                 <div className="guided-result-actions"><button className="button primary" onClick={() => openChapter("operational-workspace", "calibrator")} type="button">{guideCopy.buttons.workspace}</button><button className="button secondary" onClick={openComparableCases} type="button">{guideCopy.buttons.cases}</button></div>
               </div>}
@@ -2289,8 +2509,10 @@ export function Playbook({ locale }: { locale: Locale }) {
             onPlanningRangeChange={acceptPlanningRange}
             onScenarioChange={setTaskTimeScenario}
             onSetupHoursChange={setSetupHours}
+            onTotalBaselineHumanHoursChange={setTotalBaselineHumanHours}
             scenario={taskTimeScenario}
             setupHours={setupHours}
+            totalBaselineHumanHours={totalBaselineHumanHours}
           />
         </section>
 
@@ -2328,7 +2550,12 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <div className="pilot-plan-footer">
             <p>{t.pilotPlanCaveat}</p>
-            <div><small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small><button className="button secondary" disabled={!systemVersion.trim() || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button><button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button><a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a></div>
+            <div>
+              <small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{!calibration.wholeWorkloadCalculable ? (locale === "en" ? "The total workload cannot be smaller than the eligible workload" : "La charge totale ne peut pas être inférieure à la charge éligible") : latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small>
+              <button className="button secondary" disabled={!systemVersion.trim() || !calibration.wholeWorkloadCalculable || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button>
+              <button className="button primary" onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button>
+              <a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a>
+            </div>
           </div>
         </section>
 
@@ -2354,7 +2581,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               {!observationCountsValid && observedTotalCases + observedCases > 0 && <p className="evidence-count-error">{locale === "en" ? "Eligible bounded-live cases cannot exceed all requests observed in the same period." : "Les cas éligibles en mode réel borné ne peuvent pas dépasser toutes les demandes observées sur la même période."}</p>}
               <aside className="evidence-prerequisite" data-ready={evidenceInputsReady}>
                 <p>{t.evidencePrerequisite}</p>
-                <label><input checked={observationsConfirmed} disabled={!planningRecordReady || !observationCountsValid} onChange={(event) => { setObservationsConfirmed(event.target.checked); if (event.target.checked) setEvidenceExampleLoaded(false); setEvidenceCopied(false); setFieldEvidenceConfirmed(false); setFieldReviewChecks((current) => current.map(() => false)); }} type="checkbox" /><span>{t.evidenceConfirm}</span></label>
+                <label><input checked={observationsConfirmed} disabled={!planningRecordReady || !observationCountsValid} onChange={(event) => { const confirmed = event.target.checked; setObservationsConfirmed(confirmed); setEvaluatedSnapshotVersion(confirmed ? latestPlanningSnapshot?.version ?? null : null); if (confirmed && latestPlanningSnapshot) { setEvidenceExampleLoaded(false); setFieldVersion(latestPlanningSnapshot.systemVersion); } setEvidenceCopied(false); setFieldEvidenceConfirmed(false); setFieldReviewChecks((current) => current.map(() => false)); }} type="checkbox" /><span>{t.evidenceConfirm}</span></label>
                 <small>{planningRecordReady ? (locale === "en" ? `Current hypothesis frozen as v${latestPlanningSnapshot?.version}` : `Hypothèse actuelle figée en v${latestPlanningSnapshot?.version}`) : t.evidenceFreezeFirst}</small>
               </aside>
             </div>
@@ -2381,15 +2608,15 @@ export function Playbook({ locale }: { locale: Locale }) {
             <fieldset className="operation-owners"><legend>{t.operationOwnersTitle}</legend>
               <label><span>{t.operationFields.owner}</span><input aria-label={t.operationFields.owner} maxLength={80} onChange={(event) => { setOperationOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} placeholder={t.operationDefaults.owner} type="text" value={operationOwner} /></label>
               <label><span>{t.operationFields.incident}</span><input aria-label={t.operationFields.incident} maxLength={80} onChange={(event) => { setIncidentOwner(event.target.value); setOperationCopied(false); setDossierCopied(false); }} placeholder={t.operationDefaults.incident} type="text" value={incidentOwner} /></label>
-              <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} onChange={(event) => { setReviewDate(event.target.value); setOperationCopied(false); setDossierCopied(false); }} required type="date" value={reviewDate} /></label>
-              <p className="operation-version"><span>{t.operationFields.version}</span><strong>{preregisteredPlanning?.systemVersion ?? (locale === "en" ? "Freeze it in the pilot plan" : "À figer dans le plan de pilote")}</strong></p>
+              <label><span>{t.operationFields.review}</span><input aria-label={t.operationFields.review} min={todayIso} onChange={(event) => { setReviewDate(event.target.value); setOperationCopied(false); setDossierCopied(false); }} required type="date" value={reviewDate} /></label>
+              <p className="operation-version"><span>{t.operationFields.version}</span><strong>{evaluatedPlanning?.systemVersion ?? (locale === "en" ? "Confirm observations for the frozen version" : "Confirmez les observations de la version figée")}</strong></p>
               <label className="operation-check"><input checked={fallbackConfirmed} onChange={(event) => { setFallbackConfirmed(event.target.checked); setOperationCopied(false); setDossierCopied(false); }} type="checkbox" /><span>{t.operationFields.fallback}</span></label>
               <label className="operation-check"><input checked={containmentConfirmed} onChange={(event) => { setContainmentConfirmed(event.target.checked); setOperationCopied(false); setDossierCopied(false); }} type="checkbox" /><span>{t.operationFields.containment}</span></label>
             </fieldset>
           </div>
           <div className="operation-metrics">
             <p><span>{t.operationMetrics.review}</span><strong>{operationSpec.reviewDays}</strong><small>{t.operationDays} · {reviewDateLabel}</small></p>
-            <p><span>{t.operationMetrics.containment}</span><strong>{operationSpec.containment}</strong><small>{locale === "en" ? "planning target, rehearse it" : "objectif à tester par exercice"}</small></p>
+            <p><span>{t.operationMetrics.containment}</span><strong>{operationContainment}</strong><small>{locale === "en" ? "planning target, rehearse it" : "objectif à tester par exercice"}</small></p>
             <p><span>{t.operationMetrics.scope}</span><strong>1</strong><small>{t.operationSameScope}</small></p>
           </div>
           <div className="operation-monitoring"><p className="eyebrow">{t.operationMonitoringTitle}</p><div>{t.operationMonitoring.map(([title, text], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div>
@@ -2416,7 +2643,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         <section className="field-pilot section-blue" hidden={operationalPanel !== "field-pilot"} id="field-pilot" aria-labelledby="field-pilot-title">
           <div className="section-heading"><p className="eyebrow">{t.fieldPilotEyebrow}</p><h2 id="field-pilot-title">{t.fieldPilotTitle}</h2><p>{t.fieldPilotText}</p></div>
           <aside className="field-cohort" aria-label={locale === "en" ? "First field cohort status" : "État de la première cohorte terrain"}>
-            <div><span>{locale === "en" ? "0.3 FIELD COHORT" : "COHORTE TERRAIN 0.3"}</span><strong>{fieldCohort.admitted_reports}/{fieldCohort.target_admitted_reports}</strong><p>{locale === "en" ? "admitted reports" : "rapports admis"}</p></div>
+            <div><span>{locale === "en" ? "FIELD-EVIDENCE MILESTONE" : "JALON DE PREUVES TERRAIN"}</span><strong>{fieldCohort.admitted_reports}/{fieldCohort.target_admitted_reports}</strong><p>{locale === "en" ? "admitted reports" : "rapports admis"}</p></div>
             <ul>
               <li>{locale === "en" ? "One non-agentic or copilot workflow" : "Un processus non agentique ou avec copilote"}</li>
               <li>{locale === "en" ? "One bounded A2 business agent" : "Un agent métier A2 borné"}</li>
@@ -2437,7 +2664,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               </div>
               <div className="field-pilot-fields">
                 <label><span>{t.fieldPilotLabels.alias}</span><input maxLength={80} onChange={(event) => { setFieldAlias(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Example: Workshop North" : "Exemple : Atelier Nord"} type="text" value={fieldAlias} /></label>
-                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => { setFieldVersion(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} type="text" value={fieldVersion} /></label>
+                <label><span>{t.fieldPilotLabels.version}</span><input maxLength={100} onChange={(event) => { setFieldVersion(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Workflow 1.2 · model/config 2026-08" : "Processus 1.2 · modèle/configuration 2026-08"} readOnly={Boolean(evaluatedPlanning)} type="text" value={fieldVersion} /><small>{evaluatedPlanning ? (locale === "en" ? `Locked to ${evaluatedPlanning.configurationId}` : `Verrouillée sur ${evaluatedPlanning.configurationId}`) : (locale === "en" ? "Confirm the observed frozen version first." : "Confirmez d’abord la version figée observée.")}</small></label>
                 <label className="field-pilot-wide"><span>{t.fieldPilotLabels.workflow}</span><textarea maxLength={360} onChange={(event) => { setFieldWorkflow(event.target.value); invalidateFieldReview(); }} placeholder={locale === "en" ? "Describe one bounded input-to-accepted-outcome workflow." : "Décrivez un seul processus borné, de l’entrée au résultat accepté."} rows={3} value={fieldWorkflow} /></label>
                 <label><span>{t.fieldPilotLabels.start}</span><input onChange={(event) => { setFieldStart(event.target.value); invalidateFieldReview(); }} type="date" value={fieldStart} /></label>
                 <label><span>{t.fieldPilotLabels.end}</span><input min={fieldStart || undefined} onChange={(event) => { setFieldEnd(event.target.value); invalidateFieldReview(); }} type="date" value={fieldEnd} /></label>
@@ -2449,7 +2676,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             </div>
             <aside className="field-pilot-review">
               <output className="field-pilot-status" data-ready={fieldReadyForReview} aria-live="polite"><span>{fieldReadyForReview ? t.fieldPilotState.review : t.fieldPilotState.draft}</span><strong>{fieldCompleted}/{fieldRequirements.length}</strong><small>{fieldReadyForReview ? t.fieldPilotState.completed : `${fieldRequirements.length - fieldCompleted} ${t.fieldPilotState.remaining}`}</small></output>
-              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></span><span><small>{locale === "en" ? "RAW TIME CHANGE" : "VARIATION BRUTE"}</small><strong>{formatNumber(rawObservedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{hasAcceptedOutputs ? `${observedTimeReduction}%` : "n/a"}</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!preregisteredPlanning ? (locale === "en" ? "Freeze the hypothesis in the test plan before comparing observations." : "Figez l’hypothèse dans le plan de test avant de comparer les observations.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to preregistered v${preregisteredPlanning.version}.` : `Comparaison verrouillée sur la version préenregistrée v${preregisteredPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!preregisteredPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
+              <div className="field-pilot-evidence"><p>{t.fieldPilotEvidenceTitle}</p><div><span><small>{t.fieldPilotPlanningLabel}</small><strong>{fieldPlanningRange}</strong></span><span><small>{t.fieldPilotObservedLabel}</small><strong>{formatNumber(decisionAdjustedWholeReduction)}%</strong></span><span><small>{locale === "en" ? "RAW TIME CHANGE" : "VARIATION BRUTE"}</small><strong>{formatNumber(rawObservedWholeReduction)}%</strong></span><span><small>{t.fieldPilotComparisonLabel}</small><strong>{fieldComparisonLabel}</strong></span><span><small>{locale === "en" ? "SAMPLE" : "ÉCHANTILLON"}</small><strong>{observedCases}/{pilotSpec.live}</strong></span><span><small>{locale === "en" ? "VALUE" : "VALEUR"}</small><strong>{hasAcceptedOutputs ? `${observedTimeReduction}%` : "n/a"}</strong></span><span><small>{locale === "en" ? "QUALITY" : "QUALITÉ"}</small><strong>{observedQuality}%</strong></span><span><small>{locale === "en" ? "CRITICAL" : "CRITIQUE"}</small><strong>{criticalEffects}</strong></span><span><small>{locale === "en" ? "TRACE" : "TRACE"}</small><strong>{traceCompleteness}%</strong></span><span><small>{locale === "en" ? "ELIGIBILITY" : "ÉLIGIBILITÉ"}</small><strong>{observedEligibility}%</strong></span></div><small className="planning-freeze-warning" data-changed={planningChangedSinceFreeze}>{!preregisteredPlanning ? (locale === "en" ? "Freeze the hypothesis in the test plan before comparing observations." : "Figez l’hypothèse dans le plan de test avant de comparer les observations.") : planningChangedSinceFreeze ? (locale === "en" ? "The current plan differs from the latest frozen version. Freeze a separate recalibration before review." : "Le plan actuel diffère de la dernière version figée. Figez un recalibrage distinct avant la revue.") : (locale === "en" ? `Comparison locked to preregistered v${preregisteredPlanning.version}.` : `Comparaison verrouillée sur la version préenregistrée v${preregisteredPlanning.version}.`)}</small><a href="#evidence-gate">{locale === "en" ? "Change the observed evidence" : "Modifier les preuves observées"} ↑</a><label className="field-pilot-evidence-confirm"><input checked={fieldEvidenceConfirmed} disabled={!fieldComparisonReady || !evaluatedPlanning || planningChangedSinceFreeze} onChange={(event) => setFieldEvidenceConfirmed(event.target.checked)} type="checkbox" /><span>{t.fieldPilotEvidenceConfirm}</span></label></div>
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>

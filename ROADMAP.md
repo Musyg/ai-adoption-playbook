@@ -84,11 +84,12 @@ become observed field results, and the first-party registry remains empty.
 - [ ] Test the complete workbench with independent professionals, SMEs, public
   services, and regulated or high-impact contexts.
 
-The first three 0.5 foundations are implemented with an experimental `0.3.0`
-dossier schema, additive migration from `0.1.0` and `0.2.0`, local comparison
-against an earlier export of the same dossier, and recorded reassessment
-decisions. Field usability testing and the stable 1.0 compatibility freeze
-remain open.
+The first three 0.5 foundations are implemented with experimental project
+dossier schema `0.5.0`, additive migrations from schema versions `0.1.0` through
+`0.4.0`, local comparison against an earlier export of the same dossier, and
+recorded reassessment decisions. Roadmap milestone 0.5 and schema version 0.5.0
+are separate identifiers. Field usability testing and the stable 1.0
+compatibility freeze remain open.
 
 ## 0.6: transferable task-time evidence
 

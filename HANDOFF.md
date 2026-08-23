@@ -199,6 +199,10 @@ distinct from the observed layer required by the first-party admission contract.
    At zero eligible cases the net range is unavailable, source and local
    provenance labels remain distinct, and the copied pilot brief preserves the
    complete human-work and setup contract for reproduction.
+   Whole-workload percentages use the complete baseline human hours, not the
+   share of cases. Eligible cases, eligible human hours, and complete workload
+   hours remain visible separately, and a contradictory denominator blocks the
+   whole-workload calculation.
 5. Every worked-case result is explicitly classified as a grade E planning
    hypothesis. External records may remain attached as separate context without
    upgrading the synthetic result.
@@ -226,6 +230,17 @@ distinct from the observed layer required by the first-party admission contract.
     those real-evidence fields.
 11. The six case-specific evidence notes now follow the selected route. A route
     no longer opens evidence text written for the other route.
+12. Every frozen planning hypothesis receives an immutable configuration ID.
+    Observations, the field draft, the evidence memo, and the operating card
+    can refer only to the explicitly confirmed frozen configuration. Any change
+    to the context, design, system version, or calculation requires a separate
+    recalibration snapshot before the result can authorize another action.
+13. Topic navigation updates the deep link, and a language change preserves the
+    current topic, calculator, snapshots, observations, field draft, owners,
+    review date, and tested fallback and containment controls.
+14. Repeated organization, use-pattern, work-mode, architecture, action-boundary,
+    territory, and sector labels are checked automatically against the GitHub
+    intake so a reader sees the same choice name throughout the journey.
 
 This quantitative evidence and transfer layer now feeds 0.3 directly. The field
 draft retains its source, transfer contract, net range, human-work assumptions,
@@ -266,8 +281,8 @@ Latest local verification on 2026-08-23:
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 52/52 pass
-- Playwright: 96/96 pass across both routes, desktop light, desktop dark, and
+- Node tests: 55/55 pass
+- Playwright: 108/108 pass across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
 - repository validation: 121 Markdown files and 48 paired documents pass
@@ -276,9 +291,9 @@ The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 52 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 55 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 96 Playwright checks across both routes, desktop light, desktop dark, and
+- 108 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;

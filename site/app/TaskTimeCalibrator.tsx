@@ -114,8 +114,8 @@ const content = {
     statuses: { compatible: "Can guide this estimate", partial: "Use with caution", context: "Example only", incompatible: "Too different" },
     reasons: { task_profile: "different work", work_mode: "different way of sharing work", architecture: "different system architecture", autonomy_level: "different action boundary", quality_gate: "different finish level", expertise_level: "different experience", context_only: "no direct before-and-after human-time measure" },
     noEvidence: "No study in the register measures this work closely enough. Start with your own human-time estimate below, then replace it with observations from the pilot.",
-    readerVerdicts: { usable: "CAN GUIDE THE STARTING ESTIMATE", context_only: "EXAMPLE ONLY · NOT USED IN THE CALCULATION" },
-    readerUse: { usable: "The calculator may use this measure when your task and conditions are sufficiently similar.", context_only: "The figure remains visible for context, but it is not added to your estimated saving." },
+    readerVerdicts: { usable: "COMPARABLE · CAN GUIDE THE STARTING ESTIMATE", partial: "USABLE WITH ADJUSTMENTS", context_only: "EXAMPLE ONLY · NOT USED IN THE CALCULATION" },
+    readerUse: { usable: "The calculator may use this measure because the task and conditions are sufficiently similar.", partial: "The task is comparable enough to keep the range, but the differences below must be checked during your pilot.", context_only: "The figure remains visible for context, but it is not added to your estimated saving." },
     readerDetails: "See what was measured and what it does not prove",
     readerMeasured: "What the study actually measured",
     readerConditions: "When it is useful",
@@ -124,6 +124,8 @@ const content = {
     baseline: "Human minutes without AI",
     cases: "Cases per month",
     eligible: "Share of cases AI can actually handle",
+    totalBaseline: "Total human hours per month for all cases",
+    totalBaselineHelp: "Use the complete workload, including cases AI cannot handle. A share of cases is not automatically the same share of time.",
     components: "Open the human-time breakdown",
     componentsHelp: "Machine runtime is separate. Enter only minutes spent by people, including review and failed cases.",
     preparation: "Preparation and context",
@@ -141,6 +143,7 @@ const content = {
       planningLocal: "starting scenario to verify in your pilot",
       planningUnavailable: "enter at least one eligible case before calculating",
       baseline: "Human time currently spent on relevant cases",
+      wholeBaseline: "Current human time for the complete workload",
       recurring: "Human time that would remain per case",
       recurringGain: "Time saved before setup is included",
       setupPerCase: "Setup minutes added to each case",
@@ -158,6 +161,8 @@ const content = {
     modeEffect: "WHY THE RESULT CHANGES",
     modeEffectLead: "The work mode changes the setup effort and which studies are comparable. It does not add a fixed productivity bonus. Architecture and A0 to A4 authority are chosen separately.",
     modeEffectRecurring: "For each case, you entered this much remaining human work:",
+    modeEffectSource: "The comparable study implies this much remaining human work:",
+    modeEffectConservative: "To avoid underestimating the work, the calculation keeps the larger amount:",
     modeEffectNet: "Before counting setup, this represents",
     modeEffectNetSuffix: "less human time. The net result then adds",
     modeEffectSetupSuffix: "per case during the period you chose for spreading the setup effort.",
@@ -168,6 +173,7 @@ const content = {
     calculationLabel: "See the exact calculation",
     calculationPlain: "The calculator keeps whichever is larger: the time suggested by the study or the human time you entered. It then adds the share of setup assigned to one case.",
     negative: "A negative value means the scenario consumes more human time than the current process.",
+    invalidDenominator: "The eligible cases already account for more baseline time than the complete workload. Increase the complete-workload hours or correct the case assumptions before using a whole-workload percentage.",
     zeroEligible: "No net range is calculated at 0% eligibility because setup cannot be allocated to an eligible case.",
     boundary: "The calculator never removes the preparation, checking, corrections, and exception work that you entered. It then adds a share of the setup effort to each eligible case. Treat the result as a starting estimate and replace it with observed time during the pilot.",
   },
@@ -192,8 +198,8 @@ const content = {
     statuses: { compatible: "Peut guider cette estimation", partial: "À utiliser avec prudence", context: "Exemple seulement", incompatible: "Trop différente" },
     reasons: { task_profile: "travail différent", work_mode: "partage du travail différent", architecture: "architecture différente", autonomy_level: "limite d’action différente", quality_gate: "niveau de finition différent", expertise_level: "expérience différente", context_only: "aucune mesure directe du temps humain avant et après" },
     noEvidence: "Aucune étude du registre ne mesure un travail suffisamment proche. Commencez avec votre propre estimation du temps humain ci-dessous, puis remplacez-la par les observations du pilote.",
-    readerVerdicts: { usable: "PEUT GUIDER L’ESTIMATION DE DÉPART", context_only: "EXEMPLE SEULEMENT · NON UTILISÉ DANS LE CALCUL" },
-    readerUse: { usable: "Le calculateur peut utiliser cette mesure si votre tâche et vos conditions sont suffisamment proches.", context_only: "Le chiffre reste visible pour vous informer, mais il n’est pas ajouté au gain estimé." },
+    readerVerdicts: { usable: "COMPARABLE · PEUT GUIDER L’ESTIMATION", partial: "UTILISABLE AVEC AJUSTEMENTS", context_only: "EXEMPLE SEULEMENT · NON UTILISÉ DANS LE CALCUL" },
+    readerUse: { usable: "Le calculateur peut utiliser cette mesure, car la tâche et ses conditions sont assez proches.", partial: "La tâche est assez comparable pour conserver la fourchette, mais les différences ci-dessous doivent être vérifiées pendant votre pilote.", context_only: "Le chiffre reste visible pour vous informer, mais il n’est pas ajouté au gain estimé." },
     readerDetails: "Voir ce qui a été mesuré et ce que cela ne prouve pas",
     readerMeasured: "Ce que l’étude a réellement mesuré",
     readerConditions: "Quand cette étude est utile",
@@ -202,6 +208,8 @@ const content = {
     baseline: "Minutes humaines sans IA",
     cases: "Cas par mois",
     eligible: "Part des cas que l’IA peut réellement traiter",
+    totalBaseline: "Heures humaines totales par mois pour tous les cas",
+    totalBaselineHelp: "Comptez toute la charge, y compris les cas que l’IA ne peut pas traiter. Une part de cas ne représente pas forcément la même part du temps.",
     components: "Ouvrir la décomposition du temps humain",
     componentsHelp: "Le temps machine reste séparé. Saisissez uniquement les minutes des personnes, y compris la revue et les cas en échec.",
     preparation: "Préparation et contexte",
@@ -219,6 +227,7 @@ const content = {
       planningLocal: "scénario de départ à vérifier dans votre pilote",
       planningUnavailable: "saisissez au moins un cas éligible avant le calcul",
       baseline: "Temps humain actuel sur les cas concernés",
+      wholeBaseline: "Temps humain actuel pour toute la charge",
       recurring: "Temps humain qui resterait par cas",
       recurringGain: "Temps économisé avant de compter la mise en place",
       setupPerCase: "Minutes de mise en place ajoutées à chaque cas",
@@ -236,6 +245,8 @@ const content = {
     modeEffect: "POURQUOI LE RÉSULTAT CHANGE",
     modeEffectLead: "Le mode de travail modifie l’effort de mise en place et les études comparables. Il n’ajoute aucun bonus de productivité fixe. L’architecture et l’autorité A0 à A4 sont choisies séparément.",
     modeEffectRecurring: "Pour chaque cas, vous avez indiqué ce temps humain restant :",
+    modeEffectSource: "L’étude comparable suggère ce temps humain restant :",
+    modeEffectConservative: "Pour ne pas sous-estimer le travail, le calcul conserve le temps le plus élevé :",
     modeEffectNet: "Avant de compter la mise en place, cela représente",
     modeEffectNetSuffix: "de temps humain en moins. Le résultat net ajoute ensuite",
     modeEffectSetupSuffix: "par cas pendant la période choisie pour répartir la mise en place.",
@@ -246,6 +257,7 @@ const content = {
     calculationLabel: "Voir le calcul exact",
     calculationPlain: "Le calculateur conserve le temps le plus élevé entre celui suggéré par l’étude et celui que vous avez saisi. Il ajoute ensuite la part du temps de mise en place attribuée à un cas.",
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
+    invalidDenominator: "Les cas éligibles représentent déjà plus de temps initial que toute la charge saisie. Augmentez les heures de la charge complète ou corrigez les hypothèses avant d’utiliser un pourcentage global.",
     zeroEligible: "Aucune fourchette nette n’est calculée avec 0 % d’éligibilité, car la mise en place ne peut être répartie sur un cas éligible.",
     boundary: "Le calculateur ne supprime jamais le temps de préparation, de vérification, de correction et de gestion des exceptions que vous avez saisi. Il ajoute ensuite une part du temps de mise en place à chaque cas éligible. Considérez le résultat comme une estimation de départ, puis remplacez-le par le temps observé pendant le pilote.",
   },
@@ -266,12 +278,14 @@ export function TaskTimeCalibrator({
   baselineMinutes,
   monthlyCases,
   eligibleShare,
+  totalBaselineHumanHours,
   setupHours,
   scenario,
   onIntegrationModeChange,
   onBaselineMinutesChange,
   onMonthlyCasesChange,
   onEligibleShareChange,
+  onTotalBaselineHumanHoursChange,
   onSetupHoursChange,
   onPlanningRangeChange,
   onScenarioChange,
@@ -283,12 +297,14 @@ export function TaskTimeCalibrator({
   baselineMinutes: number;
   monthlyCases: number;
   eligibleShare: number;
+  totalBaselineHumanHours: number;
   setupHours: number;
   scenario: TaskTimeScenarioState;
   onIntegrationModeChange: (value: IntegrationMode) => void;
   onBaselineMinutesChange: (value: number) => void;
   onMonthlyCasesChange: (value: number) => void;
   onEligibleShareChange: (value: number) => void;
+  onTotalBaselineHumanHoursChange: (value: number) => void;
   onSetupHoursChange: (value: number) => void;
   onPlanningRangeChange: (value: TaskTimePlanningRange) => void;
   onScenarioChange: (value: TaskTimeScenarioState) => void;
@@ -328,6 +344,7 @@ export function TaskTimeCalibrator({
     baseline_human_minutes: baselineMinutes,
     monthly_cases: monthlyCases,
     eligible_share: eligibleShare,
+    total_baseline_human_hours: totalBaselineHumanHours,
     preparation_minutes: preparationMinutes,
     supervision_minutes: supervisionMinutes,
     verification_minutes: verificationMinutes,
@@ -336,12 +353,13 @@ export function TaskTimeCalibrator({
     exception_minutes: exceptionMinutes,
     setup_hours: setupHours,
     amortization_months: amortizationMonths,
-  }), [amortizationMonths, baselineMinutes, correctionMinutes, eligibleShare, exceptionMinutes, exceptionRate, monthlyCases, preparationMinutes, setupHours, supervisionMinutes, verificationMinutes]);
+  }), [amortizationMonths, baselineMinutes, correctionMinutes, eligibleShare, exceptionMinutes, exceptionRate, monthlyCases, preparationMinutes, setupHours, supervisionMinutes, totalBaselineHumanHours, verificationMinutes]);
   const evidenceTransfer = useMemo(() => buildEvidenceTransfer(selectedRecord, target, {
     baseline_human_minutes: baselineMinutes,
     monthly_cases: monthlyCases,
     eligible_share: eligibleShare,
-  }), [baselineMinutes, eligibleShare, monthlyCases, selectedRecord, target]);
+    total_baseline_human_hours: totalBaselineHumanHours,
+  }), [baselineMinutes, eligibleShare, monthlyCases, selectedRecord, target, totalBaselineHumanHours]);
   const netPlanningRange = useMemo(() => buildNetPlanningRange(evidenceTransfer, humanScenario), [evidenceTransfer, humanScenario]);
   const planningRange = useMemo(() => derivePlanningRange(evidenceTransfer, humanScenario, target) as TaskTimePlanningRange, [evidenceTransfer, humanScenario, target]);
 
@@ -363,7 +381,9 @@ export function TaskTimeCalibrator({
     return translated.length ? `${t.statuses[status]}: ${translated.join(", ")}` : t.statuses[status];
   };
   const transferableRange = evidenceTransfer.ok ? evidenceTransfer.scenarios : null;
-  const readerQuantitativeUse: "usable" | "context_only" = evidenceTransfer.ok ? "usable" : "context_only";
+  const readerQuantitativeUse: "usable" | "partial" | "context_only" = evidenceTransfer.ok
+    ? evidenceTransfer.compatibility.status === "partial" ? "partial" : "usable"
+    : "context_only";
   const netScenarios = netPlanningRange.scenarios;
   const netCalculable = netPlanningRange.calculable;
   const planningBasis = !netCalculable
@@ -397,7 +417,7 @@ export function TaskTimeCalibrator({
           </details>}
           {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => updateScenario({ selectedEvidenceId: record.evidence_id })} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade}: {t.gradeNames[record.measurement.evidence_grade]} ({t.gradeCode} {record.measurement.evidence_grade}){record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
           {selectedRecord && <article className="task-time-evidence-detail" data-compatibility={selectedCompatibility?.status}>
-            <div className="task-time-evidence-plain"><span>{t.readerVerdicts[readerQuantitativeUse]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{t.readerUse[readerQuantitativeUse]}</p></div>
+            <div className="task-time-evidence-plain"><span>{t.readerVerdicts[readerQuantitativeUse]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{t.readerUse[readerQuantitativeUse]}</p>{selectedCompatibility?.status === "partial" && <em>{reasonText("partial", selectedCompatibility.reasons)}</em>}</div>
             <a href={selectedRecord.sources[0].url} rel="noreferrer" target="_blank">{t.source} ↗</a>
             <details><summary>{t.readerDetails}<span aria-hidden="true">+</span></summary><dl><div><dt>{t.readerMeasured}</dt><dd>{selectedRecord.measurement.notes[locale]}</dd></div><div><dt>{t.readerConditions}</dt><dd>{selectedRecord.transfer.preconditions[locale]}</dd></div><div><dt>{t.readerLimits}</dt><dd>{selectedRecord.transfer.limits[locale]}</dd></div></dl></details>
           </article>}
@@ -411,6 +431,7 @@ export function TaskTimeCalibrator({
             <label><span>{t.baseline}</span><div><input aria-label={t.baseline} max="10080" min="1" onChange={(event) => onBaselineMinutesChange(inputNumber(event.target.value, 1, 10080))} step="1" type="number" value={baselineMinutes} /><small>{t.units.minutes}</small></div></label>
             <label><span>{t.cases}</span><div><input aria-label={t.cases} max="1000000" min="1" onChange={(event) => onMonthlyCasesChange(inputNumber(event.target.value, 1, 1000000))} step="1" type="number" value={monthlyCases} /><small>{t.units.cases}</small></div></label>
             <label><span>{t.eligible}</span><div><input aria-label={t.eligible} max="100" min="0" onChange={(event) => onEligibleShareChange(inputNumber(event.target.value, 0, 100))} step="1" type="number" value={eligibleShare} /><small>{t.units.percent}</small></div></label>
+            <label><span>{t.totalBaseline}</span><div><input aria-describedby="total-baseline-help" aria-label={t.totalBaseline} max="1000000000" min="0.1" onChange={(event) => onTotalBaselineHumanHoursChange(inputNumber(event.target.value, 0.1, 1000000000))} step="0.1" type="number" value={totalBaselineHumanHours} /><small>{t.units.hours}</small></div><em id="total-baseline-help">{t.totalBaselineHelp}</em></label>
           </div>
           <details className="task-time-components"><summary>{t.components}<span>+</span></summary><p>{t.componentsHelp}</p><div className="calibrator-inputs">
             <label><span>{t.preparation}</span><div><input aria-label={t.preparation} max="10080" min="0" onChange={(event) => updateScenario({ preparationMinutes: inputNumber(event.target.value, 0, 10080) })} type="number" value={preparationMinutes} /><small>{t.units.minutes}</small></div></label>
@@ -424,13 +445,14 @@ export function TaskTimeCalibrator({
           </div></details>
           <div className="task-time-mode-effect" data-mode={integrationMode}>
             <strong>{t.modeEffect}</strong>
-            <p>{t.modeEffectLead} {t.modeEffectRecurring} <b>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</b>. {t.modeEffectNet} <b>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</b> {netCalculable ? <>{t.modeEffectNetSuffix} <b>{formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min</b> {t.modeEffectSetupSuffix}</> : t.modeEffectSetupUnavailable}</p>
+            <p>{t.modeEffectLead} {t.modeEffectRecurring} <b>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min</b>. {netScenarios.central.source_implied_human_minutes == null ? null : <>{t.modeEffectSource} <b>{formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min</b>. {t.modeEffectConservative} <b>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</b>. </>} {t.modeEffectNet} <b>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</b> {netCalculable ? <>{t.modeEffectNetSuffix} <b>{formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min</b> {t.modeEffectSetupSuffix}</> : t.modeEffectSetupUnavailable}</p>
           </div>
         </div>
 
         <output className="calibrator-results" aria-live="polite">
           <div className="calibrator-result-head" data-calculable={netCalculable}><span>{t.results.heading}</span><strong>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningBasis}</small></div>
           <div className="calibrator-result-grid">
+            <p><span>{t.results.wholeBaseline}</span><strong>{formatNumber(totalBaselineHumanHours, locale)} h</strong><small>{formatNumber(monthlyCases, locale)} {t.units.cases}</small></p>
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
             <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
             <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
@@ -445,6 +467,7 @@ export function TaskTimeCalibrator({
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatRange([transferableRange.low.reduction_fraction, transferableRange.central.reduction_fraction, transferableRange.high.reduction_fraction], (value) => formatPercent(value, locale))}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
           {netCalculable ? <details className="calibrator-equation calibrator-equation-details"><summary>{t.calculationLabel}<span aria-hidden="true">+</span></summary><p>{t.calculationPlain}</p><code>max({netScenarios.central.source_implied_human_minutes == null ? "n/a" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong></code></details> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}
+          {!humanScenario.workload_denominator_valid && <p className="task-time-negative"><strong>{t.invalidDenominator}</strong></p>}
           {netCalculable && (netScenarios.low.reduction_fraction ?? 0) < 0 && <p className="task-time-negative">{t.negative}</p>}
         </output>
       </div>

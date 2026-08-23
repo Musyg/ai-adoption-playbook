@@ -91,6 +91,7 @@ test("treats architecture and action-boundary differences as non-blocking transf
     baseline_human_minutes: 60,
     monthly_cases: 20,
     eligible_share: 50,
+    total_baseline_human_hours: 20,
   }).ok, true);
 });
 
@@ -111,6 +112,7 @@ test("keeps a measured comparable task transferable across work modes with a cle
     baseline_human_minutes: 60,
     monthly_cases: 40,
     eligible_share: 70,
+    total_baseline_human_hours: 40,
   }).ok, true);
 });
 
@@ -137,7 +139,7 @@ test("transfers a compatible measured range without clipping uncertainty", () =>
   const transfer = buildEvidenceTransfer(
     record("TT-2023-GITHUB-COPILOT-HTTP"),
     { task_profile_id: "software_greenfield", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "mixed" },
-    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 80 },
+    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 80, total_baseline_human_hours: 20 },
   );
   assert.equal(transfer.ok, true);
   assert.equal(transfer.scenarios.low.human_hours_saved_per_month, 3.36);
@@ -149,7 +151,7 @@ test("preserves a measured slowdown as negative human time saved", () => {
   const transfer = buildEvidenceTransfer(
     record("TT-2025-METR-MATURE-REPOS"),
     { task_profile_id: "software_mature_repo", work_mode: "copilot", quality_gate: "production", expertise_level: "experienced" },
-    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100 },
+    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100, total_baseline_human_hours: 20 },
   );
   assert.equal(transfer.ok, true);
   assert.ok(Math.abs(transfer.scenarios.low.human_hours_saved_per_month + 7.8) < 1e-12);
@@ -162,7 +164,7 @@ test("does not convert contextual evidence into a time transfer", () => {
   const transfer = buildEvidenceTransfer(
     item,
     { task_profile_id: "software_mature_repo", work_mode: "copilot", quality_gate: "production", expertise_level: "mixed" },
-    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100 },
+    { baseline_human_minutes: 120, monthly_cases: 10, eligible_share: 100, total_baseline_human_hours: 20 },
   );
   assert.equal(transfer.ok, false);
   assert.equal(transfer.compatibility.status, "context");
@@ -173,6 +175,7 @@ test("accounts for every human component, exceptions, and amortized setup", () =
     baseline_human_minutes: 60,
     monthly_cases: 100,
     eligible_share: 50,
+    total_baseline_human_hours: 100,
     preparation_minutes: 5,
     supervision_minutes: 5,
     verification_minutes: 10,
@@ -189,6 +192,26 @@ test("accounts for every human component, exceptions, and amortized setup", () =
   assert.ok(Math.abs(scenario.whole_workload_reduction_fraction - 0.23833333333333334) < 1e-12);
 });
 
+test("weights the complete workload by baseline hours rather than by the share of cases", () => {
+  const scenario = calculateHumanTimeScenario({
+    baseline_human_minutes: 600,
+    monthly_cases: 100,
+    eligible_share: 10,
+    total_baseline_human_hours: 115,
+    preparation_minutes: 300,
+    supervision_minutes: 0,
+    verification_minutes: 0,
+    correction_minutes: 0,
+    exception_rate: 0,
+    exception_minutes: 0,
+    setup_hours: 0,
+    amortization_months: 12,
+  });
+  assert.equal(scenario.human_hours_saved_per_month, 50);
+  assert.ok(Math.abs(scenario.whole_workload_reduction_fraction - (50 / 115)) < 1e-12);
+  assert.notEqual(scenario.whole_workload_reduction_fraction, 0.05);
+});
+
 test("produces a net evidence range after the local human floor and amortized setup", () => {
   const target = { task_profile_id: "knowledge_analysis", work_mode: "copilot", quality_gate: "reviewed", expertise_level: "experienced" };
   const options = listEvidenceOptions(registry, target);
@@ -198,6 +221,7 @@ test("produces a net evidence range after the local human floor and amortized se
     baseline_human_minutes: 60,
     monthly_cases: 40,
     eligible_share: 70,
+    total_baseline_human_hours: 40,
     preparation_minutes: 5,
     supervision_minutes: 5,
     verification_minutes: 10,
@@ -207,7 +231,7 @@ test("produces a net evidence range after the local human floor and amortized se
     setup_hours: 40,
     amortization_months: 12,
   });
-  const evidence = buildEvidenceTransfer(options[0].record, target, { baseline_human_minutes: 60, monthly_cases: 40, eligible_share: 70 });
+  const evidence = buildEvidenceTransfer(options[0].record, target, { baseline_human_minutes: 60, monthly_cases: 40, eligible_share: 70, total_baseline_human_hours: 40 });
   const net = buildNetPlanningRange(evidence, manual);
   assert.equal(net.method, "greater_residual_plus_amortized_setup");
   assert.equal(net.scenarios.low.binding_floor, "source");
@@ -247,11 +271,13 @@ test("blocks the net range when no case is eligible and setup cannot be allocate
     baseline_human_minutes: 60,
     monthly_cases: 40,
     eligible_share: 0,
+    total_baseline_human_hours: 40,
   });
   const manual = calculateHumanTimeScenario({
     baseline_human_minutes: 60,
     monthly_cases: 40,
     eligible_share: 0,
+    total_baseline_human_hours: 40,
     preparation_minutes: 5,
     supervision_minutes: 5,
     verification_minutes: 10,
@@ -280,11 +306,13 @@ test("uses the declared human work as a floor without adding it twice", () => {
     baseline_human_minutes: 120,
     monthly_cases: 10,
     eligible_share: 100,
+    total_baseline_human_hours: 20,
   });
   const manual = calculateHumanTimeScenario({
     baseline_human_minutes: 120,
     monthly_cases: 10,
     eligible_share: 100,
+    total_baseline_human_hours: 20,
     preparation_minutes: 20,
     supervision_minutes: 20,
     verification_minutes: 30,
@@ -309,11 +337,13 @@ test("keeps an evidence-backed slowdown negative after local costs and setup", (
     baseline_human_minutes: 120,
     monthly_cases: 10,
     eligible_share: 100,
+    total_baseline_human_hours: 20,
   });
   const manual = calculateHumanTimeScenario({
     baseline_human_minutes: 120,
     monthly_cases: 10,
     eligible_share: 100,
+    total_baseline_human_hours: 20,
     preparation_minutes: 5,
     supervision_minutes: 5,
     verification_minutes: 10,

@@ -69,13 +69,13 @@ export type TaskTimeRegistry = {
   }>;
   records: TaskTimeEvidenceRecord[];
 };
-export type WorkloadInput = { baseline_human_minutes: number; monthly_cases: number; eligible_share: number };
+export type WorkloadInput = { baseline_human_minutes: number; monthly_cases: number; eligible_share: number; total_baseline_human_hours: number };
 export type EvidenceRangePoint = {
   reduction_fraction: number;
   human_time_with_ai_minutes: number;
   human_hours_saved_per_month: number;
   human_hours_saved_per_year: number;
-  whole_workload_reduction_fraction: number;
+  whole_workload_reduction_fraction: number | null;
 };
 export type EvidenceTransferResult = {
   ok: true;
@@ -103,6 +103,8 @@ export type HumanTimeScenario = {
   monthly_cases: number;
   eligible_share: number;
   eligible_cases: number;
+  total_baseline_human_hours: number;
+  workload_denominator_valid: boolean;
   calculable: boolean;
   baseline_eligible_human_hours: number;
   components: Record<string, number>;
@@ -112,7 +114,7 @@ export type HumanTimeScenario = {
   human_time_with_ai_minutes: number;
   human_time_saved_per_case: number;
   reduction_fraction: number;
-  whole_workload_reduction_fraction: number;
+  whole_workload_reduction_fraction: number | null;
   human_hours_saved_per_month: number;
   human_hours_saved_per_year: number;
   accepted_throughput_ratio: number | null;

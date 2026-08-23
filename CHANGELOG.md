@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Bound every observation and real-decision export to an immutable
+  configuration identifier. Changing the organization, use pattern, territory,
+  risk, work mode, architecture, action boundary, system version, or time
+  assumptions now requires a separate frozen recalibration and explicit
+  confirmation before the new configuration can be operated.
+- Corrected whole-workload percentages to use the complete baseline human
+  hours as their denominator. The interface now keeps eligible cases, eligible
+  hours, and the complete workload separate, and refuses a whole-workload
+  percentage when those inputs contradict one another.
+- Added plain-language coherence prompts for unusual work-mode, architecture,
+  and A0 to A4 combinations without prohibiting legitimate designs. A3 and A4
+  now also condition the pilot, security, containment, and review controls.
+- Preserved the exact open topic and complete operational state during language
+  changes, aligned repeated choice labels with the GitHub intake, blocked past
+  reassessment dates, and made field-publication confirmation unavailable until
+  the observations are bound to the frozen configuration.
 - Split the former integration choice into three independent decisions: work
   mode, technical architecture, and the exact A0 to A4 action boundary. The
   guided path, calculator, field draft, lifecycle dossier, change review, and
@@ -15,8 +31,8 @@
   `work_mode`, architecture, and the exact A0–A4 action boundary kept separate.
 - Completed a route-by-route readability and interaction audit across English,
   French, desktop, dark mode, and mobile. Plain-language definitions now lead
-  into optional detail, large surfaces remain neutral, and all 96 browser
-  checks and 52 Node checks cover the resulting journey.
+  into optional detail, large surfaces remain neutral, and all 108 browser
+  checks and 55 Node checks cover the resulting journey.
 - Added a plain-language evidence layer to the task-time guide. Every study now
   starts with a direct verdict, a short explanation of what happened, and a
   clear statement of whether its figures enter the estimate. Measurement

@@ -42,17 +42,18 @@ export function listEvidenceOptions(registry, target) {
     });
 }
 
-function calculateRangePoint(reductionFraction, baselineMinutes, monthlyCases, eligibleShare) {
+function calculateRangePoint(reductionFraction, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours) {
   const eligibleCases = monthlyCases * eligibleShare;
   const baselineEligibleHours = eligibleCases * baselineMinutes / 60;
   const humanTimeWithAiMinutes = baselineMinutes * (1 - reductionFraction);
   const humanHoursSavedPerMonth = baselineEligibleHours * reductionFraction;
+  const workloadDenominatorValid = totalBaselineHumanHours >= baselineEligibleHours && totalBaselineHumanHours > 0;
   return {
     reduction_fraction: reductionFraction,
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
     human_hours_saved_per_month: humanHoursSavedPerMonth,
     human_hours_saved_per_year: humanHoursSavedPerMonth * 12,
-    whole_workload_reduction_fraction: eligibleShare * reductionFraction,
+    whole_workload_reduction_fraction: workloadDenominatorValid ? humanHoursSavedPerMonth / totalBaselineHumanHours : null,
   };
 }
 
@@ -67,6 +68,7 @@ export function buildEvidenceTransfer(record, target, workload) {
   const baselineMinutes = bounded(workload?.baseline_human_minutes, 0.1, 10080);
   const monthlyCases = bounded(workload?.monthly_cases, 0, 1000000);
   const eligibleShare = bounded(workload?.eligible_share, 0, 100) / 100;
+  const totalBaselineHumanHours = bounded(workload?.total_baseline_human_hours, 0, 1000000000);
 
   return {
     ok: true,
@@ -78,11 +80,12 @@ export function buildEvidenceTransfer(record, target, workload) {
       monthly_cases: monthlyCases,
       eligible_share: eligibleShare,
       eligible_cases: monthlyCases * eligibleShare,
+      total_baseline_human_hours: totalBaselineHumanHours,
     },
     scenarios: {
-      low: calculateRangePoint(range.low, baselineMinutes, monthlyCases, eligibleShare),
-      central: calculateRangePoint(range.central, baselineMinutes, monthlyCases, eligibleShare),
-      high: calculateRangePoint(range.high, baselineMinutes, monthlyCases, eligibleShare),
+      low: calculateRangePoint(range.low, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
+      central: calculateRangePoint(range.central, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
+      high: calculateRangePoint(range.high, baselineMinutes, monthlyCases, eligibleShare, totalBaselineHumanHours),
     },
   };
 }
@@ -92,6 +95,9 @@ export function calculateHumanTimeScenario(input) {
   const monthlyCases = bounded(input?.monthly_cases, 0, 1000000);
   const eligibleShare = bounded(input?.eligible_share, 0, 100) / 100;
   const eligibleCases = monthlyCases * eligibleShare;
+  const totalBaselineHumanHours = bounded(input?.total_baseline_human_hours, 0, 1000000000);
+  const baselineEligibleHumanHours = eligibleCases * baselineMinutes / 60;
+  const workloadDenominatorValid = totalBaselineHumanHours >= baselineEligibleHumanHours && totalBaselineHumanHours > 0;
   const calculable = eligibleCases > 0;
   const preparationMinutes = bounded(input?.preparation_minutes, 0, 10080);
   const supervisionMinutes = bounded(input?.supervision_minutes, 0, 10080);
@@ -116,8 +122,10 @@ export function calculateHumanTimeScenario(input) {
     monthly_cases: monthlyCases,
     eligible_share: eligibleShare,
     eligible_cases: eligibleCases,
+    total_baseline_human_hours: totalBaselineHumanHours,
+    workload_denominator_valid: workloadDenominatorValid,
     calculable,
-    baseline_eligible_human_hours: eligibleCases * baselineMinutes / 60,
+    baseline_eligible_human_hours: baselineEligibleHumanHours,
     components: {
       preparation_minutes: preparationMinutes,
       supervision_minutes: supervisionMinutes,
@@ -134,7 +142,7 @@ export function calculateHumanTimeScenario(input) {
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
     human_time_saved_per_case: humanTimeSavedPerCase,
     reduction_fraction: reductionFraction,
-    whole_workload_reduction_fraction: eligibleShare * reductionFraction,
+    whole_workload_reduction_fraction: workloadDenominatorValid ? monthlyHumanHoursSaved / totalBaselineHumanHours : null,
     human_hours_saved_per_month: monthlyHumanHoursSaved,
     human_hours_saved_per_year: monthlyHumanHoursSaved * 12,
     accepted_throughput_ratio: humanTimeWithAiMinutes > 0 ? baselineMinutes / humanTimeWithAiMinutes : null,
@@ -189,7 +197,9 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
     recurring_reduction_fraction: recurringTimeSavedPerCase / baselineMinutes,
     recurring_human_hours_saved_per_month: recurringHumanHoursSavedPerMonth,
     reduction_fraction: humanTimeSavedPerCase / baselineMinutes,
-    whole_workload_reduction_fraction: humanScenario.eligible_share * humanTimeSavedPerCase / baselineMinutes,
+    whole_workload_reduction_fraction: humanScenario.workload_denominator_valid
+      ? humanHoursSavedPerMonth / humanScenario.total_baseline_human_hours
+      : null,
     human_hours_saved_per_month: humanHoursSavedPerMonth,
     human_hours_saved_per_year: humanHoursSavedPerMonth * 12,
     setup_payback_months: recurringHumanHoursSavedPerMonth > 0
