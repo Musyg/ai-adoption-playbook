@@ -355,7 +355,7 @@ export function TaskTimeCalibrator({
 }) {
   const t = content[locale];
   const planningOptions = useMemo(() => normalizePlanningOptions(scenario.planningOptions), [scenario.planningOptions]);
-  const updateOptions = (patch: PlanningOptions) => onScenarioChange({ ...scenario, planningOptions: { ...planningOptions, ...patch } });
+  const updateOptions = (patch: PlanningOptions) => onScenarioChange({ ...scenario, planningOptions: { ...scenario.planningOptions, ...patch } });
   const {
     profileId,
     qualityGate,
@@ -419,7 +419,7 @@ export function TaskTimeCalibrator({
       qualityGate: profile.quality_gates.includes("reviewed") ? "reviewed" : profile.quality_gates[0],
       expertiseLevel: profile.profile_id === "software_mature_repo" || profile.profile_id === "hard_automation_project" ? "experienced" : "mixed",
       selectedEvidenceId: "",
-      planningOptions: { ...planningOptions, source_setup_minutes: 0 },
+      planningOptions: { ...scenario.planningOptions, source_setup_minutes: 0 },
     });
   };
   const reasonText = (status: CompatibilityStatus, reasons: string[]) => {
@@ -463,7 +463,7 @@ export function TaskTimeCalibrator({
             <summary>{t.gradeHelpLabel}<span aria-hidden="true">?</span></summary>
             <div><strong>{t.gradeHelpTitle}</strong><p>{t.gradeScaleIntro}</p><ol>{(["A", "B", "C", "D", "E"] as const).map((grade) => <li data-selected={selectedRecord.measurement.evidence_grade === grade} key={grade}><span>{grade}</span><p>{t.gradeNames[grade]}</p></li>)}</ol></div>
           </details>}
-          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => updateScenario({ selectedEvidenceId: record.evidence_id, planningOptions: { ...planningOptions, source_setup_minutes: 0 } })} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade}: {t.gradeNames[record.measurement.evidence_grade]} ({t.gradeCode} {record.measurement.evidence_grade}){record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
+          {evidenceOptions.length ? <fieldset><legend className="visually-hidden">{t.evidenceStep}</legend><div className="task-time-evidence-options">{evidenceOptions.map(({ record, compatibility }) => <label data-compatibility={compatibility.status} key={record.evidence_id}><input aria-label={record.title[locale]} checked={record.evidence_id === selectedRecord?.evidence_id} name="task-time-evidence" onChange={() => updateScenario({ selectedEvidenceId: record.evidence_id, planningOptions: { ...scenario.planningOptions, source_setup_minutes: 0 } })} type="radio" value={record.evidence_id} /><span><small>{reasonText(compatibility.status, compatibility.reasons)}</small><strong>{record.title[locale]}</strong><em>{t.evidenceGrade}: {t.gradeNames[record.measurement.evidence_grade]} ({t.gradeCode} {record.measurement.evidence_grade}){record.measurement.sample_size ? ` · ${t.sample} ${formatNumber(record.measurement.sample_size, locale, 0)}` : ""}</em></span></label>)}</div></fieldset> : <p className="task-time-no-evidence">{t.noEvidence}</p>}
           {selectedRecord && <article className="task-time-evidence-detail" data-compatibility={selectedCompatibility?.status}>
             <div className="task-time-evidence-plain"><span>{t.readerVerdicts[readerQuantitativeUse]}</span><strong>{selectedRecord.reader_summary[locale]}</strong><p>{planningOptions.use_source === false ? t.localChoice : t.readerUse[readerQuantitativeUse]}</p>{selectedCompatibility?.status === "partial" && <em>{reasonText("partial", selectedCompatibility.reasons)}</em>}</div>
             <a href={selectedRecord.sources[0].url} rel="noreferrer" target="_blank">{t.source} ↗</a>

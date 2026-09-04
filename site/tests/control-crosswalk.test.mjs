@@ -19,8 +19,8 @@ test("publishes a versioned JSON Schema contract", () => {
   assert.equal(schema.$schema, "https://json-schema.org/draft/2020-12/schema");
   assert.equal(schema.properties.schema_version.const, "1.1.0");
   assert.equal(catalog.schema_version, "1.1.0");
-  assert.equal(catalog.catalog_version, "2026.08");
-  assert.equal(catalog.published_on, "2026-08-20");
+  assert.equal(catalog.catalog_version, "2026.09");
+  assert.equal(catalog.published_on, "2026-09-05");
 });
 
 test("keeps control, evidence, and source references stable and resolvable", () => {

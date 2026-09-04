@@ -89,7 +89,7 @@ test("use pattern and jurisdiction update the evidence profile", async ({ page }
 
   await page.locator(".use-pattern-grid button").nth(3).click();
   await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("predictive_decision_support");
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("AlphaEvolve");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("DeepMind reports better algorithms");
   await expect(page.locator(".task-time-source-range")).toContainText("not added to your estimate");
 
   await page.locator(".use-pattern-grid button").nth(5).click();
@@ -136,7 +136,7 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".task-time-mode-effect")).toContainText("does not add a fixed productivity bonus");
 
   await page.getByLabel("What work do you want to estimate?").selectOption("predictive_decision_support");
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("AlphaEvolve");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("DeepMind reports better algorithms");
   await expect(page.locator(".task-time-source-range")).toContainText("not added to your estimate");
   await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
 
@@ -182,11 +182,11 @@ test("task-time explanation separates the user's input from the study value", as
     if (route === "/") {
       await expect(explanation).toContainText("you entered this much remaining human work: 33 min");
       await expect(explanation).toContainText("study implies this much remaining human work: 44.9 min");
-      await expect(explanation).toContainText("calculation keeps the larger amount: 44.9 min");
+      await expect(explanation).toContainText("After applying your coverage settings, the human work retained is: 44.9 min");
     } else {
       await expect(explanation).toContainText("vous avez indiqué ce temps humain restant : 33 min");
       await expect(explanation).toContainText("étude comparable suggère ce temps humain restant : 44,9 min");
-      await expect(explanation).toContainText("calcul conserve le temps le plus élevé : 44,9 min");
+      await expect(explanation).toContainText("Après vos réglages de périmètre, le travail humain retenu est : 44,9 min");
     }
   }
 });
@@ -387,6 +387,7 @@ for (const beginnerLocale of [
     await page.goto(beginnerLocale.path);
     await page.locator("#operational-workspace > summary").click();
     const evidence = page.locator(".task-time-evidence-detail");
+    await page.locator('.task-time-evidence-options input[value="TT-2025-ANTHROPIC-MODEL-ESTIMATE"]').check();
     await expect(evidence.locator(".task-time-evidence-plain span")).toHaveText(beginnerLocale.verdict);
     await expect(evidence.locator(".task-time-evidence-plain strong")).toContainText(beginnerLocale.summary);
     await expect(evidence.locator(".task-time-evidence-plain p")).toHaveText(beginnerLocale.use);
@@ -697,7 +698,7 @@ for (const fieldLocale of [
     expect(report).toContain(fieldLocale.volume);
     expect(report).toContain(fieldLocale.denominator);
     expect(report).toContain(fieldLocale.risk);
-    expect(report).toContain("1.0.0 · 2026-08-21");
+    expect(report).toContain("1.0.0 · 2026-09-05");
   });
 }
 
