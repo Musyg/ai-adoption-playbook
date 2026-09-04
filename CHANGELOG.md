@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Corrected the public-review time formula, the BCG task count, and the second,
-  conflicting A to E scale. Updated C2PA to 2.4 and support-client throughput to
+  conflicting A to E scale. Updated C2PA to 2.4 and customer-support throughput to
   the 2025 QJE publication while retaining historical source provenance.
 - Added ten implementation cases covering document checks, multimodal work,
   predictive optimization and agent teams. Their mechanisms can inform local
@@ -13,6 +13,10 @@
   metadata. Frozen hypotheses and human-readable exports retain those settings.
 - Added three short validation questions, optional detail on repeated attempts
   and post-change monitoring, and regression checks for the affected workflows.
+- Completed two independent reviews and resolved their findings, including
+  mixed payback outcomes and source metadata. Verification passes 62 Node tests,
+  126 Chrome checks and the source-discovery regression. Generated browser
+  reports no longer produce false source-document validation errors.
 
 - Closed the final journey-coherence gaps found by two independent reviews.
   Hard design conflicts now block freezing and export, softer deviations and

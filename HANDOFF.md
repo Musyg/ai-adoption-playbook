@@ -4,8 +4,9 @@ Snapshot: 2026-09-05 (Europe/Zurich)
 
 ## September evidence and scenario refresh
 
-Local implementation of the six-step audit plan is under verification. No new
-publication is implied by this working snapshot. Priorities 1 to 5 cover the
+Local implementation of all six audit priorities is complete and verified.
+Working branch: `maintenance/september-evidence-scenarios`. No push, merge or
+publication was performed; `main` remains at `d6a7b3d`. Priorities 1 to 5 cover the
 corrected accounting and BCG summary, a single evidence-grade vocabulary,
 C2PA 2.4 and the QJE support publication, ten additional implementation cases,
 editable scenario margins, source-time coverage and short evaluation guidance.
@@ -24,6 +25,18 @@ user selects another task or study. Older sessions retain the default method.
 
 The known first-party evidence requirement for 0.3 is unchanged. The new examples
 and simulations enrich its hypothesis layer, not its observation layer.
+
+Two separate agents reviewed the frozen changes: calculation/state/export and
+source accuracy/reader clarity. Both approved `c7c3976` after corrections. The
+subsequent CSS and source-only validation changes were separately approved at
+`ff66b33`, including the inspected CI regression-test addition. Final Chrome
+coverage ran against the application content at `9b53df1`; later changes affect
+repository validation, its CI command and this handoff, not the application.
+
+The review corrected an incomplete first-audit recommendation: C2PA 2.4, not
+2.3, is the current published reference checked here. Old source identifiers
+remain available for provenance. The amortization display now keeps a scenario
+that never pays back visible instead of showing only its favourable endpoint.
 
 ## Current state
 
@@ -153,8 +166,10 @@ result remains valid evidence and must not be clipped away. The core equations
 are:
 
 ```text
-human time with AI = preparation + supervision + verification
-                     + corrections + exceptions + amortized setup
+local human work = preparation + supervision + verification
+                   + corrections + exceptions
+human time with AI = max(adjusted source residual, local human work)
+                     + work absent from both + local amortized setup
 human time saved per task = baseline human time - human time with AI
 annual human time saved = human time saved per task * annual frequency
 ```
@@ -299,24 +314,33 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-23:
+Latest local verification on 2026-09-05:
 
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 56/56 pass
-- Playwright: 117/117 pass across both routes, desktop light, desktop dark, and
+- Node tests: 62/62 pass
+- Playwright in Chrome: 126/126 pass, no retries, across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 121 Markdown files and 48 paired documents pass
+- repository validation: 123 Markdown files and 49 paired documents pass
+- source-discovery regression: 1/1 pass; CI now runs it before repository validation
+- task-time and control-crosswalk JSON Schema validation: pass
+
+Generated browser reports are excluded from source-document validation, and
+dependency/generated directories are pruned before discovery. No artifacts
+were deleted to hide validation errors. The existing build warning about a
+client bundle above 500 kB remains non-blocking; this update does not claim to
+resolve application code-splitting. Dependency versions were not changed and a
+fresh dependency vulnerability audit remains part of the CI workflow.
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 56 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 62 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 117 Playwright checks across both routes, desktop light, desktop dark, and
+- 126 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;
