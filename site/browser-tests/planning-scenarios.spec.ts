@@ -19,6 +19,10 @@ for (const locale of [
     const values = (await points.allTextContents()).map(text => Number(text.replace("%", "").replace(",", ".")));
     expect(values[0]).toBeLessThan(values[1]);
     expect(values[1]).toBeLessThan(values[2]);
+    await calibrator.locator('.task-time-sensitivity input[type="number"]').first().fill("70");
+    await expect(calibrator.locator('[data-metric="payback"] strong')).toContainText(locale.path === "/" ? "Not in every scenario" : "Pas dans tous les scénarios");
+    await expect(calibrator.locator('[data-metric="payback"] small')).toContainText(locale.path === "/" ? "Cautious: Not reached" : "Prudent: Non atteint");
+    await calibrator.locator('.task-time-sensitivity input[type="number"]').first().fill("12");
     await expect(calibrator.locator(".task-time-source-range")).toContainText(locale.local);
     await calibrator.locator(".task-time-eval-help > summary").click();
     await expect(calibrator.locator(".task-time-eval-help li")).toHaveCount(3);

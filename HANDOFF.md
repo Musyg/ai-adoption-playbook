@@ -7,7 +7,7 @@ Snapshot: 2026-09-05 (Europe/Zurich)
 Local implementation of the six-step audit plan is under verification. No new
 publication is implied by this working snapshot. Priorities 1 to 5 cover the
 corrected accounting and BCG summary, a single evidence-grade vocabulary,
-C2PA 2.3 and the QJE support publication, ten additional implementation cases,
+C2PA 2.4 and the QJE support publication, ten additional implementation cases,
 editable scenario margins, source-time coverage and short evaluation guidance.
 
 The registry now contains 19 sources, with four admitted human-time ratios.

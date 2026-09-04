@@ -199,7 +199,7 @@ const content = {
     negative: "A negative value means the scenario consumes more human time than the current process.",
     invalidDenominator: "The eligible cases already account for more baseline time than the complete workload. Increase the complete-workload hours or correct the case assumptions before using a whole-workload percentage.",
     zeroEligible: "No net range is calculated at 0% eligibility because setup cannot be allocated to an eligible case.",
-    boundary: "The calculator never removes the preparation, checking, corrections, and exception work that you entered. It then adds a share of the setup effort to each eligible case. Treat the result as a starting estimate and replace it with observed time during the pilot.",
+    boundary: "The main inputs define the middle case. Optional scenario margins adjust review, exceptions and setup explicitly. Each case keeps its adjusted human-work breakdown, plus any extra work and its share of setup. Treat the result as a starting estimate and replace it with observed time during the pilot.",
   },
   fr: {
     evalHelpTitle: "Comment tester cette estimation ?",
@@ -303,7 +303,7 @@ const content = {
     negative: "Une valeur négative signifie que le scénario consomme plus de temps humain que le processus actuel.",
     invalidDenominator: "Les cas éligibles représentent déjà plus de temps initial que toute la charge saisie. Augmentez les heures de la charge complète ou corrigez les hypothèses avant d’utiliser un pourcentage global.",
     zeroEligible: "Aucune fourchette nette n’est calculée avec 0 % d’éligibilité, car la mise en place ne peut être répartie sur un cas éligible.",
-    boundary: "Le calculateur ne supprime jamais le temps de préparation, de vérification, de correction et de gestion des exceptions que vous avez saisi. Il ajoute ensuite une part du temps de mise en place à chaque cas éligible. Considérez le résultat comme une estimation de départ, puis remplacez-le par le temps observé pendant le pilote.",
+    boundary: "Les champs principaux définissent le cas central. Les marges facultatives ajustent explicitement la revue, les exceptions et l’installation. Chaque scénario conserve sa décomposition ajustée du travail humain, les charges supplémentaires et sa part de mise en place. Considérez le résultat comme une estimation de départ, puis remplacez-le par le temps observé pendant le pilote.",
   },
 } as const;
 
@@ -440,7 +440,15 @@ export function TaskTimeCalibrator({
       ? t.results.planningEvidence
       : t.results.planningLocal;
   const paybacks = [netScenarios.low.setup_payback_months, netScenarios.high.setup_payback_months].filter((value): value is number => value != null);
-  const paybackRange = paybacks.length ? `${formatRange([Math.min(...paybacks), Math.max(...paybacks)], (value) => formatNumber(value, locale))} ${t.units.months}` : "n/a";
+  const mixedPayback = paybacks.length === 1;
+  const noPayback = locale === "en" ? "Not reached" : "Non atteint";
+  const paybackRange = !netCalculable ? "n/a" : mixedPayback
+    ? (locale === "en" ? "Not in every scenario" : "Pas dans tous les scénarios")
+    : paybacks.length ? `${formatRange([Math.min(...paybacks), Math.max(...paybacks)], (value) => formatNumber(value, locale))} ${t.units.months}` : noPayback;
+  const paybackDetails = [netScenarios.low, netScenarios.central, netScenarios.high].map((point, index) =>
+    (locale === "en" ? ["Cautious", "Middle", "Favourable"] : ["Prudent", "Central", "Favorable"])[index] + ": " +
+    (point.setup_payback_months == null ? noPayback : formatNumber(point.setup_payback_months, locale) + " " + t.units.months)
+  ).join(" · ");
   const netRangeVaries = new Set([netScenarios.low.whole_workload_reduction_fraction, netScenarios.central.whole_workload_reduction_fraction, netScenarios.high.whole_workload_reduction_fraction].map((value) => value == null ? "n/a" : formatPercent(value, locale))).size > 1;
   const inputNumber = (value: string, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, Number(value) || minimum));
 
@@ -525,7 +533,7 @@ export function TaskTimeCalibrator({
               <p data-range="central"><span>{t.results.central}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
               <p data-range="high"><span>{t.results.high}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.high.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.high.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
             </> : <p className="task-time-local-scenario" data-range="local"><span>{t.results.localScenario}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningOptions.sensitivity?.enabled || !planningOptions.use_source ? (locale === "en" ? "Your settings currently give one result. Open the scenario controls to vary your assumptions." : "Vos réglages donnent actuellement un seul résultat. Ouvrez les scénarios pour faire varier vos hypothèses.") : transferableRange ? t.results.collapsedRange : t.results.noRange}</small></p>}
-            <p><span>{t.results.payback}</span><strong>{paybackRange}</strong></p>
+            <p data-metric="payback"><span>{t.results.payback}</span><strong>{paybackRange}</strong>{netCalculable && mixedPayback && <small>{paybackDetails}</small>}</p>
           </div>
           <div className="task-time-source-range" data-transferable={Boolean(transferableRange)}><span>{t.evidenceRange}</span>{transferableRange ? <strong>{formatRange([transferableRange.low.reduction_fraction, transferableRange.central.reduction_fraction, transferableRange.high.reduction_fraction], (value) => formatPercent(value, locale))}%</strong> : <p>{t.evidenceBlocked}</p>}<small>{!planningOptions.use_source && <>{t.localChoice} </>}{selectedRecord ? `${t.evidenceReference} : ${selectedRecord.evidence_id} · ${t.statuses[selectedCompatibility?.status ?? "incompatible"]}` : t.noEvidence}</small></div>
           {netCalculable ? <details className="calibrator-equation calibrator-equation-details"><summary>{t.calculationLabel}<span aria-hidden="true">+</span></summary><p>{t.calculationPlain}</p><ul>{describePlanningAssumptions(planningRange, locale).map((line) => <li key={line}>{line}</li>)}</ul><code>max({netScenarios.central.source_implied_human_minutes == null ? "0 min" : `${formatNumber(netScenarios.central.source_implied_human_minutes, locale)} − ${formatNumber(netScenarios.central.source_setup_removed_minutes, locale)} min`}, {formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min) + {formatNumber(netScenarios.central.additional_minutes, locale)} min + {formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min = <strong>{formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min</strong></code></details> : <p className="calibrator-equation"><strong>n/a</strong> {t.zeroEligible}</p>}

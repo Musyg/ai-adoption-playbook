@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Corrected the public-review time formula, the BCG task count, and the second,
-  conflicting A to E scale. Updated C2PA to 2.3 and support-client throughput to
+  conflicting A to E scale. Updated C2PA to 2.4 and support-client throughput to
   the 2025 QJE publication while retaining historical source provenance.
 - Added ten implementation cases covering document checks, multimodal work,
   predictive optimization and agent teams. Their mechanisms can inform local
