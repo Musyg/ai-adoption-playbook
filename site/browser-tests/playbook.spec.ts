@@ -186,7 +186,7 @@ test("task-time explanation separates the user's input from the study value", as
     } else {
       await expect(explanation).toContainText("vous avez indiqué ce temps humain restant : 33 min");
       await expect(explanation).toContainText("étude comparable suggère ce temps humain restant : 44,9 min");
-      await expect(explanation).toContainText("Après vos réglages de périmètre, le travail humain retenu est : 44,9 min");
+      await expect(explanation).toContainText("Après application de vos réglages de périmètre, le temps humain retenu est : 44,9 min");
     }
   }
 });
