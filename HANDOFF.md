@@ -1,6 +1,29 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-23 (Europe/Zurich)
+Snapshot: 2026-09-05 (Europe/Zurich)
+
+## September evidence and scenario refresh
+
+Local implementation of the six-step audit plan is under verification. No new
+publication is implied by this working snapshot. Priorities 1 to 5 cover the
+corrected accounting and BCG summary, a single evidence-grade vocabulary,
+C2PA 2.3 and the QJE support publication, ten additional implementation cases,
+editable scenario margins, source-time coverage and short evaluation guidance.
+
+The registry now contains 19 sources, with four admitted human-time ratios.
+Context-only cases can seed explicit demonstrations; they do not become measured
+coefficients automatically. Optional measurement metadata identifies the kind
+of range, observation period, model/tools and what time was counted.
+
+Scenario settings are saved and copied with frozen hypotheses. The main inputs
+describe the central case; optional review, exception and setup margins produce
+cautious and favourable cases. Additional work must be absent from both the
+source and local breakdown. Setup already included in source time is removed
+before local setup is added. That source-specific adjustment resets when the
+user selects another task or study. Older sessions retain the default method.
+
+The known first-party evidence requirement for 0.3 is unchanged. The new examples
+and simulations enrich its hypothesis layer, not its observation layer.
 
 ## Current state
 
@@ -171,7 +194,7 @@ Quantitative records must expose their source and use one evidence grade:
 - A: controlled or paired measurements with actual task-time logs;
 - B: field telemetry or other objective operational measurements;
 - C: self-reported time or survey estimates;
-- D: internal or supplier case study with incomplete independent validation;
+- D: published case or capability test without independently validated human-time comparison;
 - E: model-estimated, synthetic, or planning-only value.
 
 Grades describe the measurement basis, not whether the result is favorable.
@@ -181,7 +204,7 @@ distinct from the observed layer required by the first-party admission contract.
 ### Implementation state
 
 1. `task-time-evidence.v1.json` and its strict JSON Schema contain ten task
-   profiles, nine external evidence records, evidence grades A to E, and the
+   profiles, nineteen external evidence records, evidence grades A to E, and the
    classification of all eleven worked cases.
 2. The pure transfer engine compares task profile, work mode, architecture,
    exact A0 to A4 action boundary, output state, and operator experience. A
@@ -193,8 +216,8 @@ distinct from the observed layer required by the first-party admission contract.
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
 4. The engine now produces a net low, central, and high range. For each source
-   point it retains the greater of source-implied residual human time and the
-   declared local human-work floor, then adds amortized setup. The unadjusted
+   point it retains the greater of adjusted source-implied residual human time and the
+   declared local human-work floor, then adds work absent from both and local amortized setup. The unadjusted
    source range remains visible and neither result is presented as pilot evidence.
    At zero eligible cases the net range is unavailable, source and local
    provenance labels remain distinct, and the copied pilot brief preserves the

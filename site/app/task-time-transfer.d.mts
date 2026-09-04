@@ -32,6 +32,7 @@ export type TaskTimeEvidenceRecord = {
   };
   measurement: {
     evidence_grade: "A" | "B" | "C" | "D" | "E";
+    context?: { range_kind: "point_estimate" | "treatment_span" | "confidence_interval" | "model_estimate" | "internal_estimate" | "none"; observed_period: LocalizedText; model_and_tools: LocalizedText; time_coverage: LocalizedText };
     design: string;
     sample_size: number | null;
     time_scope: string;
@@ -120,7 +121,23 @@ export type HumanTimeScenario = {
   accepted_throughput_ratio: number | null;
   setup_payback_months: number | null;
 };
+export type PlanningOptions = {
+  use_source?: boolean;
+  additional_minutes?: number;
+  source_setup_minutes?: number;
+  sensitivity?: {
+    enabled?: boolean;
+    cautious_review_minutes?: number;
+    favorable_review_minutes?: number;
+    cautious_exception_points?: number;
+    favorable_exception_points?: number;
+    cautious_setup_hours?: number;
+    favorable_setup_hours?: number;
+  };
+};
 export type NetPlanningRangePoint = {
+  source_setup_removed_minutes: number;
+  additional_minutes: number;
   source_reduction_fraction: number | null;
   source_implied_human_minutes: number | null;
   local_operating_floor_minutes: number;
@@ -152,8 +169,9 @@ export function assessEvidenceCompatibility(record: TaskTimeEvidenceRecord | und
 export function listEvidenceOptions(registry: TaskTimeRegistry, target: EvidenceTarget): Array<{ record: TaskTimeEvidenceRecord; compatibility: { status: CompatibilityStatus; reasons: string[] } }>;
 export function buildEvidenceTransfer(record: TaskTimeEvidenceRecord | undefined, target: EvidenceTarget, workload: WorkloadInput): EvidenceTransferResult;
 export function calculateHumanTimeScenario(input: HumanTimeInput): HumanTimeScenario;
-export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario): NetPlanningRange;
-export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null): {
+export function buildNetPlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: HumanTimeScenario, options?: PlanningOptions): NetPlanningRange;
+export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, humanScenario: ReturnType<typeof calculateHumanTimeScenario>, target?: EvidenceTarget | null, options?: PlanningOptions): {
+  assumptions: PlanningOptions;
   calculable: boolean;
   unavailable_reason: "no_eligible_cases" | "invalid_workload_denominator" | null;
   source: "external_evidence" | "local_hypothesis";
@@ -180,3 +198,5 @@ export function derivePlanningRange(evidenceTransfer: EvidenceTransferResult, hu
     amortized_setup_minutes_per_case: number;
   };
 };
+
+export function normalizePlanningOptions(options?: PlanningOptions): PlanningOptions;

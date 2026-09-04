@@ -21,8 +21,8 @@ L’autonomie dépend des effets que le système peut produire sans personne, pa
 de la réputation ou de la taille de l’organisation qui l’utilise.
 
 Le registre utilise `work_mode` pour le partage du travail présenté ci-dessus. L’architecture
-technique. Modèle, processus fixe, agent unique ou équipe orchestrée sont
-enregistrés séparément, tout comme le niveau d’autorité précis A0 à A4. Une
+technique, qu’il s’agisse d’un modèle, d’un processus fixe, d’un agent ou d’une équipe, est
+enregistrée séparément, tout comme le niveau d’autorité précis A0 à A4. Une
 étude reste transférable lorsque la tâche, le résultat accepté, le rôle humain
 et les conditions d’usage sont assez proches. Le type d’organisation ne suffit
 ni à autoriser ni à interdire ce transfert.
@@ -35,9 +35,10 @@ Pour un cas éligible :
 plancher de travail humain = préparation + supervision + vérification
                              + corrections + travail attendu sur les exceptions
 
-temps humain net avec IA = max(temps humain résiduel déduit de la source,
+temps humain net avec IA = max(résiduel de la source - installation déjà incluse,
                                plancher de travail humain)
-                           + mise en place amortie
+                           + travail supplémentaire absent des deux
+                           + mise en place locale amortie
 
 temps humain net gagné = temps humain initial - temps humain net avec IA
 
@@ -53,9 +54,11 @@ Le temps résiduel déduit de la source est le temps humain qui subsiste après
 application de sa réduction basse, centrale ou haute au temps initial local. Le
 plus grand des deux temps est conservé pour ne pas masquer le travail de revue
 déclaré. Cette règle évite aussi d’additionner le résiduel de la source au
-travail local, ce qui compterait deux fois du temps humain. La mise en place
-reste additive, car les réductions publiées n’incluent pas l’implémentation
-initiale propre à l’utilisateur.
+travail local quand leurs périmètres se recouvrent. Ajoutez séparément le travail
+absent des deux. Si le résiduel de la source inclut l’installation, retirez cette
+part avant d’ajouter la mise en place locale, sans dépasser le résiduel.
+Sans source admise, ou si vous choisissez vos propres hypothèses, le calcul
+utilise uniquement la décomposition locale.
 
 Lorsque la part éligible vaut zéro, la fourchette nette est indisponible. Aucun
 cas éligible ne permet de répartir la mise en place. Le calculateur affiche donc
@@ -81,7 +84,7 @@ aval restent des mesures distinctes.
 | A | Observation contrôlée ou appariée du temps de tâche | Transfert seulement avec un contrat de tâche comparable |
 | B | Télémétrie terrain ou mesure opérationnelle objective | Transfert seulement si le temps humain dispose d’un dénominateur |
 | C | Temps déclaré ou estimation issue d’une enquête | Contexte pour concevoir le pilote |
-| D | Cas interne ou fournisseur sans validation indépendante complète | Mécanisme et contexte d’implémentation |
+| D | Cas publié ou test de capacité sans comparaison du temps humain validée indépendamment | Mécanisme et contexte d’implémentation |
 | E | Valeur estimée par modèle, synthétique ou réservée à la planification | Hypothèse nommée seulement |
 
 Le niveau décrit la façon de mesurer, pas le caractère favorable du résultat.
@@ -124,7 +127,7 @@ l’opérateur et conséquence d’une erreur.
 | Étude METR du début 2025 | Vrais tickets dans des dépôts matures et connus | A | 19 % de temps en plus, avec un intervalle de ralentissement publié | Travail comparable dans un dépôt mature seulement |
 | Essai bureautique britannique | Journée mixte d’agents publics | C | 26 minutes déclarées gagnées par jour | Contexte seulement |
 | Essai britannique d’assistants de code | Journée mixte de développement | C | 56 minutes déclarées par jour et 15,8 % de lignes acceptées | Contexte seulement |
-| Déploiement de support client | Demandes résolues par heure-agent | B | Débit supérieur de 14 % | Contexte de capacité, pas transfert de temps |
+| Déploiement de support client | Demandes résolues par heure-agent | B | Débit supérieur de 15 % (publication 2025) | Contexte de capacité, pas transfert de temps |
 | Analyse de conversations par Anthropic | Tâches larges définies par les conversations | E | Gains estimés par modèle, concentrés sur des valeurs élevées | Contexte seulement |
 | Projet OpenAI conçu pour les agents | Produit logiciel conduit par des agents | D | Estimation interne d’environ un dixième du temps de code manuel | Transférer le mécanisme, pas le pourcentage |
 
@@ -147,8 +150,8 @@ estimés par modèle n’alimentent pas automatiquement le calculateur.
    avant toute décision.
 
 N’ajoutez ni le pourcentage ni le temps résiduel de la source au travail local.
-Le moteur conserve le plus grand temps entre le résiduel de la source et le
-plancher de travail humain, puis ajoute la mise en place amortie. La source
+Le moteur conserve le plus grand temps entre le résiduel ajusté de la source et le
+plancher de travail humain, puis ajoute le travail absent des deux et la mise en place locale amortie. La source
 indique toujours ce qui s’est produit sur une tâche comparable et mesurée. La
 fourchette nette montre ce qui reste après explicitation des contrôles locaux et
 de l’effort d’implémentation.
@@ -189,3 +192,42 @@ fige la plage, consigne le résultat observé sur toute la charge et explique le
 écart. Les études externes ne remplissent pas `field-notes/index.json` ; seules
 des observations réelles, revues indépendamment et assainies peuvent satisfaire
 sa règle d’admission.
+
+## Cas récents disponibles
+
+Le registre propose désormais 19 sources, dont 4 avec un ratio de temps humain admis. Les nouveaux cas couvrent aussi la vérification documentaire, le multimodal, l’optimisation prédictive et les équipes d’agents. Les autres résultats restent utiles pour construire des hypothèses.
+
+[Lire les mécanismes et les limites de chaque cas](../references/recent-implementation-cases.fr.md).
+
+## Explorer trois scénarios sans inventer de preuve
+
+Ouvrez « Explorer les scénarios prudent, central et favorable ». Les champs
+principaux décrivent le cas central. Les marges facultatives ajoutent de la
+revue, des exceptions et de l’installation au cas prudent, et en retirent au
+cas favorable. Ce sont des exemples modifiables, pas une incertitude mesurée.
+Le travail humain ne descend pas sous zéro et les exceptions restent entre
+0 % et 100 %. Les résultats peuvent rester identiques si les marges sont nulles
+ou si le travail restant dans l’étude est supérieur dans les trois cas.
+
+Choisissez « Mes propres hypothèses de démonstration » pour explorer une autre
+implémentation sans appliquer le pourcentage de l’étude. Celle-ci reste visible
+à titre informatif. Vous pouvez ainsi tester un mécanisme d’automatisation forte
+sans présenter une estimation fournisseur comme une mesure. Aucun plafond
+général de gain n’est imposé. Un résultat négatif reste visible si le travail
+demande davantage de temps.
+
+Exemple de recouvrement : l’étude suggère 30 minutes restantes et votre
+décomposition comprend 20 minutes du même travail. Retenez 30, pas 50.
+Si 5 minutes supplémentaires sont absentes des deux, ajoutez-les séparément :
+35 minutes avant l’installation locale. Si les 30 minutes comprennent déjà
+3 minutes d’installation, retirez-les d’abord :
+max(30 - 3, 20) + 5 = 32 minutes, puis ajoutez l’installation locale amortie.
+
+Les détails de la source distinguent une moyenne, des écarts entre groupes,
+un intervalle statistique et une estimation interne ou produite par un modèle.
+Ils précisent aussi l’époque, le modèle, les outils et ce que le temps comprend.
+Aucune de ces plages ne devient automatiquement une prévision locale fiable.
+
+Les marges, le choix étude/hypothèses et les ajustements de périmètre sont
+conservés avec l’hypothèse figée et ses exports lisibles. Les anciennes sessions
+sans ces réglages facultatifs gardent leur calcul antérieur.

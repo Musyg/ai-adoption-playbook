@@ -1,8 +1,8 @@
 {
   "$schema": "./control-crosswalk.schema.json",
   "schema_version": "1.1.0",
-  "catalog_version": "2026.08",
-  "published_on": "2026-08-20",
+  "catalog_version": "2026.09",
+  "published_on": "2026-09-05",
   "status": "maintained_internal_crosswalk",
   "scope": {
     "en": "A minimum operational control set for selecting, piloting, operating, changing, and retiring bounded AI systems across the five playbook organization types.",
@@ -224,6 +224,19 @@
       "status": "published_standard",
       "url": "https://spec.c2pa.org/specifications/specifications/2.2/index.html",
       "checked_on": "2026-08-20",
+      "use_boundary": {
+        "en": "Technical provenance specification; a credential does not by itself prove truth or legal compliance.",
+        "fr": "Spécification technique de provenance ; un justificatif ne prouve à lui seul ni vérité ni conformité juridique."
+      }
+    },
+    {
+      "source_id": "C2PA-2-3",
+      "title": "C2PA Specifications",
+      "publisher": "Coalition for Content Provenance and Authenticity",
+      "version": "2.3",
+      "status": "published_standard",
+      "url": "https://spec.c2pa.org/specifications/specifications/2.3/index.html",
+      "checked_on": "2026-09-05",
       "use_boundary": {
         "en": "Technical provenance specification; a credential does not by itself prove truth or legal compliance.",
         "fr": "Spécification technique de provenance ; un justificatif ne prouve à lui seul ni vérité ni conformité juridique."
@@ -734,7 +747,7 @@
       "lifecycle_phases": [3, 4, 5, 6, 8, 9, 10],
       "gates": ["G2", "G3", "G4", "G5", "P1", "P2", "P3", "P4", "P5"],
       "evidence_ids": ["EV-RISK-ASSESSMENT", "EV-EVALUATION-PLAN", "EV-EVALUATION-REPORT", "EV-AUDIT-TRACE"],
-      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-SYNTHETIC-IMAGES-2026", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-4", "relation": "supports" }, { "source_id": "C2PA-2-2", "relation": "contextual" }],
+      "source_refs": [{ "source_id": "AAP-PROCESS-02", "relation": "direct" }, { "source_id": "CH-FDPIC-SYNTHETIC-IMAGES-2026", "relation": "supports" }, { "source_id": "EU-AI-ACT-ARTICLE50-2026", "relation": "supports" }, { "source_id": "NIST-AI-100-4", "relation": "supports" }, { "source_id": "C2PA-2-3", "relation": "contextual" }],
       "implementation_refs": ["docs/legal-switzerland-eu.md", "docs/ai-use-patterns.md", "templates/evaluation-plan.md"]
     },
     {

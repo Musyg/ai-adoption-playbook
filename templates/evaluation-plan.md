@@ -64,3 +64,15 @@ written rationale.
 - Gaps and uncertainties:
 - Accepted / conditionally accepted / rejected:
 - Reproducibility and artifacts:
+
+## Consistency and monitoring after changes
+
+- Demonstration cases or real observations:
+- Distinct cases / attempts per case / maximum budget:
+- Successes per attempt / cases successful on every attempt:
+- Failures and retries included in time and cost:
+- Sample scored by a human and the automated evaluator / disagreements:
+- Reference set to rerun after changes to the model, instructions, tools or data:
+- Monitoring owner / frequency / alert threshold / action and fallback:
+
+One success in five attempts is not five successes in five. See the [three validation questions](../docs/evaluations-and-gates.md#three-questions-for-a-reliable-result).

@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Corrected the public-review time formula, the BCG task count, and the second,
+  conflicting A to E scale. Updated C2PA to 2.3 and support-client throughput to
+  the 2025 QJE publication while retaining historical source provenance.
+- Added ten implementation cases covering document checks, multimodal work,
+  predictive optimization and agent teams. Their mechanisms can inform local
+  demonstrations without converting quality or throughput into time savings.
+- Added optional cautious and favourable scenario margins, a local-assumptions
+  choice, explicit extra-work and already-included setup adjustments, and source
+  metadata. Frozen hypotheses and human-readable exports retain those settings.
+- Added three short validation questions, optional detail on repeated attempts
+  and post-change monitoring, and regression checks for the affected workflows.
+
 - Closed the final journey-coherence gaps found by two independent reviews.
   Hard design conflicts now block freezing and export, softer deviations and
   exceptional A4 designs use distinct confirmations, evaluated field results

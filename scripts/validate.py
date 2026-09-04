@@ -150,6 +150,7 @@ TRANSLATION_PAIRS = (
     ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
     ("field-notes/README.md", "field-notes/README.fr.md"),
     ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
+    ("references/recent-implementation-cases.md", "references/recent-implementation-cases.fr.md"),
     ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
     ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
     ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),

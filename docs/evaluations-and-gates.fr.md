@@ -60,3 +60,25 @@ Le [plan d’évaluation](../templates/evaluation-plan.fr.md) fixe avant le pilo
 | G5 — Extension | Nouveaux utilisateurs ou pouvoirs | Réévaluation, capacité opérationnelle, acceptation du risque |
 
 Une moyenne satisfaisante ne compense pas un échec sur un segment critique ou une erreur à gravité inacceptable.
+
+## Trois questions pour un résultat fiable
+
+1. **Réussit-il une fois ?** Essayez quelques cas représentatifs et vérifiez le résultat final, pas seulement la réponse affichée.
+2. **Réussit-il régulièrement ?** Rejouez les mêmes cas plusieurs fois. Notez les réussites, les échecs et les nouvelles tentatives, même quand la dernière finit par réussir.
+3. **Reste-t-il bon après une modification ?** Rejouez votre jeu de référence après un changement de modèle, de consigne, d’outil ou de données. Comparez avant et après, puis suivez quelques cas réels autorisés.
+
+Par exemple, réussir une seule tentative sur cinq montre que le système peut résoudre ce cas. Cela ne signifie pas qu’il le résout de manière fiable. Fixez avant le test le nombre d’essais et le budget maximal. Comptez le temps humain de revue et toutes les tentatives, pas seulement le meilleur résultat.
+
+Pour commencer, vous pouvez utiliser des cas de démonstration relus par une personne du métier. Indiquez qu’ils sont synthétiques. Adaptez ensuite leur diversité et le nombre d’essais aux conséquences possibles d’une erreur. Aucun nombre universel de tests ne garantit la fiabilité.
+
+### Détails à garder dans le dossier
+
+- Nombre de cas distincts, essais par cas, réussites par essai et cas réussis à tous les essais.
+- Budget total, reprises, délai et temps humain, y compris les échecs.
+- Version exacte du modèle, des consignes, des outils et du jeu de test.
+- Quelques résultats notés séparément par une personne et par l’évaluateur automatique, avec résolution de leurs désaccords.
+- Responsable du suivi, fréquence, seuil d’alerte et solution de repli. Une alerte doit conduire à une action.
+
+La vérification ne s’arrête pas au lancement : ajoutez les incidents et cas difficiles rencontrés au jeu de test, sans exposer de données sensibles.
+
+Références pratiques : [Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), [LangChain](https://www.langchain.com/blog/agent-evaluation-readiness-checklist), [OpenAI](https://developers.openai.com/api/docs/guides/evaluation-best-practices).

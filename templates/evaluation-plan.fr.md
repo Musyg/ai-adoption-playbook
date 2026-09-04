@@ -64,3 +64,15 @@ applicable` uniquement avec une justification écrite.
 - Écarts et incertitudes :
 - Accepté / accepté sous conditions / rejeté :
 - Reproductibilité et artefacts :
+
+## Régularité et suivi après modification
+
+- Cas de démonstration ou observations réelles :
+- Cas distincts / essais par cas / budget maximal :
+- Réussites par essai / cas réussis à tous les essais :
+- Échecs et reprises inclus dans le temps et le coût :
+- Échantillon noté par un humain et par l’évaluateur automatique / désaccords :
+- Jeu de référence à rejouer après changement de modèle, consigne, outil ou données :
+- Responsable / fréquence du suivi / seuil d’alerte / action et repli :
+
+Une réussite sur cinq essais n’est pas cinq réussites sur cinq. Voir les [trois questions de validation](../docs/evaluations-and-gates.fr.md#trois-questions-pour-un-résultat-fiable).

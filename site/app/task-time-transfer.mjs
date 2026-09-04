@@ -150,21 +150,27 @@ export function calculateHumanTimeScenario(input) {
   };
 }
 
-function calculateNetRangePoint(evidencePoint, humanScenario) {
+function calculateNetRangePoint(evidencePoint, humanScenario, options = {}) {
   const baselineMinutes = humanScenario.baseline_human_minutes;
   const eligibleCases = humanScenario.eligible_cases;
   const localOperatingFloorMinutes = humanScenario.operating_human_minutes;
   const sourceImpliedHumanMinutes = evidencePoint?.human_time_with_ai_minutes ?? null;
-  const operatingHumanMinutes = sourceImpliedHumanMinutes == null
+  const sourceSetupRemoved = sourceImpliedHumanMinutes == null ? 0
+    : Math.min(sourceImpliedHumanMinutes, bounded(options.source_setup_minutes, 0, 10080));
+  const sourceOperatingMinutes = sourceImpliedHumanMinutes == null ? null : sourceImpliedHumanMinutes - sourceSetupRemoved;
+  const additionalMinutes = bounded(options.additional_minutes, 0, 10080);
+  const operatingHumanMinutes = (sourceOperatingMinutes == null
     ? localOperatingFloorMinutes
-    : Math.max(sourceImpliedHumanMinutes, localOperatingFloorMinutes);
+    : Math.max(sourceOperatingMinutes, localOperatingFloorMinutes)) + additionalMinutes;
   if (!humanScenario.calculable) {
     const recurringTimeSavedPerCase = baselineMinutes - operatingHumanMinutes;
     return {
       source_reduction_fraction: evidencePoint?.reduction_fraction ?? null,
       source_implied_human_minutes: sourceImpliedHumanMinutes,
+      source_setup_removed_minutes: sourceSetupRemoved,
+      additional_minutes: additionalMinutes,
       local_operating_floor_minutes: localOperatingFloorMinutes,
-      binding_floor: sourceImpliedHumanMinutes != null && sourceImpliedHumanMinutes >= localOperatingFloorMinutes ? "source" : "local",
+      binding_floor: sourceOperatingMinutes != null && sourceOperatingMinutes >= localOperatingFloorMinutes ? "source" : "local",
       operating_human_minutes: operatingHumanMinutes,
       amortized_setup_minutes_per_case: null,
       human_time_with_ai_minutes: null,
@@ -188,8 +194,10 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
   return {
     source_reduction_fraction: evidencePoint?.reduction_fraction ?? null,
     source_implied_human_minutes: sourceImpliedHumanMinutes,
+    source_setup_removed_minutes: sourceSetupRemoved,
+    additional_minutes: additionalMinutes,
     local_operating_floor_minutes: localOperatingFloorMinutes,
-    binding_floor: sourceImpliedHumanMinutes != null && sourceImpliedHumanMinutes >= localOperatingFloorMinutes ? "source" : "local",
+    binding_floor: sourceOperatingMinutes != null && sourceOperatingMinutes >= localOperatingFloorMinutes ? "source" : "local",
     operating_human_minutes: operatingHumanMinutes,
     amortized_setup_minutes_per_case: amortizedSetupMinutesPerCase,
     human_time_with_ai_minutes: humanTimeWithAiMinutes,
@@ -208,8 +216,50 @@ function calculateNetRangePoint(evidencePoint, humanScenario) {
   };
 }
 
-export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
-  const evidenceScenarios = evidenceTransfer?.ok ? evidenceTransfer.scenarios : null;
+export function normalizePlanningOptions(options = {}) {
+  options = options ?? {};
+  const sensitivity = options.sensitivity ?? {};
+  return {
+    use_source: options.use_source !== false,
+    additional_minutes: bounded(options.additional_minutes, 0, 10080),
+    source_setup_minutes: bounded(options.source_setup_minutes, 0, 10080),
+    sensitivity: {
+      enabled: sensitivity.enabled === true,
+      cautious_review_minutes: bounded(sensitivity.cautious_review_minutes, 0, 10080),
+      favorable_review_minutes: bounded(sensitivity.favorable_review_minutes, 0, 10080),
+      cautious_exception_points: bounded(sensitivity.cautious_exception_points, 0, 100),
+      favorable_exception_points: bounded(sensitivity.favorable_exception_points, 0, 100),
+      cautious_setup_hours: bounded(sensitivity.cautious_setup_hours, 0, 1000000),
+      favorable_setup_hours: bounded(sensitivity.favorable_setup_hours, 0, 1000000),
+    },
+  };
+}
+
+function sensitivityScenario(humanScenario, options, point) {
+  if (!options.sensitivity.enabled || point === "central") return humanScenario;
+  const c = humanScenario.components;
+  const cautious = point === "low";
+  const sign = cautious ? 1 : -1;
+  const prefix = cautious ? "cautious" : "favorable";
+  return calculateHumanTimeScenario({
+    baseline_human_minutes: humanScenario.baseline_human_minutes,
+    monthly_cases: humanScenario.monthly_cases,
+    eligible_share: humanScenario.eligible_share * 100,
+    total_baseline_human_hours: humanScenario.total_baseline_human_hours,
+    preparation_minutes: c.preparation_minutes,
+    supervision_minutes: c.supervision_minutes,
+    verification_minutes: c.verification_minutes + sign * options.sensitivity[prefix + "_review_minutes"],
+    correction_minutes: c.correction_minutes,
+    exception_rate: c.exception_rate * 100 + sign * options.sensitivity[prefix + "_exception_points"],
+    exception_minutes: c.exception_minutes,
+    setup_hours: humanScenario.setup_hours + sign * options.sensitivity[prefix + "_setup_hours"],
+    amortization_months: humanScenario.amortization_months,
+  });
+}
+
+export function buildNetPlanningRange(evidenceTransfer, humanScenario, inputOptions = {}) {
+  const options = normalizePlanningOptions(inputOptions);
+  const evidenceScenarios = evidenceTransfer?.ok && options.use_source ? evidenceTransfer.scenarios : null;
   const eligibleCaseCalculable = humanScenario.calculable;
   const wholeWorkloadCalculable = eligibleCaseCalculable && humanScenario.workload_denominator_valid;
   return {
@@ -224,15 +274,15 @@ export function buildNetPlanningRange(evidenceTransfer, humanScenario) {
     evidence_id: evidenceScenarios ? evidenceTransfer.evidence_id : null,
     method: "greater_residual_plus_amortized_setup",
     scenarios: {
-      low: calculateNetRangePoint(evidenceScenarios?.low, humanScenario),
-      central: calculateNetRangePoint(evidenceScenarios?.central, humanScenario),
-      high: calculateNetRangePoint(evidenceScenarios?.high, humanScenario),
+      low: calculateNetRangePoint(evidenceScenarios?.low, sensitivityScenario(humanScenario, options, "low"), options),
+      central: calculateNetRangePoint(evidenceScenarios?.central, humanScenario, options),
+      high: calculateNetRangePoint(evidenceScenarios?.high, sensitivityScenario(humanScenario, options, "high"), options),
     },
   };
 }
 
-export function derivePlanningRange(evidenceTransfer, humanScenario, target = null) {
-  const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario);
+export function derivePlanningRange(evidenceTransfer, humanScenario, target = null, options = {}) {
+  const netRange = buildNetPlanningRange(evidenceTransfer, humanScenario, options);
   const components = humanScenario.components;
   return {
     calculable: netRange.whole_workload_calculable,
@@ -245,6 +295,7 @@ export function derivePlanningRange(evidenceTransfer, humanScenario, target = nu
     evidence_id: netRange.evidence_id,
     target,
     method: netRange.method,
+    assumptions: normalizePlanningOptions(options),
     human_work: {
       preparation_minutes: components.preparation_minutes,
       supervision_minutes: components.supervision_minutes,

@@ -22,7 +22,7 @@ protected text of standards.
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/), community guidance to adapt to the actual architecture.
 - [NIST AI 100-2e2025, Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final), predictive and generative AI taxonomy; check the official errata.
 - [NIST AI 100-4, Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/), methods and limitations for detection, authentication, marking, and provenance.
-- [C2PA 2.2, Content Credentials](https://spec.c2pa.org/specifications/specifications/2.2/index.html), a provenance specification that alone proves neither authenticity nor legal compliance.
+- [C2PA 2.3, Content Credentials](https://spec.c2pa.org/specifications/specifications/2.3/index.html), a provenance specification that alone proves neither authenticity nor legal compliance.
 - [MITRE ATLAS](https://atlas.mitre.org/), a living knowledge base of AI tactics, techniques, mitigations, and cases.
 
 ## Law and public policy
@@ -92,3 +92,5 @@ For every claim that can change:
 The [control catalogue](../controls/README.md) also records a version and check
 date for each source. These links are thematic, not article-by-article
 equivalences and not evidence of certification or legal compliance.
+
+- [Recent cases and transferable mechanisms](recent-implementation-cases.md): sources added on 5 September 2026, with result type and explicit limits.
