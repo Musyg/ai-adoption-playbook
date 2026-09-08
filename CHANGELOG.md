@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Updated transitive build dependencies to Browserslist 4.28.9, fast-uri 3.1.7,
+  and fflate 0.7.5, plus Browserslist's compatibility data. This addresses five
+  high-severity GitHub alerts and one additional moderate-severity npm finding.
+  No direct dependency, application content, or calculation logic changed.
 - Corrected the public-review time formula, the BCG task count, and the second,
   conflicting A to E scale. Updated C2PA to 2.4 and customer-support throughput to
   the 2025 QJE publication while retaining historical source provenance.

@@ -1,12 +1,25 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-09-05 (Europe/Zurich)
+Snapshot: 2026-09-08 (Europe/Zurich)
+
+## Dependency security refresh
+
+The maintenance branch now locks Browserslist 4.28.9, fast-uri 3.1.7 and
+fflate 0.7.5. Browserslist's compatibility-data dependencies were updated with
+it. Direct dependencies, application content and calculation logic are unchanged.
+The update addresses five high-severity alerts reported on GitHub and one
+additional moderate-severity fflate finding from npm. A clean `npm ci` and
+`npm audit --audit-level=moderate` report zero vulnerabilities on 2026-09-08.
+This is an audit result for this dependency snapshot, not a guarantee that
+future advisories will not be published. GitHub's default-branch alerts will
+remain open until the correction is merged into `main` and re-evaluated.
 
 ## September evidence and scenario refresh
 
 Local implementation of all six audit priorities is complete and verified.
-Working branch: `maintenance/september-evidence-scenarios`. No push, merge or
-publication was performed; `main` remains at `d6a7b3d`. Priorities 1 to 5 cover the
+Working branch: `maintenance/september-evidence-scenarios`. The reviewed refresh
+at `c0fa2b1` was pushed on 2026-09-07. No merge or publication was performed;
+`main` remains at `d6a7b3d`. Priorities 1 to 5 cover the
 corrected accounting and BCG summary, a single evidence-grade vocabulary,
 C2PA 2.4 and the QJE support publication, ten additional implementation cases,
 editable scenario margins, source-time coverage and short evaluation guidance.
@@ -314,8 +327,9 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-09-05:
+Latest local verification on 2026-09-08 after the dependency refresh:
 
+- clean `npm ci`: pass; npm audit at the moderate threshold: zero vulnerabilities
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
@@ -331,8 +345,8 @@ Generated browser reports are excluded from source-document validation, and
 dependency/generated directories are pruned before discovery. No artifacts
 were deleted to hide validation errors. The existing build warning about a
 client bundle above 500 kB remains non-blocking; this update does not claim to
-resolve application code-splitting. Dependency versions were not changed and a
-fresh dependency vulnerability audit remains part of the CI workflow.
+resolve application code-splitting. The September 8 dependency-only correction
+is recorded above; vulnerability auditing remains part of the CI workflow.
 
 The verification contract covers:
 
