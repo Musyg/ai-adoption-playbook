@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Updated transitive js-yaml from 4.3.1 to 4.3.2 after the September 12 merge
+  checks detected GHSA-2883-xcg3-v3hh, published after the September 8 audit.
 - Updated transitive build dependencies to Browserslist 4.28.9, fast-uri 3.1.7,
   and fflate 0.7.5, plus Browserslist's compatibility data. This addresses five
   high-severity GitHub alerts and one additional moderate-severity npm finding.

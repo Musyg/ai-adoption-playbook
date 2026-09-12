@@ -2,6 +2,17 @@
 
 Snapshot: 2026-09-08 (Europe/Zurich)
 
+## September 12 merge follow-up
+
+[PR #53](https://github.com/Musyg/ai-adoption-playbook/pull/53) tracks integration
+of the reviewed refresh and dependency fixes. Its initial GitHub check found
+GHSA-2883-xcg3-v3hh, published on September 8 at 21:24 UTC, after the local audit.
+The lockfile now updates only js-yaml 4.3.1 to 4.3.2 for this additional fix;
+the refreshed lockfile audit reports zero vulnerabilities. The required checks
+must pass again for this new head before merge. The PR and its linked workflow
+runs are the authoritative integration and deployment status; the September 8
+snapshot below records the prior local verification, not the final merge state.
+
 ## Dependency security refresh
 
 The maintenance branch now locks Browserslist 4.28.9, fast-uri 3.1.7 and
