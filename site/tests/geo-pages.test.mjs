@@ -74,6 +74,8 @@ test("exports every GEO route as neutral crawlable HTML", async () => {
     assert.match(html, new RegExp(`<title>${article.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</title>`));
     assert.match(html, /"@type":"Article"/);
     assert.match(html, /data-prerendered="true"><div class="geo-page"/);
+    assert.doesNotMatch(html, /<script\b(?![^>]*type="application\/ld\+json")|rel="modulepreload"/i);
+    assert.match(html, /<link\b[^>]*rel="stylesheet"/);
     assert.match(html, new RegExp(article.answer.slice(0, 45).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     assert.match(html, /href="\//);
     assert.match(html, /<meta name="robots" content="noindex, nofollow"/);

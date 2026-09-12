@@ -1,6 +1,45 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-09-08 (Europe/Zurich)
+Publication status verified: 2026-09-12 (Europe/Zurich).
+
+## Current publication and maintenance status
+
+The reader-clarity corrections were published through
+[PR #55](https://github.com/Musyg/ai-adoption-playbook/pull/55), merged into
+`main` at `9736e1f4a0a572bd40ac007bf6926265a28ff310` on September 12.
+[Main validation](https://github.com/Musyg/ai-adoption-playbook/actions/runs/34685111291)
+and [Pages deployment](https://github.com/Musyg/ai-adoption-playbook/actions/runs/34685452972)
+both succeeded. All 14 public routes returned HTTP 200, and both home routes
+contained the new monthly-workload summary. Main validation passed 62 Node
+tests and 144 Chrome checks, with zero npm audit findings at that point.
+
+The user then authorized documentation cleanup and targeted loading
+optimization on `maintenance/publication-performance`. This new maintenance
+pass is separate from the published commit above; its publication must not be
+assumed from the September 12 deployment. No new numbered release or Git tag
+is implied. Reader sessions remain user-led, and the known 0.3 field-evidence
+gate remains unchanged.
+
+See the [loading review](docs/loading-review.md) and its
+[French version](docs/loading-review.fr.md) for the measured static payload,
+cache boundaries, French hydration correction and remaining server-build scope.
+
+Local maintenance validation passed on September 12: TypeScript, lint,
+production/server and static builds, 64 Node tests, and 153 Chrome checks
+(6.7 minutes, three workers, no retries). Repository validation covers 127
+Markdown files and the declared contracts; the source-discovery regression
+also passes. All three hosted-export checks pass, including all 12 article
+paths. A Chrome smoke check of the hosted base path verified both interactive
+home routes and the article language link without browser errors or failed
+asset responses. The provider-neutral export is restored for local testing.
+No dependency lockfile, evidence registry, calculation engine, decision engine
+or dossier schema was changed. These results were obtained before commit and
+push. Git history and the remote maintenance branch record subsequent delivery;
+a branch push does not imply a merge or a new Pages deployment.
+
+The dated sections below preserve historical verification and review records.
+Their local-only, branch, test-count and deployment statements describe those
+earlier snapshots, not the current publication status above.
 
 ## September 12 reader-clarity follow-up
 
@@ -104,7 +143,7 @@ Repository publication is complete. The owner approved GitHub Pages on
 
 The repository contains a progressive decision path from a first
 plain-language question to a bounded operating handoff. The default path shows
-one of five decisions at a time, provides contextual help bubbles, and returns
+four questions followed by a result, provides contextual help bubbles, and returns
 a personalized starting plan. Three closed chapters keep the concept library,
 pilot workspace, and implementation library available without exposing the
 reader to the full technical corpus at once. Each open chapter presents a

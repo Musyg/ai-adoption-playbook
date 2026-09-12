@@ -32,6 +32,10 @@ for (const locale of locales) {
 }
 
 test("all editorial routes remain readable and explain their notation", async ({ page }) => {
+  const scriptRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "script") scriptRequests.push(request.url());
+  });
   const routes = [
     "/copilot-vs-business-agent/",
     "/business-agent-roi/",
@@ -57,6 +61,7 @@ test("all editorial routes remain readable and explain their notation", async ({
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, route).toBeLessThanOrEqual(1);
   }
+  expect(scriptRequests, "static articles must not download the interactive guide").toEqual([]);
 });
 
 test("audience selection updates the active decision path", async ({ page }) => {

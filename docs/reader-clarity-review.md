@@ -52,8 +52,14 @@ The new browser checks cover progressive and backward navigation, monthly
 gains and losses, zero eligibility, optional detail, scenario access, collapsed
 ranges, optional feedback and non-agent task links. Existing checks still
 cover incompatible designs, A4 exceptions, exports and frozen observations.
-The build retains its pre-existing bundle-size warning; this is not a
-performance audit. No commit, push, merge or deployment was performed.
+The build retained its pre-existing bundle-size warning during this review;
+this was not a performance audit. The local correction pass was subsequently
+committed and published through
+[PR #55](https://github.com/Musyg/ai-adoption-playbook/pull/55), merged at
+`9736e1f` on September 12. Main CI passed 62 Node tests and 144 Chrome checks;
+[Pages deployment](https://github.com/Musyg/ai-adoption-playbook/actions/runs/34685452972)
+succeeded. The 14 public routes and the new summary on both home routes were
+verified after deployment. Later performance work is tracked separately.
 
 Human reader sessions will be arranged by the user after these corrections.
 They are not represented by browser automation or accessibility checks.

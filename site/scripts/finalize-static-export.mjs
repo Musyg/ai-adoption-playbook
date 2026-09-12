@@ -171,6 +171,10 @@ function articleShell(article) {
   const alternateLocale = article.locale === "fr" ? "en_US" : "fr_FR";
 
   const shell = shells[article.locale]
+    // Articles use native links and anchors only. Keep CSS and JSON-LD, but
+    // do not download or hydrate the interactive guide on these routes.
+    .replace(/<script\b(?=[^>]*\btype="module")[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<link\b(?=[^>]*\brel="modulepreload")[^>]*>/gi, "")
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${description}" />`)
     .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`)
     .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${description}" />`)

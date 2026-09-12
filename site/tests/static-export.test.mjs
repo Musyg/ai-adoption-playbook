@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -68,7 +68,9 @@ test("copies public assets and ships the provider-neutral interactive client", a
   const rootHtml = await readFile(path.join(staticRoot, "index.html"), "utf8");
   const scriptPath = rootHtml.match(/<script type="module" crossorigin src="([^"]+)"/)?.[1];
   assert.ok(scriptPath, "Vite client entry is present");
-  const client = await readFile(path.join(staticRoot, scriptPath.replace(/^\//, "")), "utf8");
+  await access(path.join(staticRoot, scriptPath.replace(/^\//, "")));
+  const scripts = (await readdir(path.join(staticRoot, "assets"))).filter((file) => file.endsWith(".js"));
+  const client = (await Promise.all(scripts.map((file) => readFile(path.join(staticRoot, "assets", file), "utf8")))).join("\n");
   assert.match(client, /Propose a pilot on GitHub/);
   assert.match(client, /Proposer un pilote sur GitHub/);
   assert.match(client, /control-crosswalk\.v1\.json/);
@@ -86,4 +88,15 @@ test("copies public assets and ships the provider-neutral interactive client", a
   ]);
   await assert.rejects(access(path.join(staticRoot, ".nojekyll")));
   await assert.rejects(access(path.join(staticRoot, "sitemap.xml")));
+});
+
+test("keeps separately cached static JavaScript chunks below 500 kB", async () => {
+  const files = (await readdir(path.join(staticRoot, "assets"))).filter((file) => file.endsWith(".js"));
+  for (const name of ["react-vendor", "evidence-data", "project-workspace"]) {
+    assert.ok(files.some((file) => file.startsWith(`${name}-`)), `${name} has a separate cacheable chunk`);
+  }
+  for (const file of files) {
+    const bytes = await readFile(path.join(staticRoot, "assets", file));
+    assert.ok(bytes.length < 500_000, `${file}: ${bytes.length} bytes exceeds the static chunk budget`);
+  }
 });

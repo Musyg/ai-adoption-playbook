@@ -1,6 +1,7 @@
 "use client";
 
 import DesignChoiceHelp from "./DesignChoiceHelp";
+import { formatLocalizedNumber } from "./format-number.mjs";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -1743,7 +1744,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       paybackHigh: freedLow > 0 ? setupHours / freedLow : null,
     };
   }, [caseMinutes, monthlyCases, eligibleShare, planningRange, setupHours, totalBaselineHumanHours]);
-  const formatNumber = (value: number, maximumFractionDigits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits }).format(value);
+  const formatNumber = (value: number, maximumFractionDigits = 1) => formatLocalizedNumber(value, locale, { maximumFractionDigits });
   const modePilotSpec = pilotSpecs[calibrationLevel];
   const autonomyPilotSpec = autonomyPilotMinimums[autonomy];
   const pilotSpec = {
