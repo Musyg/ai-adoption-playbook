@@ -180,11 +180,11 @@ test("task-time explanation separates the user's input from the study value", as
     await calibrator.getByLabel(route === "/" ? "What work do you want to estimate?" : "Quel travail voulez-vous estimer ?").selectOption("knowledge_analysis");
     const explanation = calibrator.locator(".task-time-mode-effect");
     if (route === "/") {
-      await expect(explanation).toContainText("you entered this much remaining human work: 33 min");
+      await expect(explanation).toContainText("the current assumptions allow this much remaining human work: 33 min");
       await expect(explanation).toContainText("study implies this much remaining human work: 44.9 min");
       await expect(explanation).toContainText("After applying your coverage settings, the human work retained is: 44.9 min");
     } else {
-      await expect(explanation).toContainText("vous avez indiqué ce temps humain restant : 33 min");
+      await expect(explanation).toContainText("les hypothèses actuelles prévoient ce temps humain restant : 33 min");
       await expect(explanation).toContainText("étude comparable suggère ce temps humain restant : 44,9 min");
       await expect(explanation).toContainText("Après application de vos réglages de périmètre, le temps humain retenu est : 44,9 min");
     }
@@ -334,7 +334,7 @@ test("language switch preserves the frozen evidence identity and operating contr
   await page.getByLabel("Outputs accepted after defined review").fill("95");
   await page.getByLabel("Complete effect and approval trace").fill("100");
   await page.locator(".evidence-prerequisite input").check();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   const identityText = await page.getByLabel("System + workflow version").locator("..").locator("small").innerText();
   const configurationId = identityText.replace("Locked to ", "");
   expect(configurationId).toMatch(/^[0-9a-f-]{36}$/);
@@ -353,7 +353,7 @@ test("language switch preserves the frozen evidence identity and operating contr
   await expect(page.getByLabel("Prochaine réévaluation formelle")).toHaveValue("2026-10-01");
   await expect(page.getByLabel("La solution de repli manuelle est accessible et a été essayée")).toBeChecked();
   await expect(page.getByLabel("La procédure d’arrêt et de confinement a été répétée")).toBeChecked();
-  await router.getByRole("button", { name: /Préparer le retour terrain/ }).click();
+  await router.getByRole("button", { name: /Partager un retour/ }).click();
   const fieldVersion = page.locator("#field-pilot").getByLabel("Version du système et du processus");
   await expect(fieldVersion).toHaveValue(longVersion);
   await expect(fieldVersion.locator("..").locator("small")).toContainText(configurationId);
@@ -427,7 +427,7 @@ for (const zeroEligibilityLocale of [
     eligible: "Share of cases AI can actually handle",
     plan: /Build the test plan/,
     freeze: "Freeze hypothesis v1",
-    panel: /Prepare field feedback/,
+    panel: /Share feedback/,
     download: "Download the local draft",
     wholeRange: "Exact whole-workload range, low / central / high: n/a · no eligible case",
     eligibleRange: "Exact eligible-case range, low / central / high: n/a · no eligible case",
@@ -439,7 +439,7 @@ for (const zeroEligibilityLocale of [
     eligible: "Part des cas que l’IA peut réellement traiter",
     plan: /Construire le plan de test/,
     freeze: "Figer l’hypothèse v1",
-    panel: /Préparer le retour terrain/,
+    panel: /Partager un retour/,
     download: "Télécharger le brouillon local",
     wholeRange: "Fourchette exacte sur toute la charge, basse / centrale / haute: n/a · aucun cas éligible",
     eligibleRange: "Fourchette exacte par cas éligible, basse / centrale / haute: n/a · aucun cas éligible",
@@ -494,8 +494,8 @@ test("whole-workload result uses total observed human time and rejects a positiv
 });
 
 for (const zeroAcceptanceLocale of [
-  { path: "/", plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", quality: "Outputs accepted after defined review", panel: /Prepare field feedback/, download: "Download the local draft", raw: "Raw calculation: (1200 − 600) / 1200 = 50%", adjusted: "Decision-adjusted whole-workload reduction: 0%", reason: "capped at 0% because no output was accepted" },
-  { path: "/fr/", plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", quality: "Sorties acceptées après la revue définie", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", raw: "Calcul brut: (1200 − 600) / 1200 = 50%", adjusted: "Réduction sur toute la charge retenue pour la décision: 0%", reason: "plafonnée à 0 %, car aucune sortie n’a été acceptée" },
+  { path: "/", plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", quality: "Outputs accepted after defined review", panel: /Share feedback/, download: "Download the local draft", raw: "Raw calculation: (1200 − 600) / 1200 = 50%", adjusted: "Decision-adjusted whole-workload reduction: 0%", reason: "capped at 0% because no output was accepted" },
+  { path: "/fr/", plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", quality: "Sorties acceptées après la revue définie", panel: /Partager un retour/, download: "Télécharger le brouillon local", raw: "Calcul brut: (1200 − 600) / 1200 = 50%", adjusted: "Réduction sur toute la charge retenue pour la décision: 0%", reason: "plafonnée à 0 %, car aucune sortie n’a été acceptée" },
 ] as const) {
   test(`${zeroAcceptanceLocale.path} export separates raw time change from the zero-acceptance decision result`, async ({ page }) => {
     await page.goto(zeroAcceptanceLocale.path);
@@ -529,7 +529,7 @@ test("evidence from v1 cannot authorize a changed v2 configuration without expli
   const calibrator = page.locator("#calibrator");
   await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await calibrator.getByRole("button", { name: /Copilot 01/ }).click();
-  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#operational-router").getByRole("button", { name: /Share feedback/ }).click();
   await page.locator("#field-pilot").getByLabel("Exact action boundary").selectOption("1");
   await router.getByRole("button", { name: /Build the test plan/ }).click();
   await page.locator("#pilot-system-version").fill("Demonstration workflow v1");
@@ -589,7 +589,7 @@ test("evidence from v1 cannot authorize a changed v2 configuration without expli
   expect(v2OperatingCard).toContain("Territory: European Union");
   expect(v2OperatingCard).toContain("Evaluated system and workflow version: Demonstration workflow v2");
 
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await expect(page.locator(".planning-freeze-warning")).toContainText("Comparison locked to evaluated v2");
   const fieldDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download the local draft" }).click();
@@ -623,7 +623,7 @@ test("field comparison rounds negative half-values exactly as the interface disp
   await page.getByLabel("Outputs accepted after defined review").fill("95");
   await page.getByLabel("Complete effect and approval trace").fill("100");
   await page.locator(".evidence-prerequisite input").check();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
 
   const evidence = page.locator("#field-pilot .field-pilot-evidence");
   await expect(evidence.getByText("OBSERVED WHOLE LOAD").locator("..").locator("strong")).toHaveText("-0.1%");
@@ -645,7 +645,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   await calibrator.getByLabel("Cases needing exception work").fill("25");
   await calibrator.getByLabel("Minutes per exception").fill("12");
 
-  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#operational-router").getByRole("button", { name: /Share feedback/ }).click();
   await page.locator("#field-pilot").getByLabel("Exact action boundary").selectOption("1");
   await page.locator("#operational-router").getByRole("button", { name: /Build the test plan/ }).click();
   await page.getByRole("button", { name: "Copy the pilot brief" }).click();
@@ -661,8 +661,8 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
 });
 
 for (const fieldLocale of [
-  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Prepare field feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Evaluated frozen hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771", risk: "R1 · assistance with review" },
-  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Préparer le retour terrain/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse figée évaluée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771", risk: "R1 · assistance avec relecture" },
+  { path: "/", task: "What work do you want to estimate?", level: /Copilot 01/, plan: /Build the test plan/, freeze: "Freeze hypothesis v1", evidence: /Enter observed results/, baseline: "Total baseline human time for all observed requests", ai: "Total human time with AI for all observed requests", panel: /Share feedback/, download: "Download the local draft", planned: "PLANNING RESULT", observed: "OBSERVED WHOLE LOAD", hypothesis: "Evaluated frozen hypothesis", recalibration: "Observation and recalibration", volume: "40 cases/month", denominator: "1200 − 771", risk: "R1 · assistance with review" },
+  { path: "/fr/", task: "Quel travail voulez-vous estimer ?", level: /Copilote 01/, plan: /Construire le plan de test/, freeze: "Figer l’hypothèse v1", evidence: /Saisir les résultats observés/, baseline: "Temps humain initial total pour toutes les demandes observées", ai: "Temps humain total avec IA pour toutes les demandes observées", panel: /Partager un retour/, download: "Télécharger le brouillon local", planned: "RÉSULTAT DE PLANIFICATION", observed: "CHARGE TOTALE OBSERVÉE", hypothesis: "Hypothèse figée évaluée", recalibration: "Observation et recalibrage", volume: "40 cas/mois", denominator: "1200 − 771", risk: "R1 · assistance avec relecture" },
 ] as const) {
   test(`${fieldLocale.path} field draft keeps the extrapolated range beside the observation`, async ({ page }) => {
     await page.goto(fieldLocale.path);
@@ -713,7 +713,7 @@ test("any field-report mutation invalidates confirmation and all six publication
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByRole("button", { name: "Load a demonstration result" }).click();
   await page.locator(".evidence-prerequisite input").check();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
 
   await page.getByLabel("Non-identifying project alias").fill("Workshop North");
   await expect(page.locator("#field-pilot").getByLabel("System + workflow version")).toHaveValue("Demonstration workflow v1");
@@ -730,7 +730,7 @@ test("any field-report mutation invalidates confirmation and all six publication
     await router.getByRole("button", { name: /Enter observed results/ }).click();
     const observationConfirmation = page.locator(".evidence-prerequisite input");
     if (!(await observationConfirmation.isChecked())) await observationConfirmation.check();
-    await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+    await router.getByRole("button", { name: /Share feedback/ }).click();
     await confirmation.check();
     for (let index = 0; index < 6; index += 1) await reviewChecks.nth(index).check();
     await expect(page.locator(".field-pilot-status")).toContainText("READY FOR INDEPENDENT REVIEW");
@@ -756,7 +756,7 @@ test("any field-report mutation invalidates confirmation and all six publication
 
   await page.locator("#concept-library > summary").click();
   await page.locator("#use-patterns .jurisdiction-options button").first().click();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await expectReviewInvalidated();
   await expect(page.locator(".field-pilot-evidence-confirm input")).toBeDisabled();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
@@ -764,7 +764,7 @@ test("any field-report mutation invalidates confirmation and all six publication
   await approveCurrentReport();
 
   await page.locator("#use-patterns .use-pattern-grid button").first().click();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await expectReviewInvalidated();
   await expect(confirmation).toBeDisabled();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
@@ -773,7 +773,7 @@ test("any field-report mutation invalidates confirmation and all six publication
 
   await page.locator("#implementation-library > summary").click();
   await page.locator("#paths .path-card").nth(1).click();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await expectReviewInvalidated();
   await expect(confirmation).toBeDisabled();
   await router.getByRole("button", { name: /Build the test plan/ }).click();
@@ -782,13 +782,13 @@ test("any field-report mutation invalidates confirmation and all six publication
 
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.getByLabel("Total baseline human time for all observed requests").fill("1300");
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await expectReviewInvalidated();
 
   await expect(confirmation).toBeDisabled();
   await router.getByRole("button", { name: /Enter observed results/ }).click();
   await page.locator(".evidence-prerequisite input").check();
-  await router.getByRole("button", { name: /Prepare field feedback/ }).click();
+  await router.getByRole("button", { name: /Share feedback/ }).click();
   await confirmation.check();
   await expect(page.locator(".field-pilot-status")).not.toContainText("READY FOR INDEPENDENT REVIEW");
   await expect(page.locator(".field-pilot-status strong")).toHaveText("10/16");
@@ -819,32 +819,52 @@ test("guided start reveals one decision at a time and builds a plain-language ro
   const architectures = page.locator(".guide-architectures button");
   const actionBoundaries = page.locator(".guide-autonomy button");
   const designNext = page.locator(".guided-controls .guide-next");
+  await page.locator(".guide-design-progress button").nth(0).click();
   await workModes.first().click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(1).click();
   await architectures.first().click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await actionBoundaries.nth(4).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   const hardBlocker = page.locator(".design-coherence-blocker");
   await expect(hardBlocker).toContainText("A copilot keeps a person as the operator");
   await expect(hardBlocker).toContainText("One model without connected tools cannot perform an A2 to A4 action");
   await expect(hardBlocker.locator("input")).toHaveCount(0);
   await expect(designNext).toBeDisabled();
+  await page.locator(".guide-design-progress button").nth(0).click();
   await workModes.nth(1).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(1).click();
   await architectures.nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await expect(page.locator(".design-coherence-a4")).toContainText("A4 is disabled by default");
   await expect(designNext).toBeDisabled();
   await page.locator(".design-coherence-a4 input").check();
   await expect(designNext).toBeEnabled();
+  await page.locator(".guide-design-progress button").nth(0).click();
   await workModes.nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await expect(actionBoundaries.nth(4)).toHaveAttribute("aria-pressed", "true");
   await expect(architectures.nth(2)).toHaveAttribute("aria-pressed", "true");
   await expect(designNext).toBeDisabled();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await actionBoundaries.first().click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await expect(page.locator(".design-coherence")).toContainText("Strong automation at A0 or A1");
   await page.locator(".design-coherence input").check();
   await expect(designNext).toBeEnabled();
+  await page.locator(".guide-design-progress button").nth(0).click();
   await workModes.first().click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await expect(actionBoundaries.first()).toHaveAttribute("aria-pressed", "true");
+  await page.locator(".guide-design-progress button").nth(1).click();
   await architectures.first().click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await actionBoundaries.nth(1).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await expect(workModes.first()).toHaveAttribute("aria-pressed", "true");
   await expect(architectures.first()).toHaveAttribute("aria-pressed", "true");
   await expect(designNext).toBeEnabled();
@@ -866,9 +886,15 @@ test("A4 adds its autonomy controls to the lifecycle and keeps the security phas
   await page.locator(".guided-controls .guide-next").click();
   await page.locator(".guide-patterns button").last().click();
   await page.locator(".guided-controls .guide-next").click();
+  await page.locator(".guide-design-progress button").nth(0).click();
   await page.locator(".guide-levels button").nth(1).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(1).click();
   await page.locator(".guide-architectures button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await page.locator(".guide-autonomy button").nth(4).click();
+  await page.locator(".guide-design-progress button").nth(2).click();
   await page.locator(".design-coherence-a4 input").check();
 
   await page.locator("#implementation-library > summary").click();
@@ -888,7 +914,7 @@ test("A4 adds its autonomy controls to the lifecycle and keeps the security phas
 test("the lifecycle separates the selected architecture from the simpler recommended start", async ({ page }) => {
   await page.goto("/");
   await page.locator("#operational-workspace > summary").click();
-  await page.locator("#operational-router").getByRole("button", { name: /Prepare field feedback/ }).click();
+  await page.locator("#operational-router").getByRole("button", { name: /Share feedback/ }).click();
   await page.locator("#field-pilot").getByLabel("Work mode").selectOption("agency");
   await page.locator("#field-pilot").getByLabel("Architecture").selectOption("agency");
 

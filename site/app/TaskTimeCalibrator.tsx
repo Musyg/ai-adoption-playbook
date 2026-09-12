@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import taskTimeEvidence from "../public/data/task-time-evidence.v1.json";
 import { workModeTaxonomy } from "./integration-taxonomy";
@@ -184,7 +184,7 @@ const content = {
     },
     modeEffect: "WHY THE RESULT CHANGES",
     modeEffectLead: "The work mode changes the setup effort and which studies are comparable. It does not add a fixed productivity bonus. Architecture and A0 to A4 authority are chosen separately.",
-    modeEffectRecurring: "For each case, you entered this much remaining human work:",
+    modeEffectRecurring: "For each case, the current assumptions allow this much remaining human work:",
     modeEffectSource: "The comparable study implies this much remaining human work:",
     modeEffectConservative: "After applying your coverage settings, the human work retained is:",
     modeEffectNet: "Before counting setup, this represents",
@@ -288,7 +288,7 @@ const content = {
     },
     modeEffect: "POURQUOI LE RÉSULTAT CHANGE",
     modeEffectLead: "Le mode de travail modifie l’effort de mise en place et les études comparables. Il n’ajoute aucun bonus de productivité fixe. L’architecture et l’autorité A0 à A4 sont choisies séparément.",
-    modeEffectRecurring: "Pour chaque cas, vous avez indiqué ce temps humain restant :",
+    modeEffectRecurring: "Pour chaque cas, les hypothèses actuelles prévoient ce temps humain restant :",
     modeEffectSource: "L’étude comparable suggère ce temps humain restant :",
     modeEffectConservative: "Après application de vos réglages de périmètre, le temps humain retenu est :",
     modeEffectNet: "Avant de compter la mise en place, cela représente",
@@ -309,8 +309,8 @@ const content = {
 
 const formatPercent = (value: number, locale: Locale) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: 1, signDisplay: value < 0 ? "always" : "auto" }).format(value * 100);
 const formatNumber = (value: number, locale: Locale, digits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: digits }).format(value);
-const formatRange = (values: number[], formatter: (value: number) => string) => {
-  const formatted = values.map(formatter);
+export const formatRange = (values: number[], formatter: (value: number) => string) => {
+  const formatted = values.map((value) => formatter(value));
   return new Set(formatted).size === 1 ? formatted[0] : formatted.join("–");
 };
 
@@ -450,6 +450,9 @@ export function TaskTimeCalibrator({
     (point.setup_payback_months == null ? noPayback : formatNumber(point.setup_payback_months, locale) + " " + t.units.months)
   ).join(" · ");
   const netRangeVaries = new Set([netScenarios.low.whole_workload_reduction_fraction, netScenarios.central.whole_workload_reduction_fraction, netScenarios.high.whole_workload_reduction_fraction].map((value) => value == null ? "n/a" : formatPercent(value, locale))).size > 1;
+  const scenarioControls = useRef<HTMLDetailsElement>(null);
+  const monthlySaved = netScenarios.central.human_hours_saved_per_month;
+  const remainingHours = monthlySaved == null ? null : totalBaselineHumanHours - monthlySaved;
   const inputNumber = (value: string, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, Number(value) || minimum));
 
   return (
@@ -499,7 +502,7 @@ export function TaskTimeCalibrator({
             <label><span>{t.setup}</span><div><input aria-label={t.setup} max="1000000" min="0" onChange={(event) => onSetupHoursChange(inputNumber(event.target.value, 0, 1000000))} type="number" value={setupHours} /><small>{t.units.hours}</small></div><em>{locale === "en" ? "Mode preset" : "Repère du mode"}: {setupPresets[integrationMode]} h</em></label>
             <label><span>{t.amortization}</span><div><input aria-label={t.amortization} max="120" min="1" onChange={(event) => updateScenario({ amortizationMonths: inputNumber(event.target.value, 1, 120) })} type="number" value={amortizationMonths} /><small>{t.units.months}</small></div></label>
           </div></details>
-          <details className="task-time-components task-time-sensitivity">
+          <details className="task-time-components task-time-sensitivity" ref={scenarioControls}>
             <summary>{t.scenarioTitle}<span aria-hidden="true">+</span></summary>
             <p>{t.scenarioHelp}</p>
             <div className="task-time-selects"><label><span>{t.basisLabel}</span><select aria-label={t.basisLabel} value={planningOptions.use_source ? "source" : "local"} onChange={(event) => updateOptions({ use_source: event.target.value === "source" })}><option value="source">{t.basisSource}</option><option value="local">{t.basisLocal}</option></select></label></div>
@@ -520,14 +523,28 @@ export function TaskTimeCalibrator({
         </div>
 
         <output className="calibrator-results" aria-live="polite">
+          <div className="reader-workload-summary" data-metric="whole-summary">
+            <strong>{locale === "en" ? "YOUR MONTH, IN HUMAN WORK HOURS" : "VOTRE MOIS, EN HEURES DE TRAVAIL HUMAIN"}</strong>
+            {wholeWorkloadCalculable && monthlySaved != null && remainingHours != null ? <p>{locale === "en"
+              ? `With the current assumptions, about ${formatNumber(Math.abs(monthlySaved), locale)} hours would be ${monthlySaved < 0 ? "added" : "saved"} per month against ${formatNumber(totalBaselineHumanHours, locale)} hours today. About ${formatNumber(remainingHours, locale)} hours of human work would remain, including the monthly share of setup.`
+              : `Avec les hypothèses actuelles, environ ${formatNumber(Math.abs(monthlySaved), locale)} heures seraient ${monthlySaved < 0 ? "ajoutées" : "économisées"} par mois, pour ${formatNumber(totalBaselineHumanHours, locale)} heures aujourd’hui. Il resterait environ ${formatNumber(remainingHours, locale)} heures de travail humain, part mensuelle de mise en place comprise.`}</p>
+              : <p>{locale === "en" ? "A monthly total cannot be estimated with these inputs. Check the eligible share and the total current workload below." : "Ces valeurs ne permettent pas d’estimer le total mensuel. Vérifiez la part éligible et la charge totale actuelle ci-dessous."}</p>}
+            <small>{locale === "en" ? "Middle scenario, not an observed result. Initial demonstration values remain in use unless you replace them." : "Scénario central, pas un résultat observé. Les valeurs initiales de démonstration restent utilisées tant que vous ne les remplacez pas."}</small>
+            <button className="reader-scenarios-link" type="button" onClick={() => { if (scenarioControls.current) { scenarioControls.current.open = true; scenarioControls.current.querySelector("summary")?.focus(); scenarioControls.current.scrollIntoView({ behavior: "smooth", block: "center" }); } }}>{locale === "en" ? "Explore three editable scenarios" : "Explorer trois scénarios modifiables"}</button>
+          </div>
           <div className="calibrator-result-head" data-calculable={wholeWorkloadCalculable}><span>{t.results.heading}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{planningBasis}{planningOptions.sensitivity?.enabled ? (locale === "en" ? " · demonstration scenarios, not a confidence interval" : " · scénarios de démonstration, pas un intervalle de confiance") : ""}</small></div>
           <div className="calibrator-result-grid">
             <p><span>{t.results.wholeBaseline}</span><strong>{formatNumber(totalBaselineHumanHours, locale)} h</strong><small>{formatNumber(monthlyCases, locale)} {t.units.cases}</small></p>
             <p><span>{t.results.baseline}</span><strong>{formatNumber(humanScenario.baseline_eligible_human_hours, locale)} h</strong><small>{formatNumber(humanScenario.eligible_cases, locale)} {t.units.cases}</small></p>
+          </div>
+          <details className="reader-case-details"><summary>{locale === "en" ? "See time per case and setup costs" : "Voir le temps par cas et la mise en place"}</summary>
+          <div className="calibrator-result-grid">
             <p data-metric="recurring-time"><span>{t.results.recurring}</span><strong>{formatNumber(netScenarios.central.operating_human_minutes, locale)} min</strong><small>{formatNumber(netScenarios.central.local_operating_floor_minutes, locale)} min {t.results.localFloor}</small></p>
             <p data-metric="recurring-gain"><span>{t.results.recurringGain}</span><strong>{formatPercent(netScenarios.central.recurring_reduction_fraction, locale)}%</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.recurring_human_hours_saved_per_month, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
             <p data-metric="setup"><span>{t.results.setupPerCase}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.amortized_setup_minutes_per_case ?? 0, locale)} min` : "n/a"}</strong><small>{formatNumber(setupHours, locale)} h / {formatNumber(amortizationMonths, locale)} {t.units.months}</small></p>
             <p data-metric="net-time"><span>{t.results.withAi}</span><strong>{netCalculable ? `${formatNumber(netScenarios.central.human_time_with_ai_minutes ?? 0, locale)} min` : "n/a"}</strong><small>{netCalculable ? `${formatPercent(netScenarios.central.reduction_fraction ?? 0, locale)}% ${t.results.eligibleNet}` : t.results.planningUnavailable}</small></p>
+          </div></details>
+          <div className="calibrator-result-grid">
             {netRangeVaries ? <>
               <p data-range="low"><span>{t.results.low}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.low.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.low.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>
               <p data-range="central"><span>{t.results.central}</span><strong>{wholeWorkloadCalculable ? `${formatPercent(netScenarios.central.whole_workload_reduction_fraction ?? 0, locale)}%` : "n/a"}</strong><small>{netCalculable ? `${formatNumber(netScenarios.central.human_hours_saved_per_month ?? 0, locale)} ${t.results.perMonth}` : t.results.planningUnavailable}</small></p>

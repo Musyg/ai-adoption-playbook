@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- Addressed the September 12 reader-clarity review:
+  three progressive design choices with one customer-reply example, plain
+  task descriptions, help choosing without automatic permission changes,
+  and consistent work-mode versus architecture definitions.
+- Added a whole-workload monthly summary that distinguishes hours saved,
+  hours added, and unavailable estimates. Per-case detail is optional;
+  editable demonstration scenarios remain directly accessible. Equal range
+  endpoints display as one value instead of a misleading repeated range.
+- Simplified test planning, operating instructions and record explanations;
+  made public feedback explicitly optional; linked non-agent tasks from the
+  practical-question library; clarified the different navigation counts.
+  Updated the six paired articles and their editorial dates. No calculation,
+  evidence-admission rule, decision threshold or dossier schema was changed.
+- Verified the corrections with lint, TypeScript, build, 62 Node tests and
+  144 Chrome checks. The new accessibility checks also found and corrected
+  inappropriate alert containers without changing the design gates.
+
+
 - Updated transitive js-yaml from 4.3.1 to 4.3.2 after the September 12 merge
   checks detected GHSA-2883-xcg3-v3hh, published after the September 8 audit.
 - Updated transitive build dependencies to Browserslist 4.28.9, fast-uri 3.1.7,

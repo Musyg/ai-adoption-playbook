@@ -989,8 +989,8 @@
       "family": "value",
       "priority": "baseline",
       "title": {
-        "en": "Measured baseline and success unit",
-        "fr": "Baseline et unité de réussite mesurées"
+        "en": "Measure current work and define a successful result",
+        "fr": "Mesurer le travail actuel et définir un résultat réussi"
       },
       "objective": {
         "en": "Compare the AI system with the real current process using complete denominators and a business or public-service outcome.",
