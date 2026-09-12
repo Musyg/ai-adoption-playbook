@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- Reconcile the handoff and reader-clarity reports with the verified September
+  12 publication, without creating a new numbered release.
+- Remove interactive JavaScript and module preloads from the 12 static articles;
+  retain their complete HTML, styles, links and structured metadata. Split the
+  interactive static build into separately cacheable runtime, evidence and
+  workspace chunks. These maintenance changes are not yet published.
+- Normalize displayed number separators across server and browser locale data
+  to prevent the French page from regenerating during hydration. Numeric
+  calculations, rounding rules and evidence records are unchanged.
+- Verify this pass with 64 Node tests, 153 Chrome checks, hosted-path checks,
+  lint, TypeScript and repository validation. See `docs/loading-review.md`
+  for measured payload sizes and the separate, unchanged Vinext warning.
+
+## Updates published on main through 2026-09-12
+
+Published through PR #55, commit `9736e1f`, with successful main CI and GitHub
+Pages deployment. This section records deployed changes, not a new release tag.
+
 - Addressed the September 12 reader-clarity review:
   three progressive design choices with one customer-reply example, plain
   task descriptions, help choosing without automatic permission changes,

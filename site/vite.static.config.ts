@@ -16,7 +16,16 @@ export default defineConfig({
   build: {
     outDir: path.join(siteRoot, "static-dist"),
     emptyOutDir: true,
-    rollupOptions: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: "react-vendor", test: /[\\/]node_modules[\\/]/ },
+            { name: "evidence-data", test: /[\\/]public[\\/]data[\\/].*\.json$/ },
+            { name: "project-workspace", test: /[\\/]app[\\/](?:LifecycleWorkbench|ProjectArtifactsWorkbench|ProjectChangeReview)\.tsx$/ },
+          ],
+        },
+      },
       input: {
         main: path.join(staticRoot, "index.html"),
         fr: path.join(staticRoot, "fr", "index.html"),

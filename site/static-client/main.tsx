@@ -1,8 +1,6 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 
-import { GeoArticlePage } from "../app/GeoArticlePage";
 import { Playbook } from "../app/Playbook";
-import { getGeoArticle } from "../app/geo-content";
 import "../app/globals.css";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -13,21 +11,19 @@ const localPath = basePath && pathname === basePath
     ? pathname.slice(basePath.length)
     : pathname;
 const locale = localPath === "/fr" || localPath.startsWith("/fr/") ? "fr" : "en";
-const pathParts = localPath.split("/").filter(Boolean);
-const articleSlug = locale === "fr" ? pathParts[1] : pathParts[0];
-const article = articleSlug ? getGeoArticle(locale, articleSlug) : undefined;
 const root = document.getElementById("root");
 
 document.documentElement.lang = locale;
-document.title = article?.title ?? (locale === "fr"
+document.title = locale === "fr"
   ? "Playbook d’adoption de l’IA : pilotes, agents et gouvernance"
-  : "AI Adoption Playbook: pilots, agents and governance");
+  : "AI Adoption Playbook: pilots, agents and governance";
 
 if (!root) {
   throw new Error("Missing #root mount point");
 }
 
-const page = article ? <GeoArticlePage article={article} /> : <Playbook locale={locale} />;
+// Editorial routes are complete HTML documents and do not load this client.
+const page = <Playbook locale={locale} />;
 
 if (root.dataset.prerendered === "true") {
   hydrateRoot(root, page);

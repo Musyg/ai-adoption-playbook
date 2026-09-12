@@ -42,12 +42,14 @@ test("publishes host-ready metadata and base-aware assets", async () => {
 });
 
 test("publishes every guide below the approved base path", async () => {
-  const route = articles.find((candidate) => candidate.locale === "en");
-  assert.ok(route, "at least one guide route is registered");
-  const html = await exported(path.join(route.slug, "index.html"));
-  assert.match(html, new RegExp(`<link rel="canonical" href="${publicUrl}/${route.slug}/"`));
-  assert.match(html, new RegExp(`"url":"${publicUrl}/${route.slug}/"`));
-  assertHostedPaths(html, "guide document");
+  for (const article of articles) {
+    const route = `${article.locale === "fr" ? "fr/" : ""}${article.slug}/`;
+    const html = await exported(path.join(route, "index.html"));
+    assert.match(html, new RegExp(`<link rel="canonical" href="${publicUrl}/${route}"`));
+    assert.match(html, new RegExp(`"url":"${publicUrl}/${route}"`));
+    assert.doesNotMatch(html, /<script\b(?![^>]*type="application\/ld\+json")|rel="modulepreload"/i);
+    assertHostedPaths(html, route);
+  }
 });
 
 test("publishes a complete sitemap and bypasses Jekyll processing", async () => {

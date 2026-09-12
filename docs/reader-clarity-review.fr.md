@@ -54,9 +54,16 @@ gains et pertes mensuels, l’éligibilité nulle, les détails facultatifs, l�
 aux scénarios, les bornes identiques, la contribution facultative et les liens
 vers les tâches non agentiques. Les contrôles existants des combinaisons
 incompatibles, exceptions A4, exports et observations figées restent actifs.
-La compilation conserve son avertissement préexistant sur la taille du fichier
-JavaScript ; cette passe n’est pas un audit de performance. Aucun commit,
-push, fusion ou déploiement n’a été effectué.
+La compilation conservait son avertissement préexistant sur la taille du fichier
+JavaScript pendant cette revue ; cette passe n’était pas un audit de performance.
+Les corrections locales ont ensuite été enregistrées et publiées par la
+[PR #55](https://github.com/Musyg/ai-adoption-playbook/pull/55), fusionnée au
+commit `9736e1f` le 12 septembre. La CI de main a validé 62 tests Node et
+144 contrôles Chrome ; le
+[déploiement Pages](https://github.com/Musyg/ai-adoption-playbook/actions/runs/34685452972)
+a réussi. Les 14 routes publiques et la nouvelle synthèse sur les deux accueils
+ont été vérifiées après publication. Le travail de performance ultérieur est
+suivi séparément.
 
 Les séances avec des lecteurs seront organisées ensuite par l’utilisateur.
 Les tests navigateur et d’accessibilité ne remplacent pas ces séances.

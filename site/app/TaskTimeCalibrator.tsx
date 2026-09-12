@@ -1,5 +1,7 @@
 "use client";
 
+import { formatLocalizedNumber } from "./format-number.mjs";
+
 import { useEffect, useMemo, useRef } from "react";
 
 import taskTimeEvidence from "../public/data/task-time-evidence.v1.json";
@@ -307,8 +309,8 @@ const content = {
   },
 } as const;
 
-const formatPercent = (value: number, locale: Locale) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: 1, signDisplay: value < 0 ? "always" : "auto" }).format(value * 100);
-const formatNumber = (value: number, locale: Locale, digits = 1) => new Intl.NumberFormat(locale === "fr" ? "fr-CH" : "en-GB", { maximumFractionDigits: digits }).format(value);
+const formatPercent = (value: number, locale: Locale) => formatLocalizedNumber(value * 100, locale, { maximumFractionDigits: 1, signDisplay: value < 0 ? "always" : "auto" });
+const formatNumber = (value: number, locale: Locale, digits = 1) => formatLocalizedNumber(value, locale, { maximumFractionDigits: digits });
 export const formatRange = (values: number[], formatter: (value: number) => string) => {
   const formatted = values.map((value) => formatter(value));
   return new Set(formatted).size === 1 ? formatted[0] : formatted.join("–");

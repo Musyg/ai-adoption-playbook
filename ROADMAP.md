@@ -3,7 +3,7 @@
 ## How to read the numbers
 
 - `0.2.2`, `0.3`, `0.4`, and later numbers are repository releases.
-- `01` to `05` are the five decisions in the short interactive guide.
+- `01` to `05` mark four questions followed by the result in the short guide.
 - lifecycle phases `0` to `11` describe the complete adoption process.
 - `A0` to `A4` describe autonomy; `R0` to `R3` describe impact and risk.
 - `G`, `P`, and named gates are decision checkpoints, not release numbers.
