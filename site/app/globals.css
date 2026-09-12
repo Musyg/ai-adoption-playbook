@@ -27,6 +27,28 @@ body {
 a { color: inherit; }
 button, summary { font: inherit; }
 [hidden] { display: none !important; }
+
+/* Reader guidance uses the existing palette and remains usable without hover. */
+.guide-design-progress { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 24px; }
+.guide-design-progress button, .reader-topic-links button { background: var(--paper); border: 1px solid var(--line); color: var(--ink); cursor: pointer; font: inherit; padding: 12px 16px; text-align: left; }
+.guide-design-progress button[aria-current="step"] { box-shadow: inset 0 -3px var(--blue-deep); font-weight: 700; }
+.guide-design-progress button:hover, .guide-design-progress button:focus-visible, .reader-topic-links button:hover, .reader-topic-links button:focus-visible { background: var(--ink); color: var(--paper); border-color: var(--blue); }
+.reader-choice-help { border-left: 4px solid var(--blue-deep); margin: 20px 0; padding: 8px 20px; color: var(--ink); }
+.reader-choice-help > strong { font: 700 12px/1.5 "Courier New", monospace; }
+.reader-choice-help p, .reader-route-map, .reader-planning-note { font-size: 16px; line-height: 1.65; }
+.reader-choice-help summary, .reader-case-details summary { cursor: pointer; font-weight: 700; padding: 14px 0; }
+.reader-route-map { margin: 24px 0; max-width: 900px; }
+.reader-topic-links { border-left: 4px solid var(--blue-deep); padding: 4px 20px 20px; margin-bottom: 28px; }
+.reader-topic-links button { display: inline-block; margin: 4px 8px 4px 0; }
+.reader-workload-summary { border-left: 4px solid var(--blue); margin-bottom: 32px; padding: 8px 0 8px 24px; }
+.reader-workload-summary > strong { color: var(--blue); font: 700 13px/1.5 "Courier New", monospace; }
+.reader-workload-summary p { color: var(--dark-text); font-size: 20px; line-height: 1.6; }
+.reader-workload-summary small { display: block; line-height: 1.6; }
+.reader-scenarios-link { background: transparent; border: 1px solid var(--blue); color: var(--dark-text); cursor: pointer; font: inherit; margin-top: 18px; padding: 12px 16px; }
+.reader-scenarios-link:hover, .reader-scenarios-link:focus-visible { background: #f5f6f3; color: #111416; }
+.reader-case-details { margin: 16px 0; }
+.reader-case-details > summary { color: var(--dark-text); }
+.reader-case-details > summary:hover, .reader-case-details > summary:focus-visible { color: var(--blue); }
 .page-shell { overflow: clip; }
 .skip-link { background: var(--ink); color: white; left: 16px; padding: 12px 16px; position: fixed; top: -80px; z-index: 20; }
 .skip-link:focus { top: 16px; }

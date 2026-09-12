@@ -136,12 +136,12 @@ const artifactDefinitions: Record<Locale, ArtifactDefinition[]> = {
       ],
     },
     {
-      id: "evaluation_plan", code: "EVAL", title: "Evaluation plan", short: "Thresholds before testing", purpose: "Freeze the cases, segments, thresholds, stop rules, and decision authority before the pilot result is known.", why: "A preregistered plan can disprove readiness. A test written after the demonstration usually cannot.",
+      id: "evaluation_plan", code: "EVAL", title: "Evaluation plan", short: "Thresholds before testing", purpose: "Freeze the cases, segments, thresholds, stop rules, and decision authority before the pilot result is known.", why: "Writing success and failure rules before testing makes it harder to overlook disappointing results. Keep the same rules when comparing versions.",
       fields: [
         { id: "decision_owner", label: "Decision owner", help: "Name the person who will continue, rework, or stop.", phase: 0, required: true },
         { id: "deadline", label: "Decision deadline", help: "Set the decision date before testing.", phase: 0, kind: "date", required: true },
-        { id: "test_provenance", label: "Test-set provenance and authorization", help: "Record how cases were selected, authorized, and frozen.", kind: "textarea", required: true },
-        { id: "frozen_cases", label: "Frozen cases", help: "Include normal, rare, critical, adversarial, and missing-data cases.", phase: 6, kind: "number", required: true },
+        { id: "test_provenance", label: "Test-set provenance and authorization", help: "Explain where the test cases came from, why you may use them, and when the set was fixed. Example: 40 anonymized requests, approved for testing, set v1. This lets a reviewer repeat the comparison.", kind: "textarea", required: true },
+        { id: "frozen_cases", label: "Frozen cases", help: "Count the cases kept unchanged for each version. Include usual requests, rare failures, misleading inputs, and missing data. A small easy set cannot justify a broad release.", phase: 6, kind: "number", required: true },
         { id: "baseline", label: "Baseline outcome", help: "Use the same accepted-outcome definition as the pilot.", phase: 1, kind: "textarea", required: true },
         { id: "work_mode", label: "Work mode", help: "Freeze how people and AI share the work.", required: true },
         { id: "architecture", label: "Architecture", help: "Freeze what the evaluated system contains.", required: true },
@@ -192,12 +192,12 @@ const artifactDefinitions: Record<Locale, ArtifactDefinition[]> = {
       ],
     },
     {
-      id: "evaluation_plan", code: "EVAL", title: "Plan d’évaluation", short: "Seuils avant les tests", purpose: "Figer les cas, segments, seuils, règles d’arrêt et autorités de décision avant de connaître le résultat du pilote.", why: "Un plan préenregistré peut réfuter la préparation. Un test écrit après la démonstration le peut rarement.",
+      id: "evaluation_plan", code: "EVAL", title: "Plan d’évaluation", short: "Seuils avant les tests", purpose: "Figer les cas, segments, seuils, règles d’arrêt et autorités de décision avant de connaître le résultat du pilote.", why: "Écrire les règles de réussite et d’échec avant le test évite d’écarter les résultats décevants. Gardez les mêmes règles pour comparer les versions.",
       fields: [
         { id: "decision_owner", label: "Responsable de la décision", help: "Nommez la personne qui continuera, corrigera ou arrêtera.", phase: 0, required: true },
         { id: "deadline", label: "Échéance de décision", help: "Fixez la date avant les tests.", phase: 0, kind: "date", required: true },
         { id: "test_provenance", label: "Provenance et autorisation du jeu de tests", help: "Consignez comment les cas ont été sélectionnés, autorisés et figés.", kind: "textarea", required: true },
-        { id: "frozen_cases", label: "Cas figés", help: "Incluez les cas normaux, rares, critiques, adversariaux et incomplets.", phase: 6, kind: "number", required: true },
+        { id: "frozen_cases", label: "Cas figés", help: "Comptez les cas conservés à l’identique pour chaque version. Incluez demandes habituelles, erreurs rares, consignes trompeuses et données manquantes. Un petit lot facile ne justifie pas une mise en service large.", phase: 6, kind: "number", required: true },
         { id: "baseline", label: "Résultat de référence", help: "Utilisez la même définition du résultat accepté que pendant le pilote.", phase: 1, kind: "textarea", required: true },
         { id: "work_mode", label: "Mode de travail", help: "Figez comment les personnes et l’IA se partagent le travail.", required: true },
         { id: "architecture", label: "Architecture", help: "Figez ce que contient le système évalué.", required: true },

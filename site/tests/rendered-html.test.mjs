@@ -177,10 +177,10 @@ for (const [pathname, language, title] of [
     assert.match(renderedText, /0\/3/);
     assert.match(html, /three reports must cover both Switzerland and the European Union|trois rapports doivent couvrir ensemble la Suisse et l’Union européenne/i);
     assert.match(html, /One bounded A2 business agent|Un agent métier A2 borné/i);
-    assert.match(html, /Prepare one real pilot|Préparez un vrai pilote/i);
+    assert.match(html, /Share your experience with the project|Partagez votre expérience avec le projet/i);
     assert.match(html, /Nothing entered here is sent|Rien de ce qui est saisi ici n’est transmis/i);
     assert.match(html, /PLANNING RESULT|RÉSULTAT DE PLANIFICATION/i);
-    assert.match(html, /extrapolation and the observation|L’extrapolation et l’observation/i);
+    assert.match(html, /An estimate remains distinct from a measured result|Une estimation reste distincte d’un résultat mesuré/i);
     assert.match(html, /LOCAL DRAFT · INCOMPLETE|BROUILLON LOCAL · INCOMPLET/i);
     assert.match(html, /PUBLICATION REVIEW|REVUE DE PUBLICATION/i);
     assert.match(html, /replaced the demonstration values|remplacé les valeurs de démonstration/i);

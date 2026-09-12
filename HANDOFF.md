@@ -2,6 +2,26 @@
 
 Snapshot: 2026-09-08 (Europe/Zurich)
 
+## September 12 reader-clarity follow-up
+
+The user authorized correction of all findings from the reader-clarity audit
+before arranging readers themselves. Work is on `improvement/reader-clarity`,
+based on local `main` at `7623b15`. This is local implementation, not a new
+publication. Earlier snapshots below describe their own point in time.
+
+The [correction map](docs/reader-clarity-review.md) and its
+[French version](docs/reader-clarity-review.fr.md) trace each finding to the
+affected surface. Preserve the three work modes, four architectures, A0 to A4,
+transferable evidence, editable demonstrations, quantitative calculations and
+the existing real-decision gates. Human reader sessions are a later user-led
+step, not a prerequisite for these corrections or their technical validation.
+
+Local verification completed: lint, TypeScript, build, 62 Node tests, 144 Chrome
+checks across desktop light/dark and mobile, repository validation and the two
+JSON Schema checks passed. New screen captures were inspected in all three
+browser profiles. See the correction map for details. No commit, push, merge
+or deployment was performed for this correction pass.
+
 ## September 12 merge follow-up
 
 [PR #53](https://github.com/Musyg/ai-adoption-playbook/pull/53) tracks integration
