@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import re
 import sys
 from datetime import date
@@ -150,6 +151,7 @@ TRANSLATION_PAIRS = (
     ("templates/field-feedback-report.md", "templates/field-feedback-report.fr.md"),
     ("field-notes/README.md", "field-notes/README.fr.md"),
     ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
+    ("references/recent-implementation-cases.md", "references/recent-implementation-cases.fr.md"),
     ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
     ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
     ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),
@@ -204,6 +206,8 @@ IGNORED_PARTS = {
     ".vinext",
     "dist",
     "node_modules",
+    "test-results",
+    "playwright-report",
     "static-dist",
     "work",
 }
@@ -254,6 +258,18 @@ def is_ignored_repo_path(path: Path) -> bool:
     return any(part in IGNORED_PARTS for part in relative_path.parts)
 
 
+def repo_files(pattern: str = "*") -> list[Path]:
+    """Discover source files without traversing generated or dependency trees."""
+    paths = []
+    for directory, children, filenames in os.walk(ROOT, followlinks=False):
+        children[:] = [name for name in children if name not in IGNORED_PARTS]
+        for name in filenames:
+            path = Path(directory) / name
+            if path.match(pattern) and not is_ignored_repo_path(path):
+                paths.append(path)
+    return sorted(paths)
+
+
 def check_required_files(errors: list[str]) -> None:
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
@@ -296,7 +312,7 @@ def check_non_agentic_cases(errors: list[str]) -> None:
 
 def check_markdown(errors: list[str]) -> None:
     markdown_paths = [
-        path for path in sorted(ROOT.rglob("*.md")) if not is_ignored_repo_path(path)
+        path for path in repo_files("*.md")
     ]
     if not markdown_paths:
         errors.append("no Markdown files discovered outside ignored paths")
@@ -366,7 +382,7 @@ def check_hosting_contract(errors: list[str]) -> None:
         ".yml",
         ".yaml",
     }
-    for path in sorted(ROOT.rglob("*")):
+    for path in repo_files():
         if not path.is_file() or path.suffix.lower() not in text_suffixes:
             continue
         if is_ignored_repo_path(path):
@@ -893,7 +909,7 @@ def main() -> int:
         return 1
     markdown_count = sum(
         1
-        for path in ROOT.rglob("*.md")
+        for path in repo_files("*.md")
         if not is_ignored_repo_path(path)
     )
     print(

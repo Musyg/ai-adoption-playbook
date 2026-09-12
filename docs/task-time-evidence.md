@@ -34,9 +34,10 @@ For one eligible case:
 local human-work floor = preparation + supervision + verification
                          + corrections + expected exception work
 
-net human time with AI = max(source-implied residual human time,
+net human time with AI = max(source residual - setup already in that residual,
                              local human-work floor)
-                         + amortized setup
+                         + extra work absent from both
+                         + local amortized setup
 
 net human time saved = baseline human time - net human time with AI
 
@@ -52,8 +53,10 @@ The source-implied residual is the human time that remains after applying one
 measured low, central, or high reduction to the local baseline. Taking the
 greater value prevents the calculator from hiding declared review work. It also
 avoids adding the source residual and local work together, which would count
-human time twice. Setup remains additive because the published task reductions
-do not include the user’s local one-off implementation.
+human time twice when their scope overlaps. Work absent from both must be added
+separately. If the source residual includes setup, remove that part before adding
+local setup. The removal cannot exceed the source residual. With no admitted
+source, or when you choose your own assumptions, use the local breakdown alone.
 
 When the eligible share is zero, the net range is unavailable. There is no
 eligible case over which to allocate setup, so the calculator reports `n/a`
@@ -77,7 +80,7 @@ downstream outcome remain separate measures.
 | A | Controlled or paired task-time observation | Transfer only with a comparable task contract |
 | B | Field telemetry or objective operational measure | Transfer only when it measures human time with a denominator |
 | C | Self-reported time or survey estimate | Context for pilot design |
-| D | Internal or supplier case without complete independent validation | Mechanism and implementation context |
+| D | Published case or capability test without independently validated human-time comparison | Mechanism and implementation context |
 | E | Model-estimated, synthetic, or planning-only value | Named hypothesis only |
 
 The grade describes how the value was measured, not whether it is favorable.
@@ -119,7 +122,7 @@ quality threshold, exception rate, operator skill, and consequence of error.
 | METR early-2025 study | Real issues in mature known repositories | A | 19% longer, with a reported slowdown interval | Comparable mature-repository work only |
 | UK office trial | Mixed civil-service workday | C | 26 self-reported minutes saved per day | Context only |
 | UK coding-assistant trial | Mixed developer workday | C | 56 self-reported minutes saved per day and 15.8% line acceptance | Context only |
-| Customer-support deployment | Issues resolved per agent-hour | B | 14% higher output rate | Capacity context, not task-time transfer |
+| Customer-support deployment | Issues resolved per agent-hour | B | 15% higher output rate (2025 publication) | Capacity context, not task-time transfer |
 | Anthropic conversation analysis | Broad conversation-defined tasks | E | Model-estimated task savings concentrated at high values | Context only |
 | OpenAI harness project | Agent-first software product | D | Internal estimate of roughly one tenth of manual coding time | Transfer the mechanism, not the percentage |
 
@@ -141,8 +144,8 @@ figures do not enter the calculator automatically.
 7. Replace every planning input with pilot observations before a decision.
 
 Do not add the source percentage or its residual minutes to the local work. The
-engine uses the source residual or the local human-work floor, whichever is
-greater, then adds amortized setup. The source still asks what happened in a
+engine uses the adjusted source residual or local human-work floor, whichever is
+greater, then adds work missing from both and local amortized setup. The source still asks what happened in a
 comparable measured task. The net range shows what remains after the local
 controls and implementation effort are made explicit.
 
@@ -180,3 +183,39 @@ These ranges feed the hypothesis layer of 0.3. A field draft freezes the range,
 records the observed whole-workload result, and explains their gap. External
 studies do not populate `field-notes/index.json`; only genuine, independently
 reviewed and sanitized observations can satisfy its admission rule.
+
+## Recent cases available
+
+The register now offers 19 sources, including 4 admitted human-time ratios. New cases also cover document checking, multimodal work, predictive optimization and agent teams. Other results remain useful for building assumptions.
+
+[Read each case’s mechanism and limits](../references/recent-implementation-cases.md).
+
+## Explore three scenarios without inventing evidence
+
+Open “Explore cautious, middle and favourable scenarios”. The main fields define
+the middle case. The optional margins add review time, exceptions and setup to
+the cautious case, and remove them from the favourable case. All margins are
+editable examples, not measured uncertainty. Zero is the lower limit for human
+work, and exception rates stay between 0% and 100%. Identical results remain
+possible when margins are zero or the study's remaining work dominates them.
+
+Choose “My own demonstration assumptions” to explore a different implementation
+without using the study's percentage. The study stays visible for information.
+This is especially useful for strong automation: you can test its mechanism
+without calling a supplier estimate a measured result. No general savings cap
+is imposed. Negative savings remain visible when the work costs more time.
+
+Example of overlapping work: a study suggests 30 minutes remaining and your
+breakdown contains 20 minutes of the same work. Keep 30, not 50. If another
+5 minutes are absent from both, enter those separately: total 35 before local
+setup. If the 30 already includes 3 minutes of setup, remove those first:
+max(30 - 3, 20) + 5 = 32 minutes, then add local amortized setup.
+
+The source details distinguish an average, differences between experimental
+groups, a statistical interval and an internal or model estimate. They also
+state when the work was observed, which model and tools were used, and what the
+time covers. None of these ranges is automatically a local confidence interval.
+
+Scenario margins, the source/local choice and coverage adjustments are retained
+with the frozen hypothesis and its human-readable exports. Older saved sessions
+without these optional settings retain the previous calculation.

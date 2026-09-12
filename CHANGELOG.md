@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- Updated transitive js-yaml from 4.3.1 to 4.3.2 after the September 12 merge
+  checks detected GHSA-2883-xcg3-v3hh, published after the September 8 audit.
+- Updated transitive build dependencies to Browserslist 4.28.9, fast-uri 3.1.7,
+  and fflate 0.7.5, plus Browserslist's compatibility data. This addresses five
+  high-severity GitHub alerts and one additional moderate-severity npm finding.
+  No direct dependency, application content, or calculation logic changed.
+- Corrected the public-review time formula, the BCG task count, and the second,
+  conflicting A to E scale. Updated C2PA to 2.4 and customer-support throughput to
+  the 2025 QJE publication while retaining historical source provenance.
+- Added ten implementation cases covering document checks, multimodal work,
+  predictive optimization and agent teams. Their mechanisms can inform local
+  demonstrations without converting quality or throughput into time savings.
+- Added optional cautious and favourable scenario margins, a local-assumptions
+  choice, explicit extra-work and already-included setup adjustments, and source
+  metadata. Frozen hypotheses and human-readable exports retain those settings.
+- Added three short validation questions, optional detail on repeated attempts
+  and post-change monitoring, and regression checks for the affected workflows.
+- Completed two independent reviews and resolved their findings, including
+  mixed payback outcomes and source metadata. Verification passes 62 Node tests,
+  126 Chrome checks and the source-discovery regression. Generated browser
+  reports no longer produce false source-document validation errors.
+
 - Closed the final journey-coherence gaps found by two independent reviews.
   Hard design conflicts now block freezing and export, softer deviations and
   exceptional A4 designs use distinct confirmations, evaluated field results

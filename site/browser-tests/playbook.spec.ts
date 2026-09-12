@@ -89,7 +89,8 @@ test("use pattern and jurisdiction update the evidence profile", async ({ page }
 
   await page.locator(".use-pattern-grid button").nth(3).click();
   await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("predictive_decision_support");
-  await expect(page.locator(".task-time-no-evidence")).toContainText("No study in the register measures this work closely enough");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("DeepMind reports better algorithms");
+  await expect(page.locator(".task-time-source-range")).toContainText("not added to your estimate");
 
   await page.locator(".use-pattern-grid button").nth(5).click();
   await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("multimodal_review");
@@ -118,8 +119,8 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await page.locator("#operational-workspace > summary").click();
 
   await expect(page.getByLabel("What work do you want to estimate?")).toHaveValue("information_synthesis");
-  await expect(page.locator(".task-time-evidence-detail")).toContainText("No one measured the complete work before and after");
-  await expect(page.locator(".task-time-source-range")).toContainText("TT-2025-ANTHROPIC-MODEL-ESTIMATE");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("Legora reports checking 41 documents");
+  await expect(page.locator(".task-time-source-range")).toContainText("TT-2026-LEGORA-DOCUMENT-REVIEW");
   await expect(page.locator(".task-time-source-range")).toContainText("remain visible for information");
   await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
   await expect(page.locator('.calibrator-result-grid p[data-metric="recurring-time"]')).toContainText("33 min");
@@ -135,7 +136,8 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator(".task-time-mode-effect")).toContainText("does not add a fixed productivity bonus");
 
   await page.getByLabel("What work do you want to estimate?").selectOption("predictive_decision_support");
-  await expect(page.locator(".task-time-no-evidence")).toContainText("No study in the register measures this work closely enough");
+  await expect(page.locator(".task-time-evidence-detail")).toContainText("DeepMind reports better algorithms");
+  await expect(page.locator(".task-time-source-range")).toContainText("not added to your estimate");
   await expect(page.locator(".calibrator-result-head small")).toContainText("starting scenario to verify");
 
   await page.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
@@ -149,7 +151,7 @@ test("task-time calibrator turns transferable evidence and human work into a net
   await expect(page.locator('.calibrator-result-grid p[data-range="local"]')).toContainText("26.3%");
   await expect(page.locator('.calibrator-result-grid p[data-metric="net-time"]')).toContainText("37.6% net saving on each eligible case");
 
-  await page.locator(".task-time-components > summary").click();
+  await page.locator(".task-time-components > summary").first().click();
   await page.getByLabel("Verification").fill("70");
   await expect(page.locator(".calibrator-result-head strong")).toContainText("-");
   await expect(page.locator(".task-time-negative")).toContainText("consumes more human time");
@@ -180,11 +182,11 @@ test("task-time explanation separates the user's input from the study value", as
     if (route === "/") {
       await expect(explanation).toContainText("you entered this much remaining human work: 33 min");
       await expect(explanation).toContainText("study implies this much remaining human work: 44.9 min");
-      await expect(explanation).toContainText("calculation keeps the larger amount: 44.9 min");
+      await expect(explanation).toContainText("After applying your coverage settings, the human work retained is: 44.9 min");
     } else {
       await expect(explanation).toContainText("vous avez indiqué ce temps humain restant : 33 min");
       await expect(explanation).toContainText("étude comparable suggère ce temps humain restant : 44,9 min");
-      await expect(explanation).toContainText("calcul conserve le temps le plus élevé : 44,9 min");
+      await expect(explanation).toContainText("Après application de vos réglages de périmètre, le temps humain retenu est : 44,9 min");
     }
   }
 });
@@ -296,14 +298,22 @@ test("language switch preserves the current topic and editable scenario", async 
   await page.goto("/#calibrator");
   await page.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await page.getByLabel("Human minutes without AI").fill("90");
-  await page.locator(".task-time-components > summary").click();
+  await page.locator(".task-time-components > summary").first().click();
   await page.getByLabel("Verification").fill("23");
+  await page.locator(".task-time-sensitivity > summary").click();
+  await page.getByLabel("What should guide the calculation?").selectOption("local");
+  await page.getByLabel("Use three editable demonstration scenarios").check();
+  await page.getByLabel("Cautious: extra review minutes per case").fill("12");
   await page.locator(".site-header .lang").click();
 
   await expect(page).toHaveURL(/\/fr\/#calibrator$/);
   await expect(page.getByLabel("Quel travail voulez-vous estimer ?")).toHaveValue("professional_writing");
   await expect(page.getByLabel("Minutes humaines sans IA")).toHaveValue("90");
   await expect(page.getByLabel("Vérification", { exact: true })).toHaveValue("23");
+  await expect(page.locator(".task-time-sensitivity select")).toHaveValue("local");
+  await expect(page.locator(".task-time-demo-toggle input")).toBeChecked();
+  await expect(page.locator('.task-time-sensitivity input[type="number"]').first()).toHaveValue("12");
+  await expect(page.locator(".calibrator-result-head small")).toContainText("scénarios de démonstration");
   await expect(page.locator("#operational-workspace")).toHaveAttribute("open", "");
   await expect(page.locator("#calibrator")).toBeVisible();
 });
@@ -377,6 +387,7 @@ for (const beginnerLocale of [
     await page.goto(beginnerLocale.path);
     await page.locator("#operational-workspace > summary").click();
     const evidence = page.locator(".task-time-evidence-detail");
+    await page.locator('.task-time-evidence-options input[value="TT-2025-ANTHROPIC-MODEL-ESTIMATE"]').check();
     await expect(evidence.locator(".task-time-evidence-plain span")).toHaveText(beginnerLocale.verdict);
     await expect(evidence.locator(".task-time-evidence-plain strong")).toContainText(beginnerLocale.summary);
     await expect(evidence.locator(".task-time-evidence-plain p")).toHaveText(beginnerLocale.use);
@@ -596,7 +607,7 @@ test("field comparison rounds negative half-values exactly as the interface disp
   await page.locator("#operational-workspace > summary").click();
   const router = page.locator("#operational-router");
   const calibrator = page.locator("#calibrator");
-  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.locator(".task-time-components > summary").first().click();
   await calibrator.getByLabel("Verification").fill("42");
   await calibrator.getByLabel("One-off setup effort").fill("0");
   await expect(calibrator.locator(".calibrator-result-head strong")).toHaveText("0%");
@@ -626,7 +637,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   const calibrator = page.locator("#calibrator");
   await calibrator.getByLabel("What work do you want to estimate?").selectOption("professional_writing");
   await calibrator.getByRole("button", { name: /Copilot 01/ }).click();
-  await calibrator.locator(".task-time-components > summary").click();
+  await calibrator.locator(".task-time-components > summary").first().click();
   await calibrator.getByLabel("Preparation and context").fill("7");
   await calibrator.getByLabel("Supervision").fill("6");
   await calibrator.getByLabel("Verification").fill("18");
@@ -643,7 +654,7 @@ test("copied pilot brief preserves the human-time and setup assumptions", async 
   expect(brief).toContain("Architecture: Tool-assisted workflow");
   expect(brief).toContain("Exact action boundary: A1 · research or draft");
   expect(brief).toContain("Transfer contract: professional_writing · copilot · reviewed · mixed");
-  expect(brief).toContain("Net method: greater of source residual and local human-work floor, plus amortized setup");
+  expect(brief).toContain("Net method: greater of adjusted source residual and local human-work floor, plus extra work absent from both and local amortized setup");
   expect(brief).toContain("Human-work floor: 7 prep + 6 supervision + 18 verification + 4 correction + 3 expected exceptions = 38 min/case");
   expect(brief).toContain("Exception assumption: 25% of eligible cases · 12 min each");
   expect(brief).toContain("Setup allocation: 8 h over 12 months");
@@ -687,7 +698,7 @@ for (const fieldLocale of [
     expect(report).toContain(fieldLocale.volume);
     expect(report).toContain(fieldLocale.denominator);
     expect(report).toContain(fieldLocale.risk);
-    expect(report).toContain("1.0.0 · 2026-08-21");
+    expect(report).toContain("1.0.0 · 2026-09-05");
   });
 }
 

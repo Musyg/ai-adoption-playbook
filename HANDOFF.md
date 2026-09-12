@@ -1,6 +1,66 @@
 # AI Adoption Playbook: handoff
 
-Snapshot: 2026-08-23 (Europe/Zurich)
+Snapshot: 2026-09-08 (Europe/Zurich)
+
+## September 12 merge follow-up
+
+[PR #53](https://github.com/Musyg/ai-adoption-playbook/pull/53) tracks integration
+of the reviewed refresh and dependency fixes. Its initial GitHub check found
+GHSA-2883-xcg3-v3hh, published on September 8 at 21:24 UTC, after the local audit.
+The lockfile now updates only js-yaml 4.3.1 to 4.3.2 for this additional fix;
+the refreshed lockfile audit reports zero vulnerabilities. The required checks
+must pass again for this new head before merge. The PR and its linked workflow
+runs are the authoritative integration and deployment status; the September 8
+snapshot below records the prior local verification, not the final merge state.
+
+## Dependency security refresh
+
+The maintenance branch now locks Browserslist 4.28.9, fast-uri 3.1.7 and
+fflate 0.7.5. Browserslist's compatibility-data dependencies were updated with
+it. Direct dependencies, application content and calculation logic are unchanged.
+The update addresses five high-severity alerts reported on GitHub and one
+additional moderate-severity fflate finding from npm. A clean `npm ci` and
+`npm audit --audit-level=moderate` report zero vulnerabilities on 2026-09-08.
+This is an audit result for this dependency snapshot, not a guarantee that
+future advisories will not be published. GitHub's default-branch alerts will
+remain open until the correction is merged into `main` and re-evaluated.
+
+## September evidence and scenario refresh
+
+Local implementation of all six audit priorities is complete and verified.
+Working branch: `maintenance/september-evidence-scenarios`. The reviewed refresh
+at `c0fa2b1` was pushed on 2026-09-07. No merge or publication was performed;
+`main` remains at `d6a7b3d`. Priorities 1 to 5 cover the
+corrected accounting and BCG summary, a single evidence-grade vocabulary,
+C2PA 2.4 and the QJE support publication, ten additional implementation cases,
+editable scenario margins, source-time coverage and short evaluation guidance.
+
+The registry now contains 19 sources, with four admitted human-time ratios.
+Context-only cases can seed explicit demonstrations; they do not become measured
+coefficients automatically. Optional measurement metadata identifies the kind
+of range, observation period, model/tools and what time was counted.
+
+Scenario settings are saved and copied with frozen hypotheses. The main inputs
+describe the central case; optional review, exception and setup margins produce
+cautious and favourable cases. Additional work must be absent from both the
+source and local breakdown. Setup already included in source time is removed
+before local setup is added. That source-specific adjustment resets when the
+user selects another task or study. Older sessions retain the default method.
+
+The known first-party evidence requirement for 0.3 is unchanged. The new examples
+and simulations enrich its hypothesis layer, not its observation layer.
+
+Two separate agents reviewed the frozen changes: calculation/state/export and
+source accuracy/reader clarity. Both approved `c7c3976` after corrections. The
+subsequent CSS and source-only validation changes were separately approved at
+`ff66b33`, including the inspected CI regression-test addition. Final Chrome
+coverage ran against the application content at `9b53df1`; later changes affect
+repository validation, its CI command and this handoff, not the application.
+
+The review corrected an incomplete first-audit recommendation: C2PA 2.4, not
+2.3, is the current published reference checked here. Old source identifiers
+remain available for provenance. The amortization display now keeps a scenario
+that never pays back visible instead of showing only its favourable endpoint.
 
 ## Current state
 
@@ -130,8 +190,10 @@ result remains valid evidence and must not be clipped away. The core equations
 are:
 
 ```text
-human time with AI = preparation + supervision + verification
-                     + corrections + exceptions + amortized setup
+local human work = preparation + supervision + verification
+                   + corrections + exceptions
+human time with AI = max(adjusted source residual, local human work)
+                     + work absent from both + local amortized setup
 human time saved per task = baseline human time - human time with AI
 annual human time saved = human time saved per task * annual frequency
 ```
@@ -171,7 +233,7 @@ Quantitative records must expose their source and use one evidence grade:
 - A: controlled or paired measurements with actual task-time logs;
 - B: field telemetry or other objective operational measurements;
 - C: self-reported time or survey estimates;
-- D: internal or supplier case study with incomplete independent validation;
+- D: published case or capability test without independently validated human-time comparison;
 - E: model-estimated, synthetic, or planning-only value.
 
 Grades describe the measurement basis, not whether the result is favorable.
@@ -181,7 +243,7 @@ distinct from the observed layer required by the first-party admission contract.
 ### Implementation state
 
 1. `task-time-evidence.v1.json` and its strict JSON Schema contain ten task
-   profiles, nine external evidence records, evidence grades A to E, and the
+   profiles, nineteen external evidence records, evidence grades A to E, and the
    classification of all eleven worked cases.
 2. The pure transfer engine compares task profile, work mode, architecture,
    exact A0 to A4 action boundary, output state, and operator experience. A
@@ -193,8 +255,8 @@ distinct from the observed layer required by the first-party admission contract.
    complete human-time account. Preparation, supervision, verification,
    corrections, expected exception work, and amortized setup remain editable.
 4. The engine now produces a net low, central, and high range. For each source
-   point it retains the greater of source-implied residual human time and the
-   declared local human-work floor, then adds amortized setup. The unadjusted
+   point it retains the greater of adjusted source-implied residual human time and the
+   declared local human-work floor, then adds work absent from both and local amortized setup. The unadjusted
    source range remains visible and neither result is presented as pilot evidence.
    At zero eligible cases the net range is unavailable, source and local
    provenance labels remain distinct, and the copied pilot brief preserves the
@@ -276,24 +338,34 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-Latest local verification on 2026-08-23:
+Latest local verification on 2026-09-08 after the dependency refresh:
 
+- clean `npm ci`: pass; npm audit at the moderate threshold: zero vulnerabilities
 - ESLint: pass
 - TypeScript 6.0.3: pass
 - server and static builds: pass
-- Node tests: 56/56 pass
-- Playwright: 117/117 pass across both routes, desktop light, desktop dark, and
+- Node tests: 62/62 pass
+- Playwright in Chrome: 126/126 pass, no retries, across both routes, desktop light, desktop dark, and
   mobile light
 - automated axe checks: zero violations
-- repository validation: 121 Markdown files and 48 paired documents pass
+- repository validation: 123 Markdown files and 49 paired documents pass
+- source-discovery regression: 1/1 pass; CI now runs it before repository validation
+- task-time and control-crosswalk JSON Schema validation: pass
+
+Generated browser reports are excluded from source-document validation, and
+dependency/generated directories are pruned before discovery. No artifacts
+were deleted to hide validation errors. The existing build warning about a
+client bundle above 500 kB remains non-blocking; this update does not claim to
+resolve application code-splitting. The September 8 dependency-only correction
+is recorded above; vulnerability auditing remains part of the CI workflow.
 
 The verification contract covers:
 
 - ESLint and strict TypeScript compilation;
 - the Vinext server build and provider-neutral static export;
-- 56 Node tests for accessibility semantics, decision logic, task-time transfer,
+- 62 Node tests for accessibility semantics, decision logic, task-time transfer,
   rendered HTML, controls, GEO content, and all 14 exported routes;
-- 117 Playwright checks across both routes, desktop light, desktop dark, and
+- 126 Playwright checks across both routes, desktop light, desktop dark, and
   mobile light profiles;
 - full-page automated Axe analysis;
 - responsive overflow, route selection, interaction, palette, and neutral local-export checks;

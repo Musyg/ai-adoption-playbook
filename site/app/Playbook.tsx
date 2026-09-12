@@ -11,7 +11,7 @@ import { architectureTaxonomy, defaultArchitectureByIntegration, defaultAutonomy
 import type { ArchitectureId } from "./integration-taxonomy";
 import { LifecycleWorkbench } from "./LifecycleWorkbench";
 import { PROJECT_DOSSIER_PLAYBOOK_VERSION } from "./project-dossier.mjs";
-import { createDefaultTaskTimeScenario, TaskTimeCalibrator } from "./TaskTimeCalibrator";
+import { createDefaultTaskTimeScenario, describePlanningAssumptions, TaskTimeCalibrator } from "./TaskTimeCalibrator";
 import type { TaskTimePlanningRange, TaskTimeScenarioState } from "./TaskTimeCalibrator";
 import { calculateHumanTimeScenario, derivePlanningRange } from "./task-time-transfer.mjs";
 
@@ -1822,6 +1822,10 @@ export function Playbook({ locale }: { locale: Locale }) {
         target: planningRange.target ? { ...planningRange.target } : null,
         human_work: { ...planningRange.human_work },
         setup: { ...planningRange.setup },
+        assumptions: planningRange.assumptions ? {
+          ...planningRange.assumptions,
+          sensitivity: { ...planningRange.assumptions.sensitivity },
+        } : undefined,
       },
       wholeWorkloadRange: {
         low: calibration.totalLow,
@@ -1860,7 +1864,10 @@ export function Playbook({ locale }: { locale: Locale }) {
       : `Mode de travail : ${pilotLevelLabel}\nArchitecture : ${selectedArchitecture.label}\nLimite d’action exacte : ${currentAutonomyLabel}\nVersion du système et du processus : ${systemVersion.trim() || "valeur de démonstration, non figée"}`,
   );
   const pilotBrief = [
-    pilotBriefDesign,
+    pilotBriefDesign
+      .replace("Net method: greater of source residual and local human-work floor, plus amortized setup", "Net method: greater of adjusted source residual and local human-work floor, plus extra work absent from both and local amortized setup")
+      .replace("Méthode nette : plus grand temps entre le résiduel de la source et le plancher de travail humain, puis mise en place amortie", "Méthode nette : plus grand temps entre le résiduel ajusté de la source et le plancher de travail humain, puis travail absent des deux et mise en place locale amortie"),
+    ...describePlanningAssumptions(planningRange, locale),
     ...(designCoherenceWarnings.length > 0 && designCoherenceAcknowledged ? [locale === "en" ? "Unusual-design check: confirmed before export" : "Vérification de conception inhabituelle : confirmée avant l’export"] : []),
     ...(a4ExceptionRequirements.length > 0 && a4ExceptionConfirmed ? [locale === "en" ? "A4 exception gate: documented exception, independent review, stronger containment, and evidence against A3 confirmed" : "Porte d’exception A4 : exception documentée, revue indépendante, confinement renforcé et preuve qu’A3 ne suffit pas confirmés"] : []),
   ].join("\n");
@@ -2026,6 +2033,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     const wholeVaries = new Set(wholeValues.map((value) => formatNumber(value))).size > 1;
     const eligibleVaries = new Set(eligibleValues.map((value) => formatNumber(value))).size > 1;
     return [
+      ...describePlanningAssumptions(range, locale).map((line) => `- ${line}`),
       `- ${locale === "en" ? "Snapshot identity" : "Identité de la photographie"}: ${snapshot.configurationId} · v${snapshot.version} · ${snapshot.frozenAt} · ${locale === "en" ? "registry" : "registre"} ${snapshot.registryVersion}`,
       `- ${locale === "en" ? "Frozen context" : "Contexte figé"}: ${snapshot.audienceLabel} · ${snapshot.usePatternLabel} · ${snapshot.jurisdictionLabel} · ${t.impactOptions[snapshot.risk]} · ${snapshot.level} · ${snapshot.architecture} · ${t.autonomyOptions[snapshot.autonomy]}`,
       `- ${locale === "en" ? "System and workflow version" : "Version du système et du processus"}: ${snapshot.systemVersion}`,

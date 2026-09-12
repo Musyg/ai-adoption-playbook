@@ -20,7 +20,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) — risques propres aux agents et workflows autonomes ; orientation communautaire à adapter à l’architecture réelle.
 - [NIST AI 100-2e2025 — Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final) — taxonomie couvrant IA prédictive et générative, avec errata officiel à vérifier.
 - [NIST AI 100-4 — Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/) — méthodes et limites de détection, authentification, marquage et provenance des contenus synthétiques.
-- [C2PA 2.2 — Content Credentials](https://spec.c2pa.org/specifications/specifications/2.2/index.html) — spécification technique de provenance ; ne prouve pas à elle seule l’authenticité du contenu ni la conformité juridique.
+- [C2PA 2.4 — Content Credentials](https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html) — spécification technique de provenance ; ne prouve pas à elle seule l’authenticité du contenu ni la conformité juridique.
 - [MITRE ATLAS](https://atlas.mitre.org/) — base vivante de tactiques, techniques, mitigations et cas concernant l’IA prédictive, générative et agentique.
 
 ## Droit et politiques publiques
@@ -103,3 +103,5 @@ Le [référentiel de contrôles](../controls/README.md) conserve en complément 
 version et une date de vérification par source. Ces relations sont thématiques :
 elles ne constituent ni une équivalence article par article, ni une preuve de
 certification ou de conformité.
+
+- [Cas récents et mécanismes transférables](recent-implementation-cases.fr.md): sources ajoutées le 5 septembre 2026, avec nature du résultat et limites explicites.
