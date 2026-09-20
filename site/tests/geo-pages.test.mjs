@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { authorFor, formatEditorialDate } from "../app/editorial-metadata.mjs";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const staticRoot = path.join(siteRoot, "static-dist");
@@ -73,6 +74,13 @@ test("exports every GEO route as neutral crawlable HTML", async () => {
     assert.match(html, new RegExp(`<html lang="${article.locale}"`));
     assert.match(html, new RegExp(`<title>${article.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</title>`));
     assert.match(html, /"@type":"Article"/);
+    const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    assert.equal(schemas.length, 1);
+    const schema = JSON.parse(schemas[0][1]);
+    assert.equal(schema.dateModified, article.dateModified);
+    assert.deepEqual(schema.author, authorFor(article.locale));
+    assert.ok(html.includes(`<time dateTime="${article.dateModified}">${formatEditorialDate(article.dateModified, article.locale)}</time>`));
+    assert.ok(html.includes(`href="${authorFor(article.locale).url}" rel="author"`));
     assert.match(html, /data-prerendered="true"><div class="geo-page"/);
     assert.doesNotMatch(html, /<script\b(?![^>]*type="application\/ld\+json")|rel="modulepreload"/i);
     assert.match(html, /<link\b[^>]*rel="stylesheet"/);

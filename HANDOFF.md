@@ -1,5 +1,33 @@
 # AI Adoption Playbook: handoff
 
+## September 20 SEO/GEO corrections: prepublication validation
+
+The approved follow-up corrects editorial dates, author attribution and article
+sharing images without changing guide advice, evidence or decision logic.
+The September 12 revision date is grounded in commit `9736e1f`, not the build
+clock. Article ISO dates now drive the visible date, JSON-LD and sitemap;
+the two home dates are maintained in `site/app/editorial-metadata.mjs`.
+The guide identifies Gilles Musy (Musyg) as a Person and links the localized
+portfolio biography. Hosted articles reuse the guide's sharing image.
+Provider-neutral builds retain noindex and no hosted canonical/image metadata.
+
+Local validation: TypeScript and ESLint pass; 66 Node tests pass; all four
+hosted-export checks pass (including server article metadata and the 14-page
+sitemap); nine targeted browser checks pass across desktop light/dark and mobile,
+covering both homes and all 12 articles. The neutral export is restored.
+An independent agent approved the diff and separately passed the two new
+editorial metadata unit tests. These are prepublication validation results, not
+proof of a successful deployment. Publication was subsequently authorized by the
+owner; the PR, main validation and Pages run must be checked before crediting
+the public site with these corrections.
+
+Read-only live follow-up on September 20: the GitHub Pages root robots.txt and
+guide sitemap both return HTTP 200. Robots permits all paths. The public sitemap
+still contains the old August dates, as expected before this correction is
+published. Remaining work: publish the approved correction, verify public
+parity, then inspect actual indexing and AI referral/citation evidence rather
+than infer visibility from crawl permissions alone.
+
 Publication status verified: 2026-09-12 (Europe/Zurich).
 
 ## Current publication and maintenance status
