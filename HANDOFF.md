@@ -1,5 +1,31 @@
 # AI Adoption Playbook: handoff
 
+## September 20 wide-desktop chapter layout correction
+
+The owner reported compressed, overlapping content below the chapter topic
+selector in Chrome on a large desktop screen. Reproduced in Chrome at 1920px:
+chapter sections had 360px horizontal padding calculated from the viewport,
+inside an already capped 1200px chapter body. This left only about 480px for
+desktop grids. The same defect affects the other detailed chapter sections.
+
+The two affected CSS rules now use 40px horizontal padding inside chapters.
+The existing 20px mobile padding and genuinely full-width guided introduction,
+header and footer are unchanged. No content or decision logic was modified.
+New regression coverage checks EN/FR, light/dark, and viewport widths 1280,
+1440, 1920, 2560 and 3840px. It checks local child bounds as ancestor clipping
+can conceal overflow from a document-width test. The regression failed before
+the correction (360px instead of 40px) and passes after it.
+
+Local builds, TypeScript, ESLint and all 66 Node tests pass. Four new desktop
+checks pass (the explicitly desktop cases skip the mobile project); the existing
+mobile and desktop navigation/route checks are retained. Publication requires
+independent review and the normal PR, main-validation and Pages gates.
+
+The preceding SEO/GEO correction was published as `bcfb876` through PRs #59/#60:
+main validation `35500090501` and Pages `35500454449` succeeded. Live checks and
+independent verification passed for all 14 sitemap URLs and localized metadata.
+The older prepublication notes below are retained as historical checkpoints.
+
 ## September 20 SEO/GEO corrections: prepublication validation
 
 The approved follow-up corrects editorial dates, author attribution and article
