@@ -1,5 +1,38 @@
 # AI Adoption Playbook: handoff
 
+## September 20 complete web reading library: implementation checkpoint
+
+Owner approved converting the guide's GitHub reading destinations into a full
+web edition. The existing Markdown remains the only editorial source. An
+explicit publication manifest includes 108 paired EN/FR documents and one
+French-only controls reference. Internal reports, work files and handoffs are
+excluded. The result is 125 HTML routes: the existing 14 routes, 109 documents
+and two localized indexes at `/library/` and `/fr/bibliotheque/`.
+
+Document pages include native section anchors, category navigation, reciprocal
+language links where a translation exists, source-identical Markdown downloads,
+CSV/JSON resources and a print stylesheet. Exported reading pages have no
+JavaScript. Existing guide tools, content and decision logic remain intact.
+GitHub remains secondary for source/history and optional contributions.
+
+The hosted export adds canonical URLs, language alternatives, TechArticle or
+CollectionPage JSON-LD and the complete sitemap. Document revision dates are
+not invented from build time. Marked handles GFM; HTML is rendered as literal
+text and the resulting HTML is sanitized. Unknown local document links fail
+closed rather than exposing unapproved files.
+
+Independent content tests pass for the complete link/anchor graph, allowlist,
+language pairs and Markdown rendering. Local TypeScript, ESLint, dependency
+audit, 75 Node tests and five hosted-export checks pass. Independent artifact
+review approved all 111 documentary/index pages and 109 byte-identical downloads.
+The first full browser run passed 172 checks with two intentional mobile skips;
+three assertions expecting former GitHub URLs were updated to exact local URLs.
+The normal PR -> main validation -> Pages publication gates are still required.
+Do not credit the live site with the library until that deployment is verified.
+
+The preceding desktop correction is published as `d9a5031` via PR #61; main
+validation `35518129506` and Pages `35518553780` passed.
+
 ## September 20 wide-desktop chapter layout correction
 
 The owner reported compressed, overlapping content below the chapter topic

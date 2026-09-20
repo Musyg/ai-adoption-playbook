@@ -8,6 +8,15 @@ time, while a separate case router opens one worked comparison. It preserves
 the Musyg portfolio identity and keeps the full operational templates in the
 repository as the source of truth.
 
+The complete reading library is available at `/library/` and
+`/fr/bibliotheque/`. Its 109 documents are generated from the explicit allowlist
+in `app/document-manifest.mjs`, not a recursive repository scan. Original
+Markdown stays the single source of truth. Reader pages, tables, section
+navigation and language links work without JavaScript; original documents are
+downloadable, and a print stylesheet supports PDF output. Internal reports and
+handoffs are excluded. Run commands below from this `site` directory, since
+server-side source reading resolves the repository root relative to it.
+
 Requires Node.js 22.13 or newer.
 
 ```bash
@@ -22,8 +31,8 @@ npm run verify
 python ../scripts/validate.py
 ```
 
-`npm run verify` checks lint, TypeScript, both production builds, 49 Node tests,
-and 93 Playwright checks across both routes, desktop, dark mode, and mobile.
+`npm run verify` checks lint, TypeScript, both production builds, Node tests,
+and Playwright checks across localized routes, desktop, dark mode, and mobile.
 Install Chromium once with `npx playwright install chromium` when the local
 Playwright browser is not already present.
 

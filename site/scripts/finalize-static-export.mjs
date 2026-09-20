@@ -1,7 +1,9 @@
-import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { authorFor, formatEditorialDate, homeModified } from "../app/editorial-metadata.mjs";
+import { documents, downloads, libraryPath, alternateDocument } from "../app/document-manifest.mjs";
+import { loadDocument, documentBody, libraryBody } from "./document-reader.mjs";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputRoot = path.join(siteRoot, "static-dist");
@@ -100,7 +102,7 @@ function injectRenderedBody(shell, rendered, label) {
 function hostedMetadata(locale, pathname, alternatePathname, includeImage) {
   if (!siteUrl) return "";
   const canonical = absoluteUrl(pathname);
-  const alternate = absoluteUrl(alternatePathname);
+  const alternate = alternatePathname ? absoluteUrl(alternatePathname) : undefined;
   const englishUrl = locale === "en" ? canonical : alternate;
   const frenchUrl = locale === "fr" ? canonical : alternate;
   const imageTags = includeImage
@@ -109,9 +111,9 @@ function hostedMetadata(locale, pathname, alternatePathname, includeImage) {
 
   return `
     <link rel="canonical" href="${canonical}" />
-    <link rel="alternate" hreflang="en" href="${englishUrl}" />
+    ${alternate ? `<link rel="alternate" hreflang="en" href="${englishUrl}" />
     <link rel="alternate" hreflang="fr" href="${frenchUrl}" />
-    <link rel="alternate" hreflang="x-default" href="${englishUrl}" />
+    <link rel="alternate" hreflang="x-default" href="${englishUrl}" />` : ""}
     <link rel="sitemap" type="application/xml" href="${absoluteUrl("/sitemap.xml")}" />
     <meta property="og:url" content="${canonical}" />${imageTags}`;
 }
@@ -142,29 +144,32 @@ function escapeHtml(value) {
 }
 
 function articlePath(article) {
+  if (article.path) return article.path;
   return article.locale === "fr" ? `/fr/${article.slug}/` : `/${article.slug}/`;
 }
 
 function alternateFor(article) {
+  if (article.alternatePath) return { path: article.alternatePath };
+  if (article.path) return alternateDocument(article);
   return geoArticles.find((candidate) => candidate.id === article.id && candidate.locale !== article.locale);
 }
 
 function articleJsonLd(article) {
-  formatEditorialDate(article.dateModified, article.locale);
+  if (article.dateModified) formatEditorialDate(article.dateModified, article.locale);
   const alternate = alternateFor(article);
   const canonical = absoluteUrl(articlePath(article));
   return JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": article.path ? (article.id === "library" ? "CollectionPage" : "TechArticle") : "Article",
     ...(canonical ? { "@id": `${canonical}#article`, url: canonical, mainEntityOfPage: canonical } : {}),
     headline: article.title,
     description: article.description,
     inLanguage: article.locale,
-    dateModified: article.dateModified,
+    ...(article.dateModified ? { dateModified: article.dateModified } : {}),
     isAccessibleForFree: true,
     author: authorFor(article.locale),
     publisher: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
-    citation: article.sources.map((source) => source.url),
+    citation: (article.sources || []).map((source) => source.url),
     ...(canonical && alternate ? { translationOfWork: { "@id": `${absoluteUrl(articlePath(alternate))}#article` } } : {}),
   }).replaceAll("<", "\\u003c");
 }
@@ -185,14 +190,14 @@ function articleShell(article) {
     .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`)
     .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${description}" />`)
     .replace(/<meta property="og:locale" content="[^"]*" \/>/, `<meta property="og:locale" content="${locale}" />`)
-    .replace(/<meta property="og:locale:alternate" content="[^"]*" \/>/, `<meta property="og:locale:alternate" content="${alternateLocale}" />`)
+    .replace(/<meta property="og:locale:alternate" content="[^"]*" \/>/, alternate ? `<meta property="og:locale:alternate" content="${alternateLocale}" />` : "")
     .replace('<meta property="og:type" content="website" />', '<meta property="og:type" content="article" />')
     .replace(/<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`)
     .replace(/<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${description}" />`)
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${articleJsonLd(article)}</script>`)
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
 
-  return applyHostingMetadata(shell, article.locale, articlePath(article), articlePath(alternate), true);
+  return applyHostingMetadata(shell, article.locale, articlePath(article), alternate ? articlePath(alternate) : undefined, true);
 }
 
 for (const article of geoArticles) {
@@ -207,6 +212,26 @@ for (const article of geoArticles) {
   await writeFile(outputPath, hydrated, "utf8");
 }
 
+const documentPages = await Promise.all(documents.map(loadDocument));
+for (const locale of ["en", "fr"]) documentPages.push({
+  id: "library", locale, path: libraryPath(locale), alternatePath: libraryPath(locale === "fr" ? "en" : "fr"),
+  title: locale === "fr" ? "Bibliothèque du guide" : "Guide library",
+  description: locale === "fr" ? "Tous les parcours, méthodes, exemples et modèles du guide d’adoption de l’IA." : "All AI adoption playbook tracks, methods, examples and templates.",
+});
+for (const doc of documentPages) {
+  let rendered = doc.id === "library" ? await libraryBody(doc.locale) : documentBody(doc);
+  if (basePath) rendered = rendered.replace(/(href|src)="\/(?!\/)/g, `$1="${basePath}/`);
+  const outputPath = path.join(outputRoot, doc.path, "index.html");
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, injectRenderedBody(articleShell(doc), rendered, doc.path), "utf8");
+}
+// Copy original bytes, not a second edited version of the documents.
+for (const source of [...documents.map((doc) => doc.source), ...downloads]) {
+  const outputPath = path.join(outputRoot, "downloads", source);
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await copyFile(path.join(siteRoot, "..", source), outputPath);
+}
+
 if (siteUrl) {
   await writeFile(path.join(outputRoot, ".nojekyll"), "", "utf8");
 
@@ -219,6 +244,7 @@ if (siteUrl) {
       alternatePath: articlePath(alternateFor(article)),
       dateModified: article.dateModified,
     })),
+    ...documentPages.map((doc) => ({ locale: doc.locale, path: doc.path, alternatePath: alternateFor(doc)?.path })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -227,10 +253,10 @@ ${sitemapEntries.map((entry) => {
   const frPath = entry.locale === "fr" ? entry.path : entry.alternatePath;
   return `  <url>
     <loc>${absoluteUrl(entry.path)}</loc>
-    <lastmod>${entry.dateModified}</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="${absoluteUrl(enPath)}" />
+    ${entry.dateModified ? `<lastmod>${entry.dateModified}</lastmod>` : ""}
+    ${entry.alternatePath ? `<xhtml:link rel="alternate" hreflang="en" href="${absoluteUrl(enPath)}" />
     <xhtml:link rel="alternate" hreflang="fr" href="${absoluteUrl(frPath)}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(enPath)}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(enPath)}" />` : ""}
   </url>`;
 }).join("\n")}
 </urlset>
@@ -239,4 +265,4 @@ ${sitemapEntries.map((entry) => {
 }
 
 const mode = siteUrl ? `host-ready metadata for ${siteUrl}` : "neutral noindex metadata";
-console.log(`Prerendered static build ready: ${geoArticles.length + 2} routes in ${outputRoot} (${mode}).`);
+console.log(`Prerendered static build ready: ${geoArticles.length + documentPages.length + 2} routes in ${outputRoot} (${mode}).`);

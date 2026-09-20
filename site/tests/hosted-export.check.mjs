@@ -4,6 +4,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { authorFor, formatEditorialDate, homeModified } from "../app/editorial-metadata.mjs";
+import { documents, libraryPath } from "../app/document-manifest.mjs";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const staticRoot = path.join(siteRoot, "static-dist");
@@ -98,16 +99,34 @@ test("publishes a complete sitemap and bypasses Jekyll processing", async () => 
   const sitemap = await exported("sitemap.xml");
   const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 
-  assert.equal(locations.length, 14);
-  assert.equal(new Set(locations).size, 14);
+  const expectedLocations = ["/", "/fr/", ...articles.map((article) => `/${article.locale === "fr" ? "fr/" : ""}${article.slug}/`), ...documents.map((doc) => doc.path), libraryPath("en"), libraryPath("fr")].map((route) => `${publicUrl}${route}`);
+  assert.deepEqual([...locations].sort(), expectedLocations.sort());
+  assert.equal(new Set(locations).size, expectedLocations.length);
   assert.ok(locations.every((location) => location.startsWith(`${publicUrl}/`)));
   assert.ok(locations.includes(`${publicUrl}/`));
   assert.ok(locations.includes(`${publicUrl}/fr/`));
   for (const entry of [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]) {
     const url = entry[1].match(/<loc>([^<]+)<\/loc>/)[1];
     const article = articles.find((item) => url === `${publicUrl}/${item.locale === "fr" ? "fr/" : ""}${item.slug}/`);
-    const expected = article ? article.dateModified : homeModified[url.endsWith("/fr/") ? "fr" : "en"];
-    assert.ok(entry[1].includes(`<lastmod>${expected}</lastmod>`), url);
+    const home = url === `${publicUrl}/` || url === `${publicUrl}/fr/`;
+    if (article || home) {
+      const expected = article ? article.dateModified : homeModified[url.endsWith("/fr/") ? "fr" : "en"];
+      assert.ok(entry[1].includes(`<lastmod>${expected}</lastmod>`), url);
+    } else assert.doesNotMatch(entry[1], /<lastmod>/, "Do not invent document modification dates");
   }
   await access(path.join(staticRoot, ".nojekyll"));
+});
+
+test("document pages retain hosted canonical, language alternatives and base paths", async () => {
+  for (const doc of documents) {
+    const html = await exported(path.join(doc.path, "index.html"));
+    assert.ok(html.includes(`rel="canonical" href="${publicUrl}${doc.path}"`), doc.path);
+    assert.equal((html.match(/rel="canonical"/g) || []).length, 1);
+    assert.match(html, /"@type":"TechArticle"/);
+    assert.doesNotMatch(html, /<script\b(?![^>]*type="application\/ld\+json")|rel="modulepreload"/);
+    assert.ok(html.includes(`href="${basePath}downloads/${doc.source}"`));
+    for (const link of html.matchAll(/(?:href|src)="(\/[^"#]*)"/g)) assert.ok(link[1].startsWith(basePath), link[1]);
+    if (doc.category === "controls") assert.doesNotMatch(html, /hreflang="en"|og:locale:alternate/, "French-only document is not translated");
+    else assert.match(html, /hreflang="en"/);
+  }
 });

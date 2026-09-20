@@ -1,6 +1,7 @@
 "use client";
 
 import { authorFor, formatEditorialDate } from "./editorial-metadata.mjs";
+import { libraryPath } from "./document-manifest.mjs";
 
 import {
   geoArticlePath,
@@ -35,7 +36,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
         sourceIntro: "Ces sources bornent la réponse. Elles ne transforment pas un cas publié en promesse pour votre organisation.",
         related: "Continuer avec",
         fullPlaybook: "Ouvrir le playbook complet",
-        repository: "Voir les preuves sur GitHub",
+        library: "Parcourir tous les documents",
         footer: "La preuve avant l’autonomie.",
       }
     : {
@@ -53,7 +54,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
         sourceIntro: "These sources bound the answer. They do not turn one published case into a promise for your organization.",
         related: "Continue with",
         fullPlaybook: "Open the full playbook",
-        repository: "Review the evidence on GitHub",
+        library: "Browse all documents",
         footer: "Evidence before autonomy.",
       };
 
@@ -135,7 +136,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
 
               <div className="geo-actions">
                 <a className="button primary" href={sitePath(homePath)}>{copy.fullPlaybook}</a>
-                <a className="button secondary" href={repository}>{copy.repository}</a>
+                <a className="button secondary" href={sitePath(libraryPath(article.locale))}>{copy.library}</a>
               </div>
             </div>
           </div>

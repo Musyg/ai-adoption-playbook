@@ -119,10 +119,10 @@ test("non-agentic cases expose four distinct evidence contracts", async ({ page 
 
   const caseLinks = page.locator(".non-agentic-footer a");
   await expect(caseLinks).toHaveCount(4);
-  await expect(caseLinks.nth(0)).toHaveAttribute("href", /examples\/en\/rag-policy-assistant\.md$/);
-  await expect(caseLinks.nth(1)).toHaveAttribute("href", /examples\/en\/predictive-demand-forecast\.md$/);
-  await expect(caseLinks.nth(2)).toHaveAttribute("href", /examples\/en\/external-customer-chatbot\.md$/);
-  await expect(caseLinks.nth(3)).toHaveAttribute("href", /examples\/en\/multimodal-catalog-accessibility\.md$/);
+  await expect(caseLinks.nth(0)).toHaveAttribute("href", "/library/examples-rag-policy-assistant/");
+  await expect(caseLinks.nth(1)).toHaveAttribute("href", "/library/examples-predictive-demand-forecast/");
+  await expect(caseLinks.nth(2)).toHaveAttribute("href", "/library/examples-external-customer-chatbot/");
+  await expect(caseLinks.nth(3)).toHaveAttribute("href", "/library/examples-multimodal-catalog-accessibility/");
 });
 
 test("task-time calibrator turns transferable evidence and human work into a net range", async ({ page }) => {

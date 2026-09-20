@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { libraryPath } from "../app/document-manifest.mjs";
 
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -81,7 +82,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /3[.,]2%|3,2 %/);
     assert.match(html, /15[.,]2%|15,2 %/);
     assert.match(html, /full 20-source evidence review|revue complète de 20 sources/i);
-    assert.match(html, /field-evidence-review-2026(?:\.fr)?\.md/);
+    assert.ok(html.includes(`href="${libraryPath(language)}references-field-evidence-review-2026/"`));
     assert.match(html, /Camille Rey · Phase 2/);
     assert.match(html, /44 → 14 min/);
     assert.match(html, /13\/20/);
@@ -142,7 +143,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /Agentic action|Action with tools|Action avec des outils/i);
     assert.match(html, /Switzerland \+ EU|Suisse \+ UE/i);
     assert.match(html, /Two routes, not one shortcut|Deux routes, aucun raccourci/i);
-    assert.match(html, /ai-use-patterns(?:\.fr)?\.md/i);
+    assert.ok(html.includes(`href="${libraryPath(language)}docs-ai-use-patterns/"`));
     assert.match(html, /id=["']non-agentic-cases["']/i);
     assert.match(html, /Same low autonomy, four different evidence contracts|Même avec une faible autonomie, quatre contrats de preuve différents/i);
     assert.match(html, /Read-only field-procedure assistant|Assistant de procédures terrain en lecture seule/i);
@@ -198,38 +199,9 @@ for (const [pathname, language, title] of [
     assert.match(html, /See what changed before yesterday’s decision|Voir ce qui a changé avant qu’une ancienne décision/i);
     assert.match(html, /No reference dossier loaded|Aucun dossier de référence chargé/i);
     assert.match(html, /href=["']\/data\/project-dossier\.schema\.json["']/i);
-    if (language === "en") {
-      assert.match(html, /templates\/mandate\.md/);
-      assert.match(html, /templates\/evaluation-plan\.md/);
-      assert.match(html, /templates\/incident-runbook\.md/);
-      assert.match(html, /tracks\/en\/independent\.md/);
-      assert.match(html, /sectors\/en\/healthcare\.md/);
-      assert.match(html, /templates\/accessibility-assessment\.md/);
-      assert.match(html, /templates\/fundamental-rights-impact-assessment\.md/);
-      assert.match(html, /templates\/field-feedback-report\.md/);
-      assert.match(html, /docs\/field-pilot-protocol\.md/);
-      assert.match(html, /docs\/field-pilot-cohort\.md/);
-      assert.match(html, /examples\/en\/rag-policy-assistant\.md/);
-      assert.match(html, /examples\/en\/predictive-demand-forecast\.md/);
-      assert.match(html, /examples\/en\/external-customer-chatbot\.md/);
-      assert.match(html, /examples\/en\/multimodal-catalog-accessibility\.md/);
-      assert.doesNotMatch(html, /templates\/mandate\.fr\.md/);
-      assert.doesNotMatch(html, /tracks\/fr\/independent\.md/);
-    } else {
-      assert.match(html, /templates\/mandate\.fr\.md/);
-      assert.match(html, /templates\/evaluation-plan\.fr\.md/);
-      assert.match(html, /templates\/incident-runbook\.fr\.md/);
-      assert.match(html, /tracks\/fr\/independent\.md/);
-      assert.match(html, /sectors\/fr\/healthcare\.md/);
-      assert.match(html, /templates\/accessibility-assessment\.fr\.md/);
-      assert.match(html, /templates\/fundamental-rights-impact-assessment\.fr\.md/);
-      assert.match(html, /templates\/field-feedback-report\.fr\.md/);
-      assert.match(html, /docs\/field-pilot-protocol\.fr\.md/);
-      assert.match(html, /docs\/field-pilot-cohort\.fr\.md/);
-      assert.match(html, /examples\/fr\/assistant-rag-procedures\.md/);
-      assert.match(html, /examples\/fr\/prevision-demande-pieces\.md/);
-      assert.match(html, /examples\/fr\/chatbot-client-externe\.md/);
-      assert.match(html, /examples\/fr\/catalogue-multimodal-accessibilite\.md/);
+    for (const slug of ["templates-mandate", "templates-evaluation-plan", "templates-incident-runbook", "tracks-independent", "sectors-healthcare", "templates-accessibility-assessment", "templates-fundamental-rights-impact-assessment", "templates-field-feedback-report", "docs-field-pilot-protocol", "docs-field-pilot-cohort", "examples-rag-policy-assistant", "examples-predictive-demand-forecast", "examples-external-customer-chatbot", "examples-multimodal-catalog-accessibility"]) {
+      assert.ok(html.includes(`href="${libraryPath(language)}${slug}/"`), `${language}: ${slug}`);
+      assert.ok(!html.includes(`href="${libraryPath(language === "en" ? "fr" : "en")}${slug}/"`), `${language}: wrong document language`);
     }
     assert.doesNotMatch(html, /react-loading-skeleton|Your site is taking shape/i);
   });
