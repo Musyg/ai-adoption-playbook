@@ -98,7 +98,7 @@ type Audience = {
 };
 
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
-const repositorySource = `${repository}/blob/main`;
+import { documentPath, libraryPath } from "./document-manifest.mjs";
 const fieldPilotIssues: Record<Locale, string> = {
   en: `${repository}/issues/new?template=field-pilot-en.yml`,
   fr: `${repository}/issues/new?template=field-pilot-fr.yml`,
@@ -739,7 +739,7 @@ const copy = {
     roles: "Minimum ownership",
     pilot: "Good first pilot",
     controls: "Do not skip",
-    fullGuide: "Open the complete guide on GitHub",
+    fullGuide: "Read the complete guide",
     sectorEyebrow: "ADD SECTOR-SPECIFIC STOP CONDITIONS",
     sectorTitle: "The process stays universal. The release conditions do not.",
     sectorText: "Choose the organization path first, then add every sector overlay that touches the service. A hospital can require healthcare and critical-infrastructure gates at the same time.",
@@ -1103,7 +1103,7 @@ const copy = {
     roles: "Responsabilité minimale",
     pilot: "Bon premier pilote",
     controls: "À ne pas supprimer",
-    fullGuide: "Ouvrir le guide complet sur GitHub",
+    fullGuide: "Lire le guide complet",
     sectorEyebrow: "AJOUTEZ LES CONDITIONS D’ARRÊT DU SECTEUR",
     sectorTitle: "Le processus reste universel. Les conditions de mise en service, non.",
     sectorText: "Choisissez d’abord le parcours de la structure, puis ajoutez chaque extension qui touche le service. Un hôpital peut cumuler les conditions propres à la santé et aux infrastructures critiques.",
@@ -2336,7 +2336,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       <header className="site-header">
         <a className="brand" href="#top"><span aria-hidden="true" />MUSYG · AI ADOPTION</a>
         <nav className="site-nav" aria-label={locale === "en" ? "Primary navigation" : "Navigation principale"}>
-          <a href="#guided-start">{locale === "en" ? "Guided start" : "Départ guidé"}</a><a href="#concept-library">{locale === "en" ? "Understand" : "Comprendre"}</a><a href="#operational-workspace">{locale === "en" ? "Pilot workspace" : "Espace pilote"}</a><a href="#implementation-library">{locale === "en" ? "Library" : "Bibliothèque"}</a><a href={repository}>GitHub ↗</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"} onClick={switchLanguage}>{langLabel}</a>
+          <a href="#guided-start">{locale === "en" ? "Guided start" : "Départ guidé"}</a><a href="#concept-library">{locale === "en" ? "Understand" : "Comprendre"}</a><a href="#operational-workspace">{locale === "en" ? "Pilot workspace" : "Espace pilote"}</a><a href="#implementation-library">{locale === "en" ? "Library" : "Bibliothèque"}</a><a href={sitePath(libraryPath(locale))}>{locale === "fr" ? "Documents" : "Documents"}</a><a className="lang" href={langHref} lang={locale === "en" ? "fr" : "en"} onClick={switchLanguage}>{langLabel}</a>
         </nav>
       </header>
 
@@ -2423,6 +2423,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <p>{locale === "en" ? "Each guide gives a direct answer, a comparison, a realistic example, and the sources that limit the claim." : "Chaque guide apporte une réponse directe, une comparaison, un exemple réaliste et les sources qui bornent la conclusion."}</p>
           </div>
           <nav className="reader-topic-links" aria-label={locale === "en" ? "Other AI tasks" : "Autres tâches de l’IA"}><p>{locale === "en" ? "Not building an agent? Start with one of these explanations." : "Vous ne construisez pas un agent ? Commencez par l’une de ces explications."}</p>{patternCopy.patterns.filter((pattern) => ["retrieval", "prediction", "conversation", "multimodal"].includes(pattern.id)).map((pattern) => <button type="button" key={pattern.id} onClick={() => { selectUsePattern(pattern.id); openChapter("concept-library", "use-patterns"); }}>{pattern.short} →</button>)}</nav>
+          <p><a className="button secondary" href={sitePath(libraryPath(locale))}>{locale === "fr" ? "Parcourir tous les documents" : "Browse all documents"} →</a></p>
           <div className="geo-library-grid">
             {geoGuides.map((guide, index) => (
               <a href={sitePath(geoArticlePath(guide))} key={guide.id}>
@@ -2456,7 +2457,7 @@ export function Playbook({ locale }: { locale: Locale }) {
                 <div><dt>{patternCopy.labels.evaluate}</dt><dd>{selectedUsePattern.evaluate}</dd></div>
                 <div><dt>{patternCopy.labels.threat}</dt><dd>{selectedUsePattern.threat}</dd></div>
               </dl>
-              <a href={`${repositorySource}/docs/ai-use-patterns${locale === "fr" ? ".fr" : ""}.md`}>{patternCopy.guide} ↗</a>
+              <a href={sitePath(documentPath(`docs/ai-use-patterns${locale === "fr" ? ".fr" : ""}.md`))}>{patternCopy.guide} ↗</a>
             </output>
             <fieldset className="jurisdiction-picker">
               <legend>{patternCopy.jurisdictionTitle}</legend>
@@ -2499,7 +2500,7 @@ export function Playbook({ locale }: { locale: Locale }) {
                 </div>
                 <div className="non-agentic-footer">
                   <div><span>{nonAgenticCopy.labels.gate}</span><strong>{item.gate}</strong></div>
-                  <a href={`${repositorySource}/${item.file}`}>{nonAgenticCopy.labels.open} ↗</a>
+                  <a href={sitePath(documentPath(`${item.file}`))}>{nonAgenticCopy.labels.open} ↗</a>
                 </div>
               </article>
             ))}
@@ -2540,7 +2541,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <section className="research-reality" aria-labelledby="research-reality-title">
             <div className="research-reality-head"><div><p className="eyebrow">{t.researchEyebrow}</p><h3 id="research-reality-title">{t.researchTitle}</h3></div><p>{t.researchText}</p></div>
             <div className="research-reality-grid">{t.researchSignals.map((signal) => <a href={signal.url} key={signal.tag}><small>{signal.tag}</small><strong>{signal.value}</strong><h4>{signal.title}</h4><p>{signal.text}</p><span aria-hidden="true">↗</span></a>)}</div>
-            <a className="research-review-link" href={`${repositorySource}/references/field-evidence-review-2026${locale === "fr" ? ".fr" : ""}.md`}>{t.researchReview} ↗</a>
+            <a className="research-review-link" href={sitePath(documentPath(`references/field-evidence-review-2026${locale === "fr" ? ".fr" : ""}.md`))}>{t.researchReview} ↗</a>
           </section>
         </section>
 
@@ -2625,7 +2626,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <small className="planning-freeze-status" data-changed={planningChangedSinceFreeze}>{!designCoherenceReady ? (locale === "en" ? "Resolve the design gate above" : "Résolvez la porte de conception ci-dessus") : !calibration.wholeWorkloadCalculable ? (locale === "en" ? "The total workload cannot be smaller than the eligible workload" : "La charge totale ne peut pas être inférieure à la charge éligible") : latestPlanningSnapshot ? planningChangedSinceFreeze ? (locale === "en" ? `Changed since v${latestPlanningSnapshot.version}` : `Modifiée depuis v${latestPlanningSnapshot.version}`) : (locale === "en" ? `Hypothesis v${latestPlanningSnapshot.version} frozen` : `Hypothèse v${latestPlanningSnapshot.version} figée`) : !systemVersion.trim() ? (locale === "en" ? "Add the evaluated version to freeze a real hypothesis" : "Ajoutez la version évaluée pour figer une hypothèse réelle") : (locale === "en" ? "Hypothesis not frozen" : "Hypothèse non figée")}</small>
               <button className="button secondary" disabled={!systemVersion.trim() || !calibration.wholeWorkloadCalculable || !designCoherenceReady || Boolean(latestPlanningSnapshot && !planningChangedSinceFreeze)} onClick={freezePlanningHypothesis} type="button">{latestPlanningSnapshot ? (locale === "en" ? `Freeze recalibration v${latestPlanningSnapshot.version + 1}` : `Figer le recalibrage v${latestPlanningSnapshot.version + 1}`) : (locale === "en" ? "Freeze hypothesis v1" : "Figer l’hypothèse v1")}</button>
               <button className="button primary" disabled={!designCoherenceReady} onClick={() => void copyPilotBrief()} type="button">{pilotPlanCopied ? t.pilotPlanCopied : t.pilotPlanCopy}</button>
-              <a className="button secondary" href={`${repositorySource}/templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`}>{t.pilotPlanTemplate} ↗</a>
+              <a className="button secondary" href={sitePath(documentPath(`templates/evaluation-plan${locale === "fr" ? ".fr" : ""}.md`))}>{t.pilotPlanTemplate} ↗</a>
             </div>
           </div>
         </section>
@@ -2696,7 +2697,7 @@ export function Playbook({ locale }: { locale: Locale }) {
             <article className="operation-rollback"><p className="eyebrow">{t.operationRollbackTitle}</p><ol>{t.operationRollback.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol></article>
           </div>
           <div className="operation-rules"><article><span>{t.operationChangeRuleTitle}</span><p>{t.operationChangeRule}</p></article><article><span>{t.operationRetireTitle}</span><p>{t.operationRetire}</p></article></div>
-          <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only after an evidence decision, with named people, a dated review, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’après une décision fondée sur les preuves, avec des personnes nommées, une revue datée, une solution de repli disponible, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" disabled={!operationRecordReady} onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={`${repositorySource}/templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`}>{t.operationRunbook} ↗</a></div></div>
+          <div className="operation-footer"><p>{locale === "en" ? "The operating card is valid only after an evidence decision, with named people, a dated review, reachable fallback, tested containment, and the exact evaluated system version." : "La fiche d’exploitation n’est valable qu’après une décision fondée sur les preuves, avec des personnes nommées, une revue datée, une solution de repli disponible, un confinement testé et la version exacte du système évalué."}</p><div><button className="button primary" disabled={!operationRecordReady} onClick={() => void copyOperationCard()} type="button">{operationCopied ? t.operationCopied : t.operationCopy}</button><a className="button secondary" href={sitePath(documentPath(`templates/incident-runbook${locale === "fr" ? ".fr" : ""}.md`))}>{t.operationRunbook} ↗</a></div></div>
         </section>
 
         <section className="decision-dossier section-dark" hidden={operationalPanel !== "decision-dossier"} id="decision-dossier" aria-labelledby="decision-dossier-title">
@@ -2751,7 +2752,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               <fieldset className="field-pilot-checklist"><legend>{t.fieldPilotChecklistTitle}</legend>{t.fieldPilotChecklist.map((item, index) => <label key={item}><input checked={fieldReviewChecks[index]} onChange={() => setFieldReviewChecks((current) => current.map((value, currentIndex) => currentIndex === index ? !value : value))} type="checkbox" /><span>{item}</span></label>)}</fieldset>
             </aside>
           </div>
-          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{fieldNotesIndex.limitations[locale]}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-cohort${locale === "fr" ? ".fr" : ""}.md`}>{locale === "en" ? "Read the cohort brief" : "Lire la présentation de la cohorte"} ↗</a><a className="button secondary" href={`${repositorySource}/docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={`${repositorySource}/templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`}>{t.fieldPilotTemplate} ↗</a></div></div>
+          <div className="field-pilot-footer"><div><strong>{t.fieldPilotAlwaysDraft}</strong><p>{fieldNotesIndex.limitations[locale]}</p></div><div><button className="button primary" onClick={downloadFieldReport} type="button">{t.fieldPilotDownload} ↓</button><a className="button secondary" href={fieldPilotIssues[locale]}>{t.fieldPilotGitHub} ↗</a><a className="button secondary" href={sitePath(documentPath(`docs/field-pilot-cohort${locale === "fr" ? ".fr" : ""}.md`))}>{locale === "en" ? "Read the cohort brief" : "Lire la présentation de la cohorte"} ↗</a><a className="button secondary" href={sitePath(documentPath(`docs/field-pilot-protocol${locale === "fr" ? ".fr" : ""}.md`))}>{t.fieldPilotProtocol} ↗</a><a className="button secondary" href={sitePath(documentPath(`templates/field-feedback-report${locale === "fr" ? ".fr" : ""}.md`))}>{t.fieldPilotTemplate} ↗</a></div></div>
         </section>
 
         <ChapterStepper active={operationalPanel} ariaLabel={chapterCopy.operationalLabel} content={chapterCopy} items={chapterCopy.operational} onSelect={setOperationalPanel} routerId="operational-router" />
@@ -2773,14 +2774,14 @@ export function Playbook({ locale }: { locale: Locale }) {
           <article className="selected-plan" aria-live="polite">
             <div className="plan-intro"><p className="eyebrow">{t.selected} · {selected.number}</p><h3>{selected.title}</h3><p>{selected.objective}</p><dl><div><dt>{t.roles}</dt><dd>{selected.roles}</dd></div><div><dt>{t.pilot}</dt><dd>{selected.pilot}</dd></div></dl></div>
             <ol className="phase-list">{selected.phases.map((item) => <li key={item.label}><span>{item.label}</span><div><strong>{item.title}</strong><p>{item.text}</p></div></li>)}</ol>
-            <div className="control-box"><p>{t.controls}</p><ul>{selected.controls.map((control) => <li key={control}>{control}</li>)}</ul><a href={`${repositorySource}/${selected.file}`}>{t.fullGuide} ↗</a></div>
+            <div className="control-box"><p>{t.controls}</p><ul>{selected.controls.map((control) => <li key={control}>{control}</li>)}</ul><a href={sitePath(documentPath(`${selected.file}`))}>{t.fullGuide} ↗</a></div>
           </article>
         </section>
 
         <section className="sector-lenses section-blue" hidden={implementationPanel !== "sectors"} id="sectors" aria-labelledby="sectors-title">
           <div className="section-heading"><p className="eyebrow">{t.sectorEyebrow}</p><h2 id="sectors-title">{t.sectorTitle}</h2><p>{t.sectorText}</p></div>
           <ol className="sector-flow">{t.sectorFlow.map(([number, title, text]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
-          <div className="sector-grid">{t.sectors.map((sector, index) => <a href={`${repositorySource}/${sector.file}`} key={sector.code}><header><span>{sector.code}</span><small>0{index + 1}</small></header><h3>{sector.title}</h3><dl><div><dt>{t.sectorLabels.trigger}</dt><dd>{sector.trigger}</dd></div><div className="sector-veto"><dt>{t.sectorLabels.veto}</dt><dd>{sector.veto}</dd></div><div><dt>{t.sectorLabels.evidence}</dt><dd>{sector.evidence}</dd></div></dl><b>{t.sectorGuide} ↗</b></a>)}</div>
+          <div className="sector-grid">{t.sectors.map((sector, index) => <a href={sitePath(documentPath(`${sector.file}`))} key={sector.code}><header><span>{sector.code}</span><small>0{index + 1}</small></header><h3>{sector.title}</h3><dl><div><dt>{t.sectorLabels.trigger}</dt><dd>{sector.trigger}</dd></div><div className="sector-veto"><dt>{t.sectorLabels.veto}</dt><dd>{sector.veto}</dd></div><div><dt>{t.sectorLabels.evidence}</dt><dd>{sector.evidence}</dd></div></dl><b>{t.sectorGuide} ↗</b></a>)}</div>
           <p className="sector-caveat">{t.sectorCaveat}</p>
         </section>
 
@@ -2825,7 +2826,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="section-heading"><p className="eyebrow">{t.caseEyebrow}</p><h2 id="case-title">{t.caseTitle}</h2><p>{t.caseText}</p></div>
           <div className="case-overview"><article><span>{t.caseBadge}</span><h3>Atelier Horizon</h3><p>{t.caseProblem}</p></article><div className="case-metrics">{t.caseMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div></div>
           <ol className="case-timeline">{t.caseTimeline.map(([label, title, text]) => <li key={label}><span>{label}</span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ol>
-          <div className="case-decision"><div><p className="eyebrow">{locale === "en" ? "CASE DECISION" : "DÉCISION DU CAS"}</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={`${repositorySource}/${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`}>{t.caseCta} ↗</a></div>
+          <div className="case-decision"><div><p className="eyebrow">{locale === "en" ? "CASE DECISION" : "DÉCISION DU CAS"}</p><h3>{t.caseDecision}</h3><p>{t.caseDecisionText}</p></div><a className="button case-button" href={sitePath(documentPath(`${locale === "en" ? "examples/en/tpe-customer-requests.md" : "examples/fr/tpe-demandes-clients.md"}`))}>{t.caseCta} ↗</a></div>
         </section>
 
         <section className="sme-case section-light" hidden={casePanel !== "sme-case"} id="sme-case" aria-labelledby="sme-case-title">
@@ -2836,7 +2837,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="sme-metrics">{t.smeMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
           <aside className="sme-denominator"><div><span>316</span><small>{locale === "en" ? "ALL REQUESTS" : "TOUTES DEMANDES"}</small></div><div><span>238</span><small>{locale === "en" ? "INITIALLY ELIGIBLE" : "ÉLIGIBLES INITIALES"}</small></div><div><span>220</span><small>{locale === "en" ? "ACCEPTED QUOTES" : "DEVIS ACCEPTÉS"}</small></div><article><strong>{t.smeDenominatorTitle}</strong><p>{t.smeDenominatorText}</p></article></aside>
           <div className="sme-evidence"><h3>{t.smeEvidenceTitle}</h3><div>{t.smeEvidence.map(([kind, value, text, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{text}</p><b aria-hidden="true">↗</b></a>)}</div><p>{t.smeSourceNote}</p></div>
-          <div className="sme-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`}>{t.smeCta} ↗</a></div>
+          <div className="sme-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.smeDecision}</h3><p>{t.smeDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/sme-b2b-quote-business-agent.md" : "examples/fr/pme-agent-metier-devis-b2b.md"}`))}>{t.smeCta} ↗</a></div>
         </section>
 
         <section className="mission-case section-dark" hidden={casePanel !== "mission-case"} id="mission-case" aria-labelledby="mission-case-title">
@@ -2850,7 +2851,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="mission-gates"><div><p className="eyebrow">{locale === "en" ? "MISSION BEFORE EFFICIENCY" : "MISSION AVANT EFFICACITÉ"}</p><h3>{t.missionGateTitle}</h3></div><ol>{t.missionGate.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol></div>
           <div className="mission-evidence"><h3>{t.missionEvidenceTitle}</h3><div>{t.missionEvidence.map(([kind, value, evidence, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{evidence}</p><b aria-hidden="true">↗</b></a>)}</div></div>
           <aside className="mission-legal"><strong>{locale === "en" ? "AUTOMATED-DECISION BOUNDARY" : "FRONTIÈRE DE DÉCISION AUTOMATISÉE"}</strong><p>{t.missionLegalNote}</p><a href="https://www.edoeb.admin.ch/en/duty-to-provide-information">{locale === "en" ? "Swiss FDPIC guidance" : "Indications du PFPDT"} ↗</a></aside>
-          <div className="mission-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`}>{t.missionCta} ↗</a></div>
+          <div className="mission-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.missionDecision}</h3><p>{t.missionDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/nonprofit-grant-dossier-business-agent.md" : "examples/fr/association-agent-dossiers-subventions.md"}`))}>{t.missionCta} ↗</a></div>
         </section>
 
         <section className="public-case section-blue" hidden={casePanel !== "public-case"} id="public-case" aria-labelledby="public-case-title">
@@ -2864,7 +2865,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="public-gates"><div><p className="eyebrow">P0 → P5</p><h3>{t.publicGatesTitle}</h3></div><ol>{t.publicGates.map(([gate, title, text]) => <li key={gate}><span>{gate}</span><strong>{title}</strong><p>{text}</p></li>)}</ol></div>
           <div className="public-evidence"><h3>{t.publicEvidenceTitle}</h3><div>{t.publicEvidence.map(([kind, value, evidence, href]) => <a href={href} key={kind}><span>{kind}</span><strong>{value}</strong><p>{evidence}</p><b aria-hidden="true">↗</b></a>)}</div></div>
           <aside className="public-legal"><strong>{locale === "en" ? "SWISS LEGAL BOUNDARY" : "FRONTIÈRE JURIDIQUE SUISSE"}</strong><p>{t.publicLegalNote}</p><div><a href="https://www.bk.admin.ch/en/artificial-intelligence">{locale === "en" ? "Federal Chancellery" : "Chancellerie fédérale"} ↗</a><a href="https://www.edoeb.admin.ch/en/ai-and-data-protection">PFPDT / FDPIC ↗</a></div></aside>
-          <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`}>{t.publicCta} ↗</a></div>
+          <div className="public-decision"><div><p className="eyebrow">P5 · {locale === "en" ? "FORMAL PRODUCTION DECISION" : "DÉCISION FORMELLE DE PRODUCTION"}</p><h3>{t.publicDecision}</h3><p>{t.publicDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/public-sector-planning-dossier-business-agent.md" : "examples/fr/service-public-agent-dossiers-urbanisme.md"}`))}>{t.publicCta} ↗</a></div>
         </section>
 
         <section className="solo-case section-light" hidden={casePanel !== "solo-case"} id="solo-case" aria-labelledby="solo-title">
@@ -2876,7 +2877,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           </div>
           <aside className="case-level-note"><strong>{t.soloClarifierTitle}</strong><p>{t.soloClarifier}</p></aside>
           <ol className="solo-phases">{t.soloPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
-          <div className="solo-decision"><div><p className="eyebrow">{locale === "en" ? "CASE BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE DU CAS"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`}>{t.soloCta} ↗</a></div>
+          <div className="solo-decision"><div><p className="eyebrow">{locale === "en" ? "CASE BOUNDARY DECISION" : "DÉCISION DE PÉRIMÈTRE DU CAS"}</p><h3>{t.soloDecision}</h3><p>{t.soloDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/independent-client-follow-up.md" : "examples/fr/independant-suivi-client.md"}`))}>{t.soloCta} ↗</a></div>
         </section>
 
         <section className="agent-case section-dark" hidden={casePanel !== "agent-case"} id="agent-case" aria-labelledby="agent-case-title">
@@ -2887,7 +2888,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="agent-metrics">{t.agentMetrics.map(([value, label]) => <p key={label}><strong>{value}</strong><span>{label}</span></p>)}</div>
           <div className="agent-comparison"><h3>{t.agentCompareTitle}</h3><div>{t.agentCompare.map(([level, value, text]) => <article key={level}><span>{level}</span><strong>{value}</strong><p>{text}</p></article>)}</div></div>
           <ol className="agent-phases">{t.agentPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
-          <div className="agent-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`}>{t.agentCta} ↗</a></div>
+          <div className="agent-decision"><div><p className="eyebrow">{locale === "en" ? "CASE AUTONOMY DECISION" : "DÉCISION D’AUTONOMIE DU CAS"}</p><h3>{t.agentDecision}</h3><p>{t.agentDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/independent-business-agent-follow-up.md" : "examples/fr/independant-agent-metier-suivi.md"}`))}>{t.agentCta} ↗</a></div>
         </section>
 
         <section className="agency-case section-light" hidden={casePanel !== "agency-case"} id="agency-case" aria-labelledby="agency-case-title">
@@ -2903,7 +2904,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           <aside className="agency-eligibility"><strong>{t.agencyEligibilityTitle}</strong><p>{t.agencyEligibilityText}</p></aside>
           <ol className="agency-phases">{t.agencyPhases.map(([label, title, text], index) => <li key={label}><span>{String(index + 1).padStart(2, "0")}</span><small>{label}</small><strong>{title}</strong><p>{text}</p></li>)}</ol>
           <aside className="agency-talos"><strong>{t.agencyTalosNote}</strong><p>{t.agencyTalosText}</p><a href="https://github.com/Musyg/talos">Talos ↗</a></aside>
-          <div className="agency-decision"><div><p className="eyebrow">{locale === "en" ? "CASE SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE DU CAS"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={`${repositorySource}/${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`}>{t.agencyCta} ↗</a></div>
+          <div className="agency-decision"><div><p className="eyebrow">{locale === "en" ? "CASE SCOPE DECISION" : "DÉCISION DE PÉRIMÈTRE DU CAS"}</p><h3>{t.agencyDecision}</h3><p>{t.agencyDecisionText}</p></div><a className="button primary" href={sitePath(documentPath(`${locale === "en" ? "examples/en/independent-orchestrated-agency-diagnostic.md" : "examples/fr/independant-agence-orchestree-diagnostic.md"}`))}>{t.agencyCta} ↗</a></div>
         </section>
 
         <ChapterStepper active={casePanel} ariaLabel={chapterCopy.casesLabel} content={chapterCopy} items={chapterCopy.cases} onSelect={setCasePanel} routerId="case-router" />
@@ -2936,15 +2937,15 @@ export function Playbook({ locale }: { locale: Locale }) {
           <div className="crosswalk-footer"><p>{t.crosswalkLimit}</p><div><a className="button primary" download href={sitePath("/data/control-crosswalk.v1.json")}>{t.crosswalkDownload} ↓</a><a className="button secondary" download href={sitePath("/data/control-crosswalk.schema.json")}>{t.crosswalkSchema} ↓</a></div></div>
         </section>
 
-        <section className="toolkit section-dark" hidden={implementationPanel !== "toolkit"} id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={`${repositorySource}/${file}`} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
+        <section className="toolkit section-dark" hidden={implementationPanel !== "toolkit"} id="toolkit" aria-labelledby="toolkit-title"><div className="section-heading"><p className="eyebrow">{t.toolkitEyebrow}</p><h2 id="toolkit-title">{t.toolkitTitle}</h2><p>{t.toolkitText}</p></div><div className="tool-grid">{t.tools.map(([name, description, file], index) => <a href={sitePath(documentPath(`${file}`))} key={name}><span>{String(index + 1).padStart(2, "0")}</span><h3>{name}</h3><p>{description}</p><b>↗</b></a>)}</div></section>
 
-        <aside className="source-note" hidden={implementationPanel !== "toolkit"}><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={`${repositorySource}/references/sources${locale === "fr" ? ".fr" : ""}.md`}>{t.sources} ↗</a></aside>
+        <aside className="source-note" hidden={implementationPanel !== "toolkit"}><p className="eyebrow">SOURCES · LIMITS</p><h2>{t.sourceTitle}</h2><p>{t.sourceText}</p><a className="button secondary" href={sitePath(documentPath(`references/sources${locale === "fr" ? ".fr" : ""}.md`))}>{t.sources} ↗</a></aside>
         <ChapterStepper active={implementationPanel} ariaLabel={chapterCopy.implementationLabel} content={chapterCopy} items={chapterCopy.implementation} onSelect={setImplementationPanel} routerId="implementation-router" />
           </div>
         </details>
         </div>
       </main>
-      <footer><p>{t.footer}</p><a href={authorFor(locale).url} rel="author">Gilles Musy · Musyg</a><a href={repository}>GitHub ↗</a></footer>
+      <footer><p>{t.footer}</p><a href={authorFor(locale).url} rel="author">Gilles Musy · Musyg</a><a href={sitePath(libraryPath(locale))}>{locale === "fr" ? "Tous les documents" : "All documents"}</a><a href={repository}>GitHub ↗</a></footer>
     </div>
   );
 }

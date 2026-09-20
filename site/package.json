@@ -20,8 +20,12 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern static-dist"
   },
   "dependencies": {
+    "entities": "8.1.0",
+    "github-slugger": "2.0.0",
+    "marked": "18.0.13",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sanitize-html": "2.17.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

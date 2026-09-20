@@ -287,6 +287,56 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .chapter-stepper p strong { font: 700 16px "Courier New", monospace; }
 .chapter-stepper p small { color: var(--muted); font-size: 10px; }
 
+.document-page .geo-hero h1 { font-size: clamp(32px, 4.5vw, 58px); overflow-wrap: anywhere; }
+.document-page .geo-breadcrumb { flex-wrap: wrap; }
+.document-page .geo-meta a { color: var(--blue-deep); }
+.document-toc { max-height: calc(100vh - 90px); overflow-y: auto; }
+.document-toc .depth-3 { font-size: 12px; padding-left: 12px; }
+.document-prose { font-size: 17px; line-height: 1.75; overflow-wrap: anywhere; }
+.document-prose > :first-child { margin-top: 0; }
+.document-page .document-prose h2 { border-top: 1px solid var(--line); font-size: clamp(26px, 3vw, 36px); margin: 64px 0 24px; padding-top: 32px; }
+.document-prose > span:first-child + h2 { border-top: 0; margin-top: 0; padding-top: 0; }
+.document-prose h3 { font-size: 23px; margin: 40px 0 20px; }
+.document-prose h4 { font-size: 19px; margin: 32px 0 16px; }
+.document-prose [id] { scroll-margin-top: 100px; }
+.document-prose p, .document-prose ul, .document-prose ol { margin-bottom: 22px; }
+.document-prose li { margin: 8px 0; }
+.document-prose li > p { margin-bottom: 10px; }
+.document-prose a, .document-index a, .document-actions a { color: var(--blue-deep); text-underline-offset: 3px; }
+.document-prose blockquote { border-left: 3px solid var(--blue); color: var(--muted); margin: 28px 0; padding: 2px 0 2px 22px; }
+.document-prose pre { background: var(--surface); border: 1px solid var(--line); font-size: 13px; max-width: 100%; overflow: auto; padding: 20px; }
+.document-prose code { font-size: .88em; }
+.document-prose img { height: auto; max-width: 100%; }
+.document-table { margin: 28px 0; max-width: 100%; overflow-x: auto; }
+.document-table table { border-collapse: collapse; font-size: 14px; min-width: 560px; width: 100%; }
+.document-table th, .document-table td { border: 1px solid var(--line); padding: 14px; text-align: left; vertical-align: top; }
+.document-table th { background: var(--surface); }
+.document-actions { border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 20px; margin-top: 64px; padding-top: 28px; }
+.document-print, .document-source { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.document-index section { border-bottom: 1px solid var(--line); padding: 0 0 40px; margin-bottom: 48px; }
+.document-index h2 { font-size: clamp(26px, 3vw, 36px); }
+.document-index ul { list-style: none; padding: 0; }
+.document-index li { border-top: 1px solid var(--line); margin: 0; }
+.document-index li a { display: block; font-size: 17px; line-height: 1.5; padding: 17px 0; }
+@media (max-width: 980px) { .document-toc { max-height: none; overflow: visible; } }
+@media (max-width: 620px) {
+  .document-page .geo-header { flex-wrap: wrap; gap: 16px; }
+  .document-page .geo-header nav { flex-wrap: wrap; gap: 12px; }
+  .document-page .geo-header nav a:nth-child(n) { display: block; }
+  .document-page .geo-hero, .document-page .geo-content, .document-page .geo-rail { padding-left: 20px; padding-right: 20px; }
+}
+@media print {
+  .geo-page.document-page { --paper: #fff; --ink: #000; --muted: #333; --line: #bbb; --surface: #f5f5f5; --blue-deep: #005eff; background: var(--paper); color: var(--ink); }
+  .document-page .geo-header, .document-page .geo-rail, .document-page .geo-meta, .document-actions, .document-print, .document-source, .document-page .skip-link { display: none; }
+  .document-page .geo-layout { display: block; border: 0; }
+  .document-page .geo-hero, .document-page .geo-content { max-width: none; padding: 0; }
+  .document-page .geo-hero h1 { font-size: 28pt; }
+  .document-page .document-prose { font-size: 10pt; }
+  .document-page h2, .document-page h3 { break-after: avoid; }
+  .document-table { overflow: visible; }
+  .document-table table { font-size: 8pt; min-width: 0; table-layout: fixed; }
+  .document-prose pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+}
 .geo-page { background: var(--paper); color: var(--ink); min-height: 100vh; }
 .geo-header {
   align-items: center;
