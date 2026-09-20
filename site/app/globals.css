@@ -368,7 +368,8 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .section-dark { background: var(--dark); color: var(--dark-text); }
 .section-light { background: var(--paper); color: var(--ink); }
 .section-blue { background: var(--paper); border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); color: var(--ink); }
-.geo-library, .use-patterns, .non-agentic-cases, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit { padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
+/* Chapter sections are already inside the centered, width-capped chapter stack. */
+.geo-library, .use-patterns, .non-agentic-cases, .integration-guide, .calibrator, .pilot-planner, .evidence-gate, .operations, .decision-dossier, .field-pilot, .paths, .sector-lenses, .method, .worked-case, .sme-case, .mission-case, .public-case, .solo-case, .agent-case, .agency-case, .controls, .control-crosswalk, .toolkit { padding: 96px 40px; }
 main section[id] { scroll-margin-top: 72px; }
 .section-heading { display: grid; gap: 24px 48px; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); margin-bottom: 48px; }
 .section-heading .eyebrow { grid-column: 1 / -1; }
@@ -1730,7 +1731,7 @@ h2 { font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -.04em; line-height: 1
 .agency-decision .primary { background: #071018; color: white; max-width: 240px; text-align: center; }
 .agency-decision .primary:hover { background: white; color: #071018; }
 
-.ladder-section { display: grid; gap: 72px; grid-template-columns: .85fr 1.15fr; padding: 96px max(40px, calc((100vw - var(--content)) / 2)); }
+.ladder-section { display: grid; gap: 72px; grid-template-columns: .85fr 1.15fr; padding: 96px 40px; }
 .ladder-section .eyebrow { color: #083b61; }
 .ladder-section > div > p:last-child { font-size: 18px; line-height: 1.55; max-width: 470px; }
 .ladder { counter-reset: level; list-style: none; margin: 0; padding: 0; }
