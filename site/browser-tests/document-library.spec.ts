@@ -37,4 +37,14 @@ for (const locale of ["en", "fr"]) {
       expect(results.violations.filter((item) => ["critical", "serious"].includes(item.impact || ""))).toEqual([]);
     }
   });
+
+  test(`${locale} print output stays legible regardless of screen theme`, async ({ page }) => {
+    await page.goto(`${root}templates-evaluation-plan/`);
+    await page.emulateMedia({ media: "print", colorScheme: "dark" });
+    await expect(page.locator(".document-page")).toHaveCSS("color", "rgb(0, 0, 0)");
+    await expect(page.locator(".document-page")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.locator(".document-toc")).toBeHidden();
+    await expect(page.locator(".document-prose")).toBeVisible();
+    await expect(page.locator(".document-table table").first()).toHaveCSS("table-layout", "fixed");
+  });
 }

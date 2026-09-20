@@ -326,7 +326,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
   .document-page .geo-hero, .document-page .geo-content, .document-page .geo-rail { padding-left: 20px; padding-right: 20px; }
 }
 @media print {
-  .document-page { background: white; color: black; }
+  .geo-page.document-page { --paper: #fff; --ink: #000; --muted: #333; --line: #bbb; --surface: #f5f5f5; --blue-deep: #005eff; background: var(--paper); color: var(--ink); }
   .document-page .geo-header, .document-page .geo-rail, .document-page .geo-meta, .document-actions, .document-print, .document-source, .document-page .skip-link { display: none; }
   .document-page .geo-layout { display: block; border: 0; }
   .document-page .geo-hero, .document-page .geo-content { max-width: none; padding: 0; }

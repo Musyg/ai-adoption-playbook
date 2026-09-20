@@ -27,6 +27,9 @@ audit, 75 Node tests and five hosted-export checks pass. Independent artifact
 review approved all 111 documentary/index pages and 109 byte-identical downloads.
 The first full browser run passed 172 checks with two intentional mobile skips;
 three assertions expecting former GitHub URLs were updated to exact local URLs.
+The targeted rerun passed all 21 navigation/accessibility checks. A final print
+cascade correction keeps PDF text legible even under a dark screen theme; all
+24 documentary browser checks, including six print regressions, then passed.
 The normal PR -> main validation -> Pages publication gates are still required.
 Do not credit the live site with the library until that deployment is verified.
 
