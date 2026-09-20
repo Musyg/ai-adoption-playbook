@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { authorFor, formatEditorialDate, homeModified } from "../app/editorial-metadata.mjs";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputRoot = path.join(siteRoot, "static-dist");
@@ -118,6 +119,7 @@ function hostedMetadata(locale, pathname, alternatePathname, includeImage) {
 function applyHostingMetadata(shell, locale, pathname, alternatePathname, includeImage = false) {
   if (!siteUrl) return shell;
   return shell
+    .replace('<meta name="twitter:card" content="summary" />', `<meta name="twitter:card" content="${includeImage ? "summary_large_image" : "summary"}" />`)
     .replace('<meta name="robots" content="noindex, nofollow" />', '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />')
     .replace("  </head>", `${hostedMetadata(locale, pathname, alternatePathname, includeImage)}\n  </head>`);
 }
@@ -128,7 +130,10 @@ for (const [pathname, relativePath, locale, alternatePathname] of [
 ]) {
   const outputPath = path.join(outputRoot, relativePath);
   const rendered = await render(pathname);
-  const hydrated = injectRenderedBody(shells[locale], rendered, relativePath);
+  formatEditorialDate(homeModified[locale], locale);
+  const shell = shells[locale].replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/,
+    (_, json) => `<script type="application/ld+json">${JSON.stringify({ ...JSON.parse(json), dateModified: homeModified[locale], author: authorFor(locale) }, null, 2).replaceAll("<", "\\u003c")}</script>`);
+  const hydrated = injectRenderedBody(shell, rendered, relativePath);
   await writeFile(outputPath, applyHostingMetadata(hydrated, locale, pathname === "/fr" ? "/fr/" : "/", alternatePathname, true), "utf8");
 }
 
@@ -145,6 +150,7 @@ function alternateFor(article) {
 }
 
 function articleJsonLd(article) {
+  formatEditorialDate(article.dateModified, article.locale);
   const alternate = alternateFor(article);
   const canonical = absoluteUrl(articlePath(article));
   return JSON.stringify({
@@ -154,9 +160,9 @@ function articleJsonLd(article) {
     headline: article.title,
     description: article.description,
     inLanguage: article.locale,
-    dateModified: "2026-08-19",
+    dateModified: article.dateModified,
     isAccessibleForFree: true,
-    author: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
+    author: authorFor(article.locale),
     publisher: { "@type": "Organization", name: "Musyg", url: "https://github.com/Musyg" },
     citation: article.sources.map((source) => source.url),
     ...(canonical && alternate ? { translationOfWork: { "@id": `${absoluteUrl(articlePath(alternate))}#article` } } : {}),
@@ -186,7 +192,7 @@ function articleShell(article) {
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${articleJsonLd(article)}</script>`)
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
 
-  return applyHostingMetadata(shell, article.locale, articlePath(article), articlePath(alternate));
+  return applyHostingMetadata(shell, article.locale, articlePath(article), articlePath(alternate), true);
 }
 
 for (const article of geoArticles) {
@@ -205,12 +211,13 @@ if (siteUrl) {
   await writeFile(path.join(outputRoot, ".nojekyll"), "", "utf8");
 
   const sitemapEntries = [
-    { locale: "en", path: "/", alternatePath: "/fr/" },
-    { locale: "fr", path: "/fr/", alternatePath: "/" },
+    { locale: "en", path: "/", alternatePath: "/fr/", dateModified: homeModified.en },
+    { locale: "fr", path: "/fr/", alternatePath: "/", dateModified: homeModified.fr },
     ...geoArticles.map((article) => ({
       locale: article.locale,
       path: articlePath(article),
       alternatePath: articlePath(alternateFor(article)),
+      dateModified: article.dateModified,
     })),
   ];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -220,7 +227,7 @@ ${sitemapEntries.map((entry) => {
   const frPath = entry.locale === "fr" ? entry.path : entry.alternatePath;
   return `  <url>
     <loc>${absoluteUrl(entry.path)}</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>${entry.dateModified}</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="${absoluteUrl(enPath)}" />
     <xhtml:link rel="alternate" hreflang="fr" href="${absoluteUrl(frPath)}" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${absoluteUrl(enPath)}" />

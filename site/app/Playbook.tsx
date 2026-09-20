@@ -1,6 +1,7 @@
 "use client";
 
 import DesignChoiceHelp from "./DesignChoiceHelp";
+import { authorFor } from "./editorial-metadata.mjs";
 import { formatLocalizedNumber } from "./format-number.mjs";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -2943,7 +2944,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         </details>
         </div>
       </main>
-      <footer><p>{t.footer}</p><a href={repository}>GitHub ↗</a></footer>
+      <footer><p>{t.footer}</p><a href={authorFor(locale).url} rel="author">Gilles Musy · Musyg</a><a href={repository}>GitHub ↗</a></footer>
     </div>
   );
 }

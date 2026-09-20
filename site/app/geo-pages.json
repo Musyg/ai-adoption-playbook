@@ -8,7 +8,7 @@
     "title": "AI copilot or business agent: what is the difference?",
     "description": "A practical comparison of AI copilots, bounded business agents, and orchestrated agencies, with realistic measures and decision criteria.",
     "answer": "An AI copilot helps a person complete one step, such as research or drafting. A business agent can choose and carry out several steps using tools. Its permissions, records, and escalation rules determine how that work is controlled. An orchestrated agency coordinates several specialist agents. The right choice depends on the workflow, permissions, evidence, and consequences, not on the model name.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "6 minute read",
     "takeaways": [
       "Choose a copilot when a person must remain the operator at every cycle.",
@@ -60,7 +60,7 @@
     "title": "What ROI can a business AI agent realistically deliver?",
     "description": "A realistic way to estimate the low and high return of a business AI agent without confusing task speed, workflow automation, and company-wide savings.",
     "answer": "There is no defensible universal low and high return for a business AI agent. The strongest direct field experiment found 16.8% faster eligible chats, but only 5.8% of chats were eligible, so the effect across all chats was 3.2% and customer ratings fell on eligible chats. Enter a low and high hypothesis for your workflow, apply it to the baseline human hours carried by eligible work, then count supervision, exceptions, incidents, maintenance, and model costs.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 minute read",
     "takeaways": [
       "Apply the gain only to eligible work, never to the whole workload by default.",
@@ -112,7 +112,7 @@
     "title": "How do you pilot a business AI agent?",
     "description": "A practical pilot protocol for a bounded business AI agent, from baseline and frozen cases to live evidence, stop rules, and production gates.",
     "answer": "For this pilot with human approval, work in four stages: write the test rules and measure current work, test the same set of requests, run the system without changing real tools, then allow the planned actions on a few cases after explicit approval. Set success and failure rules for value, quality, safety, action records, and eligible cases before starting. A critical unauthorized effect must stop the pilot regardless of average productivity.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "8 minute read",
     "takeaways": [
       "Write the pass, rework, and stop decisions before observing results.",
@@ -164,7 +164,7 @@
     "title": "How should a business AI agent be governed?",
     "description": "A concise governance model for business AI agents covering ownership, permissions, human approval, evidence, incidents, reassessment, and retirement.",
     "answer": "Manage a business AI agent as a work process whose configuration and changes you record, not just as a conversation. Name an accountable owner, limit its identity and tools, require approval for consequential effects, record every external action, define stop and rollback authority, and reassess the exact model, prompt, data, permissions, and policy on a fixed date. Governance must follow the workflow risk and actual autonomy.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 minute read",
     "takeaways": [
       "One named owner remains accountable for the operating outcome.",
@@ -217,7 +217,7 @@
     "title": "When does an orchestrated AI agency make sense?",
     "description": "A realistic guide to deciding when specialist AI agents and an orchestrator outperform a simpler business agent, with evidence and limits.",
     "answer": "An orchestrated AI agency makes sense when one bounded service contains genuinely distinct roles, such as research, analysis, execution, and independent quality control, and those roles can work in parallel under shared permissions and evidence rules. It should beat a single agent on accepted outcomes, cost, reliability, or cycle time. More agents alone do not create more autonomy or value.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 minute read",
     "takeaways": [
       "Benchmark manual, copilot, single-agent, and orchestrated conditions.",
@@ -269,7 +269,7 @@
     "title": "What does a realistic business AI agent look like for an SME?",
     "description": "A worked example of a bounded AI agent preparing B2B quotes for an SME, with eligibility, approval, realistic gains, and failure conditions.",
     "answer": "An SME agent may automate part of the work or a larger service. The example below covers a specific quote process. In this synthetic quote example, the agent reads an email and attachments, checks an authorized customer, catalogue, price matrix, and lead time, then prepares a quote. It writes to the ERP and sends only after explicit approval. Ambiguous identity, new prices, contracts, or engineering judgment stop the workflow.",
-    "updated": "12 September 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "8 minute read",
     "takeaways": [
       "Quote preparation can be automated more safely than pricing authority.",
@@ -321,7 +321,7 @@
     "title": "Copilote IA ou agent métier : quelle différence ?",
     "description": "Une comparaison pratique entre copilote IA, agent métier borné et agence orchestrée, avec mesures réalistes et critères de décision.",
     "answer": "Un copilote IA aide une personne sur une étape, par exemple la recherche ou la rédaction. Un agent métier peut choisir et réaliser plusieurs étapes avec des outils. Ses permissions, l’historique de ses actions et les règles de recours humain encadrent ce travail. Une agence orchestrée coordonne plusieurs agents spécialisés. Le bon choix dépend du processus, des permissions, des preuves et des conséquences, pas du nom du modèle.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "6 min de lecture",
     "takeaways": [
       "Choisissez un copilote lorsque la personne doit rester opératrice à chaque cycle.",
@@ -373,7 +373,7 @@
     "title": "Quel ROI attendre réellement d’un agent IA métier ?",
     "description": "Une méthode réaliste pour estimer le ROI bas et haut d’un agent IA métier sans confondre vitesse d’une tâche, automatisation du processus et économies à l’échelle de l’entreprise.",
     "answer": "Il n’existe pas de marge basse et haute universelle défendable pour le ROI d’un agent IA métier. Le meilleur essai terrain direct trouvé mesure 16,8 % de durée en moins sur les échanges éligibles, mais seulement 5,8 % du flux est éligible. L’effet sur tout le flux tombe à 3,2 % et la note client baisse sur les échanges éligibles. Saisissez vos propres hypothèses basse et haute, appliquez-les aux heures humaines initiales du travail éligible, puis comptez supervision, exceptions, incidents, maintenance et coûts des modèles.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 min de lecture",
     "takeaways": [
       "Appliquez le gain au travail éligible, jamais à toute la charge par défaut.",
@@ -425,7 +425,7 @@
     "title": "Comment mener le pilote d’un agent IA métier ?",
     "description": "Un protocole pratique pour tester un agent IA métier borné, de la mesure de départ aux cas réels, avec seuils, règles d’arrêt et décision de production.",
     "answer": "Pour ce pilote avec approbation humaine, procédez en quatre temps : écrivez les règles du test et mesurez le travail actuel, testez le même lot de demandes, faites fonctionner le système sans modifier les outils réels, puis autorisez les actions prévues sur quelques cas après validation explicite. Définissez avant le lancement les seuils de valeur, de qualité, de sécurité, de traçabilité et d’éligibilité. Un effet critique non autorisé doit arrêter le pilote.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "8 min de lecture",
     "takeaways": [
       "Écrivez les décisions de passage, correction et arrêt avant d’observer les résultats.",
@@ -477,7 +477,7 @@
     "title": "Comment gouverner un agent IA métier ?",
     "description": "Un modèle concis de gouvernance des agents IA métier : responsabilité, permissions, validation humaine, preuves, incidents, réévaluation et retrait.",
     "answer": "Gérez un agent IA métier comme un processus de travail dont vous conservez la configuration et les changements, pas seulement comme une conversation. Nommez un responsable, limitez son identité et ses outils, exigez une validation pour les effets importants, journalisez chaque action externe, définissez qui peut arrêter le système et revenir à l’état sûr, puis réévaluez à date fixe le modèle, les instructions, les données, les permissions et les règles réellement utilisés.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 min de lecture",
     "takeaways": [
       "Une personne nommée reste responsable du résultat d’exploitation.",
@@ -530,7 +530,7 @@
     "title": "Quand une agence IA orchestrée devient-elle utile ?",
     "description": "Un guide réaliste pour décider quand des agents IA spécialisés et un orchestrateur dépassent un agent métier plus simple, avec preuves et limites.",
     "answer": "Une agence IA orchestrée devient utile lorsqu’un service borné contient des rôles réellement distincts, par exemple recherche, analyse, exécution et vérification par un agent distinct, et que ces rôles peuvent avancer séparément sous les mêmes permissions et règles de preuve. Elle doit battre un agent unique sur les résultats acceptés, le coût, la fiabilité ou le délai. Ajouter des agents ne crée pas automatiquement de valeur.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "7 min de lecture",
     "takeaways": [
       "Comparez manuel, copilote, agent unique et agence orchestrée.",
@@ -582,7 +582,7 @@
     "title": "À quoi ressemble un agent IA métier réaliste pour une PME ?",
     "description": "Un cas d’école d’agent IA borné qui prépare des devis B2B en PME, avec éligibilité, approbation, gains réalistes et conditions d’échec.",
     "answer": "En PME, un agent peut automatiser une partie du travail ou un service plus large. L’exemple ci-dessous porte sur un processus de devis précis. Dans cet exemple synthétique de devis, il lit le courriel et les pièces jointes, contrôle le client autorisé, le catalogue, la matrice de prix et le délai, puis prépare le devis. Il écrit dans l’ERP et envoie uniquement après approbation explicite. Une identité ambiguë, un nouveau prix, un contrat ou un jugement technique arrêtent le processus.",
-    "updated": "12 septembre 2026",
+    "dateModified": "2026-09-12",
     "readingTime": "8 min de lecture",
     "takeaways": [
       "La préparation du devis s’automatise plus sûrement que l’autorité de prix.",

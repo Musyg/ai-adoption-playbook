@@ -1,5 +1,7 @@
 "use client";
 
+import { authorFor, formatEditorialDate } from "./editorial-metadata.mjs";
+
 import {
   geoArticlePath,
   getAlternateArticle,
@@ -77,7 +79,7 @@ export function GeoArticlePage({ article }: { article: GeoArticle }) {
             <p className="eyebrow">{article.eyebrow}</p>
             <h1>{article.title}</h1>
             <p className="geo-answer">{article.answer}</p>
-            <div className="geo-meta"><span>{copy.updated} {article.updated}</span><span>{article.readingTime}</span><span>Musyg</span></div>
+            <div className="geo-meta"><span>{copy.updated} <time dateTime={article.dateModified}>{formatEditorialDate(article.dateModified, article.locale)}</time></span><span>{article.readingTime}</span><a href={authorFor(article.locale).url} rel="author">Gilles Musy · Musyg</a></div>
             <p className="geo-notation">{copy.notation}</p>
           </header>
 

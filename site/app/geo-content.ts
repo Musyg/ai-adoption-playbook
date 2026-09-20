@@ -11,7 +11,7 @@ export type GeoArticle = {
   title: string;
   description: string;
   answer: string;
-  updated: string;
+  dateModified: string;
   readingTime: string;
   takeaways: string[];
   comparison: {

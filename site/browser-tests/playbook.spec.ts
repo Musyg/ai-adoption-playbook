@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { authorFor } from "../app/editorial-metadata.mjs";
 
 const locales = [
   { path: "/", lang: "en", title: "AI Adoption Playbook: pilots, agents and governance", heading: "Move from AI interest to a system you can trust.", changeHeading: "See what changed before yesterday’s decision becomes today’s assumption.", emptyReference: "No reference dossier loaded" },
@@ -20,6 +21,8 @@ for (const locale of locales) {
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     await expect(page.locator('link[rel="sitemap"]')).toHaveCount(0);
     await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
+    await expect(page.locator('footer a[rel="author"]')).toHaveText("Gilles Musy · Musyg");
+    await expect(page.locator('footer a[rel="author"]')).toHaveAttribute("href", authorFor(locale.lang).url);
 
     const providerReferences = await page.locator("html").evaluate((root) =>
       /musyg\.github\.io|chatgpt\.site/i.test(root.outerHTML),
@@ -58,6 +61,9 @@ test("all editorial routes remain readable and explain their notation", async ({
     expect(headings[0].trim()).not.toBe(headings[1].trim());
     await expect(page.locator(".geo-notation")).toContainText(/A0 (?:to|à) A4/);
     await expect(page.locator(".geo-notation")).toContainText(/R0 (?:to|à) R3/);
+    await expect(page.locator('.geo-meta a[rel="author"]')).toHaveText("Gilles Musy · Musyg");
+    await expect(page.locator('.geo-meta a[rel="author"]')).toHaveAttribute("href", authorFor(route.startsWith("/fr/") ? "fr" : "en").url);
+    await expect(page.locator(".geo-meta time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, route).toBeLessThanOrEqual(1);
   }

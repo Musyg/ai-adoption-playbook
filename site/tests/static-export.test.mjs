@@ -3,6 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { authorFor, homeModified } from "../app/editorial-metadata.mjs";
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const staticRoot = path.join(siteRoot, "static-dist");
@@ -18,7 +19,10 @@ for (const [relative, language, title, visibleCopy] of [
     assert.match(html, /<meta name="robots" content="noindex, nofollow"/);
     assert.match(html, /type="application\/ld\+json"/);
     assert.match(html, /"@type": "CreativeWork"/);
-    assert.match(html, /"dateModified": "2026-08-20"/);
+    const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(schema.dateModified, homeModified[language]);
+    assert.deepEqual(schema.author, authorFor(language));
+    assert.ok(html.includes(`href="${authorFor(language).url}" rel="author"`));
     assert.match(html, /\/assets\//);
     assert.match(html, /\/favicon\.svg/);
     assert.match(html, /data-prerendered="true"/);
