@@ -21,6 +21,15 @@ proof of a successful deployment. Publication was subsequently authorized by the
 owner; the PR, main validation and Pages run must be checked before crediting
 the public site with these corrections.
 
+Publication follow-up: PR #59 merged as `5269170`; PR and main validation
+passed. Pages run `35499570529` then correctly stopped before deployment because
+the new server metadata check lacked the public URL at test runtime. The workflow
+now passes the same PUBLIC_SITE_URL and STATIC_BASE_PATH to build and hosted
+verification. The exact missing-environment failure was reproduced locally;
+restoring these variables made all four hosted checks pass. Independent review
+approved the three-line workflow correction. A successful subsequent Pages run
+and live verification are still required; no assertion or gate was removed.
+
 Read-only live follow-up on September 20: the GitHub Pages root robots.txt and
 guide sitemap both return HTTP 200. Robots permits all paths. The public sitemap
 still contains the old August dates, as expected before this correction is
