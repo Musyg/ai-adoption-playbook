@@ -25,6 +25,7 @@ for (const locale of ["en", "fr"]) {
     const sizes = await page.evaluate(() => ({ width: innerWidth, doc: document.documentElement.scrollWidth, content: document.querySelector(".geo-content")!.getBoundingClientRect().width }));
     expect(sizes.doc).toBeLessThanOrEqual(sizes.width);
     expect(sizes.content).toBeGreaterThan(300);
+    expect(await page.locator(".document-prose h2").first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeLessThanOrEqual(36);
     await page.locator(".document-toc a").first().click();
     expect(new URL(page.url()).hash.length).toBeGreaterThan(1);
     await context.close();

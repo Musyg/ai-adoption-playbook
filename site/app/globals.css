@@ -294,7 +294,7 @@ h1 { font-size: clamp(48px, 7vw, 90px); letter-spacing: -.055em; line-height: .9
 .document-toc .depth-3 { font-size: 12px; padding-left: 12px; }
 .document-prose { font-size: 17px; line-height: 1.75; overflow-wrap: anywhere; }
 .document-prose > :first-child { margin-top: 0; }
-.document-prose h2 { border-top: 1px solid var(--line); font-size: clamp(26px, 3vw, 36px); margin: 64px 0 24px; padding-top: 32px; }
+.document-page .document-prose h2 { border-top: 1px solid var(--line); font-size: clamp(26px, 3vw, 36px); margin: 64px 0 24px; padding-top: 32px; }
 .document-prose > span:first-child + h2 { border-top: 0; margin-top: 0; padding-top: 0; }
 .document-prose h3 { font-size: 23px; margin: 40px 0 20px; }
 .document-prose h4 { font-size: 19px; margin: 32px 0 16px; }
