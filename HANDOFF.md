@@ -1,5 +1,33 @@
 # AI Adoption Playbook: handoff
 
+## September 24 compact responsive heading scale: publication approved
+
+Owner approved the typography audit recommendation. Shared display/section/
+subheading sizes now cap at 64/38/28 px on desktop; mobile display headings
+use 32–36 px, sections 26 px and large subheadings 22 px. H4/H5 tool headings
+are subordinate at 20–24/20 px. Slightly looser line height and tracking keep
+long French titles readable. The library index now retains its intended
+26–36 px H2 scale instead of inheriting the larger editorial rule. The selected
+path H3 no longer exceeds its parent H2 on mobile.
+
+Compact document heading sizes and small operational labels are preserved.
+No copy, business logic, body text size, theme, portfolio, hosting or dependency
+change. Independent CSS and desktop/mobile screenshot review approved.
+Production/static builds, TypeScript, ESLint and all 75 Node tests passed.
+The full browser suite passed 191 checks with two intentional mobile skips;
+two new checks exposed an existing 17–18 px article-header overflow at 320 px.
+The redundant mobile Playbook link is now hidden while the linked brand and
+language switch remain visible. Independent DOM verification reproduced the
+old overflow and confirmed its removal in EN/FR. After rebuilding, all 45
+targeted typography, document, print, accessibility and loading checks passed,
+including all 12 new heading-scale checks. All 75 Node tests passed again.
+
+Owner approved the local preview and explicitly authorized publication.
+Baseline/rollback: c6ed98e (PR #62). Publication follows the normal pull request,
+validation and Pages deployment gates; no bypass or hosting change. Confirm
+the deployed commit and live EN/FR desktop/mobile heading sizes before marking
+this update published. Preview: http://127.0.0.1:43119/fr/.
+
 ## September 20 complete web reading library: implementation checkpoint
 
 Owner approved converting the guide's GitHub reading destinations into a full
