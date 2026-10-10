@@ -114,7 +114,7 @@ les erreurs par classe et la dérive ; un chatbot public sur l’information et 
 transfert humain ; un système multimodal sur le consentement et la provenance.
 Appliquer chaque profil pertinent du [guide des modes d’usage](ai-use-patterns.fr.md).
 
-## Phase 6 — Évaluations avant le produit
+## Phase 6 — Évaluations avant d’optimiser le système
 
 Construire les évaluations avant d’optimiser le système. Le jeu comprend :
 
