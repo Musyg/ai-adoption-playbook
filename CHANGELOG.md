@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Explain that images, audio and video belong in the Multimodal task or an
+  explicit complementary function. Keep this instruction identical in the
+  interactive guide and control catalog; no calculation or routing change.
+
 - Refresh task-time evidence and lab/vendor cases through October 10. Preserve
   Google's confidence interval and Microsoft's adjusted point estimate;
   distinguish task duration, active work, learning outcomes and quality.

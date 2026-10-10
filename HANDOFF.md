@@ -1,5 +1,15 @@
 # AI Adoption Playbook: handoff
 
+## October 10 final task-choice clarification
+
+PR #70 merged as `8a411ca`; its two independent reviews, 205 local Chrome
+checks, 88 Node tests, 13 Python tests and PR CI passed. Main CI and Pages
+receipts remain to verify. A final copy-only follow-up makes the Generation
+description match its text/code choice: images, audio and video should use
+Multimodal as the main task or as an explicit complementary function. The
+EN/FR guide and control catalog share that instruction, with a regression
+test for equality. No routing, permission, coefficient or evidence change.
+
 ## October 10 research follow-up: remaining corrections implemented
 
 Baseline/rollback: `a0bf0e4` on `main`, the published CSV correction in PR #69.

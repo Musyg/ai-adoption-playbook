@@ -82,8 +82,8 @@
         "fr": "Génération"
       },
       "task": {
-        "en": "Create text, code, image, audio, or another new output.",
-        "fr": "Créer texte, code, image, audio ou une autre sortie nouvelle."
+        "en": "Create text or code. For images, audio or video, choose Multimodal as the main task or add it as a complementary function.",
+        "fr": "Créer du texte ou du code. Pour les images, l’audio ou la vidéo, choisissez Multimodal comme tâche principale ou ajoutez-le comme fonction complémentaire."
       },
       "evaluation_focus": [
         "accepted_quality",

@@ -22,3 +22,13 @@ test("secondary functions are explicit, unique and canonically ordered", () => {
   assert.equal(validAdditionalUsePatterns("retrieval", []), true);
   for (const values of [["retrieval"], ["conversation", "conversation"], ["unknown"], undefined]) assert.equal(validAdditionalUsePatterns("retrieval", values), false);
 });
+
+test("generation explains the media choice identically in the guide and control catalog", async () => {
+  const catalog = JSON.parse(await readFile(new URL("../public/data/control-crosswalk.v1.json", import.meta.url)));
+  const source = await readFile(new URL("../app/Playbook.tsx", import.meta.url), "utf8");
+  const generation = catalog.use_pattern_profiles.find((profile) => profile.use_pattern_id === "generation");
+  for (const locale of ["en", "fr"]) {
+    assert.match(generation.task[locale], /Multimodal/);
+    assert.ok(source.includes(JSON.stringify(generation.task[locale])), `${locale} task explanation drifted`);
+  }
+});
