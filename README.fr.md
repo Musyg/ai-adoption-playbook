@@ -108,7 +108,7 @@ flowchart LR
     B --> C["Cas d’usage prioritaires"]
     C --> D["Risque et autonomie"]
     D --> E["Système suffisant le plus simple"]
-    E --> F["Évaluations avant le produit"]
+    E --> F["Évaluations avant d’optimiser le système"]
     F --> G["Observation sans effet"]
     G --> H["Copilote validé par l’humain"]
     H --> I["Automatisation bornée"]

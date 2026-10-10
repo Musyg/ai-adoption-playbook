@@ -114,7 +114,7 @@ error and drift evidence; a public chatbot needs disclosure and handoff; a
 multimodal system needs consent and provenance. Apply every relevant profile in
 the [AI use-pattern guide](ai-use-patterns.md).
 
-## Phase 6 — Evaluations before product
+## Phase 6 — Evaluations before optimizing the system
 
 Build evaluations before optimizing the system. The set includes:
 
