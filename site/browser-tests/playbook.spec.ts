@@ -1152,6 +1152,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
     context: {
       organization_type: "public",
       use_pattern: "conversation",
+      additional_use_patterns: [],
       jurisdiction: "EU",
       work_mode: "copilot",
       architecture: "model",
