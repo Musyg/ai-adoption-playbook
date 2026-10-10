@@ -403,11 +403,62 @@ def check_register(errors: list[str]) -> None:
     if not register.is_file():
         errors.append("missing AI system register")
         return
-    with register.open(encoding="utf-8", newline="") as handle:
-        rows = csv.reader(handle)
-        header = tuple(next(rows, ()))
-    if header != EXPECTED_REGISTER_COLUMNS:
-        errors.append("AI system register columns do not match the contract")
+    identifiers: set[str] = set()
+    try:
+        # Accept the UTF-8 BOM commonly added by spreadsheet exports. Read rows
+        # inside the context manager, including quoted commas and newlines.
+        with register.open(encoding="utf-8-sig", newline="") as handle:
+            rows = csv.reader(handle, strict=True)
+            header = tuple(next(rows, ()))
+            if header != EXPECTED_REGISTER_COLUMNS:
+                errors.append("AI system register columns do not match the contract")
+                return
+            for row in rows:
+                if not row or not any(value.strip() for value in row):
+                    continue
+                context = f"AI system register line {rows.line_num}"
+                if len(row) != len(header):
+                    errors.append(f"{context}: expected {len(header)} fields, found {len(row)}")
+                    continue
+                record = dict(zip(header, (value.strip() for value in row)))
+                identifier = record["system_id"]
+                if not identifier:
+                    errors.append(f"{context}: system_id must be non-empty")
+                elif identifier in identifiers:
+                    errors.append(f"{context}: duplicate system_id {identifier}")
+                identifiers.add(identifier)
+
+                # Empty cells remain valid for values not known yet. A supplied
+                # value must use the existing machine-readable vocabulary.
+                for field, allowed in (
+                    ("work_mode", WORK_MODES), ("architecture", ARCHITECTURES),
+                    ("risk_level", RISK_LEVELS), ("autonomy_level", AUTONOMY_LEVELS),
+                    ("user_facing", {"yes", "no"}),
+                ):
+                    if record[field] and record[field] not in allowed:
+                        errors.append(f"{context}: invalid {field} {record[field]!r}")
+                for field, allowed in (("use_patterns", USE_PATTERNS), ("jurisdictions", JURISDICTIONS)):
+                    if not record[field]:
+                        continue
+                    values = [value.strip() for value in record[field].split(";")]
+                    if not set(values) <= allowed or len(values) != len(set(values)):
+                        errors.append(f"{context}: invalid {field} {record[field]!r}")
+
+                review_dates: dict[str, date] = {}
+                for field in ("last_review", "next_review"):
+                    if not record[field]:
+                        continue
+                    try:
+                        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", record[field]):
+                            raise ValueError("non-canonical date")
+                        review_dates[field] = date.fromisoformat(record[field])
+                    except ValueError:
+                        errors.append(f"{context}: {field} must use a valid YYYY-MM-DD date")
+                if ("last_review" in review_dates and "next_review" in review_dates
+                        and review_dates["next_review"] < review_dates["last_review"]):
+                    errors.append(f"{context}: next_review must not precede last_review")
+    except (OSError, UnicodeError, csv.Error) as error:
+        errors.append(f"AI system register cannot be read as UTF-8 CSV: {error}")
 
 
 def check_field_notes(errors: list[str]) -> None:

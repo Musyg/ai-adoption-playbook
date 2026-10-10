@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Correct the system-register CSV example so all 28 values match their column
+  names. Validate rows, identifiers, supplied controlled values and review dates,
+  with regression coverage for the original 26-value row, spreadsheet BOMs,
+  quoted multiline text and unfinished records. No estimation or evidence rule
+  changes; unknown values can still be left blank.
 - Reconcile the handoff and reader-clarity reports with the verified September
   12 publication, without creating a new numbered release.
 - Remove interactive JavaScript and module preloads from the 12 static articles;

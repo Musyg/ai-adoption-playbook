@@ -1,5 +1,30 @@
 # AI Adoption Playbook: handoff
 
+## October 10 research follow-up: system-register correction
+
+Baseline: `e1b51b5` on `main` (PR #68). The owner requested repository-first
+corrections following the research audit. This first batch corrects the CSV
+example: `work_mode` and `architecture` were missing, leaving 26 values under
+28 headers and shifting subsequent fields. They are now `copilot` and `model`.
+
+The repository validator now checks each row's width, identifiers, supplied
+controlled values and review dates. Unknown values may remain blank; quoted
+commas, multiline text and spreadsheet UTF-8 BOMs are supported. Regression
+tests include the original malformed row. Calculation logic, demonstrations,
+evidence admission and the dossier schema are unchanged.
+
+Next batches remain separate: combined use patterns and cumulative controls;
+source and framework updates; measured task-time evidence; clearer library
+actions. The acknowledged first-party field-evidence gap is not a blocker to
+explicitly labelled demonstrations or justified transfers. This checkpoint
+does not claim those batches complete or publication. Exact-head independent
+review and GitHub CI remain required before merging.
+
+Local checks: 13 Python regression tests and repository validation pass, as do
+ESLint, TypeScript, production/static builds and all 81 Node tests. The exported
+CSV is byte-identical to the corrected repository template. A locked dependency
+reinstall resolved stale local packages without changing the lockfile.
+
 ## September 24 compact responsive heading scale: publication approved
 
 Owner approved the typography audit recommendation. Shared display/section/
