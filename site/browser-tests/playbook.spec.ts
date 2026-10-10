@@ -709,7 +709,7 @@ for (const fieldLocale of [
     expect(report).toContain(fieldLocale.volume);
     expect(report).toContain(fieldLocale.denominator);
     expect(report).toContain(fieldLocale.risk);
-    expect(report).toContain("1.0.0 · 2026-09-05");
+    expect(report).toContain("1.0.0 · 2026-10-10");
   });
 }
 
