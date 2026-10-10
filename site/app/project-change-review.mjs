@@ -1,3 +1,5 @@
+import { validAdditionalUsePatterns } from "./use-pattern-routing.mjs";
+
 const domains = new Set(["scope", "risk", "architecture", "evaluation", "controls", "ownership", "delivery"]);
 const recommendations = new Set(["review", "reassess", "restart"]);
 const decisions = new Set(["pending", "accepted", "reassess", "restart"]);
@@ -6,7 +8,7 @@ const usePatterns = new Set(["generation", "retrieval", "classification", "predi
 const jurisdictions = new Set(["CH", "EU", "BOTH"]);
 const integrationLevels = new Set(["copilot", "agent", "agency"]);
 const architectures = new Set(["model", "workflow", "agent", "agency"]);
-const supportedSchemaVersions = new Set(["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"]);
+const supportedSchemaVersions = new Set(["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0"]);
 
 const riskFields = new Set(["riskImpact", "dataSensitivity", "automatedDecision", "externalInteraction", "affectedPeople", "legalRoute"]);
 const architectureFields = new Set(["knowledgeSource", "externalEffects", "approvalPoint", "supplier", "exitPlan"]);
@@ -44,7 +46,7 @@ function cloneArtifacts(artifacts) {
 
 export function createProjectSnapshot(source) {
   return {
-    context: { ...source.context },
+    context: { ...source.context, additional_use_patterns: [...(source.context.additional_use_patterns ?? [])] },
     fields: { ...source.fields },
     conditioned_controls: { ...source.conditioned_controls },
     matched_control_ids: [...new Set(source.matched_control_ids)].sort(),
@@ -94,7 +96,7 @@ function domainFor(path) {
 function recommendationFor(path, before, after) {
   const [group, id] = path.split(":");
   const property = path.split(":").at(-1);
-  if (group === "context" && ["use_pattern", "jurisdiction", "integration_level", "work_mode", "architecture"].includes(id)) return "restart";
+  if (group === "context" && ["use_pattern", "additional_use_patterns", "jurisdiction", "integration_level", "work_mode", "architecture"].includes(id)) return "restart";
   if (group === "context" && ["autonomy_level", "risk_level"].includes(id)) return Number(after) > Number(before) ? "restart" : "reassess";
   if (group === "lifecycle" && criticalLifecycleFields.has(id)) return "restart";
   if (group === "risk_assessment" || group === "evaluation_plan" || group === "security" || group === "controls") return "reassess";
@@ -213,9 +215,10 @@ function isArtifacts(value) {
 export function isProjectSnapshot(value) {
   if (!isRecord(value) || !hasOnlyKeys(value, new Set(["context", "fields", "conditioned_controls", "matched_control_ids", "completed_phases", "artifacts"]))) return false;
   return isRecord(value.context)
-    && hasOnlyKeys(value.context, new Set(["organization_type", "use_pattern", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"]))
+    && hasOnlyKeys(value.context, new Set(["organization_type", "use_pattern", "additional_use_patterns", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"]))
     && organizationTypes.has(value.context.organization_type)
     && usePatterns.has(value.context.use_pattern)
+    && validAdditionalUsePatterns(value.context.use_pattern, value.context.additional_use_patterns)
     && jurisdictions.has(value.context.jurisdiction)
     && integrationLevels.has(value.context.work_mode)
     && architectures.has(value.context.architecture)

@@ -80,8 +80,8 @@ test("sensitivity keeps bounds ordered, retains losses and handles zero eligibil
 
 test("new case coverage and measurement metadata do not silently admit outcome percentages", async () => {
   const registry = JSON.parse(await readFile(new URL("../public/data/task-time-evidence.v1.json", import.meta.url), "utf8"));
-  assert.equal(registry.records.length, 19);
-  assert.equal(registry.records.filter(record => record.transfer.quantitative_use === "usable").length, 4);
+  assert.equal(registry.records.length, 23);
+  assert.equal(registry.records.filter(record => record.transfer.quantitative_use === "usable").length, 6);
   const schema = JSON.parse(await readFile(new URL("../public/data/task-time-evidence.schema.json", import.meta.url), "utf8"));
   assert.ok(!schema.$defs.measurement.required.includes("context"));
   for (const record of registry.records) {
@@ -90,12 +90,12 @@ test("new case coverage and measurement metadata do not silently admit outcome p
       assert.ok(record.measurement.context[key].en);
       assert.ok(record.measurement.context[key].fr);
     }
-    if (!record.measurement.human_active_time_measured) assert.equal(record.transfer.quantitative_use, "context_only");
+    if (!record.measurement.human_active_time_measured && !record.measurement.human_task_time_measured) assert.equal(record.transfer.quantitative_use, "context_only");
   }
   for (const language of ["", ".fr"]) {
     const document = await readFile(new URL("../../references/recent-implementation-cases" + language + ".md", import.meta.url), "utf8");
     assert.doesNotMatch(document, /undefined/);
-    assert.equal((document.match(/^## /gm) ?? []).length, 10);
+    assert.equal((document.match(/^## /gm) ?? []).length, 11);
     for (const match of document.matchAll(/\]\((https:[^)]+)\)/g)) {
       assert.equal(new URL(match[1]).protocol, "https:");
       assert.doesNotMatch(match[1], /\s/);

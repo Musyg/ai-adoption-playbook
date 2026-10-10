@@ -3,6 +3,7 @@
 import DesignChoiceHelp from "./DesignChoiceHelp";
 import { authorFor } from "./editorial-metadata.mjs";
 import { formatLocalizedNumber } from "./format-number.mjs";
+import { activeUsePatterns, matchesUsePatterns, validAdditionalUsePatterns } from "./use-pattern-routing.mjs";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -42,6 +43,7 @@ type PlanningSnapshot = {
   audienceId: AudienceId;
   audienceLabel: string;
   usePatternId: UsePatternId;
+  additionalUsePatterns: UsePatternId[];
   usePatternLabel: string;
   jurisdictionId: JurisdictionId;
   jurisdictionLabel: string;
@@ -208,11 +210,11 @@ const usePatternContent: Record<Locale, UsePatternContent> = {
   en: {
     eyebrow: "FIRST AXIS · WHAT THE AI ACTUALLY DOES",
     title: "Choose the use pattern before choosing the work mode.",
-    text: "A chatbot, a predictor, a retrieval system, and an agent can use similar models but require different evidence. Select the dominant pattern, then record every secondary pattern in the use-case card.",
+    text: "A chatbot, a predictor, a retrieval system, and an agent can use similar models but require different evidence. Choose the main task and add any other functions below. Checks cover the combined functions; time estimates still refer to the main task.",
     labels: { task: "Task", evaluate: "Evaluate", threat: "Threat focus", jurisdiction: "Legal route" },
     guide: "Open the complete classification guide",
     patterns: [
-      { id: "generation", code: "01", title: "Generation", short: "Write a reply, draft a document, or create an image", task: "Create text, code, image, audio, or another new output.", evaluate: "Accepted quality, factual or source fidelity, severe errors, and human correction load.", threat: "Confabulation, sensitive-data disclosure, intellectual-property exposure, and unsafe output handling." },
+      { id: "generation", code: "01", title: "Generation", short: "Write text or code", task: "Create text, code, image, audio, or another new output.", evaluate: "Accepted quality, factual or source fidelity, severe errors, and human correction load.", threat: "Confabulation, sensitive-data disclosure, intellectual-property exposure, and unsafe output handling." },
       { id: "retrieval", code: "02", title: "Retrieval", short: "Answer a question using your documents and cite them", task: "Find and synthesize information from an authorized corpus.", evaluate: "Retrieval coverage, groundedness, citation validity, corpus freshness, and access control.", threat: "Corpus poisoning, indirect prompt injection, cross-tenant leakage, and stale indexes." },
       { id: "classification", code: "03", title: "Extraction and classification", short: "Read invoice fields or sort incoming requests", task: "Extract fields, assign known categories, route cases, or detect a defined condition.", evaluate: "Per-class precision and recall, critical errors, abstention, subgroup results, and drift.", threat: "Evasion, poisoned data or labels, class imbalance, and threshold manipulation." },
       { id: "prediction", code: "04", title: "Prediction and recommendation", short: "Forecast demand or suggest a suitable product", task: "Estimate an outcome, calculate a score, rank options, or recommend an action.", evaluate: "Calibration, threshold utility, error cost, subgroup results, and feedback loops.", threat: "Automation bias, proxy discrimination, model extraction, drift, and self-reinforcing feedback." },
@@ -237,11 +239,11 @@ const usePatternContent: Record<Locale, UsePatternContent> = {
   fr: {
     eyebrow: "PREMIER AXE · CE QUE FAIT RÉELLEMENT L’IA",
     title: "Choisissez le mode d’usage avant le mode de travail.",
-    text: "Un chatbot, un prédicteur, un système de recherche et un agent peuvent utiliser des modèles proches, mais ils n’exigent pas les mêmes preuves. Sélectionnez le mode dominant, puis consignez chaque mode secondaire dans la fiche de cas d’usage.",
+    text: "Un chatbot, un prédicteur, un système de recherche et un agent peuvent utiliser des modèles proches, mais ils n’exigent pas les mêmes preuves. Choisissez la tâche principale, puis ajoutez les autres fonctions ci-dessous. Leurs contrôles se cumulent ; l’estimation de temps reste celle de la tâche principale.",
     labels: { task: "Tâche", evaluate: "Évaluer", threat: "Menaces à tester", jurisdiction: "Route juridique" },
     guide: "Ouvrir le guide complet de classification",
     patterns: [
-      { id: "generation", code: "01", title: "Génération", short: "Rédiger une réponse, préparer un document ou créer une image", task: "Créer du texte, du code, une image, de l’audio ou une autre sortie nouvelle.", evaluate: "Qualité acceptée, fidélité aux faits ou aux sources, erreurs graves et charge de correction humaine.", threat: "Affabulation, divulgation de données sensibles, propriété intellectuelle et traitement dangereux des sorties." },
+      { id: "generation", code: "01", title: "Génération", short: "Rédiger du texte ou du code", task: "Créer du texte, du code, une image, de l’audio ou une autre sortie nouvelle.", evaluate: "Qualité acceptée, fidélité aux faits ou aux sources, erreurs graves et charge de correction humaine.", threat: "Affabulation, divulgation de données sensibles, propriété intellectuelle et traitement dangereux des sorties." },
       { id: "retrieval", code: "02", title: "Recherche augmentée", short: "Répondre à partir de vos documents en citant les sources", task: "Rechercher et synthétiser dans un corpus autorisé.", evaluate: "Couverture de recherche, ancrage, validité des citations, fraîcheur du corpus et contrôle d’accès.", threat: "Empoisonnement du corpus, injection indirecte, fuite entre locataires et index périmé." },
       { id: "classification", code: "03", title: "Extraction et classification", short: "Lire les champs d’une facture ou ranger les demandes reçues", task: "Extraire des champs, attribuer une catégorie connue, router un cas ou détecter une condition définie.", evaluate: "Précision et rappel par classe, erreurs critiques, abstention, résultats par groupe et dérive.", threat: "Contournement, données ou labels empoisonnés, déséquilibre de classes et manipulation des seuils." },
       { id: "prediction", code: "04", title: "Prédiction et recommandation", short: "Prévoir la demande ou suggérer un produit adapté", task: "Estimer un résultat, calculer un score, classer des options ou recommander une action.", evaluate: "Calibration, utilité des seuils, coût des erreurs, résultats par groupe et boucles de rétroaction.", threat: "Biais d’automatisation, discrimination par proxy, extraction du modèle, dérive et rétroaction auto-renforcée." },
@@ -368,7 +370,7 @@ const guidedContent: Record<Locale, GuidedContent> = {
     progress: ["Your situation", "The AI task", "Operating design", "Territory", "Starting plan"],
     stepLabel: "Step",
     steps: [
-      { eyebrow: "START WITH YOUR REALITY", title: "What kind of organization are you guiding?", text: "This changes ownership, timing, and the first safeguards. It does not change the core method.", helpLabel: "Why ask this first?", help: "An independent professional can decide and correct alone. A public service must involve more roles, formal authority, accessibility, and recourse. The useful first pilot is therefore different." },
+      { eyebrow: "START WITH YOUR REALITY", title: "Are you using AI for yourself or for an organization?", text: "This changes ownership, timing, and the first safeguards. It does not change the core method.", helpLabel: "Why ask this first?", help: "An independent professional can decide and correct alone. A public service must involve more roles, formal authority, accessibility, and recourse. The useful first pilot is therefore different." },
       { eyebrow: "NAME THE JOB", title: "What should the AI mainly do?", text: "Choose the dominant task. Similar models can create very different risks depending on the job they perform.", helpLabel: "What is a use pattern?", help: "A use pattern describes the job performed by the AI, such as finding information, predicting demand, holding a conversation, or taking action. It is not the same as autonomy." },
       { eyebrow: "DESCRIBE THE OPERATING DESIGN", title: "How should the work move, and how far may the system act?", text: "Choose a work mode, an architecture, and an exact action boundary. These are three separate decisions.", helpLabel: "Why three choices?", help: "The work mode describes the human role. The architecture describes what is connected. A0 to A4 describe what the system may do without a person carrying each step. A3 can therefore be one agent or an orchestrated team." },
       { eyebrow: "KEEP THE LEGAL ROUTES SEPARATE", title: "Where will it operate or affect people?", text: "This is an orientation, not a legal conclusion. Switzerland and the European Union require separate checks.", helpLabel: "Why two routes?", help: "A Swiss analysis does not prove compliance in the European Union, and an EU classification does not replace Swiss data-protection, public-law, cantonal, or sector checks." },
@@ -407,7 +409,7 @@ const guidedContent: Record<Locale, GuidedContent> = {
     progress: ["Votre situation", "La tâche de l’IA", "Fonctionnement", "Le territoire", "Point de départ"],
     stepLabel: "Étape",
     steps: [
-      { eyebrow: "PARTIR DE VOTRE RÉALITÉ", title: "Quel type d’organisation accompagnez-vous ?", text: "Ce choix modifie les responsabilités, le rythme et les premières protections. La méthode centrale reste la même.", helpLabel: "Pourquoi commencer ici ?", help: "Un indépendant peut décider et corriger seul. Un service public doit réunir davantage de rôles, un mandat formel, l’accessibilité et une voie de recours. Le premier pilote utile n’est donc pas le même." },
+      { eyebrow: "PARTIR DE VOTRE RÉALITÉ", title: "Utilisez-vous l’IA pour vous ou pour une organisation ?", text: "Ce choix modifie les responsabilités, le rythme et les premières protections. La méthode centrale reste la même.", helpLabel: "Pourquoi commencer ici ?", help: "Un indépendant peut décider et corriger seul. Un service public doit réunir davantage de rôles, un mandat formel, l’accessibilité et une voie de recours. Le premier pilote utile n’est donc pas le même." },
       { eyebrow: "NOMMER LE TRAVAIL", title: "Que doit principalement faire l’IA ?", text: "Choisissez la tâche dominante. Des modèles proches créent des risques différents selon le travail demandé.", helpLabel: "Qu’est-ce qu’un mode d’usage ?", help: "Le mode d’usage décrit le travail confié à l’IA : trouver une information, prévoir une demande, tenir une conversation ou agir. Il ne décrit pas encore son autonomie." },
       { eyebrow: "DÉCRIRE LE FONCTIONNEMENT", title: "Comment le travail doit-il circuler, et jusqu’où le système peut-il agir ?", text: "Choisissez un mode de travail, une architecture et une limite d’action précise. Ce sont trois décisions distinctes.", helpLabel: "Pourquoi trois choix ?", help: "Le mode de travail décrit le rôle humain. L’architecture décrit ce qui est connecté. A0 à A4 décrivent ce que le système peut faire sans qu’une personne pilote chaque étape. A3 peut donc correspondre à un agent unique ou à une équipe orchestrée." },
       { eyebrow: "SÉPARER LES ROUTES JURIDIQUES", title: "Où opérera-t-il ou affectera-t-il des personnes ?", text: "Il s’agit d’une orientation, pas d’une conclusion juridique. La Suisse et l’Union européenne exigent des vérifications séparées.", helpLabel: "Pourquoi deux routes ?", help: "Une analyse suisse ne prouve pas la conformité dans l’Union européenne. Une classification européenne ne remplace pas les vérifications suisses sur les données, le droit public, les cantons ou le secteur." },
@@ -566,6 +568,7 @@ const implementationTargetMap: Partial<Record<string, ImplementationPanelId>> = 
   paths: "paths",
   sectors: "sectors",
   method: "method",
+  "lifecycle-workbench": "method",
   "case-library": "case-library",
   "maturity-controls": "maturity-controls",
   controls: "maturity-controls",
@@ -584,7 +587,7 @@ const caseTargetMap: Partial<Record<string, CasePanelId>> = {
 
 const copy = {
   en: {
-    meta: "FIELD GUIDE · SEPTEMBER 2026",
+    meta: "FIELD GUIDE · OCTOBER 2026",
     nav: ["Use patterns", "Paths", "Sectors", "Method", "Worked cases", "Control level", "Toolkit"],
     heroTitle: "Move from AI interest to a system you can trust.",
     heroText: "Choose one useful problem, prove the value, control the risk, and increase autonomy only when the evidence supports it.",
@@ -948,7 +951,7 @@ const copy = {
     footer: "AI Adoption Playbook · Evidence before autonomy.",
   },
   fr: {
-    meta: "GUIDE DE TERRAIN · SEPTEMBRE 2026",
+    meta: "GUIDE DE TERRAIN · OCTOBRE 2026",
     nav: ["Modes d’usage", "Parcours", "Secteurs", "Méthode", "Cas d’école", "Contrôles", "Boîte à outils"],
     heroTitle: "Passez de l’intérêt pour l’IA à un système digne de confiance.",
     heroText: "Choisissez un problème utile, prouvez la valeur, maîtrisez le risque et n’augmentez l’autonomie que lorsque les preuves le permettent.",
@@ -1433,6 +1436,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const chapterCopy = chapterNavigationContent[locale];
   const [audienceId, setAudienceId] = useState<AudienceId>("independent");
   const [usePattern, setUsePattern] = useState<UsePatternId>("retrieval");
+  const [additionalUsePatterns, setAdditionalUsePatterns] = useState<UsePatternId[]>([]);
   const [taskTimeScenario, setTaskTimeScenario] = useState<TaskTimeScenarioState>(() => createDefaultTaskTimeScenario("retrieval"));
   const [jurisdiction, setJurisdiction] = useState<JurisdictionId>("BOTH");
   const [risk, setRisk] = useState(1);
@@ -1499,11 +1503,18 @@ export function Playbook({ locale }: { locale: Locale }) {
   }, []);
   const selectUsePattern = useCallback((nextPattern: UsePatternId) => {
     setUsePattern(nextPattern);
+    setAdditionalUsePatterns((current) => current.filter((id) => id !== nextPattern));
     setTaskTimeScenario(createDefaultTaskTimeScenario(nextPattern));
     invalidateFieldReview();
   }, [invalidateFieldReview]);
   const selected = useMemo(() => audiences[locale].find((item) => item.id === audienceId) ?? audiences[locale][0], [audienceId, locale]);
   const selectedUsePattern = useMemo(() => patternCopy.patterns.find((item) => item.id === usePattern) ?? patternCopy.patterns[0], [patternCopy.patterns, usePattern]);
+  const combinedUsePatternLabel = activeUsePatterns(usePattern, additionalUsePatterns).map((id) => patternCopy.patterns.find((item) => item.id === id)?.title).join(" + ");
+  const additionalPatternChoices = (prefix: string) => <details className="additional-patterns" open={additionalUsePatterns.length > 0}>
+    <summary>{locale === "en" ? "Does it do anything else? (optional)" : "Fait-il aussi autre chose ? (facultatif)"}</summary>
+    <p>{locale === "en" ? "A document assistant can also chat. Select the other functions to include their checks. This does not change the main task's time estimate or grant action permissions." : "Un assistant documentaire peut aussi discuter. Cochez les autres fonctions pour ajouter leurs contrôles. Cela ne change ni l’estimation de la tâche principale ni les permissions d’action."}</p>
+    <fieldset><legend>{locale === "en" ? "Additional functions" : "Fonctions complémentaires"}</legend>{patternCopy.patterns.filter((pattern) => pattern.id !== usePattern).map((pattern) => <label aria-label={pattern.title} htmlFor={`additional-${prefix}-${pattern.id}`} key={pattern.id}><input id={`additional-${prefix}-${pattern.id}`} checked={additionalUsePatterns.includes(pattern.id)} onChange={(event) => { setAdditionalUsePatterns((current) => activeUsePatterns(usePattern, event.target.checked ? [...current, pattern.id] : current.filter((id) => id !== pattern.id)).filter((id) => id !== usePattern)); invalidateFieldReview(); }} type="checkbox" /><span><strong>{pattern.title}</strong><small>{pattern.short}</small></span></label>)}</fieldset>
+  </details>;
   const selectedJurisdiction = useMemo(() => patternCopy.jurisdictions.find((item) => item.id === jurisdiction) ?? patternCopy.jurisdictions[2], [jurisdiction, patternCopy.jurisdictions]);
   const selectedGuideLevel = useMemo(() => guideCopy.levels.find((item) => item.id === calibrationLevel) ?? guideCopy.levels[0], [calibrationLevel, guideCopy.levels]);
   const selectedArchitecture = architectureTaxonomy[locale][architecture];
@@ -1535,9 +1546,9 @@ export function Playbook({ locale }: { locale: Locale }) {
     control.applicability.organization_types.includes(selected.id)
     && control.applicability.risk_levels.includes(`R${risk}`)
     && control.applicability.autonomy_levels.includes(`A${autonomy}`)
-    && (!control.applicability.use_patterns || control.applicability.use_patterns.includes(usePattern))
+    && matchesUsePatterns(control, usePattern, additionalUsePatterns)
     && (!control.applicability.jurisdictions || jurisdiction === "BOTH" || control.applicability.jurisdictions.includes(jurisdiction))
-  )), [selected.id, risk, autonomy, usePattern, jurisdiction]);
+  )), [selected.id, risk, autonomy, usePattern, additionalUsePatterns, jurisdiction]);
   const applicableSourceCount = useMemo(() => new Set(applicableControls.flatMap((control) => control.source_refs.map((source) => source.source_id))).size, [applicableControls]);
   const deploymentBase = typeof window !== "undefined"
     && (window.location.pathname === githubPagesBase || window.location.pathname.startsWith(`${githubPagesBase}/`))
@@ -1553,6 +1564,7 @@ export function Playbook({ locale }: { locale: Locale }) {
       targetLocale: locale === "en" ? "fr" : "en",
       audienceId,
       usePattern,
+      additionalUsePatterns,
       jurisdiction,
       calibrationLevel,
       architecture,
@@ -1633,6 +1645,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const restoreLifecycleContext = useCallback((context: {
     audienceId: string;
     usePatternId: string;
+    additionalUsePatterns: UsePatternId[];
     jurisdictionId: string;
     integrationId: string;
     architectureId: string;
@@ -1646,6 +1659,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     const architectureIds: ArchitectureId[] = ["model", "workflow", "agent", "agency"];
     if (!audienceIds.includes(context.audienceId as AudienceId)
       || !usePatternIds.includes(context.usePatternId as UsePatternId)
+      || !validAdditionalUsePatterns(context.usePatternId, context.additionalUsePatterns)
       || !jurisdictionIds.includes(context.jurisdictionId as JurisdictionId)
       || !integrationIds.includes(context.integrationId as IntegrationId)
       || !architectureIds.includes(context.architectureId as ArchitectureId)
@@ -1655,6 +1669,7 @@ export function Playbook({ locale }: { locale: Locale }) {
     const level = context.integrationId as IntegrationId;
     setAudienceId(context.audienceId as AudienceId);
     selectUsePattern(context.usePatternId as UsePatternId);
+    setAdditionalUsePatterns([...context.additionalUsePatterns]);
     setJurisdiction(context.jurisdictionId as JurisdictionId);
     setCalibrationLevel(level);
     setArchitecture(context.architectureId as ArchitectureId);
@@ -1776,6 +1791,7 @@ export function Playbook({ locale }: { locale: Locale }) {
   const currentPlanningFingerprint = JSON.stringify({
     audienceId,
     usePattern,
+    additionalUsePatterns,
     jurisdiction,
     risk,
     calibrationLevel,
@@ -1806,7 +1822,8 @@ export function Playbook({ locale }: { locale: Locale }) {
       audienceId,
       audienceLabel: selected.title,
       usePatternId: usePattern,
-      usePatternLabel: selectedUsePattern.title,
+      additionalUsePatterns: [...additionalUsePatterns],
+      usePatternLabel: combinedUsePatternLabel,
       jurisdictionId: jurisdiction,
       jurisdictionLabel: selectedJurisdiction.label,
       risk,
@@ -2192,6 +2209,7 @@ export function Playbook({ locale }: { locale: Locale }) {
           targetLocale?: Locale;
           audienceId?: AudienceId;
           usePattern?: UsePatternId;
+          additionalUsePatterns?: UsePatternId[];
           jurisdiction?: JurisdictionId;
           calibrationLevel?: IntegrationId;
           architecture?: ArchitectureId;
@@ -2243,6 +2261,7 @@ export function Playbook({ locale }: { locale: Locale }) {
         if (context.targetLocale !== locale) return;
         if (context.audienceId) setAudienceId(context.audienceId);
         if (context.usePattern) setUsePattern(context.usePattern);
+        if (context.usePattern && validAdditionalUsePatterns(context.usePattern, context.additionalUsePatterns ?? [])) setAdditionalUsePatterns(context.additionalUsePatterns ?? []);
         if (context.jurisdiction) setJurisdiction(context.jurisdiction);
         if (context.calibrationLevel) setCalibrationLevel(context.calibrationLevel);
         if (context.architecture) setArchitecture(context.architecture);
@@ -2271,7 +2290,8 @@ export function Playbook({ locale }: { locale: Locale }) {
             .map((snapshot) => ({
               ...snapshot,
               audienceLabel: audiences[locale].find((item) => item.id === snapshot.audienceId)?.title ?? snapshot.audienceLabel,
-              usePatternLabel: usePatternContent[locale].patterns.find((item) => item.id === snapshot.usePatternId)?.title ?? snapshot.usePatternLabel,
+              additionalUsePatterns: snapshot.additionalUsePatterns ?? [],
+              usePatternLabel: activeUsePatterns(snapshot.usePatternId, snapshot.additionalUsePatterns ?? []).map((id) => usePatternContent[locale].patterns.find((item) => item.id === id)?.title).join(" + "),
               jurisdictionLabel: usePatternContent[locale].jurisdictions.find((item) => item.id === snapshot.jurisdictionId)?.label ?? snapshot.jurisdictionLabel,
               level: workModeTaxonomy[locale][snapshot.integrationId]?.label ?? snapshot.level,
               architecture: architectureTaxonomy[locale][snapshot.architectureId]?.label ?? snapshot.architecture,
@@ -2375,6 +2395,7 @@ export function Playbook({ locale }: { locale: Locale }) {
               {guideStep === 0 && <div className="guide-choice-grid guide-audiences">{audiences[locale].map((audience) => <button aria-pressed={audienceId === audience.id && guideConfirmed[0]} key={audience.id} onClick={() => { setAudienceId(audience.id); setGuideConfirmed((current) => current.map((value, index) => index === 0 ? true : value)); invalidateFieldReview(); }} type="button"><span>{audience.number}</span><strong>{audience.title}</strong><small>{audience.short}</small><em>{locale === "en" ? "Planning guide: " : "Repère de planification : "}{audience.horizon}</em></button>)}</div>}
 
               {guideStep === 1 && <div className="guide-choice-grid guide-patterns">{patternCopy.patterns.map((pattern) => <button aria-pressed={usePattern === pattern.id && guideConfirmed[1]} key={pattern.id} onClick={() => { selectUsePattern(pattern.id); setGuideConfirmed((current) => current.map((value, index) => index === 1 ? true : value)); }} type="button"><span>{pattern.code}</span><strong>{pattern.short}</strong><small>{pattern.title}</small></button>)}</div>}
+              {guideStep === 1 && additionalPatternChoices("guided")}
 
               {guideStep === 2 && <div className="guide-design-choices">
                 <nav className="guide-design-progress" aria-label={locale === "en" ? "Three design choices" : "Trois choix de fonctionnement"}>{(locale === "en" ? ["Share the work", "Choose the components", "Set action permissions"] : ["Partager le travail", "Choisir les composants", "Fixer les droits d’action"]).map((label, index) => <button type="button" key={label} aria-current={designStep === index ? "step" : undefined} onClick={() => setDesignStep(index)}><span>{index + 1}/3</span> {label}</button>)}</nav>
@@ -2391,10 +2412,10 @@ export function Playbook({ locale }: { locale: Locale }) {
 
               {guideStep === 4 && <div className="guided-result">
                 <div className="guided-result-lead"><p className="eyebrow">{guideCopy.result.eyebrow}</p><h3>{guideCopy.result.title}</h3><p>{guideCopy.result.intro}</p><strong>{selectedGuideLevel.recommendation}</strong></div>
-                <div className="guided-selection" aria-label={guideCopy.result.selection}><span>{selected.title}</span><span>{selectedUsePattern.title}</span><span>{selectedGuideLevel.title}</span><span>{selectedArchitecture.label}</span><span>A{autonomy} · {t.autonomyOptions[autonomy].replace(/^A\d · /, "")}</span><span>{selectedJurisdiction.label}</span></div>
+                <div className="guided-selection" aria-label={guideCopy.result.selection}><button onClick={() => setGuideStep(0)} type="button">{selected.title} · {locale === "en" ? "Edit" : "Modifier"}</button><button onClick={() => setGuideStep(1)} type="button">{combinedUsePatternLabel} · {locale === "en" ? "Edit" : "Modifier"}</button><button onClick={() => setGuideStep(2)} type="button">{selectedGuideLevel.title} · {selectedArchitecture.label} · A{autonomy} · {locale === "en" ? "Edit" : "Modifier"}</button><button onClick={() => setGuideStep(3)} type="button">{selectedJurisdiction.label} · {locale === "en" ? "Edit" : "Modifier"}</button></div>
                 <div className="guided-result-grid">
                   <article><span>01</span><strong>{guideCopy.result.pilot}</strong><p>{guidedPilot}</p></article>
-                  <article><span>02</span><strong>{guideCopy.result.measure}</strong><p>{guideCopy.proofByPattern[usePattern]}</p></article>
+                  <article><span>02</span><strong>{guideCopy.result.measure}</strong><p>{activeUsePatterns(usePattern, additionalUsePatterns).map((id) => guideCopy.proofByPattern[id]).join(" ")}</p></article>
                   <article><span>03</span><strong>{guideCopy.result.safeguards}</strong><p>{locale === "en" ? "Provisional baseline. Complete the risk phase to condition the full list." : "Base provisoire. Complétez la phase de risque pour adapter la liste complète."}</p><ul>{(applicableControls.length ? applicableControls.slice(0, 3).map((control) => control.title[locale]) : selected.controls.slice(0, 3)).map((control) => <li key={control}>{control}</li>)}</ul></article>
                 </div>
                 <div className="guided-result-actions"><button className="button primary" onClick={() => openChapter("operational-workspace", "calibrator")} type="button">{guideCopy.buttons.workspace}</button><button className="button secondary" onClick={openComparableCases} type="button">{guideCopy.buttons.cases}</button></div>
@@ -2450,6 +2471,7 @@ export function Playbook({ locale }: { locale: Locale }) {
                 ))}
               </div>
             </fieldset>
+            {additionalPatternChoices("concept")}
             <output className="use-pattern-detail" aria-live="polite">
               <p className="eyebrow">{selectedUsePattern.code} · {selectedUsePattern.title}</p>
               <dl>
@@ -2810,7 +2832,8 @@ export function Playbook({ locale }: { locale: Locale }) {
             riskLabels={t.impactOptions}
             schemaHref={sitePath("/data/project-dossier.schema.json")}
             usePatternId={usePattern}
-            usePatternLabel={selectedUsePattern.title}
+            additionalUsePatterns={additionalUsePatterns}
+            usePatternLabel={combinedUsePatternLabel}
           />
         </section>
 

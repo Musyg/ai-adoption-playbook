@@ -6,6 +6,7 @@ import GithubSlugger from "github-slugger";
 import { decodeHTML } from "entities";
 import { documents, categories, libraryPath, alternateDocument, documentForSource, downloads } from "../app/document-manifest.mjs";
 import { authorFor } from "../app/editorial-metadata.mjs";
+import { documentGuidance } from "../app/document-guidance.mjs";
 
 const repositoryRoot = path.resolve(process.cwd(), path.basename(process.cwd()) === "site" ? ".." : ".");
 const repository = "https://github.com/Musyg/ai-adoption-playbook";
@@ -77,10 +78,14 @@ export async function loadDocument(doc) {
   if (!documents.includes(doc)) throw new Error("Document must belong to the publication allowlist.");
   const markdown = await readFile(path.join(repositoryRoot, doc.source), "utf8");
   const compiled = compileMarkdown(markdown, doc);
-  const description = doc.locale === "fr"
-    ? `${compiled.title} : document complet du guide d’adoption de l’IA, avec repères pratiques, ressources et liens utiles.`
-    : `${compiled.title}: a complete AI adoption playbook document with practical guidance, resources and related reading.`;
-  return { ...doc, ...compiled, description, markdown };
+  const guidance = documentGuidance(doc);
+  const siblings = documents.filter((item) => item.category === doc.category && item.locale === doc.locale);
+  const position = siblings.findIndex((item) => item.id === doc.id);
+  const adjacent = await Promise.all([siblings[position - 1], siblings[position + 1]].filter(Boolean).map(async (item) => ({
+    path: item.path,
+    title: compileMarkdown(await readFile(path.join(repositoryRoot, item.source), "utf8"), item).title,
+  })));
+  return { ...doc, ...compiled, description: guidance.purpose, guidance, adjacent, markdown };
 }
 
 const copyFor = (locale) => locale === "fr" ? {
@@ -97,10 +102,7 @@ function header(locale, alternate) {
 export function documentBody(doc) {
   const copy = copyFor(doc.locale);
   const alternate = alternateDocument(doc);
-  const siblings = documents.filter((item) => item.category === doc.category && item.locale === doc.locale);
-  const position = siblings.findIndex((item) => item.id === doc.id);
-  const adjacent = [siblings[position - 1], siblings[position + 1]].filter(Boolean);
-  return `<div class="geo-page document-page">${header(doc.locale, alternate)}<main id="main"><article><header class="geo-hero"><nav class="geo-breadcrumb" aria-label="${doc.locale === "fr" ? "Fil d’Ariane" : "Breadcrumb"}"><a href="${libraryPath(doc.locale)}">${copy.library}</a><span>/</span><a href="${libraryPath(doc.locale)}#${doc.category}">${categories[doc.category][doc.locale]}</a></nav><p class="eyebrow">${categories[doc.category][doc.locale]}</p><h1>${escapeHtml(doc.title)}</h1><div class="geo-meta"><a href="${authorFor(doc.locale).url}" rel="author">Gilles Musy · Musyg</a><a href="${downloadPath(doc.source)}" download>${copy.download}</a></div></header><div class="geo-layout"><aside class="geo-rail document-toc" aria-label="${copy.contents}"><p>${copy.contents}</p>${doc.headings.map((item) => `<a href="#${escapeHtml(item.id)}" class="depth-${item.depth}">${escapeHtml(item.label)}</a>`).join("")}</aside><div class="geo-content"><div class="document-prose">${doc.html}</div><nav class="document-actions" aria-label="${doc.locale === "fr" ? "Continuer la lecture" : "Continue reading"}"><a href="${libraryPath(doc.locale)}#${doc.category}">${copy.back}</a>${adjacent.map((item) => `<a href="${item.path}">${doc.locale === "fr" ? (item === siblings[position - 1] ? "Document précédent" : "Document suivant") : (item === siblings[position - 1] ? "Previous document" : "Next document")} ${item === siblings[position - 1] ? "←" : "→"}</a>`).join("")}</nav><p class="document-print">${copy.print}</p><a class="document-source" href="${repository}/blob/main/${doc.source}">${copy.source} · GitHub</a></div></div></article></main></div>`;
+  return `<div class="geo-page document-page">${header(doc.locale, alternate)}<main id="main"><article><header class="geo-hero"><nav class="geo-breadcrumb" aria-label="${doc.locale === "fr" ? "Fil d’Ariane" : "Breadcrumb"}"><a href="${libraryPath(doc.locale)}">${copy.library}</a><span>/</span><a href="${libraryPath(doc.locale)}#${doc.category}">${categories[doc.category][doc.locale]}</a></nav><p class="eyebrow">${categories[doc.category][doc.locale]}</p><h1>${escapeHtml(doc.title)}</h1><p class="geo-answer">${escapeHtml(doc.guidance.purpose)}</p><a class="document-next-action" href="${doc.guidance.path}">${doc.guidance.action}</a><div class="geo-meta"><a href="${authorFor(doc.locale).url}" rel="author">Gilles Musy · Musyg</a><a href="${downloadPath(doc.source)}" download>${copy.download}</a></div></header><div class="geo-layout"><aside class="geo-rail document-toc" aria-label="${copy.contents}"><p>${copy.contents}</p>${doc.headings.map((item) => `<a href="#${escapeHtml(item.id)}" class="depth-${item.depth}">${escapeHtml(item.label)}</a>`).join("")}</aside><div class="geo-content"><div class="document-prose">${doc.html}</div><nav class="document-actions" aria-label="${doc.locale === "fr" ? "Continuer la lecture" : "Continue reading"}"><a href="${libraryPath(doc.locale)}#${doc.category}">${copy.back}</a>${doc.adjacent.map((item) => `<a href="${item.path}">${escapeHtml(item.title)} →</a>`).join("")}</nav><p class="document-print">${copy.print}</p><a class="document-source" href="${repository}/blob/main/${doc.source}">${copy.source} · GitHub</a></div></div></article></main></div>`;
 }
 
 export async function libraryBody(locale) {
@@ -109,6 +111,6 @@ export async function libraryBody(locale) {
   return `<div class="geo-page document-page">${header(locale, { locale: locale === "fr" ? "en" : "fr", path: libraryPath(locale === "fr" ? "en" : "fr") })}<main id="main"><header class="geo-hero"><p class="eyebrow">AI ADOPTION PLAYBOOK</p><h1>${copy.library}</h1><p class="geo-answer">${copy.intro}</p></header><div class="geo-layout"><nav class="geo-rail" aria-label="${copy.contents}"><p>${copy.contents}</p>${Object.entries(categories).filter(([key]) => entries.some((item) => item.category === key)).map(([key, value]) => `<a href="#${key}">${value[locale]}</a>`).join("")}</nav><div class="geo-content document-index">${Object.entries(categories).map(([key, value]) => {
     const group = entries.filter((item) => item.category === key);
     if (!group.length) return "";
-    return `<section id="${key}" aria-labelledby="${key}-title"><h2 id="${key}-title">${value[locale]}</h2><ul>${group.map((doc) => `<li><a href="${doc.path}">${escapeHtml(doc.title)}</a></li>`).join("")}</ul>${key === "templates" ? `<a href="${downloadPath("templates/ai-system-register.csv")}" download>${locale === "fr" ? "Télécharger le registre des systèmes IA (CSV)" : "Download the AI system register (CSV)"}</a>` : ""}</section>`;
+    return `<section id="${key}" aria-labelledby="${key}-title"><h2 id="${key}-title">${value[locale]}</h2><ul>${group.map((doc) => `<li><a href="${doc.path}">${escapeHtml(doc.title)}</a><p>${escapeHtml(doc.guidance.purpose)}</p></li>`).join("")}</ul>${key === "templates" ? `<a href="${downloadPath("templates/ai-system-register.csv")}" download>${locale === "fr" ? "Télécharger le registre des systèmes IA (CSV)" : "Download the AI system register (CSV)"}</a>` : ""}</section>`;
   }).join("")}</div></div></main></div>`;
 }

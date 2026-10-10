@@ -4,6 +4,18 @@ The model is only one component. The security boundary includes data, retrieval,
 
 ## Priority threats
 
+References checked on 10 October 2026: the
+[2026-labelled OWASP LLM PDF](https://genai.owasp.org/download/56857/?tmstv=1785822482)
+changes category numbers and broadens hidden-context exposure. Its cover still
+contains a publication-date placeholder. Keep edition and category together;
+do not rename a 2025 mapping by changing the year alone. The guide’s crosswalk
+uses thematic support, not equivalent clauses.
+
+For agent platforms, [ACS](https://genai.owasp.org/resource/agent-control-standard-acs/)
+can help connect runtime policy controls. The
+[industry crosswalk](https://genai.owasp.org/resource/genai-security-industry-framework-crosswalk/)
+helps compare coverage. Neither is a certification or a replacement for tests.
+
 - direct or indirect prompt injection;
 - disclosure of sensitive information;
 - poisoning of data, context, memory, or tools;

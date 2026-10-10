@@ -37,6 +37,7 @@ export type TaskTimeEvidenceRecord = {
     sample_size: number | null;
     time_scope: string;
     human_active_time_measured: boolean;
+    human_task_time_measured?: boolean;
     machine_runtime_measured: boolean;
     human_time_reduction_fraction: FractionRange | null;
     absolute_saving: { value: number; unit: string; direction: string } | null;

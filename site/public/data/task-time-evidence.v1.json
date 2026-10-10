@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "published_on": "2026-09-05",
+  "published_on": "2026-10-10",
   "boundary": {
     "en": "This registry transfers task-level evidence only when the task contract is comparable. Organization type changes context and controls, not the benchmark class. External evidence does not count as first-party field evidence for release 0.3.",
     "fr": "Ce registre ne transfère une mesure que lorsque le contrat de tâche est comparable. Le type d’organisation modifie le contexte et les contrôles, pas la catégorie de référence. Les sources externes ne constituent pas des preuves terrain produites par le guide pour la version 0.3."
@@ -254,6 +254,52 @@
       "output_unit": {
         "en": "one reviewed media set",
         "fr": "un lot de médias revu"
+      },
+      "quality_gates": [
+        "reviewed"
+      ]
+    },
+    {
+      "profile_id": "software_enterprise_patch",
+      "label": {
+        "en": "Tested change in an unfamiliar codebase",
+        "fr": "Modification testée dans un code peu familier"
+      },
+      "description": {
+        "en": "Tested change in an unfamiliar codebase: one bounded task with a defined review.",
+        "fr": "Modification testée dans un code peu familier : une tâche bornée avec une revue définie."
+      },
+      "use_patterns": [
+        "generation",
+        "agentic"
+      ],
+      "output_unit": {
+        "en": "one tested software change",
+        "fr": "une modification logicielle testée"
+      },
+      "quality_gates": [
+        "reviewed"
+      ]
+    },
+    {
+      "profile_id": "identity_policy_review",
+      "label": {
+        "en": "Review access policies",
+        "fr": "Revue de règles d’accès"
+      },
+      "description": {
+        "en": "Review access policies: one bounded task with a defined review.",
+        "fr": "Revue de règles d’accès : une tâche bornée avec une revue définie."
+      },
+      "use_patterns": [
+        "retrieval",
+        "classification",
+        "generation",
+        "agentic"
+      ],
+      "output_unit": {
+        "en": "one reviewed policy bundle",
+        "fr": "un ensemble de règles relu"
       },
       "quality_gates": [
         "reviewed"
@@ -2409,6 +2455,453 @@
           "published": "2026-07-01",
           "accessed_on": "2026-09-05",
           "source_type": "internal_case"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2024-GOOGLE-ENTERPRISE-PATCH",
+      "title": {
+        "en": "Google: a tested code change",
+        "fr": "Google : une modification de code testée"
+      },
+      "reader_summary": {
+        "en": "96 engineers performed one coding task. The adjusted estimate is about 21% less task time, but its uncertainty allows a small slowdown. Tool waits may be included; this is not pure active human work.",
+        "fr": "96 ingénieurs ont réalisé une tâche de code. L’estimation ajustée est d’environ 21 % de temps en moins, mais son incertitude permet aussi un léger ralentissement. Les attentes d’outils peuvent être incluses."
+      },
+      "organization_context": {
+        "kind": "controlled_experiment",
+        "name": "Google",
+        "region": "See source protocol"
+      },
+      "task_contract": {
+        "profile_id": "software_enterprise_patch",
+        "description": {
+          "en": "Change a C++ logging component and pass acceptance tests. Adjusted Model 2: beta=-0.24, 95% log-time interval [-0.51,0.03], p=.086. Reduction=1-exp(beta).",
+          "fr": "Modifier un composant C++ et réussir les tests. Modèle 2 ajusté : beta=-0,24, intervalle log-temps à 95 % [-0,51 ; 0,03], p=0,086. Réduction=1-exp(beta)."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow",
+          "agent"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one tested software change",
+          "fr": "une modification logicielle testée"
+        },
+        "quality_gate": "reviewed",
+        "operator_expertise": "experienced",
+        "verifiability": "high",
+        "use_patterns": [
+          "generation",
+          "agentic"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "A",
+        "design": "Randomized experiment; adjusted Model 2",
+        "sample_size": 96,
+        "time_scope": "per_task",
+        "human_active_time_measured": false,
+        "human_task_time_measured": true,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": {
+          "low": -0.030454533953516938,
+          "central": 0.21337213893344653,
+          "high": 0.3995044211877341
+        },
+        "absolute_saving": null,
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "Change a C++ logging component and pass acceptance tests. Adjusted Model 2: beta=-0.24, 95% log-time interval [-0.51,0.03], p=.086. Reduction=1-exp(beta).",
+          "fr": "Modifier un composant C++ et réussir les tests. Modèle 2 ajusté : beta=-0,24, intervalle log-temps à 95 % [-0,51 ; 0,03], p=0,086. Réduction=1-exp(beta)."
+        },
+        "context": {
+          "range_kind": "confidence_interval",
+          "observed_period": {
+            "en": "June-July 2024",
+            "fr": "Juin-juillet 2024"
+          },
+          "model_and_tools": {
+            "en": "IDE completion, smart paste and natural-language code assistance",
+            "fr": "Complétion, collage assisté et aide au code en langage naturel"
+          },
+          "time_coverage": {
+            "en": "Workspace creation to last IDE interaction, including search/debugging; training and questionnaires excluded. Task duration, not isolated active work.",
+            "fr": "Création de l’espace de travail à la dernière interaction, recherche/débogage inclus ; formation et questionnaires exclus. Durée de tâche, pas travail actif isolé."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "usable",
+        "allowed_profiles": [
+          "software_enterprise_patch"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Similar tested code change. Compare the same time coverage; check active human work locally.",
+          "fr": "Modification testée similaire. Comparer le même périmètre temporel ; vérifier localement le travail humain actif."
+        },
+        "limits": {
+          "en": "Historical tools, not a current-model forecast or whole-project gain. The adjusted interval includes no gain and slowdown.",
+          "fr": "Outils historiques, pas une prévision des modèles actuels ni un gain de projet entier. L’intervalle ajusté inclut absence de gain et ralentissement."
+        }
+      },
+      "sources": [
+        {
+          "title": "Google: a tested code change",
+          "url": "https://arxiv.org/html/2410.12944v3",
+          "published": "2024-11-11",
+          "accessed_on": "2026-10-10",
+          "source_type": "working_paper"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2025-MICROSOFT-ENTRA-POLICY",
+      "title": {
+        "en": "Microsoft Entra: reviewed policy suggestions",
+        "fr": "Microsoft Entra : propositions de règles relues"
+      },
+      "reader_summary": {
+        "en": "162 administrators performed four simulated policy tasks. Microsoft reports 43% less task time after adjusting for accuracy. A person used agent suggestions; this is not autonomous operation or active work alone.",
+        "fr": "162 administrateurs ont réalisé quatre tâches simulées. Microsoft annonce 43 % de temps en moins après ajustement sur la justesse. Une personne utilisait les propositions ; ce n’est pas une exploitation autonome."
+      },
+      "organization_context": {
+        "kind": "controlled_experiment",
+        "name": "Microsoft Entra",
+        "region": "See source protocol"
+      },
+      "task_contract": {
+        "profile_id": "identity_policy_review",
+        "description": {
+          "en": "Four read-only policy tasks. 43% is the accuracy-adjusted total, not the raw 61.86 to 40.40 minute ratio. Per-task 31-60% is not a confidence interval; numeric interval endpoints are not extracted.",
+          "fr": "Quatre tâches de revue en lecture seule. Les 43 % sont ajustés sur la justesse, pas le ratio brut de 61,86 à 40,40 minutes. Les 31-60 % par tâche ne sont pas un intervalle de confiance ; ses bornes ne sont pas extraites."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow",
+          "agent"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one reviewed policy bundle",
+          "fr": "un ensemble de règles relu"
+        },
+        "quality_gate": "reviewed",
+        "operator_expertise": "experienced",
+        "verifiability": "high",
+        "use_patterns": [
+          "retrieval",
+          "classification",
+          "generation",
+          "agentic"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "A",
+        "design": "Vendor-run randomized experiment; accuracy-adjusted task time",
+        "sample_size": 162,
+        "time_scope": "per_task",
+        "human_active_time_measured": false,
+        "human_task_time_measured": true,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": {
+          "low": 0.43,
+          "central": 0.43,
+          "high": 0.43
+        },
+        "absolute_saving": null,
+        "outcome_change": null,
+        "quality_change": {
+          "value": 48,
+          "unit": "percent increase in aggregate accuracy score",
+          "direction": "increase"
+        },
+        "notes": {
+          "en": "Four read-only policy tasks. 43% is the accuracy-adjusted total, not the raw 61.86 to 40.40 minute ratio. Per-task 31-60% is not a confidence interval; numeric interval endpoints are not extracted.",
+          "fr": "Quatre tâches de revue en lecture seule. Les 43 % sont ajustés sur la justesse, pas le ratio brut de 61,86 à 40,40 minutes. Les 31-60 % par tâche ne sont pas un intervalle de confiance ; ses bornes ne sont pas extraites."
+        },
+        "context": {
+          "range_kind": "point_estimate",
+          "observed_period": {
+            "en": "2025 report; observation dates not specified",
+            "fr": "Rapport 2025 ; dates d’observation non précisées"
+          },
+          "model_and_tools": {
+            "en": "Entra-agent suggestions; controls could use search and other AI",
+            "fr": "Propositions de l’agent Entra ; recherche et autres IA autorisées au groupe témoin"
+          },
+          "time_coverage": {
+            "en": "Experimental task completion adjusted for accuracy; active work, setup and long-term operation not isolated.",
+            "fr": "Réalisation expérimentale ajustée sur la justesse ; travail actif, installation et exploitation à long terme non isolés."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "usable",
+        "allowed_profiles": [
+          "identity_policy_review"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Similar reviewed policy analysis with equal quality and explicit human authority.",
+          "fr": "Analyse de règles similaire, relue à qualité égale et avec autorité humaine explicite."
+        },
+        "limits": {
+          "en": "Vendor-run simulation with freelancers; baseline-gap detection remained imperfect. No autonomous deployment, setup saving or 31-60% uncertainty range.",
+          "fr": "Simulation fournisseur avec des indépendants ; détection des lacunes encore imparfaite. Aucun déploiement autonome, gain d’installation ou intervalle d’incertitude à 31-60 %."
+        }
+      },
+      "sources": [
+        {
+          "title": "Microsoft Entra: reviewed policy suggestions",
+          "url": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/randomized-controlled-trial-for-conditional-access-v1-103125-final.pdf",
+          "published": "2025-10-31",
+          "accessed_on": "2026-10-10",
+          "source_type": "research_report"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2026-STANFORD-APPRENTICE-EXPANSION",
+      "title": {
+        "en": "Stanford: completing unfamiliar tasks",
+        "fr": "Stanford : réussir des tâches peu familières"
+      },
+      "reader_summary": {
+        "en": "673 IT apprentices took part in a school experiment. AI improved task scores beyond training by 26-31 percentage points. These scores do not enter the time-saving calculation, but help choose what to test.",
+        "fr": "673 apprentis en informatique ont participé à une expérience en école. L’IA a amélioré les scores hors formation de 26 à 31 points de pourcentage. Ces scores n’entrent pas dans le calcul du temps ; ils aident à choisir quoi tester."
+      },
+      "organization_context": {
+        "kind": "controlled_experiment",
+        "name": "Stanford Digital Economy Lab",
+        "region": "See source protocol"
+      },
+      "task_contract": {
+        "profile_id": "software_greenfield",
+        "description": {
+          "en": "Randomized access in twelve German vocational schools. The 26-31 percentage-point score gain is not a 26-31% time reduction.",
+          "fr": "Accès réparti aléatoirement dans douze écoles allemandes. Le gain de score de 26 à 31 points de pourcentage n’est pas une baisse du temps de 26 à 31 %."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow",
+          "agent"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one accepted implementation",
+          "fr": "une implémentation acceptée"
+        },
+        "quality_gate": "reviewed",
+        "operator_expertise": "developing",
+        "verifiability": "high",
+        "use_patterns": [
+          "generation",
+          "agentic"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "D",
+        "design": "Randomized field experiment; task-score evidence",
+        "sample_size": 673,
+        "time_scope": "outcome_only",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": null,
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "Randomized access in twelve German vocational schools. The 26-31 percentage-point score gain is not a 26-31% time reduction.",
+          "fr": "Accès réparti aléatoirement dans douze écoles allemandes. Le gain de score de 26 à 31 points de pourcentage n’est pas une baisse du temps de 26 à 31 %."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "See protocol; publication 7 October 2026",
+            "fr": "Voir le protocole ; publication le 7 octobre 2026"
+          },
+          "model_and_tools": {
+            "en": "Randomized AI access",
+            "fr": "Accès IA réparti aléatoirement"
+          },
+          "time_coverage": {
+            "en": "Task scores; no admitted human-time ratio.",
+            "fr": "Scores de tâche ; aucun ratio de temps humain admis."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "software_greenfield"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "developing"
+        ],
+        "preconditions": {
+          "en": "Design unfamiliar-task and comprehension tests, including for developing operators.",
+          "fr": "Prévoir des tests de tâches peu familières et de compréhension, aussi pour des opérateurs en formation."
+        },
+        "limits": {
+          "en": "No whole-occupation gain. Grade D describes suitability for human-time estimation, not a weakness in experimental design.",
+          "fr": "Aucun gain de métier entier. Le niveau D décrit l’usage pour estimer le temps, pas une faiblesse du protocole."
+        }
+      },
+      "sources": [
+        {
+          "title": "Stanford: completing unfamiliar tasks",
+          "url": "https://digitaleconomy.stanford.edu/app/uploads/2026/10/AI_Task_Expansion_07102026.pdf",
+          "published": "2026-10-07",
+          "accessed_on": "2026-10-10",
+          "source_type": "working_paper"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2026-MIT-PATENT-LEARNING",
+      "title": {
+        "en": "MIT: patent drafting and learning",
+        "fr": "MIT : rédaction de brevets et apprentissage"
+      },
+      "reader_summary": {
+        "en": "133 patent lawyers were studied over three months. Blind reviewers found better drafts with AI. Learning afterward depended on experience. Self-reported time does not enter the time-saving calculation.",
+        "fr": "133 juristes en brevets ont été étudiés pendant trois mois. Des experts ont mieux noté les textes préparés avec IA. L’apprentissage ultérieur dépendait de l’expérience. Le temps déclaré n’entre pas dans le calcul du temps économisé."
+      },
+      "organization_context": {
+        "kind": "controlled_experiment",
+        "name": "MIT Stone Center",
+        "region": "See source protocol"
+      },
+      "task_contract": {
+        "profile_id": "professional_writing",
+        "description": {
+          "en": "Draft quality improved by 0.34 standard deviations at day 10 and 0.38 at day 90. Post-AI learning and self-reported time are separate outcomes.",
+          "fr": "Qualité améliorée de 0,34 écart-type à 10 jours et 0,38 à 90 jours. Apprentissage après retrait de l’IA et temps déclaré sont des résultats distincts."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow",
+          "agent"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one reviewed document",
+          "fr": "un document relu"
+        },
+        "quality_gate": "reviewed",
+        "operator_expertise": "mixed",
+        "verifiability": "high",
+        "use_patterns": [
+          "generation"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "C",
+        "design": "Preregistered randomized trial; blinded quality review, self-reported time",
+        "sample_size": 133,
+        "time_scope": "outcome_only",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": null,
+        "outcome_change": null,
+        "quality_change": {
+          "value": 0.38,
+          "unit": "standard deviations in draft quality at day 90",
+          "direction": "increase"
+        },
+        "notes": {
+          "en": "Draft quality improved by 0.34 standard deviations at day 10 and 0.38 at day 90. Post-AI learning and self-reported time are separate outcomes.",
+          "fr": "Qualité améliorée de 0,34 écart-type à 10 jours et 0,38 à 90 jours. Apprentissage après retrait de l’IA et temps déclaré sont des résultats distincts."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "Three-month trial; September 2026 report",
+            "fr": "Expérience de trois mois ; rapport de septembre 2026"
+          },
+          "model_and_tools": {
+            "en": "Custom drafting assistant in eleven US patent firms",
+            "fr": "Assistant spécialisé dans onze cabinets américains"
+          },
+          "time_coverage": {
+            "en": "Time self-reported; quality scored by blinded experts.",
+            "fr": "Temps déclaré ; qualité notée par des experts en aveugle."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "professional_writing"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "mixed"
+        ],
+        "preconditions": {
+          "en": "Plan quality and learning checks alongside time; record experience.",
+          "fr": "Prévoir des tests de qualité et d’apprentissage en plus du temps ; préciser l’expérience."
+        },
+        "limits": {
+          "en": "Better drafts do not automatically imply a percentage of hours saved. Juniors and seniors did not learn equally.",
+          "fr": "De meilleurs textes ne donnent pas automatiquement un pourcentage d’heures économisées. Juniors et seniors n’ont pas appris de la même façon."
+        }
+      },
+      "sources": [
+        {
+          "title": "MIT: patent drafting and learning",
+          "url": "https://shapingwork.mit.edu/research/does-ai-assistance-enhance-or-erode-expertise-evidence-from-a-three-month-field-experiment-in-patent-drafting/",
+          "published": "2026-09",
+          "accessed_on": "2026-10-10",
+          "source_type": "working_paper"
         }
       ]
     }

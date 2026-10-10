@@ -1,11 +1,12 @@
 import { createEmptyProjectArtifacts } from "./project-artifacts.mjs";
 import { cloneProjectChangeReview, isProjectChangeReview } from "./project-change-review.mjs";
+import { validAdditionalUsePatterns } from "./use-pattern-routing.mjs";
 
-export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.5.0";
+export const PROJECT_DOSSIER_SCHEMA_VERSION = "0.6.0";
 export const PROJECT_DOSSIER_STORAGE_KEY = "ai-adoption-playbook:project-dossier:v1";
 export const PROJECT_DOSSIER_PLAYBOOK_VERSION = "0.2.2";
 
-const LEGACY_SCHEMA_VERSIONS = new Set(["0.1.0", "0.2.0", "0.3.0", "0.4.0"]);
+const LEGACY_SCHEMA_VERSIONS = new Set(["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"]);
 const baseKeys = ["schema_version", "playbook_version", "dossier_id", "created_at", "updated_at", "language", "status", "boundary", "context", "active_phase", "fields", "conditioned_controls", "matched_control_ids", "completed_phases"];
 
 const organizationTypes = new Set(["independent", "tpe", "pme", "nonprofit", "public"]);
@@ -22,16 +23,19 @@ function architectureForLegacyIntegration(level) {
 }
 
 function migrateLegacyContext(context) {
+  if (!("integration_level" in context)) return { ...context, additional_use_patterns: [] };
   const { integration_level: integrationLevel, ...rest } = context;
   return {
     ...rest,
     work_mode: integrationLevel,
     architecture: context.architecture ?? architectureForLegacyIntegration(integrationLevel),
+    additional_use_patterns: [],
   };
 }
 
 function migrateLegacyChangeReview(review) {
-  if (!review) return null;
+  if (review === null) return null;
+  if (!isRecord(review) || !isRecord(review.baseline) || !isRecord(review.baseline.snapshot) || !isRecord(review.baseline.snapshot.context)) return review;
   return {
     ...review,
     baseline: {
@@ -154,16 +158,18 @@ export function parseProjectDossier(input) {
     || dossier.boundary.no_raw_evidence !== true
     || dossier.boundary.not_certification !== true) return { ok: false, error: "invalid_boundary" };
   const legacyContextHasArchitecture = dossier.schema_version === "0.4.0";
-  const contextKeys = legacy
+  const legacyIntegration = legacy && dossier.schema_version !== "0.5.0";
+  const contextKeys = legacyIntegration
     ? new Set(["organization_type", "use_pattern", "jurisdiction", "integration_level", ...(legacyContextHasArchitecture ? ["architecture"] : []), "autonomy_level", "risk_level"])
-    : new Set(["organization_type", "use_pattern", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"]);
+    : new Set(["organization_type", "use_pattern", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level", ...(!legacy ? ["additional_use_patterns"] : [])]);
   if (!isRecord(dossier.context)
     || !hasOnlyKeys(dossier.context, contextKeys)
     || !organizationTypes.has(dossier.context.organization_type)
     || !usePatterns.has(dossier.context.use_pattern)
     || !jurisdictions.has(dossier.context.jurisdiction)
-    || !integrationLevels.has(legacy ? dossier.context.integration_level : dossier.context.work_mode)
-    || ((!legacy || legacyContextHasArchitecture) && !architectures.has(dossier.context.architecture))
+    || !integrationLevels.has(legacyIntegration ? dossier.context.integration_level : dossier.context.work_mode)
+    || ((!legacyIntegration || legacyContextHasArchitecture) && !architectures.has(dossier.context.architecture))
+    || (!legacy && !validAdditionalUsePatterns(dossier.context.use_pattern, dossier.context.additional_use_patterns))
     || !Number.isInteger(dossier.context.autonomy_level)
     || dossier.context.autonomy_level < 0
     || dossier.context.autonomy_level > 4
@@ -176,8 +182,9 @@ export function parseProjectDossier(input) {
   if (!isUniqueStringArray(dossier.matched_control_ids)) return { ok: false, error: "invalid_matched_controls" };
   if (!isUniquePhaseArray(dossier.completed_phases)) return { ok: false, error: "invalid_completed_phases" };
   if (dossier.schema_version !== "0.1.0" && !isProjectArtifacts(dossier.artifacts)) return { ok: false, error: "invalid_artifacts" };
-  const migratedReview = ["0.3.0", "0.4.0"].includes(dossier.schema_version) ? migrateLegacyChangeReview(dossier.change_review) : null;
-  if (["0.3.0", "0.4.0"].includes(dossier.schema_version) && !isProjectChangeReview(migratedReview)) return { ok: false, error: "invalid_change_review" };
+  const migratedReview = ["0.3.0", "0.4.0", "0.5.0"].includes(dossier.schema_version) ? migrateLegacyChangeReview(dossier.change_review) : null;
+  if (["0.3.0", "0.4.0", "0.5.0"].includes(dossier.schema_version) && (!isProjectChangeReview(migratedReview)
+    || (migratedReview !== null && migratedReview.baseline.dossier_id !== dossier.dossier_id))) return { ok: false, error: "invalid_change_review" };
   if (!legacy && (!isProjectChangeReview(dossier.change_review)
     || (dossier.change_review !== null && dossier.change_review.baseline.dossier_id !== dossier.dossier_id))) return { ok: false, error: "invalid_change_review" };
 
@@ -213,7 +220,7 @@ export function buildProjectDossier(input) {
       no_raw_evidence: true,
       not_certification: true,
     },
-    context: { ...input.context },
+    context: { ...input.context, additional_use_patterns: [...(input.context.additional_use_patterns ?? [])] },
     active_phase: input.active_phase,
     fields: { ...input.fields },
     conditioned_controls: { ...input.conditioned_controls },

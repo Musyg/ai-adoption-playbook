@@ -1,8 +1,8 @@
 {
   "$schema": "./control-crosswalk.schema.json",
   "schema_version": "1.1.0",
-  "catalog_version": "2026.09",
-  "published_on": "2026-09-05",
+  "catalog_version": "2026.10",
+  "published_on": "2026-10-10",
   "status": "maintained_internal_crosswalk",
   "scope": {
     "en": "A minimum operational control set for selecting, piloting, operating, changing, and retiring bounded AI systems across the five playbook organization types.",
@@ -494,6 +494,45 @@
       "use_boundary": {
         "en": "Procurement orientation only; clauses must be adapted to the applicable law, role, and contract.",
         "fr": "Orientation d’achat uniquement ; les clauses doivent être adaptées au droit, au rôle et au contrat applicables."
+      }
+    },
+    {
+      "source_id": "OWASP-LLM-TOP10-2026",
+      "title": "OWASP Top 10 for LLM Applications 2026",
+      "publisher": "OWASP GenAI Security Project",
+      "version": "2026-labelled PDF observed 2026-10-10; cover and revision history retain publication-date placeholders",
+      "status": "community_guidance",
+      "url": "https://genai.owasp.org/download/56857/?tmstv=1785822482",
+      "checked_on": "2026-10-10",
+      "use_boundary": {
+        "en": "Observed edition, not an independently confirmed final-release date. Theme-level support only; 2025 category numbers must not be reused as 2026 numbers.",
+        "fr": "Édition observée, pas une date de publication finale confirmée indépendamment. Soutien thématique uniquement ; ne pas reprendre les numéros 2025 comme numéros 2026."
+      }
+    },
+    {
+      "source_id": "OWASP-ACS-2026",
+      "title": "Agent Control Standard (ACS)",
+      "publisher": "OWASP GenAI Security Project",
+      "version": "Resource dated 2026-09-01; checked 2026-10-10",
+      "status": "community_guidance",
+      "url": "https://genai.owasp.org/resource/agent-control-standard-acs/",
+      "checked_on": "2026-10-10",
+      "use_boundary": {
+        "en": "Runtime control integration and inspectability; not certification or a claim that the playbook implements ACS.",
+        "fr": "Intégration de contrôles à l’exécution et inspection ; ni certification ni affirmation que le guide implémente ACS."
+      }
+    },
+    {
+      "source_id": "OWASP-INDUSTRY-CROSSWALK-2026",
+      "title": "GenAI Security Industry Framework Crosswalk",
+      "publisher": "OWASP GenAI Security Project",
+      "version": "Resource dated 2026-09-01; checked 2026-10-10",
+      "status": "community_guidance",
+      "url": "https://genai.owasp.org/resource/genai-security-industry-framework-crosswalk/",
+      "checked_on": "2026-10-10",
+      "use_boundary": {
+        "en": "External coverage comparison only. Do not import mappings as legal or clause-level equivalence.",
+        "fr": "Comparaison externe de couverture uniquement. Ne pas importer les correspondances comme équivalence juridique ou article par article."
       }
     }
   ],
@@ -1479,7 +1518,7 @@
           "relation": "direct"
         },
         {
-          "source_id": "OWASP-LLM-TOP10-2025",
+          "source_id": "OWASP-LLM-TOP10-2026",
           "relation": "supports"
         },
         {
@@ -1552,7 +1591,7 @@
           "relation": "direct"
         },
         {
-          "source_id": "OWASP-LLM-TOP10-2025",
+          "source_id": "OWASP-LLM-TOP10-2026",
           "relation": "supports"
         },
         {
@@ -1625,7 +1664,7 @@
           "relation": "direct"
         },
         {
-          "source_id": "OWASP-LLM-TOP10-2025",
+          "source_id": "OWASP-LLM-TOP10-2026",
           "relation": "supports"
         },
         {
@@ -1918,7 +1957,7 @@
           "relation": "supports"
         },
         {
-          "source_id": "OWASP-LLM-TOP10-2025",
+          "source_id": "OWASP-LLM-TOP10-2026",
           "relation": "supports"
         }
       ],
@@ -2546,7 +2585,7 @@
           "relation": "direct"
         },
         {
-          "source_id": "OWASP-LLM-TOP10-2025",
+          "source_id": "OWASP-LLM-TOP10-2026",
           "relation": "supports"
         },
         {
@@ -2555,6 +2594,10 @@
         },
         {
           "source_id": "NIST-AI-100-2E2025",
+          "relation": "supports"
+        },
+        {
+          "source_id": "OWASP-ACS-2026",
           "relation": "supports"
         }
       ],

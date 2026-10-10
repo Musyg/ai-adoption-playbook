@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Refresh task-time evidence and lab/vendor cases through October 10. Preserve
+  Google's confidence interval and Microsoft's adjusted point estimate;
+  distinguish task duration, active work, learning outcomes and quality.
+  Keep labelled demonstrations and task-based transfer available.
+- Update security and Switzerland/EU references with explicit source dates,
+  an OWASP observed-edition caveat and practical transparency examples.
+- Give each library document a short purpose, a specific guide action and
+  named related reading, without adding JavaScript to document readers.
+- Add optional, saved pilot notes for elapsed duration, cost and quality;
+  keep these measures separate from human time and existing decision gates.
+
+- Add optional complementary AI functions beside the main task. Apply the
+  combined controls without changing permissions or estimated gains.
+  Dossier schema `0.6.0` preserves these functions; earlier files migrate with
+  an empty list, without guessing functions that were never recorded.
+
 - Correct the system-register CSV example so all 28 values match their column
   names. Validate rows, identifiers, supplied controlled values and review dates,
   with regression coverage for the original 26-value row, spreadsheet BOMs,

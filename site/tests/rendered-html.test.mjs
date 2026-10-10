@@ -121,7 +121,7 @@ for (const [pathname, language, title] of [
     assert.match(html, /Guided start|Départ guidé/i);
     assert.match(html, /id=["']guided-start["']/i);
     assert.match(html, /Build your route, one simple choice at a time|Construisez votre parcours, un choix simple à la fois/i);
-    assert.match(html, /What kind of organization are you guiding|Quel type d’organisation accompagnez-vous/i);
+    assert.match(html, /Are you using AI for yourself or for an organization|Utilisez-vous l’IA pour vous ou pour une organisation/i);
     assert.match(html, /Why ask this first|Pourquoi commencer ici/i);
     assert.match(html, /id=["']concept-library["']/i);
     assert.match(html, /id=["']operational-workspace["']/i);

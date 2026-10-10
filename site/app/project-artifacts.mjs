@@ -5,6 +5,7 @@ const artifactFieldSources = {
     owner: ["owner"],
     purpose: ["problem"],
     business_process: ["workInput", "baselineOutcome"],
+    use_patterns: ["use_patterns"],
     work_mode: ["work_mode"],
     architecture: ["architecture"],
     autonomy_level: ["autonomy_level"],

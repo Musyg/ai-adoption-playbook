@@ -9,6 +9,13 @@ Classer chaque cas d’usage sur les axes ci-dessous avant de choisir un produit
 ou d’annoncer un gain attendu. Un système peut combiner plusieurs modes. Évaluer
 chaque composant et le workflow complet.
 
+Dans le guide, choisissez la tâche principale, puis ouvrez **Fait-il aussi
+autre chose ?** pour ajouter des fonctions complémentaires. Un assistant
+documentaire peut ainsi combiner recherche et conversation. Les vérifications
+des deux fonctions s’appliquent. La tâche principale reste la base du calcul
+du temps : combiner des fonctions ne produit pas à lui seul un gain et
+n’autorise pas de nouvelles actions.
+
 ## Axe 1 : tâche réalisée par l’IA
 
 | Mode | Ce que fait l’IA | Évaluation minimale | Risques supplémentaires typiques |

@@ -17,6 +17,18 @@ const links = (html) => [...html.matchAll(/\bhref="([^"]*)"/g)].map((match) => m
 const en = documentForSource("docs/security.md");
 const fr = documentForSource("docs/security.fr.md");
 
+test("each document explains its purpose, action and named related reading without scripts", async () => {
+  for (const doc of await compiled) {
+    assert.ok(doc.guidance.purpose.length > 25, doc.source);
+    assert.ok(doc.guidance.action.length > 5, doc.source);
+    const body = documentBody(doc);
+    assert.ok(body.includes(doc.guidance.path));
+    assert.doesNotMatch(body, /<script/);
+    for (const next of doc.adjacent) assert.ok(body.includes(next.title.replaceAll("&", "&amp;")));
+    assert.doesNotMatch(body, /Previous document|Document suivant/);
+  }
+});
+
 test("publication manifest contains only the agreed document families and explicit exceptions", () => {
   const expected = { tracks: 12, sectors: 10, examples: 22, templates: 22, references: 18, docs: 22, "field-notes": 2, controls: 1 };
   assert.equal(documents.length, 109);

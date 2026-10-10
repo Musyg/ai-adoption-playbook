@@ -1,5 +1,5 @@
 // Editorial dates, not build timestamps. Update after a substantive revision.
-export const homeModified = { en: "2026-09-12", fr: "2026-09-12" };
+export const homeModified = { en: "2026-10-10", fr: "2026-10-10" };
 
 /** @param {string} locale */
 export function authorFor(locale) {

@@ -14,6 +14,31 @@ import {
 const registry = JSON.parse(await readFile(new URL("../public/data/task-time-evidence.v1.json", import.meta.url), "utf8"));
 const record = (evidenceId) => registry.records.find((item) => item.evidence_id === evidenceId);
 
+test("October intake preserves log uncertainty, adjusted point estimates and separate time bases", () => {
+  const google = record("TT-2024-GOOGLE-ENTERPRISE-PATCH");
+  const range = google.measurement.human_time_reduction_fraction;
+  assert.ok(Math.abs(range.low - (1 - Math.exp(.03))) < 1e-15);
+  assert.ok(Math.abs(range.central - (1 - Math.exp(-.24))) < 1e-15);
+  assert.ok(Math.abs(range.high - (1 - Math.exp(-.51))) < 1e-15);
+  assert.ok(range.low < 0);
+  assert.equal(google.measurement.human_active_time_measured, false);
+  const target = { task_profile_id: "software_enterprise_patch", work_mode: "copilot", architecture: "workflow", autonomy_level: "A1", quality_gate: "reviewed", expertise_level: "experienced" };
+  assert.deepEqual(assessEvidenceCompatibility(google, target), { status: "partial", reasons: ["task_elapsed_time"] });
+  const transfer = buildEvidenceTransfer(google, target, { baseline_human_minutes: 60, monthly_cases: 40, eligible_share: 70, total_baseline_human_hours: 40 });
+  assert.equal(transfer.ok, true);
+  assert.ok(transfer.scenarios.low.human_hours_saved_per_month < 0);
+  const microsoft = record("TT-2025-MICROSOFT-ENTRA-POLICY");
+  assert.deepEqual(microsoft.measurement.human_time_reduction_fraction, { low: .43, central: .43, high: .43 });
+  assert.equal(microsoft.measurement.context.range_kind, "point_estimate");
+  for (const id of ["TT-2026-STANFORD-APPRENTICE-EXPANSION", "TT-2026-MIT-PATENT-LEARNING"]) {
+    const item = record(id);
+    assert.equal(item.transfer.quantitative_use, "context_only");
+    assert.equal(buildEvidenceTransfer(item, { ...target, task_profile_id: item.task_contract.profile_id }, {}).ok, false);
+  }
+  const unmeasured = { ...google, measurement: { ...google.measurement, human_task_time_measured: false } };
+  assert.equal(buildEvidenceTransfer(unmeasured, target, {}).ok, false);
+});
+
 test("publishes unique task profiles, evidence identifiers, and resolvable task contracts", () => {
   assert.equal(registry.schema_version, "1.0.0");
   assert.equal(new Set(registry.task_profiles.map((profile) => profile.profile_id)).size, registry.task_profiles.length);

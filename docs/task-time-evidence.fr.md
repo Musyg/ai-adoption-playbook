@@ -8,6 +8,24 @@ comptable et un seuil d’acceptation explicite. Le type d’organisation ajoute
 contexte juridique, de gouvernance, de données, d’achat, d’échelle et de
 contrôle. Il ne définit pas la catégorie de référence.
 
+## Ce qu’ajoute la mise à jour d’octobre
+
+Le registre inclut désormais l’expérience Google de 2024 sur une modification
+de code testée et celle de Microsoft de 2025 sur les règles d’accès. Elles
+mesurent une durée de réalisation, pas le travail humain actif isolé. Elles
+restent utilisables avec une différence clairement signalée : comparer le même
+périmètre temporel et vérifier localement le travail humain. L’intervalle
+ajusté de Google permet un léger ralentissement ; les 43 % de Microsoft sont
+une estimation ajustée sur la justesse, pas un intervalle de confiance à
+31–60 %.
+
+Les études Stanford d’octobre 2026 sur les apprentis et MIT sur les brevets
+aident à choisir les tâches et à tester qualité et apprentissage. Leurs scores
+ne sont pas convertis en heures. Dans la phase pilote, ouvrez **Comparer aussi
+le délai, les coûts et la qualité** pour relever ces résultats séparément,
+avec une source ou une étiquette de démonstration. Ces champs facultatifs
+restent dans le dossier et ne modifient pas les conditions pour passer à la suite.
+
 ## Séparer mode de travail, architecture et autorité
 
 | Mode de travail | Travail déplacé | Rôle humain |
@@ -88,9 +106,10 @@ aval restent des mesures distinctes.
 | E | Valeur estimée par modèle, synthétique ou réservée à la planification | Hypothèse nommée seulement |
 
 Le niveau décrit la façon de mesurer, pas le caractère favorable du résultat.
-Le registre bloque en plus l’usage quantitatif automatique si le temps humain
-actif n’a pas été mesuré et si la source n’est pas explicitement admise au
-transfert.
+Le registre bloque l’usage quantitatif automatique sans mesure du travail humain
+actif ou de la durée de réalisation humaine et sans admission explicite.
+Une durée pouvant inclure des attentes d’outils porte toujours un avertissement
+de comparaison ; elle n’est pas présentée comme du travail actif isolé.
 
 ## États du transfert
 
@@ -195,7 +214,10 @@ sa règle d’admission.
 
 ## Cas récents disponibles
 
-Le registre propose désormais 19 sources, dont 4 avec un ratio de temps humain admis. Les nouveaux cas couvrent aussi la vérification documentaire, le multimodal, l’optimisation prédictive et les équipes d’agents. Les autres résultats restent utiles pour construire des hypothèses.
+Le registre propose désormais 23 fiches de preuve, dont 6 ratios de temps de
+tâche admis. Deux mesurent une durée de tâche plutôt que le travail actif isolé
+et signalent cette différence. Les autres résultats restent utiles pour
+construire des hypothèses.
 
 [Lire les mécanismes et les limites de chaque cas](../references/recent-implementation-cases.fr.md).
 

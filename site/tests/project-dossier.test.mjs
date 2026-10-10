@@ -35,7 +35,8 @@ const input = {
 };
 
 function legacyContext(context, includeArchitecture = false) {
-  const { work_mode: workMode, architecture, ...rest } = context;
+  const { work_mode: workMode, architecture, additional_use_patterns: ignoredAdditional, ...rest } = context;
+  void ignoredAdditional;
   return { ...rest, integration_level: workMode, ...(includeArchitecture ? { architecture } : {}) };
 }
 
@@ -127,6 +128,53 @@ test("migrates a valid 0.4.0 dossier from integration_level to work_mode", () =>
   assert.equal(parsed.value.context.work_mode, "agent");
   assert.equal(parsed.value.context.architecture, "workflow");
   assert.equal("integration_level" in parsed.value.context, false);
+});
+
+test("migrates 0.5.0 without guessing unrecorded secondary functions", () => {
+  const current = buildProjectDossier(input);
+  const legacy = { ...current, schema_version: "0.5.0", context: { ...current.context } };
+  delete legacy.context.additional_use_patterns;
+  legacy.change_review = createProjectChangeReview(current, createProjectSnapshot(current), current.updated_at, "0.5.0");
+  delete legacy.change_review.baseline.snapshot.context.additional_use_patterns;
+  const parsed = parseProjectDossier(legacy);
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.migratedFrom, "0.5.0");
+  assert.deepEqual(parsed.value.context.additional_use_patterns, []);
+  assert.deepEqual(parsed.value.change_review.baseline.snapshot.context.additional_use_patterns, []);
+  assert.equal(parsed.value.context.work_mode, "agent");
+  assert.equal(parsed.value.change_review.baseline.schema_version, "0.5.0");
+});
+
+test("secondary functions survive export and trigger reassessment without mutating input", () => {
+  const source = { ...input, context: { ...input.context, additional_use_patterns: ["conversation", "multimodal"] } };
+  const current = buildProjectDossier(source);
+  assert.deepEqual(parseProjectDossier(JSON.stringify(current)).value.context.additional_use_patterns, ["conversation", "multimodal"]);
+  current.context.additional_use_patterns.push("agentic");
+  assert.deepEqual(source.context.additional_use_patterns, ["conversation", "multimodal"]);
+  const changed = createProjectSnapshot(current);
+  changed.context.additional_use_patterns = ["conversation"];
+  const review = createProjectChangeReview(current, changed, current.updated_at);
+  assert.equal(review.items["context:additional_use_patterns"].recommended_action, "restart");
+  for (const invalid of [["retrieval"], ["conversation", "conversation"], ["unknown"], null]) {
+    assert.equal(parseProjectDossier({ ...current, context: { ...current.context, additional_use_patterns: invalid } }).ok, false);
+  }
+});
+
+test("rejects malformed legacy reviews without throwing and requires current snapshot arrays", () => {
+  const current = buildProjectDossier(input);
+  const legacy = { ...current, schema_version: "0.5.0", context: { ...current.context }, change_review: { baseline: {} } };
+  delete legacy.context.additional_use_patterns;
+  assert.deepEqual(parseProjectDossier(legacy), { ok: false, error: "invalid_change_review" });
+  for (const badReview of [undefined, {}, [], { baseline: null }, { baseline: { snapshot: {} } }]) {
+    assert.doesNotThrow(() => parseProjectDossier({ ...legacy, change_review: badReview }));
+    assert.equal(parseProjectDossier({ ...legacy, change_review: badReview }).ok, false);
+  }
+  const reviewed = { ...current, change_review: createProjectChangeReview(current, createProjectSnapshot(current), current.updated_at) };
+  for (const value of [null, undefined, "conversation"]) {
+    const copy = JSON.parse(JSON.stringify(reviewed));
+    copy.change_review.baseline.snapshot.context.additional_use_patterns = value;
+    assert.deepEqual(parseProjectDossier(copy), { ok: false, error: "invalid_change_review" });
+  }
 });
 
 test("keeps linked artifact values current and preserves manual decisions", () => {

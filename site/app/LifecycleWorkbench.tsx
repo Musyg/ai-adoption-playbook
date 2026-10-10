@@ -13,6 +13,8 @@ import { createProjectSnapshot, materializeProjectChangeReview } from "./project
 import { ProjectArtifactsWorkbench } from "./ProjectArtifactsWorkbench";
 import { ProjectChangeReviewWorkbench } from "./ProjectChangeReview";
 import { deriveRiskLevel } from "./risk-classification.mjs";
+import { activeUsePatterns } from "./use-pattern-routing.mjs";
+import OutcomeNotebook, { outcomeFieldDefinitions } from "./OutcomeNotebook";
 
 type Locale = "en" | "fr";
 type AudienceId = "independent" | "tpe" | "pme" | "nonprofit" | "public";
@@ -47,6 +49,7 @@ type MatchedControl = {
 type RestorableContext = {
   audienceId: AudienceId;
   usePatternId: UsePatternId;
+  additionalUsePatterns: UsePatternId[];
   jurisdictionId: JurisdictionId;
   integrationId: IntegrationId;
   architectureId: ArchitectureId;
@@ -58,6 +61,7 @@ type Props = {
   audienceId: AudienceId;
   audienceLabel: string;
   usePatternId: UsePatternId;
+  additionalUsePatterns: UsePatternId[];
   usePatternLabel: string;
   jurisdictionId: JurisdictionId;
   jurisdictionLabel: string;
@@ -144,6 +148,8 @@ const requiredByPhase = [
   ["operationOwner", "incidentOwner", "monitoringWindow", "rollbackProof"],
   ["reviewDate", "evidenceRefs", "retirementOwner", "withdrawalPath"],
 ];
+
+for (const locale of ["en", "fr"] as const) phaseDefinitions[locale][8].fields.push(...outcomeFieldDefinitions(locale));
 
 const ui = {
   en: { eyebrow: "INTERACTIVE LIFECYCLE", title: "Work through phases 0 to 11 without opening everything at once.", text: "Your entries can be saved in this browser and resumed later. Use non-identifying working information only. The workbench guides a decision; it does not certify compliance.", complete: "phases complete", current: "Lifecycle phase", position: "position", why: "Why this matters", keep: "Evidence to keep", matched: "Controls already matched", noControls: "Complete the risk questions to refine the control list.", noControlsForPhase: "No catalogued control is assigned to this phase for the current profile.", previous: "Previous phase", next: "Next phase", done: "Review the plan", copy: "Copy the working plan", copied: "Working plan copied", incomplete: "Complete the required fields to mark this phase ready.", ready: "Minimum record complete for this phase.", priority: "Priority orientation", hours: "Current human hours per month", risk: "Risk orientation", architecture: "Selected design and simpler starting option", routes: "Questions to verify", security: "Confirm every conditioned control", local: "Local project dossier" },
@@ -247,6 +253,7 @@ export function LifecycleWorkbench(props: Props) {
       const accepted = onContextImport({
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
+        additionalUsePatterns: parsed.value.context.additional_use_patterns,
         jurisdictionId: parsed.value.context.jurisdiction,
         integrationId: parsed.value.context.work_mode,
         architectureId: parsed.value.context.architecture,
@@ -325,11 +332,11 @@ export function LifecycleWorkbench(props: Props) {
       { id: "SEC-TRACE", en: "Logs sufficient to reconstruct decisions and effects", fr: "Journaux suffisants pour reconstruire décisions et effets" },
     ];
     if (values.dataSensitivity === "personal" || values.dataSensitivity === "sensitive") rows.push({ id: "SEC-SENSITIVE", en: "Minimization, access review, encryption, and supplier-use limits", fr: "Minimisation, revue des accès, chiffrement et limites d’usage fournisseur" });
-    if (values.externalInteraction === "yes" || props.usePatternId === "conversation") rows.push({ id: "SEC-INTERACTION", en: "Abuse controls, rate limits, AI notice, and reliable human handoff", fr: "Contrôles d’abus, limites de débit, information IA et transfert humain fiable" });
-    if (values.knowledgeSource === "retrieval" || props.usePatternId === "retrieval") rows.push({ id: "SEC-RETRIEVAL", en: "Source authorization, freshness, provenance, poisoning, and citation tests", fr: "Tests d’autorisation, actualité, provenance, empoisonnement et citation des sources" });
-    if (props.usePatternId === "prediction") rows.push({ id: "SEC-PREDICTION", en: "Calibration, drift, subgroup, override, and feedback-loop controls", fr: "Contrôles de calibration, dérive, sous-groupes, dérogation et boucle de rétroaction" });
-    if (props.usePatternId === "multimodal") rows.push({ id: "SEC-MULTIMODAL", en: "File validation, malware scanning, modality quality, rights, and accessibility", fr: "Validation des fichiers, analyse antimalware, qualité par modalité, droits et accessibilité" });
-    if ((values.externalEffects && values.externalEffects !== "none") || props.integrationId !== "copilot" || props.usePatternId === "agentic" || props.autonomy >= 2) {
+    if (values.externalInteraction === "yes" || activeUsePatterns(props.usePatternId, props.additionalUsePatterns).includes("conversation")) rows.push({ id: "SEC-INTERACTION", en: "Abuse controls, rate limits, AI notice, and reliable human handoff", fr: "Contrôles d’abus, limites de débit, information IA et transfert humain fiable" });
+    if (values.knowledgeSource === "retrieval" || activeUsePatterns(props.usePatternId, props.additionalUsePatterns).includes("retrieval")) rows.push({ id: "SEC-RETRIEVAL", en: "Source authorization, freshness, provenance, poisoning, and citation tests", fr: "Tests d’autorisation, actualité, provenance, empoisonnement et citation des sources" });
+    if (activeUsePatterns(props.usePatternId, props.additionalUsePatterns).includes("prediction")) rows.push({ id: "SEC-PREDICTION", en: "Calibration, drift, subgroup, override, and feedback-loop controls", fr: "Contrôles de calibration, dérive, sous-groupes, dérogation et boucle de rétroaction" });
+    if (activeUsePatterns(props.usePatternId, props.additionalUsePatterns).includes("multimodal")) rows.push({ id: "SEC-MULTIMODAL", en: "File validation, malware scanning, modality quality, rights, and accessibility", fr: "Validation des fichiers, analyse antimalware, qualité par modalité, droits et accessibilité" });
+    if ((values.externalEffects && values.externalEffects !== "none") || props.integrationId !== "copilot" || activeUsePatterns(props.usePatternId, props.additionalUsePatterns).includes("agentic") || props.autonomy >= 2) {
       rows.push({ id: "SEC-ACTION", en: "Tool allowlist, least privilege, destination binding, approval, and action limits", fr: "Liste d’outils autorisés, moindre privilège, destination liée, approbation et limites d’action" });
       rows.push({ id: "SEC-EFFECT", en: "Idempotency, effect receipt, external read-back, stop, and tested return", fr: "Idempotence, reçu d’effet, relecture externe, arrêt et retour testé" });
     }
@@ -339,7 +346,7 @@ export function LifecycleWorkbench(props: Props) {
     if (derivedRisk >= 2) rows.push({ id: "SEC-INDEPENDENT", en: "Independent review, critical segments, adversarial tests, and incident rehearsal", fr: "Revue indépendante, segments critiques, tests adversariaux et exercice d’incident" });
     for (const control of props.matchedControls.filter((item) => item.phases.includes(7))) rows.push({ id: control.id, en: control.title, fr: control.title });
     return [...new Map(rows.map((row) => [row.id, { id: row.id, label: row[locale] }])).values()];
-  }, [derivedRisk, locale, props.architectureId, props.autonomy, props.integrationId, props.matchedControls, props.usePatternId, values.dataSensitivity, values.externalEffects, values.externalInteraction, values.knowledgeSource]);
+  }, [derivedRisk, locale, props.architectureId, props.autonomy, props.integrationId, props.matchedControls, props.usePatternId, props.additionalUsePatterns, values.dataSensitivity, values.externalEffects, values.externalInteraction, values.knowledgeSource]);
 
   const phaseReady = phases.map((_, index) => index === 7
     ? securityControls.every((control) => checkedControls[control.id])
@@ -351,16 +358,17 @@ export function LifecycleWorkbench(props: Props) {
   const conditionedControls = useMemo(() => Object.fromEntries(securityControls.map((control) => [control.id, checkedControls[control.id] ?? false])), [checkedControls, securityControls]);
   const securityControlKey = securityControls.map((control) => control.id).join(",");
   const resolvedArtifacts = useMemo(() => materializeProjectArtifacts(artifacts, {
-    values: { ...values, work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: props.autonomyLabels[props.autonomy] },
+    values: { ...values, use_patterns: activeUsePatterns(props.usePatternId, props.additionalUsePatterns).join(";"), work_mode: props.integrationId, architecture: props.architectureId, autonomy_level: props.autonomyLabels[props.autonomy] },
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     conditioned_controls: conditionedControls,
     security_control_ids: securityControlKey ? securityControlKey.split(",") : [],
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
-  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.autonomyLabels, props.integrationId, securityControlKey, values]);
+  }), [artifacts, completedPhaseKey, conditionedControls, matchedControlKey, props.architectureId, props.autonomy, props.autonomyLabels, props.integrationId, props.usePatternId, props.additionalUsePatterns, securityControlKey, values]);
   const currentSnapshot = useMemo(() => createProjectSnapshot({
     context: {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
+      additional_use_patterns: props.additionalUsePatterns,
       jurisdiction: props.jurisdictionId,
       work_mode: props.integrationId,
       architecture: props.architectureId,
@@ -372,7 +380,7 @@ export function LifecycleWorkbench(props: Props) {
     matched_control_ids: matchedControlKey ? matchedControlKey.split(",") : [],
     completed_phases: completedPhaseKey ? completedPhaseKey.split(",").map(Number) : [],
     artifacts: resolvedArtifacts,
-  }), [completedPhaseKey, conditionedControls, derivedRisk, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, values]);
+  }), [completedPhaseKey, conditionedControls, derivedRisk, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, props.additionalUsePatterns, resolvedArtifacts, values]);
   const resolvedChangeReview = useMemo(() => materializeProjectChangeReview(changeReview, currentSnapshot), [changeReview, currentSnapshot]);
   const fieldCatalog = useMemo(() => Object.fromEntries(phases.flatMap((phase, phaseIndex) => phase.fields.map((item) => [item.id, { label: item.label, phase: phaseIndex }]))), [phases]);
   const current = phases[activePhase];
@@ -390,6 +398,7 @@ export function LifecycleWorkbench(props: Props) {
         context: {
           organization_type: props.audienceId,
           use_pattern: props.usePatternId,
+          additional_use_patterns: props.additionalUsePatterns,
           jurisdiction: props.jurisdictionId,
           work_mode: props.integrationId,
           architecture: props.architectureId,
@@ -413,7 +422,7 @@ export function LifecycleWorkbench(props: Props) {
       }
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, resolvedArtifacts, resolvedChangeReview, storageReady, values]);
+  }, [activePhase, completedPhaseKey, conditionedControls, createdAt, derivedRisk, dossierId, hasLocalCopy, locale, matchedControlKey, props.architectureId, props.audienceId, props.autonomy, props.integrationId, props.jurisdictionId, props.usePatternId, props.additionalUsePatterns, resolvedArtifacts, resolvedChangeReview, storageReady, values]);
 
   const update = (id: string, value: string) => {
     setValues((previous) => ({ ...previous, [id]: value }));
@@ -435,6 +444,7 @@ export function LifecycleWorkbench(props: Props) {
     context: {
       organization_type: props.audienceId,
       use_pattern: props.usePatternId,
+      additional_use_patterns: props.additionalUsePatterns,
       jurisdiction: props.jurisdictionId,
       work_mode: props.integrationId,
       architecture: props.architectureId,
@@ -477,6 +487,7 @@ export function LifecycleWorkbench(props: Props) {
       const accepted = onContextImport({
         audienceId: parsed.value.context.organization_type,
         usePatternId: parsed.value.context.use_pattern,
+        additionalUsePatterns: parsed.value.context.additional_use_patterns,
         jurisdictionId: parsed.value.context.jurisdiction,
         integrationId: parsed.value.context.work_mode,
         architectureId: parsed.value.context.architecture,
@@ -568,7 +579,7 @@ export function LifecycleWorkbench(props: Props) {
       <section aria-labelledby="lifecycle-phase-title" className="lifecycle-phase" data-phase={current.code}>
         <header><div><span>{labels.current} {current.code} · {labels.position} {activePhase + 1}/12</span><h4 id="lifecycle-phase-title">{current.title}</h4><p>{current.question}</p></div><details><summary aria-label={labels.why}>?</summary><div role="note"><strong>{labels.why}</strong><p>{current.why}</p></div></details></header>
 
-        {activePhase !== 7 && <div className="lifecycle-fields">{current.fields.map((item) => <label key={item.id}><span>{item.label}</span>{item.kind === "textarea"
+        {activePhase !== 7 && <div className="lifecycle-fields">{current.fields.filter((item) => !item.id.startsWith("outcome")).map((item) => <label key={item.id}><span>{item.label}</span>{item.kind === "textarea"
           ? <textarea name={item.id} onChange={(event) => update(item.id, event.target.value)} rows={3} value={values[item.id] ?? ""} />
           : item.kind === "select"
             ? <select name={item.id} onChange={(event) => update(item.id, event.target.value)} value={values[item.id] ?? ""}><option value="">{locale === "en" ? "Choose" : "Choisir"}</option>{item.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>
@@ -581,6 +592,7 @@ export function LifecycleWorkbench(props: Props) {
         {activePhase === 5 && <output className="lifecycle-result"><span>{labels.architecture}</span><strong>{locale === "en" ? "Selected design" : "Système choisi"}: {props.usePatternLabel} · {props.architectureLabel}</strong><p><b>{locale === "en" ? "Recommended starting design" : "Système de départ recommandé"}:</b> {architecture}</p></output>}
         {activePhase === 7 && <fieldset className="security-builder"><legend>{labels.security}</legend>{securityControls.map((control) => <label key={control.id}><input checked={checkedControls[control.id] ?? false} name={control.id} onChange={(event) => { setCheckedControls((previous) => ({ ...previous, [control.id]: event.target.checked })); setHasLocalCopy(true); setDossierNotice(""); }} type="checkbox" /><span><strong>{control.id}</strong>{control.label}</span></label>)}</fieldset>}
 
+        {activePhase === 8 && <OutcomeNotebook locale={locale} values={values} onChange={(patch) => { setValues((previous) => ({ ...previous, ...patch })); setHasLocalCopy(true); setDossierNotice(""); }} />}
         <div className="lifecycle-evidence"><article><span>{labels.keep}</span><p>{current.evidence}</p></article><article><span>{labels.matched}</span>{controlsForPhase.length > 0 ? <ul>{controlsForPhase.map((control) => <li key={control.id}><strong>{control.id}</strong><span>{control.title}</span><small>{control.priority}</small></li>)}</ul> : <p>{riskComplete ? labels.noControlsForPhase : labels.noControls}</p>}</article></div>
 
         <footer><p data-ready={phaseReady[activePhase]}>{phaseReady[activePhase] ? labels.ready : labels.incomplete}</p><div><button disabled={activePhase === 0} onClick={() => selectPhase(Math.max(0, activePhase - 1))} type="button">← {labels.previous}</button><button onClick={() => selectPhase(Math.min(11, activePhase + 1))} type="button">{activePhase === 11 ? labels.done : labels.next} →</button></div></footer>
@@ -597,6 +609,7 @@ export function LifecycleWorkbench(props: Props) {
         phaseTitles={phases.map((phase) => phase.title)}
         securityControls={securityControls.map((control) => ({ ...control, checked: conditionedControls[control.id] }))}
         usePatternId={props.usePatternId}
+        additionalUsePatterns={props.additionalUsePatterns}
         usePatternLabel={props.usePatternLabel}
       />
 

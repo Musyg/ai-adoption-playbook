@@ -1,5 +1,51 @@
 # AI Adoption Playbook: handoff
 
+## October 10 research follow-up: remaining corrections implemented
+
+Baseline/rollback: `a0bf0e4` on `main`, the published CSV correction in PR #69.
+Work branch: `feat/research-follow-up-2026-10`. Continue through independent
+exact-head review, pull-request CI, merge, main CI and Pages verification.
+Do not mark publication complete from a local build alone.
+
+- Combined functions are optional and accumulate evaluations and controls.
+  The main task, work mode, architecture and action permissions remain distinct.
+  Dossier schema `0.6.0` saves these choices; older dossiers migrate with an empty
+  complementary list. Malformed historical review objects return validation
+  errors instead of crashing. Missing current-schema lists are rejected.
+- The time registry now contains 23 records and six transferable ratios. Google
+  enterprise patch timing preserves its log-scale confidence interval, including
+  possible slowdown. Microsoft identity-policy review retains the published
+  accuracy-adjusted point estimate, not its separate task span as uncertainty.
+  These two records measure task duration rather than isolated active work and
+  always receive that comparison warning. Stanford and MIT learning outcomes
+  remain useful context, not invented hours saved. Demonstrations remain usable.
+- Security references distinguish the observed OWASP 2026 edition from the
+  historical 2025 taxonomy. The observed PDF still has a placeholder on its
+  cover date; no archived-byte/hash claim is made. ACS and industry mappings do
+  not certify an implementation. Swiss updates retain the BK/SECO timetable
+  discrepancy. EU transparency examples distinguish visible notices, machine
+  marking and the conditional public-interest-text exception.
+- Recent lab/vendor cases describe transferable mechanisms while separating
+  quality, resolution, model runtime, capacity and human time. No organization
+  category receives an automatic productivity coefficient.
+- Library documents now explain their purpose, provide a named next action and
+  identify related reading. All 109 document readers remain JavaScript-free.
+  Direct links to the working dossier reveal the correct guide panel.
+- Optional pilot notes save elapsed duration, cost and quality separately from
+  human-work calculations. Demonstration values are labelled, survive export
+  and import, and neither change decision gates nor imply cash savings.
+
+The research plan is implemented without reconstructing the site. A library
+search/filter remains a possible reader-driven enhancement, not a new release
+gate. Real reader feedback and the acknowledged first-party evidence gap for
+milestone 0.3 remain open. Product version stays `0.2.2`; schema `0.6.0` is not
+a product milestone or a claim of complete field evidence.
+
+Local verification at this checkpoint: 13 Python tests, repository validation,
+production/static builds and 88 Node tests passed. Evidence and reader reviews
+found no remaining blockers after three import/evaluation corrections. Final
+browser, exact-commit and publication receipts belong to the pull request.
+
 ## October 10 research follow-up: system-register correction
 
 Baseline: `e1b51b5` on `main` (PR #68). The owner requested repository-first

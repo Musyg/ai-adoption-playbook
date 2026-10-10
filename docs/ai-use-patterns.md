@@ -9,6 +9,12 @@ Classify every use case on the axes below before selecting a product or quoting
 an expected gain. A system can combine several patterns. Evaluate each component
 and the complete workflow.
 
+In the guide, choose the main task, then open **Does it do anything else?** to
+select complementary functions. For example, a document assistant can combine
+retrieval and conversation. The checks for both apply. Its main task remains
+the basis of its time estimate: combining functions does not itself save time
+or authorize actions.
+
 ## Axis 1: task performed by AI
 
 | Pattern | What the AI does | Minimum evaluation focus | Typical additional risks |

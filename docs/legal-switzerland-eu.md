@@ -24,7 +24,12 @@ Operational routing by use pattern:
 - for synthetic faces, images, or voices of identifiable people, record clear identification, consent or other authority, privacy controls, and applicable personality, criminal, and intellectual-property rules;
 - for processing likely to create a high risk, complete and retain the data-protection impact assessment before the pilot.
 
-As of 20 August 2026, draft legislation intended in particular to implement the Council of Europe Convention was still due to enter consultation by the end of 2026. Do not describe this future proposal as law already in force.
+Swiss calendar rechecked on 10 October 2026: the
+[Federal Chancellery](https://www.bk.admin.ch/en/regulation) still states
+consultation by the end of 2026. A [SECO update dated 23 September](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027)
+announces early 2027 in its title and spring 2027 in its text. The official
+pages therefore differ. Treat the calendar as a point to reconfirm, not a
+fixed deadline. None of these announcements is a general AI law in force.
 
 ## European Union
 
@@ -49,6 +54,22 @@ Operational routing for Article 50:
 - retain the role analysis, interface evidence, marking evidence, exceptions, and verification date.
 
 These EU duties do not replace FADP analysis when Switzerland is also in scope, and Swiss transparency does not by itself prove Article 50 compliance.
+
+### What people should see
+
+Examples of wording to adapt, not complete legal compliance statements:
+
+- At the start of a chatbot conversation: “You are talking to an AI assistant.
+  Ask for a person if you need help.” Provide a working handoff, not just a label.
+- Beside a qualifying synthetic video or voice: “This video/voice was generated
+  or modified using AI.” Keep the notice understandable without hover.
+- For public-interest text, check both human review or editorial control and
+  who holds editorial responsibility before relying on the disclosure exception.
+
+The Commission’s [labelling guidance](https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content)
+does not require every AI-assisted document to carry the same notice. A visible
+label and technical machine-readable marking answer different questions.
+Test any chosen notice with keyboard navigation, screen readers and mobile.
 
 ## Questions to document for every use case
 

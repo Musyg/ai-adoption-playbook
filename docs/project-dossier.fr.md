@@ -68,7 +68,13 @@ utilisez **Créer un nouveau dossier** pour supprimer la copie du navigateur.
 
 ## Compatibilité et validation
 
-Le schéma expérimental actuel est `0.5.0`. Les dossiers `0.1.0` valides sont
+Le schéma expérimental actuel est `0.6.0`. Il conserve la tâche principale et les
+fonctions complémentaires facultatives dans `additional_use_patterns`. Ces
+fonctions ajoutent des vérifications, pas des permissions ni un bonus de gain
+automatique. Les dossiers `0.5.0` reçoivent une liste complémentaire vide, y
+compris dans leur référence de comparaison. Les dossiers antérieurs reçoivent
+la même liste vide après leur migration existante.
+Les dossiers `0.1.0` valides sont
 migrés localement par l’ajout de documents reliés vides et d’une revue des
 changements vide. Les dossiers `0.2.0` valides conservent leurs documents reliés
 et reçoivent une revue vide. Les dossiers `0.3.0` valides conservent leur revue
