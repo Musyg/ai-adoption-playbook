@@ -1,4 +1,4 @@
-# Évaluations et gates
+# Tests et conditions pour avancer
 
 Une évaluation utile relie un comportement mesurable à une décision. Un score moyen isolé ne suffit pas.
 

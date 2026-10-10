@@ -1,6 +1,6 @@
 # Registre des sources primaires
 
-Dernière vérification : **21 août 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
+Revue complète : **21 août 2026**. Mise à jour ciblée sécurité, calendrier suisse et preuves de tâche : **10 octobre 2026**. Le statut d’une source peut évoluer. Ouvrir la source primaire et vérifier sa version avant de prendre une décision.
 
 Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu protégé des normes.
 
@@ -16,7 +16,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 
 ## Sécurité
 
-- [OWASP Top 10 for LLM and GenAI](https://genai.owasp.org/llm-top-10/) — édition 2025 actuellement publiée.
+- [Ressource OWASP LLM 2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) : PDF portant l’édition 2026 observé le 10 octobre ; ses dates de publication restent à compléter. Conserver les correspondances 2025 comme historiques, avec les numéros propres à chaque édition.
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) — risques propres aux agents et workflows autonomes ; orientation communautaire à adapter à l’architecture réelle.
 - [NIST AI 100-2e2025 — Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final) — taxonomie couvrant IA prédictive et générative, avec errata officiel à vérifier.
 - [NIST AI 100-4 — Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/) — méthodes et limites de détection, authentification, marquage et provenance des contenus synthétiques.
@@ -32,7 +32,7 @@ Le playbook résume et relie ces ressources ; il ne reproduit pas le contenu pro
 - [PFPDT — déclaration commune sur les images générées par IA](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images) — orientation de 61 autorités sur images et vidéos réalistes de personnes identifiables ; ne remplace pas l’analyse du cas concret.
 - [PFPDT — Analyse d’impact relative à la protection des données](https://www.edoeb.admin.ch/en/data-protection-impact-assessment) — requise si le traitement est susceptible d’engendrer un risque élevé.
 - [PFPDT — Sous-traitance](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing) — le responsable reste responsable et doit encadrer le sous-traitant.
-- [Chancellerie fédérale — Réglementation de l’IA](https://www.bk.admin.ch/en/regulation) — projet à soumettre à consultation d’ici fin 2026 ; pas encore une loi générale en vigueur.
+- [Chancellerie fédérale, réglementation IA](https://www.bk.admin.ch/en/regulation) : consultation encore annoncée fin 2026. [SECO, 23 septembre 2026](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027) annonce début/printemps 2027. Les calendriers officiels divergent ; date à reconfirmer, pas loi déjà en vigueur.
 
 ### Union européenne
 
@@ -105,3 +105,11 @@ elles ne constituent ni une équivalence article par article, ni une preuve de
 certification ou de conformité.
 
 - [Cas récents et mécanismes transférables](recent-implementation-cases.fr.md): sources ajoutées le 5 septembre 2026, avec nature du résultat et limites explicites.
+
+## Compléments vérifiés le 10 octobre 2026
+
+- [ACS](https://genai.owasp.org/resource/agent-control-standard-acs/) : intégration de contrôles d’agents à l’exécution.
+- [Table inter-référentiels OWASP](https://genai.owasp.org/resource/genai-security-industry-framework-crosswalk/) : comparaison de couverture, pas équivalence juridique.
+- [Icônes de transparence UE](https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content) : usage des icônes facultatif ; ne prouve pas à lui seul la conformité.
+- [Google, modification de code](https://arxiv.org/html/2410.12944v3) et [Microsoft, règles d’accès](https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/randomized-controlled-trial-for-conditional-access-v1-103125-final.pdf) : durée de tâche mesurée, avec méthode et incertitude explicites dans le registre.
+- [Stanford, expansion des tâches](https://digitaleconomy.stanford.edu/app/uploads/2026/10/AI_Task_Expansion_07102026.pdf) et [MIT, brevets et apprentissage](https://shapingwork.mit.edu/research/does-ai-assistance-enhance-or-erode-expertise-evidence-from-a-three-month-field-experiment-in-patent-drafting/) : résultats de qualité et d’apprentissage, pas conversion automatique en temps.

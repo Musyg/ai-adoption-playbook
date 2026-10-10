@@ -2,6 +2,24 @@
 
 Targeted review on 5 September 2026. These cases complement timed studies; they do not replace them.
 
+## Additional cases checked on 10 October 2026
+
+| Case and source | Published result | What you can reuse |
+|---|---|---|
+| [OpenAI research](https://openai.com/index/research-acceleration-view-inside-openai/) | 3.1 agent-workdays per human workday | Parallel work with reviewed results. Machine activity is not human days saved. |
+| [Anthropic research](https://www.anthropic.com/institute/measuring-pace-of-ai-development) | 26% AI-led, over 90% with AI collaboration in August | Measure actual AI roles, control coverage, review latency and escalations. Their AL0–AL5 scale is not our A0–A4 permission scale. |
+| [Parallel](https://openai.com/index/parallel-cuts-time-and-cost-with-astra/) | Duration and cost halved versus prior models | Compare delay and cost at similar quality. The baseline is another AI, not manual human work. |
+| [Ringg](https://openai.com/index/ringg/) | Up to 65% of requests resolved without a human agent | Test bounded requests, handoffs and exceptions. Resolution rate is not hours saved. |
+| [Ironclad](https://openai.com/index/advancing-computer-use-with-ironclad/) | Mean score 55%, versus 41.6%, on 11 tasks | Test individual requirements. A partial score does not mean 55% of tasks fully succeeded. |
+| [1Password](https://openai.com/index/1password/) | Productivity +20.9%; modelled annual value | Separate team indicators, task duration and capacity value. Capacity value is not observed cash savings. |
+| [Basis](https://openai.com/index/ai-native-company-workflows/) | Onboarding from two hours to thirty minutes | Reuse a maintained onboarding workflow. Active work and elapsed delay are not clearly separated in the source. |
+
+These cases are published by the involved suppliers or labs, not independent
+comparisons of your situation. Their methods can apply to a micro-business,
+public service or independent professional when the task fits. Explore clearly
+named demonstration values, then replace them with observations. Record delay,
+cost and quality separately in the dossier.
+
 You can reuse a working method and try your own values in the calibrator. An internal estimate, elapsed time and a quality score are not interchangeable measures of human time saved.
 
 ## Document checks across 41 files

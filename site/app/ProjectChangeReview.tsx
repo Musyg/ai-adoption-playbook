@@ -139,8 +139,8 @@ const copy = {
 };
 
 const contextLabels = {
-  en: { organization_type: "Organization type", use_pattern: "AI use pattern", jurisdiction: "Territory", integration_level: "Work mode", work_mode: "Work mode", architecture: "Architecture", autonomy_level: "Exact action boundary", risk_level: "Risk orientation" },
-  fr: { organization_type: "Type de structure", use_pattern: "Mode d’usage de l’IA", jurisdiction: "Territoire", integration_level: "Mode de travail", work_mode: "Mode de travail", architecture: "Architecture", autonomy_level: "Limite d’action exacte", risk_level: "Orientation du risque" },
+  en: { organization_type: "Organization type", use_pattern: "AI use pattern", additional_use_patterns: "Additional functions", jurisdiction: "Territory", integration_level: "Work mode", work_mode: "Work mode", architecture: "Architecture", autonomy_level: "Exact action boundary", risk_level: "Risk orientation" },
+  fr: { organization_type: "Type de structure", use_pattern: "Mode d’usage de l’IA", additional_use_patterns: "Fonctions complémentaires", jurisdiction: "Territoire", integration_level: "Mode de travail", work_mode: "Mode de travail", architecture: "Architecture", autonomy_level: "Limite d’action exacte", risk_level: "Orientation du risque" },
 };
 
 function checklistLabel(locale: Locale, taskId: string, property: string, props: Props) {
@@ -198,6 +198,10 @@ function displayValue(value: string, item: ChangeReviewItem, props: Props) {
       architecture: props.locale === "en" ? { model: "One model or assistant", workflow: "Tool-assisted workflow", agent: "One business agent", agency: "Orchestrated agent team" } : { model: "Un modèle ou assistant", workflow: "Processus outillé", agent: "Un agent métier", agency: "Équipe d’agents orchestrée" },
     };
     if (id === "autonomy_level") return props.autonomyLabels[Number(value)] || `A${value}`;
+    if (id === "additional_use_patterns") {
+      try { return (JSON.parse(value) as string[]).map((pattern) => maps.use_pattern[pattern] ?? pattern).join(", ") || copy[props.locale].empty; }
+      catch { return value; }
+    }
     if (id === "risk_level") return props.riskLabels[Number(value)] || `R${value}`;
     return maps[id]?.[value] ?? value;
   }

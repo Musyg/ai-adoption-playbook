@@ -59,7 +59,12 @@ a new dossier** to remove the browser copy.
 
 ## Compatibility and validation
 
-The current experimental schema is `0.5.0`. Valid `0.1.0` dossiers are migrated
+The current experimental schema is `0.6.0`. It records the main task and optional
+additional functions in `additional_use_patterns`. These functions add checks,
+not permissions or an automatic time-saving bonus. Valid `0.5.0` dossiers
+receive an empty additional-functions list, including their comparison snapshot.
+Earlier dossiers receive the same empty list after their existing migration.
+Valid `0.1.0` dossiers are migrated
 locally by adding empty connected records and an empty change review. Valid
 `0.2.0` dossiers keep their connected records and receive an empty change
 review. Valid `0.3.0` dossiers preserve their change review and receive an

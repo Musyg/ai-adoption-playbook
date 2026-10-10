@@ -1,4 +1,4 @@
-# AI incident runbook
+# What to do during an AI incident
 
 ## Triggers
 

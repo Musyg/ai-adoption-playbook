@@ -53,7 +53,7 @@ test("keeps every repeated decision label identical in the guide, review, and Gi
   assert.ok(review.includes('props.riskLabels[Number(value)]'), "change review must reuse complete risk labels");
 });
 
-test("keeps the runtime, schema, roadmap, changelog, and dossier guide on schema 0.5.0", async () => {
+test("keeps the runtime, schema, roadmap, changelog, and dossier guide on schema 0.6.0", async () => {
   const [runtime, schema, roadmap, changelog, guideEn, guideFr] = await Promise.all([
     read("../app/project-dossier.mjs"),
     read("../public/data/project-dossier.schema.json"),
@@ -63,6 +63,6 @@ test("keeps the runtime, schema, roadmap, changelog, and dossier guide on schema
     read("../../docs/project-dossier.fr.md"),
   ]);
   for (const [name, content] of Object.entries({ runtime, schema, roadmap, changelog, guideEn, guideFr })) {
-    assert.ok(content.includes("0.5.0"), `${name} does not identify the current 0.5.0 dossier schema`);
+    assert.ok(content.includes("0.6.0"), `${name} does not identify the current 0.6.0 dossier schema`);
   }
 });

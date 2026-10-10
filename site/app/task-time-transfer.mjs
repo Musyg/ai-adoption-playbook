@@ -23,12 +23,13 @@ export function assessEvidenceCompatibility(record, target) {
   if (!expertiseMatch) reasons.push("expertise_level");
 
   const hasQuantitativeTime = transfer.quantitative_use === "usable"
-    && record.measurement?.human_active_time_measured === true
+    && (record.measurement?.human_active_time_measured === true || record.measurement?.human_task_time_measured === true)
     && record.measurement?.human_time_reduction_fraction != null;
 
   if (!profileMatch) return { status: "incompatible", reasons };
   if (!hasQuantitativeTime) return { status: "context", reasons: ["context_only", ...reasons] };
-  if (!modeMatch || !qualityMatch || !expertiseMatch || !architectureMatch || !autonomyMatch) return { status: "partial", reasons };
+  if (record.measurement?.human_active_time_measured !== true && record.measurement?.human_task_time_measured === true) reasons.push("task_elapsed_time");
+  if (reasons.length > 0) return { status: "partial", reasons };
   return { status: "compatible", reasons: [] };
 }
 

@@ -1,6 +1,6 @@
 # Primary-source register
 
-Last checked: **21 August 2026**. Source status can change. Open the primary
+Full review: **21 August 2026**. Targeted security, Swiss-calendar and task-evidence update: **10 October 2026**. Source status can change. Open the primary
 source and verify its current version before making a decision.
 
 The playbook summarizes and links these resources. It does not reproduce the
@@ -18,7 +18,7 @@ protected text of standards.
 
 ## Security
 
-- [OWASP Top 10 for LLM and GenAI](https://genai.owasp.org/llm-top-10/), currently published 2025 edition.
+- [OWASP LLM 2026 resource](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/): 2026-labelled PDF observed on 10 October; its publication-date placeholders remain. Keep 2025 mappings as historical, with edition-specific category numbers.
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/), community guidance to adapt to the actual architecture.
 - [NIST AI 100-2e2025, Adversarial Machine Learning](https://csrc.nist.gov/pubs/ai/100/2/e2025/final), predictive and generative AI taxonomy; check the official errata.
 - [NIST AI 100-4, Reducing Risks Posed by Synthetic Content](https://airc.nist.gov/technical-reports/), methods and limitations for detection, authentication, marking, and provenance.
@@ -34,7 +34,7 @@ protected text of standards.
 - [FDPIC, joint statement on AI-generated imagery](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images), orientation from 61 authorities, not a substitute for case analysis.
 - [FDPIC, data protection impact assessment](https://www.edoeb.admin.ch/en/data-protection-impact-assessment), required when processing is likely to result in high risk.
 - [FDPIC, outsourcing of data processing](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing), on controller responsibility and processor controls.
-- [Federal Chancellery, AI regulation](https://www.bk.admin.ch/en/regulation), a consultation project expected by the end of 2026, not a general law currently in force.
+- [Federal Chancellery, AI regulation](https://www.bk.admin.ch/en/regulation): still states end-2026 consultation. [SECO, 23 September 2026](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027) states early/spring 2027. The official calendars differ; reconfirm the date, not a law already in force.
 
 ### European Union
 
@@ -94,3 +94,11 @@ date for each source. These links are thematic, not article-by-article
 equivalences and not evidence of certification or legal compliance.
 
 - [Recent cases and transferable mechanisms](recent-implementation-cases.md): sources added on 5 September 2026, with result type and explicit limits.
+
+## Additions checked on 10 October 2026
+
+- [ACS](https://genai.owasp.org/resource/agent-control-standard-acs/): integration of agent controls at runtime.
+- [OWASP industry crosswalk](https://genai.owasp.org/resource/genai-security-industry-framework-crosswalk/): coverage comparison, not legal equivalence.
+- [EU transparency icons](https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content): icons are optional; using them does not itself prove compliance.
+- [Google, tested code change](https://arxiv.org/html/2410.12944v3) and [Microsoft, access policies](https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/randomized-controlled-trial-for-conditional-access-v1-103125-final.pdf): measured task duration, with explicit methods and uncertainty in the registry.
+- [Stanford, task expansion](https://digitaleconomy.stanford.edu/app/uploads/2026/10/AI_Task_Expansion_07102026.pdf) and [MIT, patents and learning](https://shapingwork.mit.edu/research/does-ai-assistance-enhance-or-erode-expertise-evidence-from-a-three-month-field-experiment-in-patent-drafting/): quality and learning evidence, not automatic time conversion.

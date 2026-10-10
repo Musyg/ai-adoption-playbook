@@ -1,4 +1,4 @@
-# Runbook d’incident IA
+# Que faire lors d’un incident IA
 
 ## Déclencheurs
 

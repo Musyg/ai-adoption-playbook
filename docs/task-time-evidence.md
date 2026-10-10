@@ -8,6 +8,21 @@ an explicit acceptance threshold. Organization type is a context overlay for
 law, governance, data, procurement, scale, and controls. It is not the benchmark
 category.
 
+## What the October update adds
+
+The registry now includes Google’s 2024 tested-code experiment and Microsoft’s
+2025 access-policy experiment. Both record task-completion duration, not pure
+active human work. They remain available with a visible warning: use a matching
+time definition and check human work locally. Google’s adjusted interval allows
+a small slowdown; Microsoft’s 43% is an accuracy-adjusted point estimate, not a
+31–60% confidence interval.
+
+Stanford’s October 2026 apprenticeship study and MIT’s patent-drafting study
+inform task choice, quality and learning. Their score changes are not converted
+into hours. Open **Also compare delay, costs and quality** in the pilot phase
+to record those outcomes separately, with a source or a demonstration label.
+These optional fields are saved in the dossier and do not change readiness.
+
 ## Keep work mode, architecture, and authority separate
 
 | Work mode | What moves | Human role |
@@ -85,8 +100,9 @@ downstream outcome remain separate measures.
 
 The grade describes how the value was measured, not whether it is favorable.
 The machine-readable registry additionally blocks automatic quantitative use
-unless human active time was measured and the record is explicitly admitted for
-transfer.
+unless active human work or human task-completion duration was measured and
+the record is explicitly admitted. Task duration that may contain tool waits
+always carries a comparison warning; it is not presented as pure active work.
 
 ## Transfer states
 
@@ -186,7 +202,9 @@ reviewed and sanitized observations can satisfy its admission rule.
 
 ## Recent cases available
 
-The register now offers 19 sources, including 4 admitted human-time ratios. New cases also cover document checking, multimodal work, predictive optimization and agent teams. Other results remain useful for building assumptions.
+The register now offers 23 evidence records, including 6 admitted task-time ratios.
+Two of these measure task duration rather than isolated active work and carry
+that warning. Other results remain useful for building assumptions.
 
 [Read each case’s mechanism and limits](../references/recent-implementation-cases.md).
 

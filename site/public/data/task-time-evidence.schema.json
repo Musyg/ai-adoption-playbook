@@ -249,6 +249,10 @@
         "human_active_time_measured": {
           "type": "boolean"
         },
+        "human_task_time_measured": {
+          "type": "boolean",
+          "description": "Observed task-completion time with a person, possibly including tool waits; not a pure active-work measure."
+        },
         "machine_runtime_measured": {
           "type": "boolean"
         },

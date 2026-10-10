@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 
 import type { ChecklistItem, ChecklistStatus, ProjectArtifacts } from "./project-dossier.mjs";
+import { activeUsePatterns } from "./use-pattern-routing.mjs";
+import type { UsePatternId } from "./use-pattern-routing.mjs";
 
 type Locale = "en" | "fr";
 type FieldArtifactId = "system_register" | "risk_assessment" | "evaluation_plan";
@@ -37,7 +39,8 @@ type Control = { id: string; title: string; priority?: string };
 type SecurityControl = { id: string; label: string; checked: boolean };
 type Props = {
   locale: Locale;
-  usePatternId: string;
+  usePatternId: UsePatternId;
+  additionalUsePatterns: UsePatternId[];
   usePatternLabel: string;
   jurisdictionLabel: string;
   artifacts: ProjectArtifacts;
@@ -104,6 +107,7 @@ const artifactDefinitions: Record<Locale, ArtifactDefinition[]> = {
       id: "system_register", code: "REG", title: "AI system register", short: "Identity and ownership", purpose: "Keep one operational identity for the system, its purpose, boundaries, owner, supplier, and review route.", why: "A register makes scope and ownership findable without reopening every project discussion.",
       fields: [
         { id: "system_id", label: "System ID", help: "Use a stable internal identifier, for example AI-014.", required: true },
+        { id: "use_patterns", label: "Main and additional functions", help: "All selected use patterns, separated by semicolons. Keep the main task in the dossier context.", phase: 5 },
         { id: "name", label: "System name", help: "A neutral name that remains stable across supplier changes.", phase: 0, required: true },
         { id: "owner", label: "Accountable owner", help: "The role that owns the operating decision.", phase: 0, required: true },
         { id: "purpose", label: "Purpose and problem", help: "Describe the observable problem, not the desired tool.", phase: 0, kind: "textarea", required: true },
@@ -160,6 +164,7 @@ const artifactDefinitions: Record<Locale, ArtifactDefinition[]> = {
       id: "system_register", code: "REG", title: "Registre du système IA", short: "Identité et responsabilité", purpose: "Conserver une identité opérationnelle unique pour le système, sa finalité, ses limites, son responsable, son fournisseur et sa revue.", why: "Un registre rend le périmètre et les responsabilités accessibles sans rouvrir toutes les discussions du projet.",
       fields: [
         { id: "system_id", label: "Identifiant du système", help: "Utilisez un identifiant interne stable, par exemple AI-014.", required: true },
+        { id: "use_patterns", label: "Fonctions principales et complémentaires", help: "Les modes d’usage choisis, séparés par des points-virgules. La tâche principale reste précisée dans le contexte du dossier.", phase: 5 },
         { id: "name", label: "Nom du système", help: "Un nom neutre qui reste stable si le fournisseur change.", phase: 0, required: true },
         { id: "owner", label: "Responsable redevable", help: "Le rôle qui porte la décision d’exploitation.", phase: 0, required: true },
         { id: "purpose", label: "Finalité et problème", help: "Décrivez le problème observable, pas l’outil souhaité.", phase: 0, kind: "textarea", required: true },
@@ -332,7 +337,7 @@ export function ProjectArtifactsWorkbench(props: Props) {
         <header><div><span>{current.code}</span><h5 id="artifact-panel-title">{current.title}</h5><p>{current.purpose}</p></div><details><summary aria-label={labels.why}>?</summary><div role="note"><strong>{labels.why}</strong><p>{current.why}</p></div></details></header>
 
         {current.id !== "implementation_checklist" && <>
-          {current.id === "evaluation_plan" && <aside className="artifact-pattern-note"><strong>{labels.pattern}</strong><p>{patternGuidance[locale][props.usePatternId]}</p></aside>}
+          {current.id === "evaluation_plan" && <aside className="artifact-pattern-note"><strong>{labels.pattern}</strong><ul>{activeUsePatterns(props.usePatternId, props.additionalUsePatterns).map((pattern) => <li key={pattern}>{patternGuidance[locale][pattern]}</li>)}</ul></aside>}
           <div className="artifact-fields">{current.fields?.map((field) => {
             const artifactId = current.id as FieldArtifactId;
             const record = artifacts[artifactId].fields[field.id];

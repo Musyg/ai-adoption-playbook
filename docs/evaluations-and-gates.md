@@ -1,4 +1,4 @@
-# Evaluations and gates
+# Tests and conditions for moving on
 
 A useful evaluation connects measurable behavior to a decision. An isolated average score is not enough.
 

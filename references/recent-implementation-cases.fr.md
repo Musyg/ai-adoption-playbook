@@ -2,6 +2,24 @@
 
 Vérification ciblée du 5 septembre 2026. Ces cas complètent les études chronométrées. Ils ne les remplacent pas.
 
+## Autres cas vérifiés le 10 octobre 2026
+
+| Cas et source | Résultat publié | Ce que vous pouvez reprendre |
+|---|---|---|
+| [Recherche OpenAI](https://openai.com/index/research-acceleration-view-inside-openai/) | 3,1 journées-agent par journée humaine | Travail parallèle avec revue des résultats. L’activité machine n’est pas du temps humain économisé. |
+| [Recherche Anthropic](https://www.anthropic.com/institute/measuring-pace-of-ai-development) | 26 % dirigé par IA, plus de 90 % avec collaboration IA en août | Mesurer le rôle réel de l’IA, la couverture des contrôles, le délai de revue et les escalades. Leur échelle AL0–AL5 n’est pas notre échelle de permissions A0–A4. |
+| [Parallel](https://openai.com/index/parallel-cuts-time-and-cost-with-astra/) | Délai et coût divisés par deux face aux modèles précédents | Comparer délai et coût à qualité similaire. La référence est une autre IA, pas du travail manuel. |
+| [Ringg](https://openai.com/index/ringg/) | Jusqu’à 65 % de demandes résolues sans agent humain | Tester demandes bornées, relais et exceptions. Le taux de résolution n’est pas du temps gagné. |
+| [Ironclad](https://openai.com/index/advancing-computer-use-with-ironclad/) | Score moyen 55 %, contre 41,6 %, sur 11 tâches | Tester chaque exigence. Un score partiel ne signifie pas que 55 % des tâches sont entièrement réussies. |
+| [1Password](https://openai.com/index/1password/) | Productivité +20,9 % ; valeur annuelle modélisée | Séparer indicateurs d’équipe, durée de tâche et valeur de capacité. Cette valeur n’est pas une économie de trésorerie constatée. |
+| [Basis](https://openai.com/index/ai-native-company-workflows/) | Accueil des recrues : deux heures deviennent trente minutes | Réutiliser un parcours d’accueil entretenu. La source ne sépare pas clairement travail actif et délai écoulé. |
+
+Ces cas sont publiés par les fournisseurs ou laboratoires concernés, pas des
+comparaisons indépendantes de votre situation. Leurs mécanismes peuvent servir
+à une TPE, un service public ou un indépendant si la tâche s’y prête. Essayez
+des valeurs de démonstration clairement nommées, puis remplacez-les par vos
+observations. Relevez séparément délai, coût et qualité dans le dossier.
+
 Vous pouvez reprendre un mécanisme de travail et essayer vos propres valeurs dans le calibrateur. Une estimation interne, une durée écoulée et un score de qualité ne sont pas des mesures interchangeables de temps humain économisé.
 
 ## Vérifier les chiffres de 41 documents

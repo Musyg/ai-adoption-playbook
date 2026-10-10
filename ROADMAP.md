@@ -1,5 +1,9 @@
 # Roadmap
 
+The experimental dossier schema is now `0.6.0`: a main task can have additional
+functions, with cumulative controls and additive migration from earlier files.
+This schema version is not a product release or a completed roadmap milestone.
+
 ## How to read the numbers
 
 - `0.2.2`, `0.3`, `0.4`, and later numbers are repository releases.

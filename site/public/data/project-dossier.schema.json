@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.5.0",
+  "$id": "urn:musyg:ai-adoption-playbook:project-dossier-schema:0.6.0",
   "title": "AI Adoption Playbook local project dossier",
   "type": "object",
   "additionalProperties": false,
@@ -23,7 +23,7 @@
     "change_review"
   ],
   "properties": {
-    "schema_version": { "const": "0.5.0" },
+    "schema_version": { "const": "0.6.0" },
     "playbook_version": { "const": "0.2.2" },
     "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
     "created_at": { "type": "string", "format": "date-time" },
@@ -43,10 +43,12 @@
     "context": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["organization_type", "use_pattern", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"],
+      "required": ["organization_type", "use_pattern", "additional_use_patterns", "jurisdiction", "work_mode", "architecture", "autonomy_level", "risk_level"],
+      "allOf": [{"if":{"properties":{"use_pattern":{"const":"generation"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"generation"}}}}}},{"if":{"properties":{"use_pattern":{"const":"retrieval"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"retrieval"}}}}}},{"if":{"properties":{"use_pattern":{"const":"classification"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"classification"}}}}}},{"if":{"properties":{"use_pattern":{"const":"prediction"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"prediction"}}}}}},{"if":{"properties":{"use_pattern":{"const":"conversation"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"conversation"}}}}}},{"if":{"properties":{"use_pattern":{"const":"multimodal"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"multimodal"}}}}}},{"if":{"properties":{"use_pattern":{"const":"agentic"}}},"then":{"properties":{"additional_use_patterns":{"not":{"contains":{"const":"agentic"}}}}}}],
       "properties": {
         "organization_type": { "enum": ["independent", "tpe", "pme", "nonprofit", "public"] },
         "use_pattern": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] },
+        "additional_use_patterns": { "type": "array", "uniqueItems": true, "maxItems": 6, "items": { "enum": ["generation", "retrieval", "classification", "prediction", "conversation", "multimodal", "agentic"] } },
         "jurisdiction": { "enum": ["CH", "EU", "BOTH"] },
         "work_mode": { "enum": ["copilot", "agent", "agency"] },
         "architecture": { "enum": ["model", "workflow", "agent", "agency"] },
@@ -95,7 +97,7 @@
               "properties": {
                 "dossier_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$" },
                 "updated_at": { "type": "string", "format": "date-time" },
-                "schema_version": { "enum": ["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"] },
+                "schema_version": { "enum": ["0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0"] },
                 "playbook_version": { "const": "0.2.2" },
                 "snapshot": { "$ref": "#/$defs/projectSnapshot" }
               }

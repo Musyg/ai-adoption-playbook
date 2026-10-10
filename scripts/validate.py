@@ -637,7 +637,8 @@ def check_task_time_registry(errors: list[str]) -> None:
         if not isinstance(allowed_profiles, list) or not allowed_profiles or not set(allowed_profiles) <= profile_ids:
             errors.append(f"{context}: invalid transfer allowed_profiles")
         if quantitative_use == "usable":
-            if grade not in {"A", "B"} or measurement.get("human_active_time_measured") is not True or time_range is None:
+            measured_time = measurement.get("human_active_time_measured") is True or measurement.get("human_task_time_measured") is True
+            if grade not in {"A", "B"} or not measured_time or time_range is None:
                 errors.append(f"{context}: usable transfer requires measured grade A or B human time")
         organization_context = record.get("organization_context")
         if quantitative_use == "context_only" and isinstance(organization_context, dict) and organization_context.get("kind") == "frontier_ai_company":

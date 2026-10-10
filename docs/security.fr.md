@@ -4,6 +4,20 @@ Le modèle n’est qu’un composant. Le périmètre de sécurité inclut les do
 
 ## Menaces prioritaires
 
+Références vérifiées le 10 octobre 2026 : le
+[PDF OWASP LLM portant l’édition 2026](https://genai.owasp.org/download/56857/?tmstv=1785822482)
+change les numéros de catégories et élargit l’exposition du contexte caché.
+Sa couverture contient encore une date de publication à compléter. Conservez
+l’édition avec la catégorie ; changer seulement l’année d’une correspondance
+2025 ne suffit pas. Le guide utilise un soutien thématique, pas une équivalence
+article par article.
+
+Pour les plateformes d’agents, [ACS](https://genai.owasp.org/resource/agent-control-standard-acs/)
+peut aider à connecter les contrôles à l’exécution. La
+[table inter-référentiels](https://genai.owasp.org/resource/genai-security-industry-framework-crosswalk/)
+aide à comparer la couverture. Ce ne sont ni des certifications ni des
+remplacements des tests.
+
 - injection de prompt directe ou indirecte ;
 - divulgation d’informations sensibles ;
 - empoisonnement des données, du contexte, de la mémoire ou des outils ;

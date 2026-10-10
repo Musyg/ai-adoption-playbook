@@ -709,7 +709,7 @@ for (const fieldLocale of [
     expect(report).toContain(fieldLocale.volume);
     expect(report).toContain(fieldLocale.denominator);
     expect(report).toContain(fieldLocale.risk);
-    expect(report).toContain("1.0.0 · 2026-09-05");
+    expect(report).toContain("1.0.0 · 2026-10-10");
   });
 }
 
@@ -1091,7 +1091,7 @@ test("connected project records stay linked, editable, and persistent", async ({
       taskStatus: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status,
       taskMode: dossier?.artifacts?.implementation_checklist?.items?.["phase:0"]?.status_mode,
     };
-  }, storageKey)).toEqual({ schema: "0.5.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
+  }, storageKey)).toEqual({ schema: "0.6.0", systemId: "AI-042", retention: "30 days in Switzerland; no supplier reuse", taskStatus: "in_progress", taskMode: "manual" });
 
   await page.reload();
   await openWorkbench();
@@ -1152,6 +1152,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
     context: {
       organization_type: "public",
       use_pattern: "conversation",
+      additional_use_patterns: [],
       jurisdiction: "EU",
       work_mode: "copilot",
       architecture: "model",
@@ -1177,6 +1178,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
   const legacyDossier = { ...imported, context: legacyContext };
   delete legacyDossier.change_review;
   delete (legacyDossier.context as Partial<typeof imported.context>).architecture;
+  delete (legacyDossier.context as Partial<typeof imported.context>).additional_use_patterns;
   await workbench.locator(".project-dossier-manager .dossier-file-input").setInputFiles({
     name: "legacy-project-dossier.json",
     mimeType: "application/json",
@@ -1192,7 +1194,7 @@ test("local project dossier persists, exports, imports, and resets safely", asyn
       artifactGroups: Object.keys(dossier?.artifacts ?? {}).sort(),
     };
   }, storageKey)).toEqual({
-    schema: "0.5.0",
+    schema: "0.6.0",
     project: "Imported public assistant",
     artifactGroups: ["evaluation_plan", "implementation_checklist", "risk_assessment", "system_register"],
   });
@@ -1270,7 +1272,7 @@ test("change review compares one dossier version and reopens stale decisions", a
       decision: dossier?.change_review?.items?.["lifecycle:project"]?.decision,
       evidence: dossier?.change_review?.items?.["lifecycle:project"]?.evidence_ref,
     };
-  }, storageKey)).toEqual({ schema: "0.5.0", baseline: baseline.dossier_id, decision: "accepted", evidence: "CHANGE-001" });
+  }, storageKey)).toEqual({ schema: "0.6.0", baseline: baseline.dossier_id, decision: "accepted", evidence: "CHANGE-001" });
 
   await page.reload();
   await openWorkbench();

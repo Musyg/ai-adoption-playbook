@@ -24,7 +24,13 @@ Routage opérationnel par mode d’usage :
 - pour des visages, images ou voix synthétiques de personnes identifiables, documenter l’identification claire, le consentement ou autre autorité, les contrôles de protection des données et les règles applicables de personnalité, droit pénal et propriété intellectuelle ;
 - pour un traitement susceptible d’engendrer un risque élevé, terminer et conserver l’analyse d’impact avant le pilote.
 
-Au 20 août 2026, un projet de réglementation mettant notamment en œuvre la Convention du Conseil de l’Europe doit encore être soumis à consultation d’ici fin 2026. Ne pas présenter ce futur projet comme une loi déjà en vigueur.
+Calendrier suisse revérifié le 10 octobre 2026 : la
+[Chancellerie fédérale](https://www.bk.admin.ch/en/regulation) annonce encore une
+consultation d’ici fin 2026. Une [actualité SECO du 23 septembre](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027)
+annonce début 2027 dans son titre et printemps 2027 dans son texte. Les pages
+officielles divergent donc. Le calendrier doit être reconfirmé, pas présenté
+comme une échéance certaine. Aucune de ces annonces n’est une loi générale
+sur l’IA déjà en vigueur.
 
 ## Union européenne
 
@@ -49,6 +55,25 @@ Routage opérationnel pour l’article 50 :
 - conserver analyse du rôle, preuve d’interface, preuve de marquage, exceptions et date de vérification.
 
 Ces obligations UE ne remplacent pas l’analyse LPD lorsque la Suisse est aussi concernée, et la transparence suisse ne démontre pas à elle seule le respect de l’article 50.
+
+### Ce que les personnes doivent voir
+
+Exemples de formulation à adapter, pas des déclarations de conformité complète :
+
+- Au début d’un chatbot : « Vous échangez avec un assistant IA. Demandez une
+  personne si vous avez besoin d’aide. » Prévoyez un transfert qui fonctionne,
+  pas seulement une étiquette.
+- À côté d’une vidéo ou voix synthétique concernée : « Cette vidéo/voix a été
+  générée ou modifiée avec l’IA. » Le message doit se comprendre sans survol.
+- Pour un texte d’intérêt public, vérifiez la revue humaine ou le contrôle
+  éditorial et qui assume la responsabilité éditoriale avant d’utiliser
+  l’exception à l’obligation d’information.
+
+Les [repères de la Commission](https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content)
+n’imposent pas la même étiquette à tous les documents assistés par IA.
+L’information visible et le marquage technique lisible par machine répondent
+à des besoins différents. Testez le message au clavier, avec lecteur d’écran
+et sur mobile.
 
 ## Questions à documenter pour chaque cas
 
