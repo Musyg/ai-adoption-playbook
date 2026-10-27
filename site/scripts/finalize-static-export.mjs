@@ -1,4 +1,4 @@
-import { access, copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { authorFor, formatEditorialDate, homeModified } from "../app/editorial-metadata.mjs";
@@ -262,6 +262,11 @@ ${sitemapEntries.map((entry) => {
 </urlset>
 `;
   await writeFile(path.join(outputRoot, "sitemap.xml"), sitemap, "utf8");
+} else {
+  // A neutral rebuild must not retain artifacts from a previous hosted export.
+  await Promise.all([".nojekyll", "sitemap.xml"].map((name) =>
+    rm(path.join(outputRoot, name), { force: true }),
+  ));
 }
 
 const mode = siteUrl ? `host-ready metadata for ${siteUrl}` : "neutral noindex metadata";
