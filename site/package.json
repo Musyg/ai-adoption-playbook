@@ -9,7 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "build:static": "npm run build && npm run export:static",
-    "export:static": "vite build --config vite.static.config.ts && node scripts/finalize-static-export.mjs",
+    "export:static": "node scripts/clean-static-export.mjs && vite build --config vite.static.config.ts && node scripts/finalize-static-export.mjs",
     "preview:static": "vite preview --config vite.static.config.ts",
     "start": "vinext start",
     "test": "npm run build:static && node --test tests/*.test.mjs",
