@@ -11,6 +11,31 @@ updates:
     commit-message:
       prefix: "chore(deps)"
     groups:
+      # Keep React runtime peers together across dependencies/devDependencies.
+      react-stack-minor-patch:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-server-dom-webpack"
+          - "@types/react"
+          - "@types/react-dom"
+          - "vinext"
+          - "@vitejs/plugin-react"
+          - "@vitejs/plugin-rsc"
+        update-types:
+          - minor
+          - patch
+      react-stack-security:
+        applies-to: security-updates
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-server-dom-webpack"
+          - "@types/react"
+          - "@types/react-dom"
+          - "vinext"
+          - "@vitejs/plugin-react"
+          - "@vitejs/plugin-rsc"
       production-minor-patch:
         dependency-type: production
         update-types:
