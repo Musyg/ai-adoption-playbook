@@ -20,7 +20,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern static-dist"
   },
   "dependencies": {
-    "entities": "8.1.0",
+    "entities": "9.0.0",
     "github-slugger": "2.0.0",
     "marked": "18.1.1",
     "react": "19.3.1",
