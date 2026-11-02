@@ -144,3 +144,15 @@ test("raw HTML remains inert and unapproved URL schemes cannot become active lin
   // Ambiguous entity-encoded destinations are rejected before rendering.
   assert.throws(() => compileMarkdown("# Safety\n\n[encoded](jav&#x61;script:void(0))", en), /Unapproved document link/);
 });
+
+
+test("synchronous entity decoding preserves heading labels, deduplicated anchors and inert markup", () => {
+  const output = compileMarkdown("# Caf&eacute; &amp; th&eacute; &#x1F63A;\n\n## S&eacute;curit&eacute; &amp; IA\n\n## S&eacute;curit&eacute; &amp; IA\n\n## &lt;script&gt;\n", fr);
+  assert.equal(output.title, "Café & thé 😺");
+  assert.deepEqual(output.headings.map(({ label, id }) => ({ label, id })), [
+    { label: "Sécurité & IA", id: "sécurité--ia" },
+    { label: "Sécurité & IA", id: "sécurité--ia-1" },
+    { label: "<script>", id: "script" },
+  ]);
+  assert.doesNotMatch(output.html, /<script>/);
+});
