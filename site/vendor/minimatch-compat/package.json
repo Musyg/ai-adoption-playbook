@@ -1,0 +1,17 @@
+{
+  "name": "@musyg/minimatch-compat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Legacy callable CommonJS facade over the unmodified patched minimatch engine",
+  "main": "index.cjs",
+  "exports": {
+    ".": "./index.cjs",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "minimatch-modern": "npm:minimatch@11.0.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}
