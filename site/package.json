@@ -30,8 +30,8 @@
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
     "@eslint/js": "9.39.5",
-    "@next/eslint-plugin-next": "16.4.3",
-    "@playwright/test": "1.64.1",
+    "@next/eslint-plugin-next": "16.4.5",
+    "@playwright/test": "1.65.0",
     "@types/node": "22.20.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
@@ -41,12 +41,12 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
-    "globals": "17.13.0",
+    "globals": "17.14.0",
     "react-server-dom-webpack": "19.3.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vinext": "1.4.0",
-    "vite": "8.3.5",
+    "vite": "8.3.6",
     "minimatch": "file:vendor/minimatch-compat"
   },
   "overrides": {
