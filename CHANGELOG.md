@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add the DWP Copilot evaluation (published 29 January 2026) to the task-time
+  register as a context-only, grade C record: a comparison group exists, but
+  time and quality are self-reported and the estimate falls from about 19 to
+  about 10 minutes a day without statistical controls. Registry now holds 24
+  records; no transferable ratio changes.
+
 - Explain that images, audio and video belong in the Multimodal task or an
   explicit complementary function. Keep this instruction identical in the
   interactive guide and control catalog; no calculation or routing change.
