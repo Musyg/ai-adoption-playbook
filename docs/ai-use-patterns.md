@@ -103,8 +103,8 @@ jurisdiction, sector, affected people, and applicable text in the case file.
 - Perform a data-protection impact assessment when the planned processing is
   likely to create a high risk.
 
-Switzerland has no overarching AI Act in force as of 20 August 2026. The federal
-bill planned for consultation by the end of 2026 is future work, not current law.
+Switzerland has no overarching AI Act in force as of 18 November 2026. The federal
+measures planned for consultation in spring 2027 are future work, not current law.
 
 ### European Union
 
