@@ -10,6 +10,40 @@ d’urbanisme. Il conserve le guichet et le courrier, rend le cas bas économiqu
 non viable, et maintient 100 % des décisions publiques chez des collaborateurs
 qualifiés.
 
+## Rôles à nommer avant P0
+
+Nommez chaque rôle par écrit, avec un suppléant. Dans une petite autorité, une personne peut cumuler plusieurs rôles, mais l’autorité de décision reste distincte de l’évaluateur.
+
+| Rôle | Responsabilité |
+| --- | --- |
+| Autorité de décision | Responsable de service ou organe compétent qui accepte le risque résiduel à P5 |
+| Responsable du processus | Porte le service, la baseline et l’usage quotidien |
+| Conseiller à la protection des données | Examine finalité, données, analyse d’impact et rétention |
+| Service juridique | Confirme mandat, base légale, règles d’achat et recours |
+| Responsable sécurité | Examine accès, journalisation, fournisseur et gestion des incidents |
+| Archives et gestion documentaire | Définit ce qui est conservé, combien de temps et sous quelle forme |
+| Évaluateur indépendant | Examine le jeu de tests, les seuils et les résultats, sans intérêt dans l’issue |
+| Représentants du personnel et des usagers | Parlent pour ceux qui travaillent avec le système et ceux qu’il touche |
+
+## Synthèse des gates
+
+Une gate n’est franchie que si ses preuves de sortie existent par écrit. Les durées sont des **hypothèses de travail à remplacer par votre propre calendrier**, pas des repères publiés. L’achat (P2) et le pilote (P4) fixent généralement le rythme.
+
+| Gate | Entrée quand | Preuves de sortie | Durée indicative |
+| --- | --- | --- | --- |
+| P0 | Un problème nommé et un propriétaire existent | Mandat, baseline, options non-IA, autorité de décision | 1 à 2 mois |
+| P1 | P0 est signée | Analyses d’impact, conception du recours, services consultés | 2 à 3 mois |
+| P2 | P1 est signée | Contrat avec clauses d’audit, de journaux, de sortie et de notification des changements | 3 à 6 mois |
+| P3 | Un système candidat et un jeu de tests existent | Rapport d’évaluation indépendant avec résultats par segment et limites | 2 à 3 mois |
+| P4 | P3 est acceptée et le personnel formé | Résultats en shadow mode face à la baseline, registre des plaintes | 3 à 6 mois |
+| P5 | P4 donne des résultats acceptables | Décision formelle, registre, plan de surveillance et de retrait | 1 à 2 mois |
+
+Un premier système peut raisonnablement demander environ 12 à 22 mois au total. Réutiliser un fournisseur ou un schéma déjà évalué peut raccourcir P1 à P3, jamais P4 ni P5.
+
+## Ce que les preuves publiées permettent
+
+Les gains de temps annoncés dans le secteur public viennent surtout d’enquêtes, pas de tâches chronométrées. L’évaluation du Department for Work and Pensions britannique avait un groupe de comparaison, mais son estimation passe d’environ 19 à environ 10 minutes par jour sans contrôles statistiques. Servez-vous de ces chiffres pour choisir quoi mesurer à P0, et mesurez votre propre baseline. Voir le [registre des preuves de temps de tâche](../../docs/task-time-evidence.fr.md) et la [page juridique Suisse et UE](../../docs/legal-switzerland-eu.fr.md) pour les dates applicables à votre autorité.
+
 ## Gate P0 — Opportunité publique
 
 Exiger :

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Public-service track: name the roles to fix before P0, add a gate summary
+  with entry condition, exit evidence and indicative duration, and state what
+  published public-sector evidence supports. Durations are labelled working
+  hypotheses, not benchmarks. EN and FR updated together.
+
 - Add the DWP Copilot evaluation (published 29 January 2026) to the task-time
   register as a context-only, grade C record: a comparison group exists, but
   time and quality are self-reported and the estimate falls from about 19 to
