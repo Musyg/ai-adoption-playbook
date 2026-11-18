@@ -1532,8 +1532,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "No matched manual baseline; 40% concerns one workflow versus about 3% across the benchmark.",
-          "fr": "Pas de référence manuelle comparable ; 40 % concerne un workflow, contre environ 3 % sur tout le benchmark."
+          "en": "Supplier-published case: 41 documents checked in minutes, with experts making the final decisions. The 40% figure is a benchmark improvement on one workflow.",
+          "fr": "Cas publié par le fournisseur : 41 documents vérifiés en quelques minutes, avec des experts qui prennent les décisions finales. Le chiffre de 40 % est une amélioration de benchmark sur un seul flux de travail."
         },
         "context": {
           "range_kind": "none",
@@ -1641,8 +1641,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Three prototypes; supplier-published case; counts of fixes do not measure their duration.",
-          "fr": "Trois prototypes ; cas publié par le fournisseur ; le nombre de corrections ne mesure pas leur durée."
+          "en": "Supplier-published case on game prototypes built with a newer model. The source reports about half as many manual fixes across three prototypes.",
+          "fr": "Cas publié par le fournisseur sur des prototypes de jeu réalisés avec un modèle plus récent. La source rapporte environ deux fois moins de corrections manuelles sur trois prototypes."
         },
         "context": {
           "range_kind": "none",
@@ -1756,8 +1756,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Estimated baseline, not two equivalent launches timed with and without AI. Use as a named planning example.",
-          "fr": "Référence estimée, pas deux lancements équivalents chronométrés avec et sans IA. Utiliser comme exemple de planification nommé."
+          "en": "Supplier-published case on a marketing launch. The source estimates 243 hours of production without AI against about 77 with AI, with human approval of each deliverable.",
+          "fr": "Cas publié par le fournisseur sur un lancement marketing. La source estime 243 heures de production sans IA contre environ 77 avec IA, avec validation humaine de chaque livrable."
         },
         "context": {
           "range_kind": "internal_estimate",
@@ -1865,8 +1865,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Historical human comparison; three agent trials; some physical tasks excluded. Researcher approves commands.",
-          "fr": "Comparaison humaine historique ; trois essais de l’agent ; certaines tâches physiques exclues. Le chercheur autorise les commandes."
+          "en": "Research report on four shared technical tasks: 361 minutes without Claude, 181 with a copilot and about 9.6 with the newer agent, with a researcher approving commands.",
+          "fr": "Rapport de recherche sur quatre tâches techniques communes : 361 minutes sans Claude, 181 avec un copilote et environ 9,6 avec l’agent plus récent, un chercheur approuvant les commandes."
         },
         "context": {
           "range_kind": "none",
@@ -1973,8 +1973,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Observational comparison with synthetic controls; other AI tools already available. A merged change is not business value.",
-          "fr": "Comparaison observationnelle avec contrôles synthétiques ; autres outils IA déjà disponibles. Une modification fusionnée n’est pas la valeur métier."
+          "en": "Observational study of coding-agent adoption in real teams: about 24% more merged code changes over four months, estimated against synthetic controls.",
+          "fr": "Étude observationnelle de l’adoption d’agents de code dans des équipes réelles : environ 24 % de modifications de code fusionnées en plus sur quatre mois, estimées face à des contrôles synthétiques."
         },
         "context": {
           "range_kind": "none",
@@ -2083,8 +2083,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Scientific and infrastructure outcomes, not measured human-time savings. Local tests must define what a good solution means.",
-          "fr": "Résultats scientifiques et d’infrastructure, pas économie de temps humain mesurée. Les tests locaux doivent définir une bonne solution."
+          "en": "Supplier-published results on algorithm discovery: fewer detection errors and more feasible grid solutions, found by generating, testing and selecting candidates with an automated evaluator.",
+          "fr": "Résultats publiés par le fournisseur sur la découverte d’algorithmes : moins d’erreurs de détection et plus de solutions réalisables pour le réseau, trouvés en générant, testant et sélectionnant des candidats avec un évaluateur automatique."
         },
         "context": {
           "range_kind": "none",
@@ -2191,8 +2191,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Selected best methods, substantial compute and review, bounded objectives. No universal research productivity ratio.",
-          "fr": "Meilleures méthodes sélectionnées, calcul et revue importants, objectifs bornés. Aucun ratio universel de productivité scientifique."
+          "en": "Research report in which automated researchers improved ten tested failure categories; their best methods beat human ideas under this protocol.",
+          "fr": "Rapport de recherche où des chercheurs automatisés ont amélioré dix catégories d’échec testées ; leurs meilleures méthodes ont dépassé les idées humaines selon ce protocole."
         },
         "context": {
           "range_kind": "none",
@@ -2299,8 +2299,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Two cases, six days and substantial compute; neither a general failure rate nor a time-saving estimate.",
-          "fr": "Deux cas, six jours et un calcul important ; ni taux général d’échec ni estimation du temps économisé."
+          "en": "Two research cases in which agents completed the engineering work but did not answer the central research questions well enough.",
+          "fr": "Deux cas de recherche où des agents ont terminé le travail d’ingénierie sans répondre assez bien aux questions de recherche centrales."
         },
         "context": {
           "range_kind": "none",
@@ -2408,8 +2408,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Usage telemetry and estimated task durations, not a matched measure of accepted human work.",
-          "fr": "Télémétrie d’usage et durées de tâche estimées, pas mesure comparable du travail humain accepté."
+          "en": "Supplier-published description of delegated work across technical and non-technical teams, based on usage telemetry and estimated durations of parallel agent tasks.",
+          "fr": "Description publiée par le fournisseur du travail délégué dans des équipes techniques et non techniques, fondée sur la télémétrie d’usage et des durées estimées de tâches d’agents en parallèle."
         },
         "context": {
           "range_kind": "none",
@@ -2519,8 +2519,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Product description and provider benchmark. Test noise, interruptions, accents, consent and actual effects locally.",
-          "fr": "Description produit et benchmark fournisseur. Tester bruit, interruptions, accents, consentement et effets réels localement."
+          "en": "Supplier product description of a voice-agent builder that combines calls, document lookup and business tools, with a provider benchmark.",
+          "fr": "Description de produit publiée par le fournisseur d’un outil de création d’agents vocaux combinant appels, recherche documentaire et outils métier, avec un benchmark du fournisseur."
         },
         "context": {
           "range_kind": "none",
