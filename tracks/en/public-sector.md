@@ -38,7 +38,7 @@ A full run of about 12 to 22 months is plausible for a first system. Reuse of an
 
 ## What published evidence supports
 
-Public-sector time-saving figures come mostly from surveys, not from timed tasks. The UK Department for Work and Pensions evaluation had a comparison group, yet its estimate fell from about 19 to about 10 minutes a day without statistical controls. Treat such figures as context for choosing what to measure at P0, and measure your own baseline. See the [task-time evidence register](../../docs/task-time-evidence.md) and the [Switzerland and EU legal page](../../docs/legal-switzerland-eu.md) for dates that apply to your authority.
+Public-sector time-saving figures come mostly from surveys, not from timed tasks. The UK Department for Work and Pensions evaluation had a comparison group, yet its estimate fell from about 19 to about 10 minutes a day without statistical controls. Treat such figures as context for choosing what to measure at P0, and measure your own baseline. See the [task-time evidence register](../../docs/task-time-evidence.md). To find the rules that apply to your authority, use the [comparison of how administrations govern AI](../../references/public-sector-ai-governance-2026.md) and, for Switzerland and the EU, the [legal page](../../docs/legal-switzerland-eu.md).
 
 ## Gate P0 — Public opportunity
 

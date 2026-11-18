@@ -42,7 +42,7 @@ Un premier système peut raisonnablement demander environ 12 à 22 mois au total
 
 ## Ce que les preuves publiées permettent
 
-Les gains de temps annoncés dans le secteur public viennent surtout d’enquêtes, pas de tâches chronométrées. L’évaluation du Department for Work and Pensions britannique avait un groupe de comparaison, mais son estimation passe d’environ 19 à environ 10 minutes par jour sans contrôles statistiques. Servez-vous de ces chiffres pour choisir quoi mesurer à P0, et mesurez votre propre baseline. Voir le [registre des preuves de temps de tâche](../../docs/task-time-evidence.fr.md) et la [page juridique Suisse et UE](../../docs/legal-switzerland-eu.fr.md) pour les dates applicables à votre autorité.
+Les gains de temps annoncés dans le secteur public viennent surtout d’enquêtes, pas de tâches chronométrées. L’évaluation du Department for Work and Pensions britannique avait un groupe de comparaison, mais son estimation passe d’environ 19 à environ 10 minutes par jour sans contrôles statistiques. Servez-vous de ces chiffres pour choisir quoi mesurer à P0, et mesurez votre propre baseline. Voir le [registre des preuves de temps de tâche](../../docs/task-time-evidence.fr.md). Pour trouver les règles qui s’appliquent à votre autorité, utilisez la [comparaison de l’encadrement de l’IA par les administrations](../../references/public-sector-ai-governance-2026.fr.md) et, pour la Suisse et l’UE, la [page juridique](../../docs/legal-switzerland-eu.fr.md).
 
 ## Gate P0 — Opportunité publique
 

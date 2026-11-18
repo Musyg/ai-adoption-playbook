@@ -27,6 +27,7 @@ const specific = {
   "docs-project-dossier": paired("Save, export and resume your project, then compare changes.", "Enregistrer, exporter et reprendre votre projet, puis comparer les changements."),
   "docs-evaluations-and-gates": paired("Define what to test and what must be true before moving on.", "Définir ce qu’il faut tester et les conditions pour passer à la suite."),
   "docs-security": paired("Choose security checks for the functions your system actually has.", "Choisir les vérifications de sécurité selon les fonctions réelles de votre système."),
+  "references-public-sector-ai-governance-2026": paired("Compare how administrations govern AI and build the profile for your jurisdiction.", "Comparer comment les administrations encadrent l’IA et établir le profil de votre juridiction."),
   "docs-legal-switzerland-eu": paired("Locate the Swiss and EU questions to check for your intended use.", "Repérer les questions suisses et européennes à vérifier pour l’usage prévu."),
   "docs-universal-process": paired("Follow the project from a defined task to operation and reassessment.", "Suivre le projet d’une tâche définie à l’exploitation et à la réévaluation."),
   "docs-risk-autonomy": paired("Choose an action boundary without confusing it with risk or capability.", "Choisir une limite d’action sans la confondre avec le risque ou les capacités."),

@@ -152,6 +152,7 @@ TRANSLATION_PAIRS = (
     ("field-notes/README.md", "field-notes/README.fr.md"),
     ("references/field-evidence-review-2026.md", "references/field-evidence-review-2026.fr.md"),
     ("references/recent-implementation-cases.md", "references/recent-implementation-cases.fr.md"),
+    ("references/public-sector-ai-governance-2026.md", "references/public-sector-ai-governance-2026.fr.md"),
     ("examples/en/independent-client-follow-up.md", "examples/fr/independant-suivi-client.md"),
     ("examples/en/independent-business-agent-follow-up.md", "examples/fr/independant-agent-metier-suivi.md"),
     ("examples/en/independent-orchestrated-agency-diagnostic.md", "examples/fr/independant-agence-orchestree-diagnostic.md"),
