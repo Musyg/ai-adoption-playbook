@@ -80,7 +80,7 @@ test("sensitivity keeps bounds ordered, retains losses and handles zero eligibil
 
 test("new case coverage and measurement metadata do not silently admit outcome percentages", async () => {
   const registry = JSON.parse(await readFile(new URL("../public/data/task-time-evidence.v1.json", import.meta.url), "utf8"));
-  assert.equal(registry.records.length, 23);
+  assert.equal(registry.records.length, 24);
   assert.equal(registry.records.filter(record => record.transfer.quantitative_use === "usable").length, 6);
   const schema = JSON.parse(await readFile(new URL("../public/data/task-time-evidence.schema.json", import.meta.url), "utf8"));
   assert.ok(!schema.$defs.measurement.required.includes("context"));

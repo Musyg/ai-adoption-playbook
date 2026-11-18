@@ -202,7 +202,7 @@ reviewed and sanitized observations can satisfy its admission rule.
 
 ## Recent cases available
 
-The register now offers 23 evidence records, including 6 admitted task-time ratios.
+The register now offers 24 evidence records, including 6 admitted task-time ratios.
 Two of these measure task duration rather than isolated active work and carry
 that warning. Other results remain useful for building assumptions.
 

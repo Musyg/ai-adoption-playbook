@@ -891,6 +891,121 @@
       ]
     },
     {
+      "evidence_id": "TT-2026-UK-DWP-COPILOT",
+      "title": {
+        "en": "Department for Work and Pensions Copilot trial, with a comparison group",
+        "fr": "Essai Copilot du Department for Work and Pensions, avec groupe de comparaison"
+      },
+      "reader_summary": {
+        "en": "Licensed staff reported saving time against colleagues without a licence, but all figures are self-reported and drop from about 19 to about 10 minutes a day without controls. These figures do not enter your calculation.",
+        "fr": "Les agents sous licence déclarent gagner du temps face à des collègues sans licence, mais tout est déclaratif et l’écart passe d’environ 19 à 10 minutes par jour sans contrôles. Ces chiffres n’entrent pas dans votre calcul."
+      },
+      "organization_context": {
+        "kind": "public_administration",
+        "name": "UK Department for Work and Pensions Microsoft 365 Copilot trial",
+        "region": "United Kingdom"
+      },
+      "task_contract": {
+        "profile_id": "office_day_bundle",
+        "description": {
+          "en": "Central office staff used a licensed office copilot across eight routine tasks over a trial from October 2024 to March 2025.",
+          "fr": "Des agents de bureau central ont utilisé un copilote bureautique sous licence pour huit tâches courantes lors d’un essai d’octobre 2024 à mars 2025."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one working day of routine office tasks",
+          "fr": "une journée de tâches bureautiques courantes"
+        },
+        "quality_gate": "draft",
+        "operator_expertise": "mixed",
+        "verifiability": "medium",
+        "use_patterns": [
+          "generation",
+          "retrieval",
+          "classification",
+          "conversation"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "C",
+        "design": "Quasi-experimental survey comparison, not randomized, licences allocated first come first served",
+        "sample_size": 4251,
+        "time_scope": "per_workday",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": {
+          "value": 19,
+          "unit": "self-reported minutes per workday (95% CI 17 to 22, with controls)",
+          "direction": "decrease"
+        },
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "1,716 licence holders (48% response) were compared with 2,535 colleagues without a licence (27% response). Time saved was self-reported in bands and converted to minutes. The estimate with demographic, occupational and AI-interest controls is about 19 minutes a day; without controls it is about 10 (95% CI 7 to 12). Quality was also self-reported. There was no pre-trial baseline, and licence holders were largely self-selected.",
+          "fr": "1 716 titulaires de licence (48 % de réponses) ont été comparés à 2 535 collègues sans licence (27 % de réponses). Le temps gagné est déclaré par tranches puis converti en minutes. Avec les contrôles démographiques, professionnels et d’intérêt pour l’IA, l’estimation est d’environ 19 minutes par jour ; sans contrôle, d’environ 10 (IC 95 % : 7 à 12). La qualité est aussi déclarée. Il n’y avait pas de mesure de référence avant l’essai et les titulaires de licence se sont largement auto-sélectionnés."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "October 2024 to March 2025; report published 29 January 2026.",
+            "fr": "Octobre 2024 à mars 2025 ; rapport publié le 29 janvier 2026."
+          },
+          "model_and_tools": {
+            "en": "Licensed Microsoft 365 Copilot in the DWP environment.",
+            "fr": "Microsoft 365 Copilot sous licence dans l’environnement du DWP."
+          },
+          "time_coverage": {
+            "en": "Self-reported savings across eight routine tasks; no timed before-and-after observation.",
+            "fr": "Gains déclarés sur huit tâches courantes ; aucune observation chronométrée avant et après."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "office_day_bundle"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "draft",
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "developing",
+          "mixed",
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Use it to see how much a survey estimate can move with the analysis choices, then time your own tasks before and after.",
+          "fr": "Utilisez-la pour voir à quel point une estimation d’enquête varie selon les choix d’analyse, puis chronométrez vos propres tâches avant et après."
+        },
+        "limits": {
+          "en": "Self-reported time, non-random allocation, no baseline and a central-office sample that excludes frontline staff: do not reuse the 19 or 10 minutes in your estimate.",
+          "fr": "Temps déclaré, attribution non aléatoire, pas de référence initiale et échantillon de bureau central sans personnel de terrain : ne reprenez ni les 19 ni les 10 minutes dans votre estimation."
+        }
+      },
+      "sources": [
+        {
+          "title": "An Evaluation of DWP’s Microsoft 365 Copilot Trial",
+          "url": "https://www.gov.uk/government/publications/an-evaluation-of-dwps-microsoft-copilot-365-trial/an-evaluation-of-dwps-microsoft-365-copilot-trial",
+          "published": "2026-01",
+          "accessed_on": "2026-11-18",
+          "source_type": "official_evaluation"
+        }
+      ]
+    },
+    {
       "evidence_id": "TT-2025-UK-CODING-ASSISTANTS",
       "title": {
         "en": "Public-sector coding assistant trial",
