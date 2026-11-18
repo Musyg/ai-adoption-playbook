@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Switzerland and EU legal page: recheck the Swiss calendar on 18 November
+  2026 (consultation now planned for spring 2027 per the Federal Council of
+  28 October), add the Council of Europe AI Convention with its status
+  (not in force in mid-October 2026, Swiss route by sector changes) and the
+  federal administration AI strategy reprioritisation of 18 September 2026.
+  The EU section was not rechecked and keeps its 20 August date. EN and FR.
+
 - Task-time register: give ten context-only records a measurement note that
   says what the source reports, instead of repeating their transfer limit
   word for word. No figure, grade or transfer rule changes.

@@ -34,7 +34,9 @@ protected text of standards.
 - [FDPIC, joint statement on AI-generated imagery](https://www.edoeb.admin.ch/en/joint-statement-on-ai-generated-images), orientation from 61 authorities, not a substitute for case analysis.
 - [FDPIC, data protection impact assessment](https://www.edoeb.admin.ch/en/data-protection-impact-assessment), required when processing is likely to result in high risk.
 - [FDPIC, outsourcing of data processing](https://www.edoeb.admin.ch/en/outsourcing-of-data-processing), on controller responsibility and processor controls.
-- [Federal Chancellery, AI regulation](https://www.bk.admin.ch/en/regulation): still states end-2026 consultation. [SECO, 23 September 2026](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027) states early/spring 2027. The official calendars differ; reconfirm the date, not a law already in force.
+- [Federal Council, 28 October 2026](https://www.admin.ch/fr/newnsb/s2TQiUUjrA5D) (French): progress on implementing the Council of Europe AI Convention; consultation on binding measures planned for spring 2027. [Federal Chancellery, AI regulation](https://www.bk.admin.ch/en/regulation) and [SECO, 23 September 2026](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027) show older end-2026 or early-2027 wording; reconfirm the date, not a law already in force.
+- [Council of Europe treaty office, CETS 225](https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225): official status of the AI Convention (signatures, ratifications, entry into force). Not retrievable by script on 18 November 2026; status taken from secondary trackers dated mid-October 2026, to confirm here.
+- [Federal Council, 18 September 2026](https://www.admin.ch/fr/newnsb/uj3obgFHSuVW) (French): reprioritised federal administration AI strategy, six of eight measures continued, roadmap 2026 to 2028. [Federal Council, 2 October 2026](https://www.admin.ch/fr/newnsb/NJ04UgpFFUoA) (French): report on automation and AI for administrative efficiency (postulate 24.3582).
 
 ### European Union
 

@@ -1,6 +1,6 @@
 # Legal orientation — Switzerland and the European Union
 
-> Snapshot verified on **20 August 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
+> Snapshot verified on **20 August 2026**; the Switzerland and Council of Europe sections were rechecked on **18 November 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
 
 ## Switzerland
 
@@ -24,12 +24,43 @@ Operational routing by use pattern:
 - for synthetic faces, images, or voices of identifiable people, record clear identification, consent or other authority, privacy controls, and applicable personality, criminal, and intellectual-property rules;
 - for processing likely to create a high risk, complete and retain the data-protection impact assessment before the pilot.
 
-Swiss calendar rechecked on 10 October 2026: the
-[Federal Chancellery](https://www.bk.admin.ch/en/regulation) still states
-consultation by the end of 2026. A [SECO update dated 23 September](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027)
-announces early 2027 in its title and spring 2027 in its text. The official
-pages therefore differ. Treat the calendar as a point to reconfirm, not a
-fixed deadline. None of these announcements is a general AI law in force.
+Swiss calendar rechecked on 18 November 2026. The Federal Council press
+release of [28 October 2026](https://www.admin.ch/fr/newnsb/s2TQiUUjrA5D) (French) states that the consultation on the
+legally binding measures is planned for **spring 2027**. This replaces the
+earlier end-of-2026 announcement, which some official pages still show. The
+Federal Office of Justice prepares these measures (transparency, data
+protection, non-discrimination, supervision and risk assessment). The Federal
+Office of Communications (OFCOM) coordinates the non-binding measures such as
+guidelines, sector standards and voluntary commitments. None of this is a
+general AI law in force.
+
+### Council of Europe AI Convention
+
+Switzerland decided on 12 February 2025 to ratify the Council of Europe
+Framework Convention on Artificial Intelligence and signed it on 27 March 2025.
+The announced route is targeted sector changes to Swiss law, not a general AI
+act. The Convention applies to public authorities; each party decides how it
+covers private actors.
+
+The Convention itself was not yet in force in mid-October 2026: trackers citing
+the Council of Europe treaty office reported one party, the European Union
+(15 May 2026), against five ratifications required, including three Council of
+Europe member states. Some web pages wrongly say it entered into force in 2025.
+Check the [treaty office page](https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225) before relying on any date. For a private
+organization nothing binding follows from the Convention until Swiss law
+changes. A public body should expect its principles (transparency, oversight,
+non-discrimination, recourse) to shape what is asked of it.
+
+### Federal administration
+
+The federal administration follows an AI strategy presented in March 2025. On
+18 September 2026 the Federal Council was [informed of a reprioritisation](https://www.admin.ch/fr/newnsb/uj3obgFHSuVW)
+(French): six of the eight implementation measures continue, with a 2026 to 2028
+roadmap, because of the resources available. On
+[2 October 2026](https://www.admin.ch/fr/newnsb/NJ04UgpFFUoA) (French) it adopted a report on automation and AI for
+administrative efficiency, starting with an internal overview of the AI systems
+the Confederation develops, buys or uses. These are signals about federal
+practice. They are not evidence of effect and do not bind cantons or communes.
 
 ## European Union
 
