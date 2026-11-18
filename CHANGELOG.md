@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fix two dead links found in a browser check on 18 November 2026: the
+  Foundation Scotland AI policy moved to a new address, and the Microsoft
+  Ingram Micro story was removed, so it now points to its August 2025
+  Wayback Machine copy.
+
 - Add a reference note comparing how administrations govern AI (EU,
   Netherlands, United Kingdom, Canada, United States, Switzerland and one
   canton), with what transfers between jurisdictions and a checklist to build
