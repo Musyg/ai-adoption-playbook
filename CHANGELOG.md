@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Task-time register: give ten context-only records a measurement note that
+  says what the source reports, instead of repeating their transfer limit
+  word for word. No figure, grade or transfer rule changes.
+
 - Public-service track: name the roles to fix before P0, add a gate summary
   with entry condition, exit evidence and indicative duration, and state what
   published public-sector evidence supports. Durations are labelled working
