@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Nonprofit and foundation track: add what published evidence supports (all
+  self-reported, figures checked at source on 18 November 2026), roles to name
+  on day 1, gates by use (any use, donor content, beneficiary services, grant
+  screening) and a measurement sheet. The grant-administration evidence note
+  gains screening and fundraising studies. EN and FR updated together; no
+  registry record or figure used in calculations changes.
+
 - Switzerland and EU legal page: recheck the Swiss calendar on 18 November
   2026 (consultation now planned for spring 2027 per the Federal Council of
   28 October), add the Council of Europe AI Convention with its status
