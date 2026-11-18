@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add a reference note comparing how administrations govern AI (EU,
+  Netherlands, United Kingdom, Canada, United States, Switzerland and one
+  canton), with what transfers between jurisdictions and a checklist to build
+  the profile for the reader's own. Linked from the public-service track.
+  Describes rules, not effects. EN and FR.
+
 - Nonprofit and foundation track: add what published evidence supports (all
   self-reported, figures checked at source on 18 November 2026), roles to name
   on day 1, gates by use (any use, donor content, beneficiary services, grant
