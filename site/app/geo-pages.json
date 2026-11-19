@@ -307,7 +307,7 @@
     },
     "sources": [
       {"label": "OECD: Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "SME adoption and transfer limits."},
-      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "A functional analogue for email-to-quote preparation."},
+      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://web.archive.org/web/20250811072018/https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "A functional analogue for email-to-quote preparation."},
       {"label": "AWS Grupo Elfa quote automation", "url": "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/", "note": "A provider-reported high-end reference with limited transferability."}
     ],
     "relatedIds": ["roi", "pilot", "governance"]
@@ -620,7 +620,7 @@
     },
     "sources": [
       {"label": "OCDE : Generative AI and the SME Workforce", "url": "https://www.oecd.org/en/publications/generative-ai-and-the-sme-workforce_2d08b99d-en/full-report/component-4.html", "note": "Adoption des PME et limites de transfert."},
-      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "Analogue fonctionnel pour la préparation de devis depuis un courriel."},
+      {"label": "Microsoft Ingram Micro InstaQuote", "url": "https://web.archive.org/web/20250811072018/https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform", "note": "Analogue fonctionnel pour la préparation de devis depuis un courriel."},
       {"label": "AWS Grupo Elfa", "url": "https://aws.amazon.com/pt/blogs/aws-brasil/grupo-elfa-como-genai-automatizou-cotacoes-e-apoiou-a-empresa-a-incrementar-r-240m-em-receitas-em-12-meses/", "note": "Repère haut déclaré par un fournisseur, à transférer avec prudence."}
     ],
     "relatedIds": ["roi", "pilot", "governance"]

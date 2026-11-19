@@ -15,7 +15,7 @@ an SME.
 - The [Alibaba field trial](https://arxiv.org/abs/2605.14830) is direct evidence
   that a bounded agent can reduce eligible-case time. Eligibility was only 5.8%,
   so the whole-flow result was much smaller.
-- [Ingram Micro InstaQuote](https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform)
+- [Ingram Micro InstaQuote](https://web.archive.org/web/20250811072018/https://www.microsoft.com/en/customers/story/1332782617804604736-ingram-micro-partner-professional-services-microsoft-power-platform)
   is a close functional analogue: email intake, product and attachment
   extraction, database checks, pricing APIs, and a quote prepared for a seller.
   It is a supplier case at large-enterprise scale, without a full public control.
