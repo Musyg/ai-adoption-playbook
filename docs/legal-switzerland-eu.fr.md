@@ -1,6 +1,6 @@
 # Orientation juridique — Suisse et Union européenne
 
-> Photographie vérifiée le **20 août 2026** ; les sections Suisse et Conseil de l’Europe ont été revérifiées le **18 novembre 2026**. Cette page oriente les questions à poser ; elle ne fournit pas d’avis juridique. Vérifier la version des textes, le secteur, la juridiction et le rôle exact de l’organisation avant toute décision.
+> Photographie vérifiée le **20 août 2026** ; la section Suisse a été revérifiée le **18 novembre 2026** et le statut de la Convention du Conseil de l’Europe le **19 novembre 2026**. Cette page oriente les questions à poser ; elle ne fournit pas d’avis juridique. Vérifier la version des textes, le secteur, la juridiction et le rôle exact de l’organisation avant toute décision.
 
 ## Suisse
 
@@ -42,12 +42,13 @@ voie annoncée passe par des modifications sectorielles ciblées du droit suisse
 pas par une loi générale sur l’IA. La Convention s’applique aux autorités
 publiques ; chaque partie décide comment elle couvre les acteurs privés.
 
-La Convention elle-même n’était pas encore en vigueur à la mi-octobre 2026 : des
-suivis qui citent le Bureau des traités du Conseil de l’Europe signalaient une
-seule partie, l’Union européenne (15 mai 2026), pour cinq ratifications
-requises dont trois d’États membres du Conseil de l’Europe. Certaines pages web
-affirment à tort qu’elle est entrée en vigueur en 2025. Consulter la
-[page du Bureau des traités](https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225) avant de s’appuyer sur une date. Pour une
+La Convention elle-même n’est pas en vigueur. Le [tableau du Bureau des
+traités](https://www.coe.int/en/web/conventions/full-list?module=signatures-by-treaty&treatynum=225) indiquait, le 19 novembre 2026, 22 signataires et deux
+ratifications : l’Union européenne (15 mai 2026) et la Bosnie-Herzégovine
+(28 octobre 2026). L’entrée en vigueur exige cinq ratifications, dont trois
+d’États membres du Conseil de l’Europe, puis trois mois. La Suisse a signé mais
+pas ratifié. Certaines pages web affirment à tort que la Convention est entrée
+en vigueur en 2025. Consulter le tableau avant de s’appuyer sur une date. Pour une
 organisation privée, rien de contraignant ne découle de la Convention tant que le
 droit suisse n’a pas changé. Un organisme public peut s’attendre à ce que ses
 principes (transparence, supervision, non-discrimination, recours) orientent ce

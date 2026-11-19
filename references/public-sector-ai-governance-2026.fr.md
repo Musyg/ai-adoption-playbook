@@ -67,7 +67,7 @@ bureautiques dans le secteur public figurent dans le registre de temps de tâche
 
 La [Directive sur la prise de décisions automatisée](https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32592)
 fédérale (en anglais) s’applique aux systèmes qui automatisent en tout ou en partie une
-décision administrative. Une [évaluation de l’incidence algorithmique](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/algorithmic-impact-assessment.html) (en anglais)
+décision administrative. Une [évaluation de l’incidence algorithmique](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/automated-decision-making/algorithmic-impact-assessment.html) (en anglais)
 obligatoire fixe un niveau d’incidence, et ce niveau détermine les contrôles
 requis, comme l’examen, l’avis et l’intervention humaine. Les résultats sont
 publiés avant la mise en production. La dernière modification est entrée en

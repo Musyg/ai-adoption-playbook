@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Council of Europe AI Convention: replace the secondary-tracker status with
+  the treaty office chart read in a browser on 19 November 2026 (22
+  signatories, two ratifications including Bosnia and Herzegovina on 28
+  October 2026, not in force). Update the moved Canadian impact-assessment
+  link. A browser check of every link that returned 403 to a script found no
+  other dead link.
+
 - Fix two dead links found in a browser check on 18 November 2026: the
   Foundation Scotland AI policy moved to a new address, and the Microsoft
   Ingram Micro story was removed, so it now points to its August 2025
