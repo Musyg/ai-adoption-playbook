@@ -214,7 +214,7 @@ sa règle d’admission.
 
 ## Cas récents disponibles
 
-Le registre propose désormais 23 fiches de preuve, dont 6 ratios de temps de
+Le registre propose désormais 24 fiches de preuve, dont 6 ratios de temps de
 tâche admis. Deux mesurent une durée de tâche plutôt que le travail actif isolé
 et signalent cette différence. Les autres résultats restent utiles pour
 construire des hypothèses.

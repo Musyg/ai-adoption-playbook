@@ -6,6 +6,40 @@ Efficiency gains alone do not legitimize a public system. Legal mandate, proport
 
 The [Mont-Rive City synthetic case](../../examples/en/public-sector-planning-dossier-business-agent.md) applies these gates to an A2 administrative agent that checks planning dossiers. It preserves the counter and postal channel, makes the low case economically non-viable, and keeps 100% of public decisions with qualified staff.
 
+## Roles to name before P0
+
+Name each role in writing, with a deputy. One person may hold several roles in a small authority, but the decision authority must stay separate from the evaluator.
+
+| Role | Responsibility |
+| --- | --- |
+| Decision authority | Competent head of service or body that accepts residual risk at P5 |
+| Process owner | Owns the service, the baseline, and the day-to-day use |
+| Data protection adviser | Reviews purpose, data, impact assessment, and retention |
+| Legal service | Confirms mandate, legal basis, procurement rules, and recourse |
+| Security officer | Reviews access, logging, supplier, and incident handling |
+| Records and archives | Defines what is kept, for how long, and in what form |
+| Independent evaluator | Reviews the test set, thresholds, and results, and has no stake in the outcome |
+| Staff and user representatives | Speak for the people who work with the system and those it affects |
+
+## Gate summary
+
+Each gate is passed only when its exit evidence exists in writing. The durations are **working hypotheses to replace with your own calendar**, not published benchmarks. Procurement (P2) and the pilot (P4) usually set the pace.
+
+| Gate | Enter when | Exit evidence | Indicative duration |
+| --- | --- | --- | --- |
+| P0 | A named problem and owner exist | Mandate, baseline, non-AI options, decision authority | 1–2 months |
+| P1 | P0 is signed | Impact assessments, recourse design, consulted services | 2–3 months |
+| P2 | P1 is signed | Contract with audit, log, exit, and change-notice terms | 3–6 months |
+| P3 | A candidate system and test set exist | Independent evaluation report with segment results and limits | 2–3 months |
+| P4 | P3 is accepted and staff are trained | Shadow-mode results against the baseline, complaint log | 3–6 months |
+| P5 | P4 shows acceptable results | Formal decision, registration, monitoring and retirement plan | 1–2 months |
+
+A full run of about 12 to 22 months is plausible for a first system. Reuse of an already assessed supplier or pattern can shorten P1 to P3, never P4 or P5.
+
+## What published evidence supports
+
+Public-sector time-saving figures come mostly from surveys, not from timed tasks. The UK Department for Work and Pensions evaluation had a comparison group, yet its estimate fell from about 19 to about 10 minutes a day without statistical controls. Treat such figures as context for choosing what to measure at P0, and measure your own baseline. See the [task-time evidence register](../../docs/task-time-evidence.md). To find the rules that apply to your authority, use the [comparison of how administrations govern AI](../../references/public-sector-ai-governance-2026.md) and, for Switzerland and the EU, the [legal page](../../docs/legal-switzerland-eu.md).
+
 ## Gate P0 — Public opportunity
 
 Require:

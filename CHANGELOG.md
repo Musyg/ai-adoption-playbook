@@ -2,6 +2,53 @@
 
 ## Unreleased
 
+- Council of Europe AI Convention: replace the secondary-tracker status with
+  the treaty office chart read in a browser on 19 November 2026 (22
+  signatories, two ratifications including Bosnia and Herzegovina on 28
+  October 2026, not in force). Update the moved Canadian impact-assessment
+  link. A browser check of every link that returned 403 to a script found no
+  other dead link.
+
+- Fix two dead links found in a browser check on 18 November 2026: the
+  Foundation Scotland AI policy moved to a new address, and the Microsoft
+  Ingram Micro story was removed, so it now points to its August 2025
+  Wayback Machine copy.
+
+- Add a reference note comparing how administrations govern AI (EU,
+  Netherlands, United Kingdom, Canada, United States, Switzerland and one
+  canton), with what transfers between jurisdictions and a checklist to build
+  the profile for the reader's own. Linked from the public-service track.
+  Describes rules, not effects. EN and FR.
+
+- Nonprofit and foundation track: add what published evidence supports (all
+  self-reported, figures checked at source on 18 November 2026), roles to name
+  on day 1, gates by use (any use, donor content, beneficiary services, grant
+  screening) and a measurement sheet. The grant-administration evidence note
+  gains screening and fundraising studies. EN and FR updated together; no
+  registry record or figure used in calculations changes.
+
+- Switzerland and EU legal page: recheck the Swiss calendar on 18 November
+  2026 (consultation now planned for spring 2027 per the Federal Council of
+  28 October), add the Council of Europe AI Convention with its status
+  (not in force in mid-October 2026, Swiss route by sector changes) and the
+  federal administration AI strategy reprioritisation of 18 September 2026.
+  The EU section was not rechecked and keeps its 20 August date. EN and FR.
+
+- Task-time register: give ten context-only records a measurement note that
+  says what the source reports, instead of repeating their transfer limit
+  word for word. No figure, grade or transfer rule changes.
+
+- Public-service track: name the roles to fix before P0, add a gate summary
+  with entry condition, exit evidence and indicative duration, and state what
+  published public-sector evidence supports. Durations are labelled working
+  hypotheses, not benchmarks. EN and FR updated together.
+
+- Add the DWP Copilot evaluation (published 29 January 2026) to the task-time
+  register as a context-only, grade C record: a comparison group exists, but
+  time and quality are self-reported and the estimate falls from about 19 to
+  about 10 minutes a day without statistical controls. Registry now holds 24
+  records; no transferable ratio changes.
+
 - Explain that images, audio and video belong in the Multimodal task or an
   explicit complementary function. Keep this instruction identical in the
   interactive guide and control catalog; no calculation or routing change.
