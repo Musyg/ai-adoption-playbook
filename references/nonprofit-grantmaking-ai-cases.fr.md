@@ -1,6 +1,6 @@
 # Note de preuves — IA et instruction des subventions
 
-Dernière vérification : **19 août 2026**.
+Dernière vérification : **19 août 2026** ; preuves sur le tri et la collecte ajoutées le **18 novembre 2026**.
 
 Cette note borne le cas synthétique
 [Agent A2 pour les dossiers de subvention](../examples/fr/association-agent-dossiers-subventions.md).
@@ -57,3 +57,17 @@ fusionnés dans une moyenne rassurante.
 
 La décision de financement, son explication et son éventuelle contestation sont
 mesurées séparément de l'efficacité administrative.
+
+## Preuves sur le tri et la collecte (18 novembre 2026)
+
+Aucune étude ne mesure le temps humain actif d’une tâche associative typique (une demande de subvention, un rapport d’impact, un appel aux dons) avec et sans IA. Ce qui existe mesure des décisions, un accord ou des dons.
+
+| Étude | Protocole et échantillon | Résultat | Usage ici |
+| --- | --- | --- | --- |
+| [Lane et al., tri MIT Solve](https://mackinstitute.wharton.upenn.edu/wp-content/uploads/2025/04/WTIC.2025_Lane-Jacqueline_The-Narrative-AI-Advantage.pdf) | Randomisé, 48 solutions, 228 évaluateurs, 3 002 décisions (2024) | Les conseils de l’IA font passer le taux de sélection de 68 % à 62 % (score seul) et 57 % (avec justification rédigée). Temps plafonné à 2,5 minutes, donc aucun résultat sur le temps | Risque d’ancrage sur l’IA ; aucun gain de temps |
+| [Présélection la Caixa](https://www.cambridge.org/core/product/D17CC86C884D4F9E3A6DD9ABF3F4605E/core-reader) | Essai parallèle caché, puis usage opérationnel, environ 500 dossiers par appel | Les relecteurs ont repêché 30 dossiers sur 216 (2022) et 35 sur 98 (2023) ; deux projets financés auraient été écartés | Chaque exclusion doit être relue |
+| [Thelwall et al., dossiers UKRI](https://arxiv.org/pdf/2609.25327) | 2 267 dossiers passés notés par des modèles de langage | Corrélation de 0,186 avec les évaluateurs individuels, sous l’accord entre évaluateurs (0,242) | Test rétrospectif avant usage |
+| [Rospocher, dossiers contrôlés](https://aclanthology.org/2026.aacl-short.44.pdf) | Dossiers synthétiques au contenu identique | Notes plus basses pour un profil de publications plus faible et une institution moins cotée | Tester le biais de prestige |
+| [Caffier et al., appels aux dons](https://arxiv.org/pdf/2604.03202) | Expériences en ligne, environ 650 participants chacune, petits dons réels | Les appels rédigés par IA non divulgués font aussi bien ou mieux que les appels humains | Contexte ; la divulgation change le résultat dans d’autres études |
+
+Les pratiques des bailleurs divergent. [MacArthur](https://www.macfound.org/about/our-policies/artificial-intelligence) n’utilise pas l’IA pour décider ou évaluer des subventions. [Foundation Scotland](https://www.foundationscotland.org.uk/documents/237/AI_Policy.pdf) l’utilise pour présélectionner, à titre indicatif, avec relecture humaine obligatoire et information publique. Au Royaume-Uni, 13 % des bailleurs demandent aux requérants de déclarer leur usage de l’IA ([Charity Digital Skills Report 2026](https://charitydigitalskills.co.uk/report/detailed-findings/grantmaking-trusts-and-foundations/), 123 bailleurs). Un champ de déclaration dans le formulaire coûte peu et donne au bailleur ses propres données.

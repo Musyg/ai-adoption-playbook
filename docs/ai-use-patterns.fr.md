@@ -111,9 +111,9 @@ personnes affectées et le texte applicable.
 - Réaliser une analyse d’impact relative à la protection des données lorsque le
   traitement projeté est susceptible d’engendrer un risque élevé.
 
-Au 20 août 2026, la Suisse ne possède pas de loi générale sur l’IA en vigueur.
-Le projet fédéral annoncé pour consultation d’ici fin 2026 reste un travail
-futur, pas du droit actuel.
+Au 18 novembre 2026, la Suisse ne possède pas de loi générale sur l’IA en vigueur.
+Les mesures fédérales prévues pour consultation au printemps 2027 restent un
+travail futur, pas du droit actuel.
 
 ### Union européenne
 

@@ -891,6 +891,121 @@
       ]
     },
     {
+      "evidence_id": "TT-2026-UK-DWP-COPILOT",
+      "title": {
+        "en": "Department for Work and Pensions Copilot trial, with a comparison group",
+        "fr": "Essai Copilot du Department for Work and Pensions, avec groupe de comparaison"
+      },
+      "reader_summary": {
+        "en": "Licensed staff reported saving time against colleagues without a licence, but all figures are self-reported and drop from about 19 to about 10 minutes a day without controls. These figures do not enter your calculation.",
+        "fr": "Les agents sous licence déclarent gagner du temps face à des collègues sans licence, mais tout est déclaratif et l’écart passe d’environ 19 à 10 minutes par jour sans contrôles. Ces chiffres n’entrent pas dans votre calcul."
+      },
+      "organization_context": {
+        "kind": "public_administration",
+        "name": "UK Department for Work and Pensions Microsoft 365 Copilot trial",
+        "region": "United Kingdom"
+      },
+      "task_contract": {
+        "profile_id": "office_day_bundle",
+        "description": {
+          "en": "Central office staff used a licensed office copilot across eight routine tasks over a trial from October 2024 to March 2025.",
+          "fr": "Des agents de bureau central ont utilisé un copilote bureautique sous licence pour huit tâches courantes lors d’un essai d’octobre 2024 à mars 2025."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one working day of routine office tasks",
+          "fr": "une journée de tâches bureautiques courantes"
+        },
+        "quality_gate": "draft",
+        "operator_expertise": "mixed",
+        "verifiability": "medium",
+        "use_patterns": [
+          "generation",
+          "retrieval",
+          "classification",
+          "conversation"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "C",
+        "design": "Quasi-experimental survey comparison, not randomized, licences allocated first come first served",
+        "sample_size": 4251,
+        "time_scope": "per_workday",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": {
+          "value": 19,
+          "unit": "self-reported minutes per workday (95% CI 17 to 22, with controls)",
+          "direction": "decrease"
+        },
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "1,716 licence holders (48% response) were compared with 2,535 colleagues without a licence (27% response). Time saved was self-reported in bands and converted to minutes. The estimate with demographic, occupational and AI-interest controls is about 19 minutes a day; without controls it is about 10 (95% CI 7 to 12). Quality was also self-reported. There was no pre-trial baseline, and licence holders were largely self-selected.",
+          "fr": "1 716 titulaires de licence (48 % de réponses) ont été comparés à 2 535 collègues sans licence (27 % de réponses). Le temps gagné est déclaré par tranches puis converti en minutes. Avec les contrôles démographiques, professionnels et d’intérêt pour l’IA, l’estimation est d’environ 19 minutes par jour ; sans contrôle, d’environ 10 (IC 95 % : 7 à 12). La qualité est aussi déclarée. Il n’y avait pas de mesure de référence avant l’essai et les titulaires de licence se sont largement auto-sélectionnés."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "October 2024 to March 2025; report published 29 January 2026.",
+            "fr": "Octobre 2024 à mars 2025 ; rapport publié le 29 janvier 2026."
+          },
+          "model_and_tools": {
+            "en": "Licensed Microsoft 365 Copilot in the DWP environment.",
+            "fr": "Microsoft 365 Copilot sous licence dans l’environnement du DWP."
+          },
+          "time_coverage": {
+            "en": "Self-reported savings across eight routine tasks; no timed before-and-after observation.",
+            "fr": "Gains déclarés sur huit tâches courantes ; aucune observation chronométrée avant et après."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "office_day_bundle"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "draft",
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "developing",
+          "mixed",
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Use it to see how much a survey estimate can move with the analysis choices, then time your own tasks before and after.",
+          "fr": "Utilisez-la pour voir à quel point une estimation d’enquête varie selon les choix d’analyse, puis chronométrez vos propres tâches avant et après."
+        },
+        "limits": {
+          "en": "Self-reported time, non-random allocation, no baseline and a central-office sample that excludes frontline staff: do not reuse the 19 or 10 minutes in your estimate.",
+          "fr": "Temps déclaré, attribution non aléatoire, pas de référence initiale et échantillon de bureau central sans personnel de terrain : ne reprenez ni les 19 ni les 10 minutes dans votre estimation."
+        }
+      },
+      "sources": [
+        {
+          "title": "An Evaluation of DWP’s Microsoft 365 Copilot Trial",
+          "url": "https://www.gov.uk/government/publications/an-evaluation-of-dwps-microsoft-copilot-365-trial/an-evaluation-of-dwps-microsoft-365-copilot-trial",
+          "published": "2026-01",
+          "accessed_on": "2026-11-18",
+          "source_type": "official_evaluation"
+        }
+      ]
+    },
+    {
       "evidence_id": "TT-2025-UK-CODING-ASSISTANTS",
       "title": {
         "en": "Public-sector coding assistant trial",
@@ -1417,8 +1532,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "No matched manual baseline; 40% concerns one workflow versus about 3% across the benchmark.",
-          "fr": "Pas de référence manuelle comparable ; 40 % concerne un workflow, contre environ 3 % sur tout le benchmark."
+          "en": "Supplier-published case: 41 documents checked in minutes, with experts making the final decisions. The 40% figure is a benchmark improvement on one workflow.",
+          "fr": "Cas publié par le fournisseur : 41 documents vérifiés en quelques minutes, avec des experts qui prennent les décisions finales. Le chiffre de 40 % est une amélioration de benchmark sur un seul flux de travail."
         },
         "context": {
           "range_kind": "none",
@@ -1526,8 +1641,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Three prototypes; supplier-published case; counts of fixes do not measure their duration.",
-          "fr": "Trois prototypes ; cas publié par le fournisseur ; le nombre de corrections ne mesure pas leur durée."
+          "en": "Supplier-published case on game prototypes built with a newer model. The source reports about half as many manual fixes across three prototypes.",
+          "fr": "Cas publié par le fournisseur sur des prototypes de jeu réalisés avec un modèle plus récent. La source rapporte environ deux fois moins de corrections manuelles sur trois prototypes."
         },
         "context": {
           "range_kind": "none",
@@ -1641,8 +1756,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Estimated baseline, not two equivalent launches timed with and without AI. Use as a named planning example.",
-          "fr": "Référence estimée, pas deux lancements équivalents chronométrés avec et sans IA. Utiliser comme exemple de planification nommé."
+          "en": "Supplier-published case on a marketing launch. The source estimates 243 hours of production without AI against about 77 with AI, with human approval of each deliverable.",
+          "fr": "Cas publié par le fournisseur sur un lancement marketing. La source estime 243 heures de production sans IA contre environ 77 avec IA, avec validation humaine de chaque livrable."
         },
         "context": {
           "range_kind": "internal_estimate",
@@ -1750,8 +1865,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Historical human comparison; three agent trials; some physical tasks excluded. Researcher approves commands.",
-          "fr": "Comparaison humaine historique ; trois essais de l’agent ; certaines tâches physiques exclues. Le chercheur autorise les commandes."
+          "en": "Research report on four shared technical tasks: 361 minutes without Claude, 181 with a copilot and about 9.6 with the newer agent, with a researcher approving commands.",
+          "fr": "Rapport de recherche sur quatre tâches techniques communes : 361 minutes sans Claude, 181 avec un copilote et environ 9,6 avec l’agent plus récent, un chercheur approuvant les commandes."
         },
         "context": {
           "range_kind": "none",
@@ -1858,8 +1973,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Observational comparison with synthetic controls; other AI tools already available. A merged change is not business value.",
-          "fr": "Comparaison observationnelle avec contrôles synthétiques ; autres outils IA déjà disponibles. Une modification fusionnée n’est pas la valeur métier."
+          "en": "Observational study of coding-agent adoption in real teams: about 24% more merged code changes over four months, estimated against synthetic controls.",
+          "fr": "Étude observationnelle de l’adoption d’agents de code dans des équipes réelles : environ 24 % de modifications de code fusionnées en plus sur quatre mois, estimées face à des contrôles synthétiques."
         },
         "context": {
           "range_kind": "none",
@@ -1968,8 +2083,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Scientific and infrastructure outcomes, not measured human-time savings. Local tests must define what a good solution means.",
-          "fr": "Résultats scientifiques et d’infrastructure, pas économie de temps humain mesurée. Les tests locaux doivent définir une bonne solution."
+          "en": "Supplier-published results on algorithm discovery: fewer detection errors and more feasible grid solutions, found by generating, testing and selecting candidates with an automated evaluator.",
+          "fr": "Résultats publiés par le fournisseur sur la découverte d’algorithmes : moins d’erreurs de détection et plus de solutions réalisables pour le réseau, trouvés en générant, testant et sélectionnant des candidats avec un évaluateur automatique."
         },
         "context": {
           "range_kind": "none",
@@ -2076,8 +2191,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Selected best methods, substantial compute and review, bounded objectives. No universal research productivity ratio.",
-          "fr": "Meilleures méthodes sélectionnées, calcul et revue importants, objectifs bornés. Aucun ratio universel de productivité scientifique."
+          "en": "Research report in which automated researchers improved ten tested failure categories; their best methods beat human ideas under this protocol.",
+          "fr": "Rapport de recherche où des chercheurs automatisés ont amélioré dix catégories d’échec testées ; leurs meilleures méthodes ont dépassé les idées humaines selon ce protocole."
         },
         "context": {
           "range_kind": "none",
@@ -2184,8 +2299,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Two cases, six days and substantial compute; neither a general failure rate nor a time-saving estimate.",
-          "fr": "Deux cas, six jours et un calcul important ; ni taux général d’échec ni estimation du temps économisé."
+          "en": "Two research cases in which agents completed the engineering work but did not answer the central research questions well enough.",
+          "fr": "Deux cas de recherche où des agents ont terminé le travail d’ingénierie sans répondre assez bien aux questions de recherche centrales."
         },
         "context": {
           "range_kind": "none",
@@ -2293,8 +2408,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Usage telemetry and estimated task durations, not a matched measure of accepted human work.",
-          "fr": "Télémétrie d’usage et durées de tâche estimées, pas mesure comparable du travail humain accepté."
+          "en": "Supplier-published description of delegated work across technical and non-technical teams, based on usage telemetry and estimated durations of parallel agent tasks.",
+          "fr": "Description publiée par le fournisseur du travail délégué dans des équipes techniques et non techniques, fondée sur la télémétrie d’usage et des durées estimées de tâches d’agents en parallèle."
         },
         "context": {
           "range_kind": "none",
@@ -2404,8 +2519,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Product description and provider benchmark. Test noise, interruptions, accents, consent and actual effects locally.",
-          "fr": "Description produit et benchmark fournisseur. Tester bruit, interruptions, accents, consentement et effets réels localement."
+          "en": "Supplier product description of a voice-agent builder that combines calls, document lookup and business tools, with a provider benchmark.",
+          "fr": "Description de produit publiée par le fournisseur d’un outil de création d’agents vocaux combinant appels, recherche documentaire et outils métier, avec un benchmark du fournisseur."
         },
         "context": {
           "range_kind": "none",
