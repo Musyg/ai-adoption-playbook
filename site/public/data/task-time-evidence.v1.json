@@ -835,8 +835,8 @@
         "outcome_change": null,
         "quality_change": null,
         "notes": {
-          "en": "Participants estimated how much time they saved across a mixed office day. The evaluation did not time each task before and after or connect every reported saving to a finished result.",
-          "fr": "Les participants ont estimé le temps gagné pendant une journée bureautique variée. L’évaluation n’a pas chronométré chaque tâche avant et après ni relié chaque gain déclaré à un résultat terminé."
+          "en": "Participants chose a time-saved band in a survey (7,115 respondents among 20,000 licence holders), converted to minutes at each band's midpoint. The report describes no comparison group without a licence, and the evaluation did not time each task before and after or connect every reported saving to a finished result.",
+          "fr": "Les participants ont choisi une tranche de temps gagné dans une enquête (7 115 répondants sur 20 000 titulaires de licence), convertie en minutes au milieu de chaque tranche. Le rapport ne décrit aucun groupe de comparaison sans licence, et l’évaluation n’a ni chronométré chaque tâche avant et après, ni relié chaque gain déclaré à un résultat terminé."
         },
         "context": {
           "range_kind": "none",
@@ -1001,6 +1001,236 @@
           "url": "https://www.gov.uk/government/publications/an-evaluation-of-dwps-microsoft-copilot-365-trial/an-evaluation-of-dwps-microsoft-365-copilot-trial",
           "published": "2026-01",
           "accessed_on": "2026-11-18",
+          "source_type": "official_evaluation"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2026-UK-HMRC-COPILOT",
+      "title": {
+        "en": "HMRC Copilot trial with randomly allocated licences",
+        "fr": "Essai Copilot du HMRC avec licences attribuées au hasard"
+      },
+      "reader_summary": {
+        "en": "Licences went to randomly chosen staff, but savings were still self-reported, with no comparison group in the report: about 60 minutes a week. These figures do not enter your calculation.",
+        "fr": "Les licences ont été attribuées au hasard, mais les gains restent déclaratifs, sans groupe de comparaison dans le rapport : environ 60 minutes par semaine. Ces chiffres n’entrent pas dans votre calcul."
+      },
+      "organization_context": {
+        "kind": "public_administration",
+        "name": "HM Revenue and Customs Microsoft 365 Copilot phase III trial",
+        "region": "United Kingdom"
+      },
+      "task_contract": {
+        "profile_id": "office_day_bundle",
+        "description": {
+          "en": "Staff in roles that mainly use office software used a licensed copilot during a trial from September to December 2024.",
+          "fr": "Des agents dont le travail repose surtout sur la bureautique ont utilisé un copilote sous licence lors d’un essai de septembre à décembre 2024."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one working week of office tasks",
+          "fr": "une semaine de tâches bureautiques"
+        },
+        "quality_gate": "draft",
+        "operator_expertise": "mixed",
+        "verifiability": "medium",
+        "use_patterns": [
+          "generation",
+          "retrieval",
+          "classification",
+          "conversation"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "C",
+        "design": "Random allocation of 3,000 licences, then a survey of licence holders; no comparison group reported",
+        "sample_size": 1364,
+        "time_scope": "per_workday",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": {
+          "value": 12,
+          "unit": "self-reported minutes per workday (about 60 per full-time week), reduced by about 20% for non-users",
+          "direction": "decrease"
+        },
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "3,000 licences were allocated at random and 500 more to volunteers; 1,364 randomly allocated holders answered the survey (about 45%). Savings of 2 to 3% of the working week were self-reported, then reduced by about 20% because active users were more likely to answer. Usage telemetry was collected but no figures are reported. Output volume and quality were not measured.",
+          "fr": "3 000 licences ont été attribuées au hasard et 500 autres à des volontaires ; 1 364 titulaires tirés au sort ont répondu à l’enquête (environ 45 %). Les gains de 2 à 3 % de la semaine de travail sont déclarés, puis réduits d’environ 20 % parce que les utilisateurs actifs répondaient davantage. Une télémétrie d’usage a été collectée sans chiffres publiés. Le volume et la qualité des productions n’ont pas été mesurés."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "September to December 2024; report published 9 July 2026.",
+            "fr": "Septembre à décembre 2024 ; rapport publié le 9 juillet 2026."
+          },
+          "model_and_tools": {
+            "en": "Licensed Microsoft 365 Copilot; material above Official was excluded.",
+            "fr": "Microsoft 365 Copilot sous licence ; les documents au-delà du niveau Official étaient exclus."
+          },
+          "time_coverage": {
+            "en": "Self-reported share of the working week; no timed before-and-after observation.",
+            "fr": "Part déclarée de la semaine de travail ; aucune observation chronométrée avant et après."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "office_day_bundle"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "draft",
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "developing",
+          "mixed",
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Copy the random allocation of licences, but add a timed baseline or a comparison group before claiming a saving.",
+          "fr": "Reprenez l’attribution aléatoire des licences, mais ajoutez une baseline chronométrée ou un groupe de comparaison avant d’annoncer un gain."
+        },
+        "limits": {
+          "en": "Random allocation does not fix self-reported time: without a comparison group or timed tasks, do not reuse the 60 minutes in your estimate.",
+          "fr": "L’attribution aléatoire ne corrige pas un temps déclaré : sans groupe de comparaison ni tâches chronométrées, ne reprenez pas les 60 minutes dans votre estimation."
+        }
+      },
+      "sources": [
+        {
+          "title": "Evaluating the impact of Microsoft Copilot in HMRC (phase III trial)",
+          "url": "https://www.gov.uk/government/publications/evaluation-report-phase-3-trial-of-microsoft-copilot/evaluating-the-impact-of-microsoft-copilot-in-hmrc",
+          "published": "2026-07",
+          "accessed_on": "2026-11-19",
+          "source_type": "official_evaluation"
+        }
+      ]
+    },
+    {
+      "evidence_id": "TT-2024-AU-DTA-COPILOT",
+      "title": {
+        "en": "Australian whole-of-government Copilot trial",
+        "fr": "Essai Copilot de l’ensemble du gouvernement australien"
+      },
+      "reader_summary": {
+        "en": "Public servants in more than 50 agencies perceived saving about an hour a day on summaries, drafts and searches, from surveys without a comparison group. These figures do not enter your calculation.",
+        "fr": "Des agents de plus de 50 administrations ont perçu un gain d’environ une heure par jour sur résumés, brouillons et recherches, selon des enquêtes sans groupe de comparaison. Ces chiffres n’entrent pas dans votre calcul."
+      },
+      "organization_context": {
+        "kind": "public_administration",
+        "name": "Australian Government whole-of-government Microsoft 365 Copilot trial",
+        "region": "Australia"
+      },
+      "task_contract": {
+        "profile_id": "office_day_bundle",
+        "description": {
+          "en": "Public servants in more than 50 agencies used a licensed office copilot during a six-month trial in the first half of 2024.",
+          "fr": "Des agents de plus de 50 administrations ont utilisé un copilote bureautique sous licence lors d’un essai de six mois au premier semestre 2024."
+        },
+        "work_mode": "copilot",
+        "architectures": [
+          "model",
+          "workflow"
+        ],
+        "autonomy_levels": [
+          "A0",
+          "A1"
+        ],
+        "output_unit": {
+          "en": "one working day of routine office tasks",
+          "fr": "une journée de tâches bureautiques courantes"
+        },
+        "quality_gate": "draft",
+        "operator_expertise": "mixed",
+        "verifiability": "medium",
+        "use_patterns": [
+          "generation",
+          "retrieval",
+          "classification",
+          "conversation"
+        ]
+      },
+      "measurement": {
+        "evidence_grade": "C",
+        "design": "Pre-use, pulse and post-use surveys with interviews and focus groups; no comparison group reported",
+        "sample_size": 1556,
+        "time_scope": "per_workday",
+        "human_active_time_measured": false,
+        "machine_runtime_measured": false,
+        "human_time_reduction_fraction": null,
+        "absolute_saving": {
+          "value": 60,
+          "unit": "perceived minutes per day on summarising, first drafts and information search",
+          "direction": "decrease"
+        },
+        "outcome_change": null,
+        "quality_change": null,
+        "notes": {
+          "en": "Surveys had 1,556, 1,159 and 831 respondents before, during and after use. Participants perceived about an hour a day saved on summarising, first drafts and searches; up to 7% said Copilot added time to some activities. About one in three used it daily. Checking and editing inaccurate output offset part of the gain.",
+          "fr": "Les enquêtes ont reçu 1 556, 1 159 et 831 réponses avant, pendant et après l’usage. Les participants ont perçu environ une heure gagnée par jour sur les résumés, premiers brouillons et recherches ; jusqu’à 7 % disent que Copilot a allongé certaines activités. Environ un sur trois l’utilisait chaque jour. La vérification et la correction des sorties inexactes ont absorbé une partie du gain."
+        },
+        "context": {
+          "range_kind": "none",
+          "observed_period": {
+            "en": "January to June 2024; evaluation published October 2024.",
+            "fr": "Janvier à juin 2024 ; évaluation publiée en octobre 2024."
+          },
+          "model_and_tools": {
+            "en": "Licensed Microsoft 365 Copilot in Australian Public Service agencies.",
+            "fr": "Microsoft 365 Copilot sous licence dans les administrations fédérales australiennes."
+          },
+          "time_coverage": {
+            "en": "Perceived savings by activity; no timed observation.",
+            "fr": "Gains perçus par activité ; aucune observation chronométrée."
+          }
+        }
+      },
+      "transfer": {
+        "quantitative_use": "context_only",
+        "allowed_profiles": [
+          "office_day_bundle"
+        ],
+        "work_modes": [
+          "copilot"
+        ],
+        "quality_gates": [
+          "draft",
+          "reviewed"
+        ],
+        "expertise_levels": [
+          "developing",
+          "mixed",
+          "experienced"
+        ],
+        "preconditions": {
+          "en": "Use it to choose which activities to time first, such as summaries and first drafts, and include checking time.",
+          "fr": "Servez-vous-en pour choisir les activités à chronométrer d’abord, comme les résumés et premiers brouillons, en incluant le temps de vérification."
+        },
+        "limits": {
+          "en": "Perceived savings from surveys without a comparison group: do not reuse the hour a day in your estimate.",
+          "fr": "Gains perçus issus d’enquêtes sans groupe de comparaison : ne reprenez pas l’heure par jour dans votre estimation."
+        }
+      },
+      "sources": [
+        {
+          "title": "Evaluation of the whole-of-government trial of Microsoft 365 Copilot: evaluation findings",
+          "url": "https://digital.gov.au/initiatives/copilot-trial/summary-evaluation-findings/cts-evaluation-findings",
+          "published": "2024-10",
+          "accessed_on": "2026-11-19",
           "source_type": "official_evaluation"
         }
       ]
