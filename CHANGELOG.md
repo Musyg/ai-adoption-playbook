@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+No unpublished changes.
+
+## Updates published on main through 2026-11-19
+
+Published through PR #97, commit `5e8e489`, with successful pull-request CI.
+This section records deployed changes, not a new release tag: the product
+version stays `0.2.2` because exported project dossiers record that version.
+
 - Task-time register: add two context-only grade C records from public
   administrations, HMRC's Copilot trial (licences allocated at random, savings
   still self-reported) and the Australian whole-of-government Copilot trial
@@ -86,7 +94,7 @@
 - Remove interactive JavaScript and module preloads from the 12 static articles;
   retain their complete HTML, styles, links and structured metadata. Split the
   interactive static build into separately cacheable runtime, evidence and
-  workspace chunks. These maintenance changes are not yet published.
+  workspace chunks.
 - Normalize displayed number separators across server and browser locale data
   to prevent the French page from regenerating during hydration. Numeric
   calculations, rounding rules and evidence records are unchanged.

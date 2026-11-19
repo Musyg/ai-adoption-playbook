@@ -34,7 +34,7 @@ une [prévision de demande](examples/fr/prevision-demande-pieces.md), un
 [assistant multimodal de catalogue](examples/fr/catalogue-multimodal-accessibilite.md).
 Les onze cas sont synthétiques et indiquent explicitement les limites de leurs preuves.
 
-> État : version **0.2.2**, dépôt public, photographie au **23 août 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
+> État : version **0.2.2**, dépôt public, photographie au **19 novembre 2026**. Les guides, parcours, modèles, exemples et l’application visuelle sont disponibles à l’adresse GitHub Pages approuvée.
 
 **Preuves de temps de tâche :** le calculateur interactif part maintenant d’une
 tâche comptable, indique si une source publique est comparable et transforme sa
