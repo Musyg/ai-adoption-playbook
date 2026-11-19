@@ -75,3 +75,28 @@ is unchanged. The document-library regression checks decoded accented/numeric
 heading labels, duplicate anchors and inert encoded markup. Keep htmlparser2 and
 dom-serializer on their own compatible entities 8.x dependency: do **not** add a
 global entities 9 override. The major upgrade is validated separately in PR #80.
+
+
+## 18 November 2026: picomatch (no upstream fix)
+
+[GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)
+(ReDoS through single-branch repeated extglobs, CVSS 7.5) affects every
+published picomatch release up to 4.0.7, the latest. It reaches the lockfile
+only through build and lint tooling (vite, tinyglobby, fdir, micromatch,
+fast-glob, typescript-eslint), which accounts for the 17 reported packages.
+The audit with `--omit=dev` reports 0 vulnerabilities: nothing in the shipped
+dependency set is affected, and the published site is a static export.
+
+No compatible fixed version exists, so there is nothing to pin. Downgrading
+`vite` or the lint stack, as `npm audit fix --force` proposes, would trade a
+build-time advisory for older tooling and is not done.
+
+CI now has two audit steps:
+
+- `npm audit --omit=dev --audit-level=moderate` is **blocking**;
+- the full-tree `npm audit --audit-level=moderate` still runs and is reported
+  but does not block (`continue-on-error`), so the advisory stays visible.
+
+Reassess when picomatch publishes a release above 4.0.7: update the lockfile,
+confirm the full audit is clean, then remove `continue-on-error`. Any other
+advisory in shipped dependencies still fails the build immediately.

@@ -32,7 +32,7 @@ for (const [en, fr] of [
 
 for (const [category, names] of Object.entries({
   templates: ["accessibility-assessment", "evaluation-plan", "field-feedback-report", "fundamental-rights-impact-assessment", "incident-runbook", "mandate", "pilot-decision", "risk-assessment", "training-plan", "use-case-card", "vendor-assessment"],
-  references: ["agentic-integration-levels", "field-evidence-review-2026", "independent-knowledge-work-cases", "nonprofit-grantmaking-ai-cases", "pme-b2b-quote-cases", "public-sector-planning-ai-cases", "recent-implementation-cases", "sources", "tpe-customer-support-cases"],
+  references: ["agentic-integration-levels", "field-evidence-review-2026", "independent-knowledge-work-cases", "nonprofit-grantmaking-ai-cases", "pme-b2b-quote-cases", "public-sector-ai-governance-2026", "public-sector-planning-ai-cases", "recent-implementation-cases", "sources", "tpe-customer-support-cases"],
   docs: ["ai-use-patterns", "evaluations-and-gates", "field-pilot-cohort", "field-pilot-protocol", "legal-switzerland-eu", "maturity-model", "project-dossier", "risk-autonomy", "security", "task-time-evidence", "universal-process"],
   "field-notes": ["README"],
 })) for (const name of names) pairs.push([category, name.toLowerCase(), `${category}/${name}.md`, `${category}/${name}.fr.md`]);

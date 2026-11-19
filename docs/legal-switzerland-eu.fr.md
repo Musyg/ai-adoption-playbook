@@ -1,6 +1,6 @@
 # Orientation juridique — Suisse et Union européenne
 
-> Photographie vérifiée le **20 août 2026**. Cette page oriente les questions à poser ; elle ne fournit pas d’avis juridique. Vérifier la version des textes, le secteur, la juridiction et le rôle exact de l’organisation avant toute décision.
+> Photographie vérifiée le **20 août 2026** ; la section Suisse a été revérifiée le **18 novembre 2026** et le statut de la Convention du Conseil de l’Europe le **19 novembre 2026**. Cette page oriente les questions à poser ; elle ne fournit pas d’avis juridique. Vérifier la version des textes, le secteur, la juridiction et le rôle exact de l’organisation avant toute décision.
 
 ## Suisse
 
@@ -24,13 +24,47 @@ Routage opérationnel par mode d’usage :
 - pour des visages, images ou voix synthétiques de personnes identifiables, documenter l’identification claire, le consentement ou autre autorité, les contrôles de protection des données et les règles applicables de personnalité, droit pénal et propriété intellectuelle ;
 - pour un traitement susceptible d’engendrer un risque élevé, terminer et conserver l’analyse d’impact avant le pilote.
 
-Calendrier suisse revérifié le 10 octobre 2026 : la
-[Chancellerie fédérale](https://www.bk.admin.ch/en/regulation) annonce encore une
-consultation d’ici fin 2026. Une [actualité SECO du 23 septembre](https://www.kmu.admin.ch/en/a-consultation-draft-to-regulate-ai-will-be-drawn-up-by-early-2027)
-annonce début 2027 dans son titre et printemps 2027 dans son texte. Les pages
-officielles divergent donc. Le calendrier doit être reconfirmé, pas présenté
-comme une échéance certaine. Aucune de ces annonces n’est une loi générale
-sur l’IA déjà en vigueur.
+Calendrier suisse revérifié le 18 novembre 2026. Le communiqué du Conseil
+fédéral du [28 octobre 2026](https://www.admin.ch/fr/newnsb/s2TQiUUjrA5D) indique que la consultation sur les mesures
+juridiquement contraignantes est prévue au **printemps 2027**. Cela remplace
+l’annonce précédente de fin 2026, que certaines pages officielles affichent
+encore. L’Office fédéral de la justice prépare ces mesures (transparence,
+protection des données, non-discrimination, surveillance et évaluation des
+risques). L’Office fédéral de la communication (OFCOM) coordonne les mesures non
+contraignantes : lignes directrices, normes sectorielles et engagements
+volontaires. Rien de tout cela n’est une loi générale sur l’IA en vigueur.
+
+### Convention du Conseil de l’Europe sur l’IA
+
+La Suisse a décidé le 12 février 2025 de ratifier la Convention-cadre du Conseil
+de l’Europe sur l’intelligence artificielle et l’a signée le 27 mars 2025. La
+voie annoncée passe par des modifications sectorielles ciblées du droit suisse,
+pas par une loi générale sur l’IA. La Convention s’applique aux autorités
+publiques ; chaque partie décide comment elle couvre les acteurs privés.
+
+La Convention elle-même n’est pas en vigueur. Le [tableau du Bureau des
+traités](https://www.coe.int/en/web/conventions/full-list?module=signatures-by-treaty&treatynum=225) indiquait, le 19 novembre 2026, 22 signataires et deux
+ratifications : l’Union européenne (15 mai 2026) et la Bosnie-Herzégovine
+(28 octobre 2026). L’entrée en vigueur exige cinq ratifications, dont trois
+d’États membres du Conseil de l’Europe, puis trois mois. La Suisse a signé mais
+pas ratifié. Certaines pages web affirment à tort que la Convention est entrée
+en vigueur en 2025. Consulter le tableau avant de s’appuyer sur une date. Pour une
+organisation privée, rien de contraignant ne découle de la Convention tant que le
+droit suisse n’a pas changé. Un organisme public peut s’attendre à ce que ses
+principes (transparence, supervision, non-discrimination, recours) orientent ce
+qu’on lui demandera.
+
+### Administration fédérale
+
+L’administration fédérale suit une stratégie IA présentée en mars 2025. Le
+18 septembre 2026, le Conseil fédéral a été [informé d’une redéfinition des
+priorités](https://www.admin.ch/fr/newnsb/uj3obgFHSuVW) : six des huit mesures de mise en œuvre se poursuivent, avec une
+feuille de route 2026 à 2028, en raison des moyens disponibles. Le
+[2 octobre 2026](https://www.admin.ch/fr/newnsb/NJ04UgpFFUoA), il a adopté un rapport sur l’automatisation et l’IA au
+service de l’efficience de l’administration, qui commence par une vue d’ensemble
+interne des systèmes d’IA que la Confédération développe, acquiert ou utilise.
+Ce sont des indications sur la pratique fédérale. Elles ne prouvent aucun effet
+et ne lient ni les cantons ni les communes.
 
 ## Union européenne
 

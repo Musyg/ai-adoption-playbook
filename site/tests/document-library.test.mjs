@@ -30,8 +30,8 @@ test("each document explains its purpose, action and named related reading witho
 });
 
 test("publication manifest contains only the agreed document families and explicit exceptions", () => {
-  const expected = { tracks: 12, sectors: 10, examples: 22, templates: 22, references: 18, docs: 22, "field-notes": 2, controls: 1 };
-  assert.equal(documents.length, 109);
+  const expected = { tracks: 12, sectors: 10, examples: 22, templates: 22, references: 20, docs: 22, "field-notes": 2, controls: 1 };
+  assert.equal(documents.length, 111);
   assert.equal(new Set(documents.map((doc) => doc.source)).size, documents.length);
   assert.equal(new Set(documents.map((doc) => doc.path)).size, documents.length);
   for (const [category, count] of Object.entries(expected)) {
