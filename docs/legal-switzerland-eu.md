@@ -1,6 +1,6 @@
 # Legal orientation — Switzerland and the European Union
 
-> Snapshot verified on **20 August 2026**; the Switzerland and Council of Europe sections were rechecked on **18 November 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
+> Snapshot verified on **20 August 2026**; the Switzerland section was rechecked on **18 November 2026** and the Council of Europe status on **19 November 2026**. This page helps frame the questions to ask; it is not legal advice. Verify the current text, sector, jurisdiction, and the organization’s exact role before making a decision.
 
 ## Switzerland
 
@@ -42,11 +42,13 @@ The announced route is targeted sector changes to Swiss law, not a general AI
 act. The Convention applies to public authorities; each party decides how it
 covers private actors.
 
-The Convention itself was not yet in force in mid-October 2026: trackers citing
-the Council of Europe treaty office reported one party, the European Union
-(15 May 2026), against five ratifications required, including three Council of
-Europe member states. Some web pages wrongly say it entered into force in 2025.
-Check the [treaty office page](https://www.coe.int/en/web/conventions/full-list?module=treaty-detail&treatynum=225) before relying on any date. For a private
+The Convention itself is not in force. The [treaty office chart](https://www.coe.int/en/web/conventions/full-list?module=signatures-by-treaty&treatynum=225) showed,
+on 19 November 2026, 22 signatories and two ratifications: the European Union
+(15 May 2026) and Bosnia and Herzegovina (28 October 2026). Entry into force
+needs five ratifications, including three Council of Europe member states, then
+three months. Switzerland has signed but not ratified. Some web pages wrongly
+say the Convention entered into force in 2025. Check the chart before relying
+on any date. For a private
 organization nothing binding follows from the Convention until Swiss law
 changes. A public body should expect its principles (transparency, oversight,
 non-discrimination, recourse) to shape what is asked of it.

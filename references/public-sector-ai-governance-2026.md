@@ -62,7 +62,7 @@ UK public-sector evaluations of office copilots are in the task-time register.
 
 The federal [Directive on Automated Decision-Making](https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32592)
 applies to systems that fully or partly automate an administrative decision.
-A mandatory [Algorithmic Impact Assessment](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/algorithmic-impact-assessment.html)
+A mandatory [Algorithmic Impact Assessment](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/automated-decision-making/algorithmic-impact-assessment.html)
 sets an impact level, and the level determines required controls such as
 review, notice and human involvement. Results are published before production.
 The latest amendment took effect in June 2025, with a one-year transition for
