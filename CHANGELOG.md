@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Task-time register: add two context-only grade C records from public
+  administrations, HMRC's Copilot trial (licences allocated at random, savings
+  still self-reported) and the Australian whole-of-government Copilot trial
+  (perceived savings, no comparison group). The cross-government UK record now
+  states that its report describes no comparison group. Registry now holds 26
+  records; no transferable ratio changes.
+
 - Council of Europe AI Convention: replace the secondary-tracker status with
   the treaty office chart read in a browser on 19 November 2026 (22
   signatories, two ratifications including Bosnia and Herzegovina on 28
